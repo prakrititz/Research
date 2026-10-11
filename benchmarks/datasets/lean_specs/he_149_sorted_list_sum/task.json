@@ -1,0 +1,32 @@
+{
+    "id": "he_149_sorted_list_sum",
+    "signature": {
+        "name": "sortedListSum",
+        "parameters": [
+            {
+                "param_name": "lst",
+                "param_type": "List String"
+            }
+        ],
+        "return_type": "List String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "List.Perm result (lst.filter (fun s => s.length % 2 = 0)) ∧\n  ∀ i, i < result.length - 1 → (result[i]!.length < result[i + 1]!.length ∨ (result[i]!.length = result[i + 1]!.length ∧ ¬ (result[i + 1]! < result[i]!)))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/149"
+        },
+        "tags": [
+            "string",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

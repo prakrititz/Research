@@ -1,0 +1,145 @@
+[
+    {
+        "input": {
+            "text": "\"Example\""
+        },
+        "expected": "Example",
+        "unexpected": [
+            "Examplex",
+            "Exampl",
+            "elpmaxE"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"Mudasir Hanif \""
+        },
+        "expected": "Mudasir_Hanif_",
+        "unexpected": [
+            "Mudasir_Hanif_x",
+            "Mudasir_Hanif",
+            "_finaH_risaduM"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"Yellow Yellow  Dirty  Fellow\""
+        },
+        "expected": "Yellow_Yellow__Dirty__Fellow",
+        "unexpected": [
+            "Yellow_Yellow__Dirty__Fellowx",
+            "Yellow_Yellow__Dirty__Fello",
+            "wolleF__ytriD__wolleY_wolleY"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"Exa   mple\""
+        },
+        "expected": "Exa-mple",
+        "unexpected": [
+            "Exa-mplex",
+            "Exa-mpl",
+            "elpm-axE"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"   Exa 1 2 2 mple\""
+        },
+        "expected": "-Exa_1_2_2_mple",
+        "unexpected": [
+            "-Exa_1_2_2_mplex",
+            "-Exa_1_2_2_mpl",
+            "elpm_2_2_1_axE-"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"Hello,   world!\""
+        },
+        "expected": "Hello,-world!",
+        "unexpected": [
+            "Hello,-world!x",
+            "Hello,-world",
+            "!dlrow-,olleH"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"----a-aa-a---b-b-b-c-c-c---\""
+        },
+        "expected": "----a-aa-a---b-b-b-c-c-c---",
+        "unexpected": [
+            "----a-aa-a---b-b-b-c-c-c---x",
+            "----a-aa-a---b-b-b-c-c-c--",
+            "---c-c-c-b-b-b---a-aa-a----"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"   Exa 1 2 Exa2\\nmpl\""
+        },
+        "expected": "-Exa_1_2_Exa2\nmpl",
+        "unexpected": [
+            "-Exa_1_2_Exa2\nmplx",
+            "-Exa_1_2_Exa2\nmp",
+            "lpm\n2axE_2_1_axE-"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"ExampleEtEhisx\""
+        },
+        "expected": "ExampleEtEhisx",
+        "unexpected": [
+            "ExampleEtEhisxx",
+            "ExampleEtEhis",
+            "xsihEtEelpmaxE"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"2  2---a-a--a----c---   \""
+        },
+        "expected": "2__2---a-a--a----c----",
+        "unexpected": [
+            "2__2---a-a--a----c----x",
+            "2__2---a-a--a----c---",
+            "----c----a--a-a---2__2"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"Exxa\""
+        },
+        "expected": "Exxa",
+        "unexpected": [
+            "Exxax",
+            "Exx",
+            "axxE"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"2e\""
+        },
+        "expected": "2e",
+        "unexpected": [
+            "2ex",
+            "2",
+            "e2"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"te\""
+        },
+        "expected": "te",
+        "unexpected": [
+            "tex",
+            "t",
+            "et"
+        ]
+    }
+]

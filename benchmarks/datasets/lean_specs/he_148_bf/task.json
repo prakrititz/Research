@@ -1,0 +1,36 @@
+{
+    "id": "he_148_bf",
+    "signature": {
+        "name": "bf",
+        "parameters": [
+            {
+                "param_name": "planet1",
+                "param_type": "String"
+            },
+            {
+                "param_name": "planet2",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "List String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "(planet1 ∉ solarPlanets ∨ planet2 ∉ solarPlanets → result = []) ∧\n  (planet1 ∈ solarPlanets → planet2 ∈ solarPlanets → ∃ i, i < 8 ∧ solarPlanets[i]! = planet1 ∧ ∃ j, j < 8 ∧ solarPlanets[j]! = planet2 ∧\n    result = (solarPlanets.drop (min i j + 1)).take (max i j - min i j - 1))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/148"
+        },
+        "tags": [
+            "string",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

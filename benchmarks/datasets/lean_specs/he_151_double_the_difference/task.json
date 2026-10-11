@@ -1,0 +1,32 @@
+{
+    "id": "he_151_double_the_difference",
+    "signature": {
+        "name": "doubleTheDifference",
+        "parameters": [
+            {
+                "param_name": "lst",
+                "param_type": "List (Int ⊕ ℚ)"
+            }
+        ],
+        "return_type": "Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = (lst.map (Sum.elim (fun (x : Int) => if x > 0 ∧ x % 2 = 1 then x * x else 0) (fun (_ : ℚ) => 0))).sum"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/151"
+        },
+        "tags": [
+            "list",
+            "sum",
+            "loop"
+        ],
+        "note": "integers and floats are told apart by the sum type: the canonical solution ignores 3.0 because str(3.0) contains a dot"
+    },
+    "test_file": "./test.json"
+}

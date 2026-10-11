@@ -1,0 +1,31 @@
+{
+    "id": "he_146_special_filter",
+    "signature": {
+        "name": "specialFilter",
+        "parameters": [
+            {
+                "param_name": "nums",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = (nums.filter (fun x => x > 10 ∧ firstDigit x.natAbs % 2 = 1 ∧ x.natAbs % 10 % 2 = 1)).length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/146"
+        },
+        "tags": [
+            "list",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

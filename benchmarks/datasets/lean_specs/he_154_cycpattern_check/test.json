@@ -1,0 +1,142 @@
+[
+    {
+        "input": {
+            "a": "\"xyzw\"",
+            "b": "\"xyw\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "a": "\"yello\"",
+            "b": "\"ell\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "a": "\"whattup\"",
+            "b": "\"ptut\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "a": "\"efef\"",
+            "b": "\"fee\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "a": "\"abab\"",
+            "b": "\"aabb\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "a": "\"winemtt\"",
+            "b": "\"tinem\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "a": "\"hello\"",
+            "b": "\"olelh\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "a": "\"scmargeanadeis\"",
+            "b": "\"scmarganadeis\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "a": "\"othmicgloa\"",
+            "b": "\"ationmaninom\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "a": "\"ationmanninom\"",
+            "b": "\"ationnninom\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "a": "\"oonooom\"",
+            "b": "\"oonooom\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "a": "\"thmicghloa\"",
+            "b": "\"thmicgloa\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "a": "\"nnjgabmanipultationnck\"",
+            "b": "\"nnjgabmanipultationck\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "a": "\"yzabcdeefg\"",
+            "b": "\"yyzagbcdefg\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    }
+]

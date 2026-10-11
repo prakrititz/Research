@@ -1,0 +1,1 @@
+A hungry rabbit has already eaten `number` carrots and needs to eat `need` more to complete the day's meals; `remaining` carrots are in stock. Return [total number of eaten carrots after the meals, number of carrots left after the meals]. If there are not enough remaining carrots, the rabbit eats all remaining carrots but is still hungry.

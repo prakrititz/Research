@@ -1,4 +1,6 @@
-# 24 — The Lean specification library (37 HumanEval problems and 5 classic algorithms, stated in Lean)
+# 24 — The Lean specification library (all 164 HumanEval problems and 5 classic algorithms, stated in Lean)
+
+> **Update 2026-10-11:** the library now has 169 specifications (164 HumanEval + 5 classics): 2,332 tests, reference 2,332/2,332, postcondition accepts 2,332/2,332 and rejects 5,651/5,657 wrong outputs (the 6 are one `permissive` dictionary specification). The sections below describe the first 42 (2026-10-08); the numbers in them are those of that date. Specifications live in `benchmarks/datasets/lean_specs.py` (the first 37) and `benchmarks/datasets/he_lean/` (the rest); see doc 22, entry 2026-10-11.
 
 > Written 2026-10-08. Code: `benchmarks/datasets/lean_specs.py` (the table, the builder, the validator), `lean_taskfile.py` (writes Verina's file format), `lean_oracle.py` (hand-written derivations). Data: `benchmarks/datasets/lean_specs/<id>/`. Results: `benchmarks/results/lean_specs/`. Phase 4 of the plan in doc 22.
 

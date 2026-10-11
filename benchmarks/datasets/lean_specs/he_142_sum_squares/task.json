@@ -1,0 +1,31 @@
+{
+    "id": "he_142_sum_squares",
+    "signature": {
+        "name": "sumSquaresIdx",
+        "parameters": [
+            {
+                "param_name": "lst",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = ((List.range lst.length).map (fun i => if i % 3 = 0 then lst[i]! ^ 2 else if i % 4 = 0 then lst[i]! ^ 3 else lst[i]!)).sum"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/142"
+        },
+        "tags": [
+            "list",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

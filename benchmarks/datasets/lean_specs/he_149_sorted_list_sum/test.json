@@ -1,0 +1,163 @@
+[
+    {
+        "input": {
+            "lst": "[\"aa\", \"a\", \"aaa\"]"
+        },
+        "expected": "[\"aa\"]",
+        "unexpected": [
+            "[]",
+            "[\"aa\", \"z\"]",
+            "[\"aa\", \"aa\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"school\", \"AI\", \"asdf\", \"b\"]"
+        },
+        "expected": "[\"AI\", \"asdf\", \"school\"]",
+        "unexpected": [
+            "[\"AI\", \"asdf\"]",
+            "[\"AI\", \"asdf\", \"school\", \"z\"]",
+            "[\"school\", \"asdf\", \"AI\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"d\", \"b\", \"c\", \"a\"]"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"d\", \"dcba\", \"abcd\", \"a\"]"
+        },
+        "expected": "[\"abcd\", \"dcba\"]",
+        "unexpected": [
+            "[\"abcd\"]",
+            "[\"abcd\", \"dcba\", \"z\"]",
+            "[\"dcba\", \"abcd\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"AI\", \"ai\", \"au\"]"
+        },
+        "expected": "[\"AI\", \"ai\", \"au\"]",
+        "unexpected": [
+            "[\"AI\", \"ai\"]",
+            "[\"AI\", \"ai\", \"au\", \"z\"]",
+            "[\"au\", \"ai\", \"AI\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"a\", \"b\", \"b\", \"c\", \"c\", \"a\"]"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"aaaa\", \"bbbb\", \"dd\", \"cc\"]"
+        },
+        "expected": "[\"cc\", \"dd\", \"aaaa\", \"bbbb\"]",
+        "unexpected": [
+            "[\"cc\", \"dd\", \"aaaa\"]",
+            "[\"cc\", \"dd\", \"aaaa\", \"bbbb\", \"z\"]",
+            "[\"bbbb\", \"aaaa\", \"dd\", \"cc\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"abcd\", \"efgh\", \"ijkl\", \"mnop\"]"
+        },
+        "expected": "[\"abcd\", \"efgh\", \"ijkl\", \"mnop\"]",
+        "unexpected": [
+            "[\"abcd\", \"efgh\", \"ijkl\"]",
+            "[\"abcd\", \"efgh\", \"ijkl\", \"mnop\", \"z\"]",
+            "[\"mnop\", \"ijkl\", \"efgh\", \"abcd\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"poupular\", \"orange\", \"banana\", \"paapple\", \"banana\", \"paapple\"]"
+        },
+        "expected": "[\"banana\", \"banana\", \"orange\", \"poupular\"]",
+        "unexpected": [
+            "[\"banana\", \"banana\", \"orange\"]",
+            "[\"banana\", \"banana\", \"orange\", \"poupular\", \"z\"]",
+            "[\"poupular\", \"orange\", \"banana\", \"banana\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"a\", \"Python\", \"def\", \"ghij\", \"kiwi\", \"kiwi\", \"def\"]"
+        },
+        "expected": "[\"ghij\", \"kiwi\", \"kiwi\", \"Python\"]",
+        "unexpected": [
+            "[\"ghij\", \"kiwi\", \"kiwi\"]",
+            "[\"ghij\", \"kiwi\", \"kiwi\", \"Python\", \"z\"]",
+            "[\"Python\", \"kiwi\", \"kiwi\", \"ghij\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"aaa\", \"aa\", \"a\", \"worldbb\", \"b\", \"a\", \"a\"]"
+        },
+        "expected": "[\"aa\"]",
+        "unexpected": [
+            "[]",
+            "[\"aa\", \"z\"]",
+            "[\"aa\", \"aa\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"stu\", \"lemonn\", \"is\", \"awesome\", \"Python\", \"Python\", \"lemonn\"]"
+        },
+        "expected": "[\"is\", \"Python\", \"Python\", \"lemonn\", \"lemonn\"]",
+        "unexpected": [
+            "[\"is\", \"Python\", \"Python\", \"lemonn\"]",
+            "[\"is\", \"Python\", \"Python\", \"lemonn\", \"lemonn\", \"z\"]",
+            "[\"lemonn\", \"lemonn\", \"Python\", \"Python\", \"is\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"aaaa\", \"bbb\", \"ccc\", \"dddd\", \"ffffff\"]"
+        },
+        "expected": "[\"aaaa\", \"dddd\", \"ffffff\"]",
+        "unexpected": [
+            "[\"aaaa\", \"dddd\"]",
+            "[\"aaaa\", \"dddd\", \"ffffff\", \"z\"]",
+            "[\"ffffff\", \"dddd\", \"aaaa\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"b\", \"aaa\", \"aa\", \"a\", \"bbb\", \"bb\", \"b\", \"aaa\"]"
+        },
+        "expected": "[\"aa\", \"bb\"]",
+        "unexpected": [
+            "[\"aa\"]",
+            "[\"aa\", \"bb\", \"z\"]",
+            "[\"bb\", \"aa\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"bbb\", \"ccc\", \"dddd\", \"ddd\", \"ee\", \"ffffff\", \"ee\"]"
+        },
+        "expected": "[\"ee\", \"ee\", \"dddd\", \"ffffff\"]",
+        "unexpected": [
+            "[\"ee\", \"ee\", \"dddd\"]",
+            "[\"ee\", \"ee\", \"dddd\", \"ffffff\", \"z\"]",
+            "[\"ffffff\", \"dddd\", \"ee\", \"ee\"]"
+        ]
+    }
+]

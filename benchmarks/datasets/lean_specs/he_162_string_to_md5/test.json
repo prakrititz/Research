@@ -1,0 +1,121 @@
+[
+    {
+        "input": {
+            "text": "\"Hello world\""
+        },
+        "expected": "some (\"3e25960a79dbc69b674cd4ec67a72c62\")",
+        "unexpected": [
+            "none",
+            "some (\"3e25960a79dbc69b674cd4ec67a72c62x\")"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"\""
+        },
+        "expected": "none",
+        "unexpected": [
+            "some (\"z\")"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"A B C\""
+        },
+        "expected": "some (\"0ef78513b0cb8cef12743f5aeb35f888\")",
+        "unexpected": [
+            "none",
+            "some (\"0ef78513b0cb8cef12743f5aeb35f888x\")"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"password\""
+        },
+        "expected": "some (\"5f4dcc3b5aa765d61d8327deb882cf99\")",
+        "unexpected": [
+            "none",
+            "some (\"5f4dcc3b5aa765d61d8327deb882cf99x\")"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"5873hajsdklh\""
+        },
+        "expected": "some (\"0dbb501bb9d84c751d2cf6394d9308c0\")",
+        "unexpected": [
+            "none",
+            "some (\"0dbb501bb9d84c751d2cf6394d9308c0x\")"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"you_are_beautiful_t0day!123\""
+        },
+        "expected": "some (\"1a968aa5e9ec50a5659ae74027b76e65\")",
+        "unexpected": [
+            "none",
+            "some (\"1a968aa5e9ec50a5659ae74027b76e65x\")"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"mattisi,\""
+        },
+        "expected": "some (\"a83b94f8f37c84bf2ac6d0d9d37b9e22\")",
+        "unexpected": [
+            "none",
+            "some (\"a83b94f8f37c84bf2ac6d0d9d37b9e22x\")"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"nfordshouldon-triinnpptvialtt\""
+        },
+        "expected": "some (\"dc3489f74acab5d5336362f9b429fb1e\")",
+        "unexpected": [
+            "none",
+            "some (\"dc3489f74acab5d5336362f9b429fb1ex\")"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"elLorem\""
+        },
+        "expected": "some (\"d04ce2b6ea61622d94716c1f2845f84f\")",
+        "unexpected": [
+            "none",
+            "some (\"d04ce2b6ea61622d94716c1f2845f84fx\")"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"et\""
+        },
+        "expected": "some (\"4de1b7a4dc53e4a84c25ffb7cdb580ee\")",
+        "unexpected": [
+            "none",
+            "some (\"4de1b7a4dc53e4a84c25ffb7cdb580eex\")"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"lolonNunclreme\""
+        },
+        "expected": "some (\"1c89d79751e5c6b7bceb1dc78035cb22\")",
+        "unexpected": [
+            "none",
+            "some (\"1c89d79751e5c6b7bceb1dc78035cb22x\")"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"fox\""
+        },
+        "expected": "some (\"2b95d1f09b8b66c5c43622a4d9ec9a04\")",
+        "unexpected": [
+            "none",
+            "some (\"2b95d1f09b8b66c5c43622a4d9ec9a04x\")"
+        ]
+    }
+]

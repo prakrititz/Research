@@ -1,0 +1,162 @@
+[
+    {
+        "input": {
+            "planet1": "\"Jupiter\"",
+            "planet2": "\"Neptune\""
+        },
+        "expected": "[\"Saturn\", \"Uranus\"]",
+        "unexpected": [
+            "[\"Saturn\"]",
+            "[\"Saturn\", \"Uranus\", \"z\"]",
+            "[\"Uranus\", \"Saturn\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"Earth\"",
+            "planet2": "\"Mercury\""
+        },
+        "expected": "[\"Venus\"]",
+        "unexpected": [
+            "[]",
+            "[\"Venus\", \"z\"]",
+            "[\"Venus\", \"Venus\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"Mercury\"",
+            "planet2": "\"Uranus\""
+        },
+        "expected": "[\"Venus\", \"Earth\", \"Mars\", \"Jupiter\", \"Saturn\"]",
+        "unexpected": [
+            "[\"Venus\", \"Earth\", \"Mars\", \"Jupiter\"]",
+            "[\"Venus\", \"Earth\", \"Mars\", \"Jupiter\", \"Saturn\", \"z\"]",
+            "[\"Saturn\", \"Jupiter\", \"Mars\", \"Earth\", \"Venus\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"Neptune\"",
+            "planet2": "\"Venus\""
+        },
+        "expected": "[\"Earth\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\"]",
+        "unexpected": [
+            "[\"Earth\", \"Mars\", \"Jupiter\", \"Saturn\"]",
+            "[\"Earth\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"z\"]",
+            "[\"Uranus\", \"Saturn\", \"Jupiter\", \"Mars\", \"Earth\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"Earth\"",
+            "planet2": "\"Earth\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"Mars\"",
+            "planet2": "\"Earth\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"Jupiter\"",
+            "planet2": "\"Makemake\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"Neptune\"",
+            "planet2": "\"Mercury\""
+        },
+        "expected": "[\"Venus\", \"Earth\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\"]",
+        "unexpected": [
+            "[\"Venus\", \"Earth\", \"Mars\", \"Jupiter\", \"Saturn\"]",
+            "[\"Venus\", \"Earth\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"z\"]",
+            "[\"Uranus\", \"Saturn\", \"Jupiter\", \"Mars\", \"Earth\", \"Venus\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"Pluto\"",
+            "planet2": "\"Plutuo\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"Mercury\"",
+            "planet2": "\"MrerMcury\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"Meurcuury\"",
+            "planet2": "\"Meurcury\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"JupiMerrry\"",
+            "planet2": "\"JupiMerry\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"\"",
+            "planet2": "\"uto\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"Jupirter\"",
+            "planet2": "\"Neptune\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "planet1": "\"MuSatursy\"",
+            "planet2": "\"Mercury\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    }
+]

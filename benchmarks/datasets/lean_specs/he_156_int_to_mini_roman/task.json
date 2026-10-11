@@ -1,0 +1,32 @@
+{
+    "id": "he_156_int_to_mini_roman",
+    "signature": {
+        "name": "intToMiniRoman",
+        "parameters": [
+            {
+                "param_name": "number",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "1 ≤ number ∧ number ≤ 1000",
+        "postconditions": "result = romanSpec number number"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/156"
+        },
+        "tags": [
+            "scalar",
+            "string",
+            "recursive-spec"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

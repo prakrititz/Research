@@ -1,0 +1,167 @@
+[
+    {
+        "input": {
+            "sentence": "\"This is a test\""
+        },
+        "expected": "is",
+        "unexpected": [
+            "isx",
+            "i",
+            "si"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"lets go for swimming\""
+        },
+        "expected": "go for",
+        "unexpected": [
+            "go forx",
+            "go fo",
+            "rof og"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"there is no place available here\""
+        },
+        "expected": "there is no place",
+        "unexpected": [
+            "there is no placex",
+            "there is no plac",
+            "ecalp on si ereht"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"Hi I am Hussein\""
+        },
+        "expected": "Hi am Hussein",
+        "unexpected": [
+            "Hi am Husseinx",
+            "Hi am Hussei",
+            "niessuH ma iH"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"go for it\""
+        },
+        "expected": "go for it",
+        "unexpected": [
+            "go for itx",
+            "go for i",
+            "ti rof og"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"here\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"here is\""
+        },
+        "expected": "is",
+        "unexpected": [
+            "isx",
+            "i",
+            "si"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"cats and dogs\""
+        },
+        "expected": "and",
+        "unexpected": [
+            "andx",
+            "an",
+            "dna"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"aaa aaa aaaaaaaa aaaaaaa\""
+        },
+        "expected": "aaa aaa aaaaaaa",
+        "unexpected": [
+            "aaa aaa aaaaaaax",
+            "aaa aaa aaaaaa",
+            "aaaaaaa aaa aaa"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"The cat min tofhe aha t asat on thte mat\""
+        },
+        "expected": "The cat min tofhe aha on mat",
+        "unexpected": [
+            "The cat min tofhe aha on matx",
+            "The cat min tofhe aha on ma",
+            "tam no aha ehfot nim tac ehT"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"Anlazynumbers\""
+        },
+        "expected": "Anlazynumbers",
+        "unexpected": [
+            "Anlazynumbersx",
+            "Anlazynumber",
+            "srebmunyzalnA"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"brownn\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"aaaaaaaaaaaa\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"science\""
+        },
+        "expected": "science",
+        "unexpected": [
+            "sciencex",
+            "scienc",
+            "ecneics"
+        ]
+    },
+    {
+        "input": {
+            "sentence": "\"oveeorpceck\""
+        },
+        "expected": "oveeorpceck",
+        "unexpected": [
+            "oveeorpceckx",
+            "oveeorpcec",
+            "kcecproeevo"
+        ]
+    }
+]

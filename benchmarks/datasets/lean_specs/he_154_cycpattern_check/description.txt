@@ -1,0 +1,1 @@
+Given two words, return true if the second word or any of its rotations is a substring of the first word.

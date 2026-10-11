@@ -1,0 +1,31 @@
+{
+    "id": "he_134_check_if_last_char_is_a_letter",
+    "signature": {
+        "name": "checkIfLastCharIsALetter",
+        "parameters": [
+            {
+                "param_name": "txt",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ (txt.length ≥ 1 ∧ txt.toList[txt.length - 1]!.isAlpha = true ∧ (txt.length = 1 ∨ txt.toList[txt.length - 2]! = ' '))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/134"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

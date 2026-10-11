@@ -1,0 +1,31 @@
+{
+    "id": "he_155_even_odd_count",
+    "signature": {
+        "name": "evenOddCount",
+        "parameters": [
+            {
+                "param_name": "num",
+                "param_type": "Int"
+            }
+        ],
+        "return_type": "Nat × Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.1 = ((toString num.natAbs).toList.filter (fun c => (c.toNat - 48) % 2 = 0)).length ∧\n  result.2 = ((toString num.natAbs).toList.filter (fun c => (c.toNat - 48) % 2 = 1)).length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/155"
+        },
+        "tags": [
+            "scalar",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

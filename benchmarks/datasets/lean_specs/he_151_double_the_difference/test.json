@@ -1,0 +1,156 @@
+[
+    {
+        "input": {
+            "lst": "[]"
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            -1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inl (5), Sum.inl (4)]"
+        },
+        "expected": 25,
+        "unexpected": [
+            26,
+            24,
+            53
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inr ((1 / 10 : ℚ)), Sum.inr ((1 / 5 : ℚ)), Sum.inr ((3 / 10 : ℚ))]"
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            -1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inl (-10), Sum.inl (-20), Sum.inl (-30)]"
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            -1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inl (-1), Sum.inl (-2), Sum.inl (8)]"
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            -1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inr ((1 / 5 : ℚ)), Sum.inl (3), Sum.inl (5)]"
+        },
+        "expected": 34,
+        "unexpected": [
+            35,
+            33,
+            71
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inl (3), Sum.inl (5), Sum.inl (7)]"
+        },
+        "expected": 83,
+        "unexpected": [
+            84,
+            82,
+            169
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inl (4), Sum.inl (4), Sum.inl (7), Sum.inl (8)]"
+        },
+        "expected": 49,
+        "unexpected": [
+            50,
+            48,
+            101
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inl (0), Sum.inl (0), Sum.inl (0), Sum.inl (0), Sum.inl (-2), Sum.inl (-3), Sum.inr ((942570364349231 / 100000000000000 : ℚ)), Sum.inl (-4), Sum.inl (5), Sum.inl (6), Sum.inr ((15 / 2 : ℚ)), Sum.inr ((83 / 10 : ℚ)), Sum.inl (6)]"
+        },
+        "expected": 25,
+        "unexpected": [
+            26,
+            24,
+            53
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inr ((5 / 2 : ℚ)), Sum.inr ((15 / 4 : ℚ)), Sum.inr ((-11 / 2 : ℚ)), Sum.inr ((15 / 4 : ℚ)), Sum.inr ((5 / 2 : ℚ))]"
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            -1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inl (12), Sum.inl (10), Sum.inl (3), Sum.inl (7), Sum.inl (9), Sum.inl (11), Sum.inl (13), Sum.inl (17), Sum.inl (19), Sum.inl (3)]"
+        },
+        "expected": 1088,
+        "unexpected": [
+            1089,
+            1087,
+            2179
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inl (0), Sum.inl (1), Sum.inl (3), Sum.inl (0), Sum.inl (5), Sum.inl (7), Sum.inl (0), Sum.inl (9), Sum.inl (11), Sum.inl (13), Sum.inl (1), Sum.inl (17), Sum.inl (18), Sum.inl (-3)]"
+        },
+        "expected": 745,
+        "unexpected": [
+            746,
+            744,
+            1493
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inl (1), Sum.inl (-3), Sum.inr ((5 / 2 : ℚ)), Sum.inl (-5), Sum.inr ((1 / 2 : ℚ)), Sum.inl (7), Sum.inr ((99 / 10 : ℚ)), Sum.inl (-3)]"
+        },
+        "expected": 50,
+        "unexpected": [
+            51,
+            49,
+            103
+        ]
+    },
+    {
+        "input": {
+            "lst": "[Sum.inl (11), Sum.inl (12), Sum.inl (-13), Sum.inl (-12), Sum.inl (-13), Sum.inr ((1636853127797131 / 625000000000000 : ℚ)), Sum.inr ((2078042159421579 / 500000000000000 : ℚ)), Sum.inr ((-37 / 10 : ℚ)), Sum.inr ((18623084521491027 / 5000000000000000 : ℚ)), Sum.inr ((-28 / 5 : ℚ)), Sum.inr ((249 / 50 : ℚ))]"
+        },
+        "expected": 121,
+        "unexpected": [
+            122,
+            120,
+            245
+        ]
+    }
+]
