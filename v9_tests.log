@@ -1,0 +1,107 @@
+............................F........................................... [ 16%]
+................................................................F....... [ 33%]
+........................................................................ [ 49%]
+........................................................................ [ 66%]
+........................................................................ [ 82%]
+........................................................................ [ 99%]
+..                                                                       [100%]
+================================== FAILURES ===================================
+___________ test_the_pair_search_does_not_depend_on_the_wall_clock ____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001486D346CD0>
+
+    def test_the_pair_search_does_not_depend_on_the_wall_clock(monkeypatch):
+        """Replaying stored division trials with the old 4-second limit shrunk to 0.2 s (a machine about twenty
+        times slower) turned a 2-call success into a 30-call failure: the search's outcome depended on the clock.
+        It is now limited by prover queries; a clock that runs 10x too fast must not change the answer."""
+        import FormalLLM.agent.assist as assist_module
+        engine, parts = loop_children()
+        real = time.monotonic
+        monkeypatch.setattr(assist_module.time, "monotonic", lambda: real() * 10.0)
+        solver = LeafSolver(engine)
+>       assert solver.solve(parts["body"].spec if hasattr(parts["body"], "spec") else parts["body"]) is not None
+E       AssertionError: assert None is not None
+E        +  where None = solve(Spec(precondition=Definition(name=None, params=[Param(name='n', type_=IntType()), Param(name='d', type_=IntType())], e...r'), op='<', right=Variable(name='V0'))))), frame=[Param(name='q', type_=IntType()), Param(name='r', type_=IntType())]))
+E        +    where solve = <FormalLLM.agent.assist.LeafSolver object at 0x000001486D496950>.solve
+
+FormalLLM\tests\test_assist_pairs.py:242: AssertionError
+_ test_three_derivations_are_proved_correct_but_too_slow_for_the_largest_inputs[HumanEval/13] _
+
+task = 'HumanEval/13'
+
+    @pytest.mark.parametrize("task", SLOW)
+    def test_three_derivations_are_proved_correct_but_too_slow_for_the_largest_inputs(task):
+        # a downward search for a divisor, trial division up to n, or a search for a cube root is right but cannot
+        # finish on EvalPlus' largest inputs: correctness proved, efficiency not part of the specification
+        row = he_oracle.check(task)
+>       assert row["complete"], row["error"]
+E       AssertionError: Refinement verification unknown. Solver returned unknown: timeout
+E       assert False
+
+FormalLLM\tests\test_he_oracle.py:33: AssertionError
+============================== warnings summary ===============================
+benchmarks\cases.py:36
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\benchmarks\cases.py:36: DeprecationWarning: invalid escape sequence '\ '
+    spec="Frame: m.\nPrecondition: (A:int)(B:int) := A > B.\nPostcondition: (A:int)(B:int) := m = A /\ m > B.",
+
+benchmarks\cases.py:45
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\benchmarks\cases.py:45: DeprecationWarning: invalid escape sequence '\ '
+    spec="Frame: y.\nPrecondition: (A:int) := A > 0.\nPostcondition: (A:int) := y = A /\ y < 0.",
+
+benchmarks\cases.py:56
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\benchmarks\cases.py:56: DeprecationWarning: invalid escape sequence '\ '
+    spec="Frame: s, d.\nPrecondition: (A:int)(B:int) := true.\nPostcondition: (A:int)(B:int) := s = A + B /\ d = A - B.",
+
+benchmarks\cases.py:65
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\benchmarks\cases.py:65: DeprecationWarning: invalid escape sequence '\/'
+    spec="Frame: m.\nPrecondition: (A:int)(B:int) := true.\nPostcondition: (A:int)(B:int) := (m = A \/ m = B) /\ m >= A /\ m >= B.",
+
+benchmarks\cases.py:74
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\benchmarks\cases.py:74: DeprecationWarning: invalid escape sequence '\/'
+    spec="Frame: y.\nPrecondition: (A:int) := true.\nPostcondition: (A:int) := (y = A \/ y = -A) /\ y >= 0.",
+
+benchmarks\cases.py:100
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\benchmarks\cases.py:100: DeprecationWarning: invalid escape sequence '\ '
+    spec="Frame: x.\nPrecondition: (N:float) := N >= 1.\nPostcondition: (N:float) := x * x <= N /\ (x + 1) * (x + 1) > N.",
+
+benchmarks\cases.py:109
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\benchmarks\cases.py:109: DeprecationWarning: invalid escape sequence '\ '
+    spec="Frame: i.\nPrecondition: (N:int)(i:int) := N >= 0 /\ i = 0.\nPostcondition: (N:int)(i:int) := i >= N.",
+
+FormalLLM\execution\testcase.py:4
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\FormalLLM\execution\testcase.py:4: PytestCollectionWarning: cannot collect test class 'TestCase' because it has a __init__ constructor (from: FormalLLM/tests/test_execution.py)
+    @dataclass
+
+FormalLLM\tests\test_fallback.py:119
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\FormalLLM\tests\test_fallback.py:119: DeprecationWarning: invalid escape sequence '\ '
+    "Precondition: (N:float)(e:float) := N >= 0 /\ e > 0.\n"
+
+FormalLLM\tests\test_fallback.py:120
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\FormalLLM\tests\test_fallback.py:120: DeprecationWarning: invalid escape sequence '\ '
+    "Postcondition: (N:float)(e:float) := x*x <= N /\ N < (x+e)*(x+e)."
+
+FormalLLM\tests\test_fallback.py:157
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\FormalLLM\tests\test_fallback.py:157: DeprecationWarning: invalid escape sequence '\ '
+    "Precondition: (N:float)(e:float) := N >= 0 /\ e > 0.\n"
+
+FormalLLM\tests\test_fallback.py:158
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\FormalLLM\tests\test_fallback.py:158: DeprecationWarning: invalid escape sequence '\ '
+    "Postcondition: (N:float)(e:float) := x*x <= N /\ N < (x+e)*(x+e)."
+
+FormalLLM\tests\test_value_kinds.py:10
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\FormalLLM\tests\test_value_kinds.py:10: DeprecationWarning: invalid escape sequence '\ '
+    "Postcondition: (n:int) := (b = true /\ n >= 0) \/ (b = false /\ n < 0).")
+
+FormalLLM\tests\test_value_kinds.py:12
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\FormalLLM\tests\test_value_kinds.py:12: DeprecationWarning: invalid escape sequence '\/'
+    "Postcondition: (n:int)(f:float) := x >= n \/ y = f.")
+
+FormalLLM\tests\test_z3_semantics.py:42
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_v9\FormalLLM\tests\test_z3_semantics.py:42: DeprecationWarning: invalid escape sequence '\/'
+    "Postcondition: (l:array int)(n:int) := forall (k:int) k < 0 \/ k + 1 >= n \/ l[k] <= l[k + 1].")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED FormalLLM/tests/test_assist_pairs.py::test_the_pair_search_does_not_depend_on_the_wall_clock
+FAILED FormalLLM/tests/test_he_oracle.py::test_three_derivations_are_proved_correct_but_too_slow_for_the_largest_inputs[HumanEval/13]
+2 failed, 432 passed, 15 warnings in 295.37s (0:04:55)

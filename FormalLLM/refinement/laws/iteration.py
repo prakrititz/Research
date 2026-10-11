@@ -25,6 +25,63 @@ def to_previous_state(node: ASTNode) -> ASTNode:
         return VariablePreviousState(node.name)
     return walk.map_children(node, to_previous_state)
 
+def _names_in(node: ASTNode) -> set:
+    """Every name ``node`` mentions, previous-state twins spelt as ``x0``."""
+    names = set()
+    if isinstance(node, (Variable, Const)):
+        names.add(node.name)
+    elif isinstance(node, VariablePreviousState):
+        names.add(f"{node.name}0")
+    for child in walk.children(node):
+        names |= _names_in(child)
+    return names
+
+
+def fresh_variant_start(spec: Spec, variant_expr: ASTNode) -> Variable:
+    """The paper's ``V0``: a named constant for the variant's value when the body starts.
+
+    The body used to say ``V = V0'`` where ``V0'`` was the variant with every
+    variable renamed to its previous-state twin (``N - x*x`` became
+    ``N0 - x0*x0``). That is logically equivalent, but it prints as copies of
+    constants that never change, and a model that read ``V0`` in the displayed
+    specification and wrote it into its own formula referred to something the
+    engine did not know. A real named constant is what Lemma 2.7 uses, reads
+    naturally, and is the same symbol in the prompt and in the prover.
+
+    The name is fresh: ``V0``, or ``V1`` ... if the specification already uses it
+    (for example in an enclosing loop's body).
+    """
+    taken = (_names_in(spec.precondition.expr) | _names_in(spec.postcondition.expr)
+             | _names_in(variant_expr))
+    n = 0
+    while f"V{n}" in taken:
+        n += 1
+    return Variable(f"V{n}")
+
+
+def measure_bounded_while_running(spec: Spec, invariant_expr: ASTNode, guard_expr: ASTNode,
+                                  variant_expr: ASTNode) -> ProofObligation:
+    """``I ∧ G ⇒ 0 ≤ V``: the relaxed rule's missing half for an integer measure.
+
+    The relaxed body postcondition only asks the measure to decrease (``V < V0``, the paper's
+    Lemma 6.7 as implemented). Over the natural numbers that is enough; over the integers a measure can
+    decrease for ever. Measured on the HumanEval pilot (v8, relaxed rule): ``gcd`` was derived with the
+    loop ``while g is not a common divisor: g := g + 1`` and the measure ``a - g``, which decreases on every
+    iteration -- and the program never stops when ``a`` does not divide ``b``. Requiring the measure to be
+    non-negative *while the loop runs* closes that hole and still accepts the paper's own measure
+    ``N - (x+e)²``, which only becomes negative after the last iteration (when the guard is already false).
+    """
+    from FormalLLM.lspec.ast import Number
+    return ProofObligation(
+        assumptions=[copy.deepcopy(invariant_expr), copy.deepcopy(guard_expr)],
+        goal=BinaryOp(Number("0"), '<=', copy.deepcopy(variant_expr)),
+        params=obligation_params(spec),
+        description="termination: while the loop runs, the measure is never negative: I /\\ G => 0 <= V",
+        advice=("Choose a measure that cannot become negative while the guard holds (for example the "
+                "distance to the bound the loop approaches), or add to the invariant a fact that bounds it."),
+    )
+
+
 class IterationLaw(RefinementLaw):
     """Iteration with an LLM-supplied invariant (paper Table 5, Lemma 6.6).
 
@@ -71,10 +128,13 @@ class IterationLaw(RefinementLaw):
             goal=copy.deepcopy(spec.postcondition.expr),
             params=obligation_params(spec),
             description="on exit the precondition (invariant) and the negated guard must imply the postcondition: P /\\ ~G => Q",
+            advice=("Change the guard G so that the state where the loop stops (the precondition and "
+                    "not G) satisfies the postcondition for these values, or use initialised_iteration "
+                    "with a stronger invariant."),
         )
         
         # V0 is the variant evaluated in the pre-state of the body
-        v0_expr = to_previous_state(variant_expr)
+        v0_expr = fresh_variant_start(spec, variant_expr)
         
         # Sub-spec precondition: I ∧ G ∧ (V = V0)
         pre_expr = BinaryOp(copy.deepcopy(invariant_expr), '/\\', copy.deepcopy(guard_expr))
@@ -89,23 +149,25 @@ class IterationLaw(RefinementLaw):
         strict = os.environ.get("FORMALLLM_STRICT_VARIANT", "1") == "1"
         v_decreases = BinaryOp(copy.deepcopy(variant_expr), '<', v0_expr)
         
+        obligations = [obligation]
         if strict:
             zero = Number("0")
             v_lower_bound = BinaryOp(zero, '<=', copy.deepcopy(variant_expr))
             variant_cond = BinaryOp(v_lower_bound, '/\\', v_decreases)
         else:
             variant_cond = v_decreases
-            
+            obligations.append(measure_bounded_while_running(spec, invariant_expr, guard_expr, variant_expr))
+
         post_expr = BinaryOp(copy.deepcopy(invariant_expr), '/\\', variant_cond)
-        
-        body_spec = _derive(spec, 
+
+        body_spec = _derive(spec,
             precondition=Definition(None, copy.deepcopy(spec.precondition.params), pre_expr),
             postcondition=Definition(None, copy.deepcopy(spec.postcondition.params), post_expr)
         )
-        
+
         return RefinementResult(
             sub_specs=[body_spec],
-            obligations=[obligation],
+            obligations=obligations,
             roles=["body"],
         )
 

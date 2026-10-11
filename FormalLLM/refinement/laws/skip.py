@@ -19,6 +19,7 @@ class SkipLaw(RefinementLaw):
             goal=spec.postcondition.expr,
             params=obligation_params(spec),
             description="skip is only valid when the precondition already implies the postcondition: P => Q",
+            advice="skip is not valid for these values; choose a different law.",
         )
         
         program = Skip()

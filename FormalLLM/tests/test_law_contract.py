@@ -107,12 +107,25 @@ def test_iteration_body_pins_the_variant_and_requires_a_decrease():
     result = IterationLaw().apply(spec, {"guard": guard, "variant": variant})
     body = result.by_role()["body"]
 
-    v0 = BinaryOp(VariablePreviousState("N"), "-", VariablePreviousState("i"))
+    # V0 is a named constant (the paper's symbol), not a copy of the variant
+    # built from previous-state variables: what a model reads in the prompt is
+    # then the very symbol the prover uses.
+    v0 = Const("V0")
     assert to_string(BinaryOp(variant, "=", v0)) in to_string(body.precondition.expr)
-    
+
     # Postcondition requires 0 <= V and V < V0
     assert "0 <= " in to_string(body.postcondition.expr)
     assert to_string(BinaryOp(variant, "<", v0)) in to_string(body.postcondition.expr)
+
+
+def test_variant_start_name_is_fresh():
+    """An enclosing loop's V0 must not be captured by an inner loop's."""
+    spec = parse_spec("Precondition: (N:int) := N >= 0 /\\ V0 = 3.\n"
+                      "Postcondition: (N:int) := i >= N.")
+    guard = BinaryOp(Const("i"), "<", Const("N"))
+    variant = BinaryOp(Const("N"), "-", Const("i"))
+    body = IterationLaw().apply(spec, {"guard": guard, "variant": variant}).by_role()["body"]
+    assert "V1" in to_string(body.postcondition.expr)
 
 
 def test_initialised_iteration_generates_init_and_body_roles():
