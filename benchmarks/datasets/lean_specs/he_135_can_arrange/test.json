@@ -1,0 +1,145 @@
+[
+    {
+        "input": {
+            "arr": "[1, 2, 4, 3, 5]"
+        },
+        "expected": 3,
+        "unexpected": [
+            4,
+            2,
+            9
+        ]
+    },
+    {
+        "input": {
+            "arr": "[1, 2, 4, 5]"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "arr": "[1, 4, 2, 5, 6, 7, 8, 9, 10]"
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "arr": "[4, 8, 5, 7, 3]"
+        },
+        "expected": 4,
+        "unexpected": [
+            5,
+            3,
+            11
+        ]
+    },
+    {
+        "input": {
+            "arr": "[]"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "arr": "[1]"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "arr": "[4, 3, 2, 5]"
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "arr": "[19, 3, 13, 2, 1]"
+        },
+        "expected": 4,
+        "unexpected": [
+            5,
+            3,
+            11
+        ]
+    },
+    {
+        "input": {
+            "arr": "[19, 4, 6, 2]"
+        },
+        "expected": 3,
+        "unexpected": [
+            4,
+            2,
+            9
+        ]
+    },
+    {
+        "input": {
+            "arr": "[3, 2, 4, 7, 9, 8, 10]"
+        },
+        "expected": 5,
+        "unexpected": [
+            6,
+            4,
+            13
+        ]
+    },
+    {
+        "input": {
+            "arr": "[16, 2, 3, 10, 9, 8, 6]"
+        },
+        "expected": 6,
+        "unexpected": [
+            7,
+            5,
+            15
+        ]
+    },
+    {
+        "input": {
+            "arr": "[2, 10, 9, 7, 6, 5]"
+        },
+        "expected": 5,
+        "unexpected": [
+            6,
+            4,
+            13
+        ]
+    },
+    {
+        "input": {
+            "arr": "[0, 1, 8, 2, 3, 7]"
+        },
+        "expected": 3,
+        "unexpected": [
+            4,
+            2,
+            9
+        ]
+    }
+]

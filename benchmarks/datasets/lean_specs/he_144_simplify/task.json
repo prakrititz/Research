@@ -1,0 +1,35 @@
+{
+    "id": "he_144_simplify",
+    "signature": {
+        "name": "simplify",
+        "parameters": [
+            {
+                "param_name": "x",
+                "param_type": "String"
+            },
+            {
+                "param_name": "n",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "wellFormedFrac x ∧ wellFormedFrac n",
+        "postconditions": "result = true ↔ (numOf x * numOf n) % (denOf x * denOf n) = 0"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/144"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -10,10 +10,41 @@
 | 1. Fast Lean (persistent process) | **done (prototype)** | 12.6 s once, then about 0.2 s per obligation (was about 12 s each) |
 | 2. Lean against stored obligations | **done: gate passed** | Lean proves 176 of 180 distinct (97.8%); 1,315 of 1,319 weighted (99.7%); median 0.06 s, no timeouts |
 | 3. Replace Z3's jobs | **in progress** | counter-examples: small-input search 24%, Lean's `plausible` 29% of Z3's refutations (equality-heavy arithmetic); on the Lean engine's own wrong steps `plausible` alone gives a counter-example for 44% of rejected mutants, running the loop on random inputs raises it to 76%, and the unsolved goal state accompanies every rejection |
-| 4. Specs in Lean | **done (library)** | 42 problems (37 HumanEval, 5 classic incl. the paper's square root) specified in Lean, validated on 551 tests and 1,201 wrong outputs (all accepted/rejected correctly); doc 24 |
+| 4. Specs in Lean | **done: all 164 HumanEval problems + 5 classics** | 169 specifications in Lean, validated on 2,332 tests: reference passes 2,332/2,332, postcondition accepts 2,332/2,332 expected outputs, rejects 5,651/5,657 wrong outputs (the 6 are reorderings of one dictionary, `he_111`, whose specification accepts any order on purpose); doc 24 |
 | 5. Verina baseline | **in progress** | harness validated on ground truth: 169 of 189 compile, 146 fully scored; model run blocked (server); repo and dataset obtained; 189 tasks confirmed; toolchain mismatch found (Verina: Lean 4.18, ours: 4.34.1); compile check done: 154 of 189 compile on 4.34.1 as shipped, 169 of 189 with proofs ignored |
 | 6. Refinement on Verina | **engine built; opens 188 of 189 goals; no model run yet** | Lean-native engine (doc 23): hand-written derivations certified for 36 of 36 library tasks and 24 of 25 Verina tasks (not written by us); model-driven agent built and tested with a scripted model; waiting for a model run |
 | 7. Harder families | not started | — |
+
+## 2026-10-11 — The Lean specification library now covers all 164 HumanEval problems (no model run)
+
+User instruction: "continue in Lean, for HumanEval for now keep doing that". The snapshot already held 143 specifications (the figure of 42 in the entry below is the state of 2026-10-08; `he_lean/` had grown to problems 0-132 and 138-139, 150, 152, 157 since). Written now: the 26 that were missing, HumanEval **133-137, 140-149, 151, 153-156, 158-163** (`benchmarks/datasets/he_lean/p120_139.py` for 133-137, new `p140_163.py` for the rest).
+
+| | Result |
+|---|---|
+| Specifications | **169** (164 HumanEval + 5 classic), all compile |
+| Tests | 2,332 (HumanEval's inputs that fit the size limits plus a spread of EvalPlus') |
+| Reference solution passes | **2,332 / 2,332** |
+| Postcondition accepts the expected output | **2,332 / 2,332** |
+| Wrong outputs rejected | **5,651 / 5,657**; the 6 are `he_111` (histogram) outputs that are the same dictionary in another order, which its specification accepts on purpose (`permissive`) |
+| Not decidable | 0 |
+
+Run: `python benchmarks/datasets/lean_specs.py build --he 133 163`, then `validate --he 133 163` (Lean 4.34.1, Mathlib v4.34.1, 30 s to import Mathlib once). Setup on this machine (macOS arm64; the earlier work was on Windows): `elan` in `~/.formalllm/elan`, a Lake project requiring `mathlib` at tag `v4.34.1` in `~/.formalllm/lean-env-parent/lean-env` (`lake exe cache get`, no compilation), the REPL (`leanprover-community/repl` v4.34.0 with its toolchain set to 4.34.1) in `~/.formalllm/repl`; `python -m pip install evalplus`, and `SSL_CERT_FILE=$(python3 -m certifi)` because the python.org build of Python 3.12 has no system certificates.
+
+How the harder ones are stated (all validated on the data, none by hand):
+
+* **`he_160` `do_algebra`** (operator precedence): a recursive definition `evalOps` that reduces the highest-precedence operator first (the rightmost of the `**`, else the leftmost) with the length of the operator list as fuel. Test inputs are restricted to non-negative operands, no division by zero and no intermediate value above 1e15, so that `//` and `**` agree with Python.
+* **`he_162` `string_to_md5`**: MD5 (RFC 1321) written out in Lean on `UInt32` (the 64 constants are `floor(2^32 * |sin(i+1)|)`); the 12 tests include `"Hello world"` and every digest equals Python's `hashlib`. It is a specification by definition; no shorter statement of MD5 exists.
+* **`he_156` `int_to_mini_roman`**: greedy decomposition over the table `m cm d cd c xc l xl x ix v iv i`; the reference uses the digit-table form of the canonical solution.
+* **`he_145` `order_by_points`**: stability stated without positions: for every weight present, the elements of that weight appear in the same order in the result as in the input, plus equal length and non-decreasing weights.
+* **`he_140` `fix_spaces`**: a run of one or two spaces becomes underscores, a longer run one `-`; `fixSpec` with fuel.
+* **`he_137` `compare_one`, `he_151` `double_the_difference`**: mixed Python types become sum types (`ℚ ⊕ String`, `Int ⊕ ℚ`): `3.0` is told apart from `3`, which matters because the canonical solution ignores `3.0` (`str(3.0)` has a dot).
+* **`he_147` `get_max_triples`**: the specification counts the triples; the reference uses the canonical solution's counting formula.
+
+Three mistakes the validator caught while writing them (all fixed): `he_144` needed its precondition `@[reducible]` so that `native_decide` finds a `Decidable` instance; `he_154` used `List.isInfixOf`, which does not exist in this Lean (`<:+:` and its `Decidable` instance do); `he_156` used a local named `c` and `c[i]!` is Mathlib's *cycle notation* for permutations (`HAppend String (Equiv.Perm ℕ)`).
+
+`FormalLLM/tests/test_lean_specs.py`: 190 passed (its stored-validation test now allows a `permissive` specification to accept a reordered dictionary).
+
+**Not done:** hand-written derivations for the 26 new specifications (`lean_oracle.py` has 36); no model has been run on any of them; the old `validation.json` rows for 0-132 are the ones produced on the Windows laptop (not re-run here).
 
 ## 2026-10-08 — The Lean-native core, a 37-problem Lean specification library, and what they measured (no test set run)
 

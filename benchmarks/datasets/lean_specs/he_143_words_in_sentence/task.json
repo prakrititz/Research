@@ -1,0 +1,32 @@
+{
+    "id": "he_143_words_in_sentence",
+    "signature": {
+        "name": "wordsInSentence",
+        "parameters": [
+            {
+                "param_name": "sentence",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = \" \".intercalate ((sentence.splitOn \" \").filter (fun w => decide (Nat.Prime w.length)))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/143"
+        },
+        "tags": [
+            "string",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

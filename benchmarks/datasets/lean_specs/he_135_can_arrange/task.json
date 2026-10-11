@@ -1,0 +1,31 @@
+{
+    "id": "he_135_can_arrange",
+    "signature": {
+        "name": "canArrange",
+        "parameters": [
+            {
+                "param_name": "arr",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "arr.Nodup",
+        "postconditions": "(result = -1 ∧ ∀ i, i < arr.length → 1 ≤ i → arr[i - 1]! ≤ arr[i]!) ∨\n  (∃ i, i < arr.length ∧ 1 ≤ i ∧ result = (i : Int) ∧ arr[i]! < arr[i - 1]! ∧ ∀ j, j < arr.length → i < j → arr[j - 1]! ≤ arr[j]!)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/135"
+        },
+        "tags": [
+            "list",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

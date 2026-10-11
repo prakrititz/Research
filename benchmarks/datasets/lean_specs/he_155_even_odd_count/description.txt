@@ -1,0 +1,1 @@
+Given an integer, return a pair with the number of even and odd digits respectively (of its absolute value).

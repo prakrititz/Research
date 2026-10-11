@@ -1,0 +1,32 @@
+{
+    "id": "he_136_largest_smallest_integers",
+    "signature": {
+        "name": "largestSmallestIntegers",
+        "parameters": [
+            {
+                "param_name": "lst",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Option Int × Option Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "((result.1 = none ∧ ∀ x ∈ lst, x ≥ 0) ∨ (∃ a ∈ lst, result.1 = some a ∧ a < 0 ∧ ∀ x ∈ lst, x < 0 → x ≤ a)) ∧\n  ((result.2 = none ∧ ∀ x ∈ lst, x ≤ 0) ∨ (∃ b ∈ lst, result.2 = some b ∧ 0 < b ∧ ∀ x ∈ lst, 0 < x → b ≤ x))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/136"
+        },
+        "tags": [
+            "list",
+            "option",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

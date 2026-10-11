@@ -1,0 +1,162 @@
+[
+    {
+        "input": {
+            "x": "\"1/5\"",
+            "n": "\"5/1\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "\"1/6\"",
+            "n": "\"2/1\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "\"5/1\"",
+            "n": "\"3/1\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "\"7/10\"",
+            "n": "\"10/2\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "\"2/10\"",
+            "n": "\"50/10\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "\"7/2\"",
+            "n": "\"4/2\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "\"11/6\"",
+            "n": "\"6/1\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "\"2/3\"",
+            "n": "\"5/2\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "\"5/2\"",
+            "n": "\"3/5\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "\"2/4\"",
+            "n": "\"8/4\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "\"2/4\"",
+            "n": "\"4/2\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "\"1/5\"",
+            "n": "\"1/5\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "\"3/4\"",
+            "n": "\"4/3\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "\"5597/275775\"",
+            "n": "\"380/241\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "\"9231/739\"",
+            "n": "\"9231/739\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "\"9999/0100\"",
+            "n": "\"9999/0100\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    }
+]

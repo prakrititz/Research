@@ -1,0 +1,36 @@
+{
+    "id": "he_153_strongest_extension",
+    "signature": {
+        "name": "strongestExtension",
+        "parameters": [
+            {
+                "param_name": "class_name",
+                "param_type": "String"
+            },
+            {
+                "param_name": "extensions",
+                "param_type": "List String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "extensions ≠ []",
+        "postconditions": "∃ i, i < extensions.length ∧ result = class_name ++ \".\" ++ extensions[i]! ∧\n  (∀ j, j < extensions.length → strength extensions[j]! ≤ strength extensions[i]!) ∧ ∀ j, j < i → strength extensions[j]! < strength extensions[i]!"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/153"
+        },
+        "tags": [
+            "string",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

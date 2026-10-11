@@ -2,6 +2,10 @@
 
 Newest first. One entry per working session, so you can see what changed and why.
 
+## 2026-10-11 — Lean specifications for all of HumanEval (no model run)
+
+**You said** "continue in Lean, for HumanEval for now keep doing that". The library had 138 HumanEval specifications; the 26 missing (133-137, 140-149, 151, 153-156, 158-163) are written and validated: **169 specifications, 2,332 tests, reference 2,332/2,332, specification accepts 2,332/2,332, rejects 5,651/5,657** (the 6 are one deliberately permissive dictionary specification). Lean 4.34.1 + Mathlib were installed on this Mac for the check. Details: `22` (entry 2026-10-11). Next: derivations for the new specifications, then a first model run on the Lean engine.
+
 ## 2026-10-08 — The Lean core is built: set-up, 42 specifications in Lean, hand derivations; no model run
 
 **You said** "you need to work now, maybe not directly run testset but the setup and initial things: more specs, better structure, incorporate Lean". The plan after the 6 October meeting (Lean only, Verina, per-problem scoring) was blocked on a design question; this session answered it with working code and measured it without a language model. Details with denominators: `22` (entry 2026-10-08); design: `23`; the specification library: `24`; meeting preparation: `25`.

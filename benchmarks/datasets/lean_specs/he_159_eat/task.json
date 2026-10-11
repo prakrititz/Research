@@ -1,0 +1,39 @@
+{
+    "id": "he_159_eat",
+    "signature": {
+        "name": "eat",
+        "parameters": [
+            {
+                "param_name": "number",
+                "param_type": "Nat"
+            },
+            {
+                "param_name": "need",
+                "param_type": "Nat"
+            },
+            {
+                "param_name": "remaining",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "List Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "number ≤ 1000 ∧ need ≤ 1000 ∧ remaining ≤ 1000",
+        "postconditions": "result.length = 2 ∧ result[0]! = number + min need remaining ∧ result[1]! = remaining - min need remaining"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/159"
+        },
+        "tags": [
+            "scalar",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,32 @@
+{
+    "id": "he_140_fix_spaces",
+    "signature": {
+        "name": "fixSpaces",
+        "parameters": [
+            {
+                "param_name": "text",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = String.mk (fixSpec text.length text.toList)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/140"
+        },
+        "tags": [
+            "string",
+            "loop",
+            "recursive-spec"
+        ],
+        "note": "a maximal run of spaces of length 1 or 2 becomes that many underscores, a longer one a single '-'"
+    },
+    "test_file": "./test.json"
+}

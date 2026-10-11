@@ -1,0 +1,38 @@
+{
+    "id": "he_137_compare_one",
+    "signature": {
+        "name": "compareOne",
+        "parameters": [
+            {
+                "param_name": "a",
+                "param_type": "ℚ ⊕ String"
+            },
+            {
+                "param_name": "b",
+                "param_type": "ℚ ⊕ String"
+            }
+        ],
+        "return_type": "Option (ℚ ⊕ String)"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "(valQ a = valQ b → result = none) ∧ (valQ b < valQ a → result = some a) ∧ (valQ a < valQ b → result = some b)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/137"
+        },
+        "tags": [
+            "scalar",
+            "string",
+            "sum",
+            "option",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

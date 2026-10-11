@@ -1,0 +1,178 @@
+[
+    {
+        "input": {
+            "number": "19"
+        },
+        "expected": "xix",
+        "unexpected": [
+            "xixx",
+            "xi",
+            "xixyy"
+        ]
+    },
+    {
+        "input": {
+            "number": "152"
+        },
+        "expected": "clii",
+        "unexpected": [
+            "cliix",
+            "cli",
+            "iilc"
+        ]
+    },
+    {
+        "input": {
+            "number": "251"
+        },
+        "expected": "ccli",
+        "unexpected": [
+            "cclix",
+            "ccl",
+            "ilcc"
+        ]
+    },
+    {
+        "input": {
+            "number": "426"
+        },
+        "expected": "cdxxvi",
+        "unexpected": [
+            "cdxxvix",
+            "cdxxv",
+            "ivxxdc"
+        ]
+    },
+    {
+        "input": {
+            "number": "500"
+        },
+        "expected": "d",
+        "unexpected": [
+            "dx",
+            "",
+            "dyy"
+        ]
+    },
+    {
+        "input": {
+            "number": "1"
+        },
+        "expected": "i",
+        "unexpected": [
+            "ix",
+            "",
+            "iyy"
+        ]
+    },
+    {
+        "input": {
+            "number": "4"
+        },
+        "expected": "iv",
+        "unexpected": [
+            "ivx",
+            "i",
+            "vi"
+        ]
+    },
+    {
+        "input": {
+            "number": "43"
+        },
+        "expected": "xliii",
+        "unexpected": [
+            "xliiix",
+            "xlii",
+            "iiilx"
+        ]
+    },
+    {
+        "input": {
+            "number": "90"
+        },
+        "expected": "xc",
+        "unexpected": [
+            "xcx",
+            "x",
+            "cx"
+        ]
+    },
+    {
+        "input": {
+            "number": "94"
+        },
+        "expected": "xciv",
+        "unexpected": [
+            "xcivx",
+            "xci",
+            "vicx"
+        ]
+    },
+    {
+        "input": {
+            "number": "532"
+        },
+        "expected": "dxxxii",
+        "unexpected": [
+            "dxxxiix",
+            "dxxxi",
+            "iixxxd"
+        ]
+    },
+    {
+        "input": {
+            "number": "900"
+        },
+        "expected": "cm",
+        "unexpected": [
+            "cmx",
+            "c",
+            "mc"
+        ]
+    },
+    {
+        "input": {
+            "number": "994"
+        },
+        "expected": "cmxciv",
+        "unexpected": [
+            "cmxcivx",
+            "cmxci",
+            "vicxmc"
+        ]
+    },
+    {
+        "input": {
+            "number": "1000"
+        },
+        "expected": "m",
+        "unexpected": [
+            "mx",
+            "",
+            "myy"
+        ]
+    },
+    {
+        "input": {
+            "number": "111"
+        },
+        "expected": "cxi",
+        "unexpected": [
+            "cxix",
+            "cx",
+            "ixc"
+        ]
+    },
+    {
+        "input": {
+            "number": "41"
+        },
+        "expected": "xli",
+        "unexpected": [
+            "xlix",
+            "xl",
+            "ilx"
+        ]
+    }
+]

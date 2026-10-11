@@ -1,0 +1,32 @@
+{
+    "id": "he_162_string_to_md5",
+    "signature": {
+        "name": "stringToMd5",
+        "parameters": [
+            {
+                "param_name": "text",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Option String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "(text = \"\" → result = none) ∧ (text ≠ \"\" → result = some (md5Hex text))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/162"
+        },
+        "tags": [
+            "string",
+            "option",
+            "recursive-spec"
+        ],
+        "note": "MD5 has no description shorter than its definition; md5Hex is RFC 1321 and is checked on every test against Python's hashlib output"
+    },
+    "test_file": "./test.json"
+}

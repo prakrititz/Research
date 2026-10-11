@@ -1,0 +1,178 @@
+[
+    {
+        "input": {
+            "words": "[\"name\", \"of\", \"string\"]"
+        },
+        "expected": "string",
+        "unexpected": [
+            "stringx",
+            "strin",
+            "gnirts"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"name\", \"enam\", \"game\"]"
+        },
+        "expected": "enam",
+        "unexpected": [
+            "enamx",
+            "ena",
+            "mane"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"aaaaaaa\", \"bb\", \"cc\"]"
+        },
+        "expected": "aaaaaaa",
+        "unexpected": [
+            "aaaaaaax",
+            "aaaaaa",
+            "aaaaaaayy"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"abc\", \"cba\"]"
+        },
+        "expected": "abc",
+        "unexpected": [
+            "abcx",
+            "ab",
+            "cba"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"play\", \"this\", \"game\", \"of\", \"footbott\"]"
+        },
+        "expected": "footbott",
+        "unexpected": [
+            "footbottx",
+            "footbot",
+            "ttobtoof"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"we\", \"are\", \"gonna\", \"rock\"]"
+        },
+        "expected": "gonna",
+        "unexpected": [
+            "gonnax",
+            "gonn",
+            "annog"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"we\", \"are\", \"a\", \"mad\", \"nation\"]"
+        },
+        "expected": "nation",
+        "unexpected": [
+            "nationx",
+            "natio",
+            "noitan"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"this\", \"is\", \"a\", \"prrk\"]"
+        },
+        "expected": "this",
+        "unexpected": [
+            "thisx",
+            "thi",
+            "siht"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"b\"]"
+        },
+        "expected": "b",
+        "unexpected": [
+            "bx",
+            "",
+            "byy"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"play\", \"play\", \"play\"]"
+        },
+        "expected": "play",
+        "unexpected": [
+            "playx",
+            "pla",
+            "yalp"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"abacbdce\", \"edcbacba\", \"dbcaebda\"]"
+        },
+        "expected": "abacbdce",
+        "unexpected": [
+            "abacbdcex",
+            "abacbdc",
+            "ecdbcaba"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"abc\", \"bcd\", \"dbcaebda\", \"bbcd\", \"efg\", \"bbcd\"]"
+        },
+        "expected": "dbcaebda",
+        "unexpected": [
+            "dbcaebdax",
+            "dbcaebd",
+            "adbeacbd"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"orange\", \"grape\", \"banana\", \"\", \"pear\"]"
+        },
+        "expected": "orange",
+        "unexpected": [
+            "orangex",
+            "orang",
+            "egnaro"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"kiwi\", \"tac\", \"act\", \"r\", \"tac\"]"
+        },
+        "expected": "act",
+        "unexpected": [
+            "actx",
+            "ac",
+            "tca"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"xnyx\", \"hxfigy\", \"xyx\", \"zyx\", \"zyx\", \"xnyx\"]"
+        },
+        "expected": "hxfigy",
+        "unexpected": [
+            "hxfigyx",
+            "hxfig",
+            "ygifxh"
+        ]
+    },
+    {
+        "input": {
+            "words": "[\"yx\", \"wyx\", \"yzyx\"]"
+        },
+        "expected": "wyx",
+        "unexpected": [
+            "wyxx",
+            "wy",
+            "xyw"
+        ]
+    }
+]

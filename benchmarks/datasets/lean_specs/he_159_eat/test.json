@@ -1,0 +1,184 @@
+[
+    {
+        "input": {
+            "number": "5",
+            "need": "6",
+            "remaining": "10"
+        },
+        "expected": "[11, 4]",
+        "unexpected": [
+            "[11]",
+            "[11, 4, 7]",
+            "[4, 11]"
+        ]
+    },
+    {
+        "input": {
+            "number": "4",
+            "need": "8",
+            "remaining": "9"
+        },
+        "expected": "[12, 1]",
+        "unexpected": [
+            "[12]",
+            "[12, 1, 7]",
+            "[1, 12]"
+        ]
+    },
+    {
+        "input": {
+            "number": "1",
+            "need": "10",
+            "remaining": "10"
+        },
+        "expected": "[11, 0]",
+        "unexpected": [
+            "[11]",
+            "[11, 0, 7]",
+            "[0, 11]"
+        ]
+    },
+    {
+        "input": {
+            "number": "2",
+            "need": "11",
+            "remaining": "5"
+        },
+        "expected": "[7, 0]",
+        "unexpected": [
+            "[7]",
+            "[7, 0, 7]",
+            "[0, 7]"
+        ]
+    },
+    {
+        "input": {
+            "number": "4",
+            "need": "5",
+            "remaining": "7"
+        },
+        "expected": "[9, 2]",
+        "unexpected": [
+            "[9]",
+            "[9, 2, 7]",
+            "[2, 9]"
+        ]
+    },
+    {
+        "input": {
+            "number": "4",
+            "need": "5",
+            "remaining": "1"
+        },
+        "expected": "[5, 0]",
+        "unexpected": [
+            "[5]",
+            "[5, 0, 7]",
+            "[0, 5]"
+        ]
+    },
+    {
+        "input": {
+            "number": "0",
+            "need": "0",
+            "remaining": "0"
+        },
+        "expected": "[0, 0]",
+        "unexpected": [
+            "[0]",
+            "[0, 0, 7]",
+            "[0, 0, 0, 0, 7]"
+        ]
+    },
+    {
+        "input": {
+            "number": "599",
+            "need": "501",
+            "remaining": "501"
+        },
+        "expected": "[1100, 0]",
+        "unexpected": [
+            "[1100]",
+            "[1100, 0, 7]",
+            "[0, 1100]"
+        ]
+    },
+    {
+        "input": {
+            "number": "0",
+            "need": "600",
+            "remaining": "800"
+        },
+        "expected": "[600, 200]",
+        "unexpected": [
+            "[600]",
+            "[600, 200, 7]",
+            "[200, 600]"
+        ]
+    },
+    {
+        "input": {
+            "number": "747",
+            "need": "499",
+            "remaining": "499"
+        },
+        "expected": "[1246, 0]",
+        "unexpected": [
+            "[1246]",
+            "[1246, 0, 7]",
+            "[0, 1246]"
+        ]
+    },
+    {
+        "input": {
+            "number": "799",
+            "need": "747",
+            "remaining": "799"
+        },
+        "expected": "[1546, 52]",
+        "unexpected": [
+            "[1546]",
+            "[1546, 52, 7]",
+            "[52, 1546]"
+        ]
+    },
+    {
+        "input": {
+            "number": "250",
+            "need": "750",
+            "remaining": "250"
+        },
+        "expected": "[500, 0]",
+        "unexpected": [
+            "[500]",
+            "[500, 0, 7]",
+            "[0, 500]"
+        ]
+    },
+    {
+        "input": {
+            "number": "250",
+            "need": "500",
+            "remaining": "499"
+        },
+        "expected": "[749, 0]",
+        "unexpected": [
+            "[749]",
+            "[749, 0, 7]",
+            "[0, 749]"
+        ]
+    },
+    {
+        "input": {
+            "number": "497",
+            "need": "504",
+            "remaining": "298"
+        },
+        "expected": "[795, 0]",
+        "unexpected": [
+            "[795]",
+            "[795, 0, 7]",
+            "[0, 795]"
+        ]
+    }
+]

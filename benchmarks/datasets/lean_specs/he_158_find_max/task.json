@@ -1,0 +1,32 @@
+{
+    "id": "he_158_find_max",
+    "signature": {
+        "name": "findMax",
+        "parameters": [
+            {
+                "param_name": "words",
+                "param_type": "List String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "(words = [] ∧ result = \"\") ∨ (result ∈ words ∧ (∀ w ∈ words, uniqChars w ≤ uniqChars result) ∧ ∀ w ∈ words, uniqChars w = uniqChars result → ¬ (w < result))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/158"
+        },
+        "tags": [
+            "string",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

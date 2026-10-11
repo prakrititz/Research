@@ -1,0 +1,178 @@
+[
+    {
+        "input": {
+            "s": "\"AsDf\""
+        },
+        "expected": "aSdF",
+        "unexpected": [
+            "aSdFx",
+            "aSd",
+            "FdSa"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"1234\""
+        },
+        "expected": "4321",
+        "unexpected": [
+            "4321x",
+            "432",
+            "1234"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"ab\""
+        },
+        "expected": "AB",
+        "unexpected": [
+            "ABx",
+            "A",
+            "BA"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"#a@C\""
+        },
+        "expected": "#A@c",
+        "unexpected": [
+            "#A@cx",
+            "#A@",
+            "c@A#"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"#AsdfW^45\""
+        },
+        "expected": "#aSDFw^45",
+        "unexpected": [
+            "#aSDFw^45x",
+            "#aSDFw^4",
+            "54^wFDSa#"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"#6@2\""
+        },
+        "expected": "2@6#",
+        "unexpected": [
+            "2@6#x",
+            "2@6",
+            "#6@2"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"#$a^D\""
+        },
+        "expected": "#$A^d",
+        "unexpected": [
+            "#$A^dx",
+            "#$A^",
+            "d^A$#"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"#ccc\""
+        },
+        "expected": "#CCC",
+        "unexpected": [
+            "#CCCx",
+            "#CC",
+            "CCC#"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"aaaaBBccDDeeABCDEFGBBccDDee\""
+        },
+        "expected": "AAAAbbCCddEEabcdefgbbCCddEE",
+        "unexpected": [
+            "AAAAbbCCddEEabcdefgbbCCddEEx",
+            "AAAAbbCCddEEabcdefgbbCCddE",
+            "EEddCCbbgfedcbaEEddCCbbAAAA"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"np\""
+        },
+        "expected": "NP",
+        "unexpected": [
+            "NPx",
+            "N",
+            "PN"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"Y!!!!!1234!!!3!arraY\""
+        },
+        "expected": "y!!!!!1234!!!3!ARRAy",
+        "unexpected": [
+            "y!!!!!1234!!!3!ARRAyx",
+            "y!!!!!1234!!!3!ARRA",
+            "yARRA!3!!!4321!!!!!y"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"!!!EedEfG\""
+        },
+        "expected": "!!!eEDeFg",
+        "unexpected": [
+            "!!!eEDeFgx",
+            "!!!eEDeF",
+            "gFeDEe!!!"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"abf\""
+        },
+        "expected": "ABF",
+        "unexpected": [
+            "ABFx",
+            "AB",
+            "FBA"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"AKBtOxEMV\""
+        },
+        "expected": "akbToXemv",
+        "unexpected": [
+            "akbToXemvx",
+            "akbToXem",
+            "vmeXoTbka"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"Punctuation?\""
+        },
+        "expected": "pUNCTUATION?",
+        "unexpected": [
+            "pUNCTUATION?x",
+            "pUNCTUATION",
+            "?NOITAUTCNUp"
+        ]
+    }
+]

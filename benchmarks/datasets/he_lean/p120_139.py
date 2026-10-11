@@ -173,4 +173,59 @@ if ds.any (fun d => d % 2 == 1) then (ds.filter (fun d => d % 2 == 1)).foldl (fu
         break
   return false""", valid=lambda a: set(a[0]) <= set("[]"), size_limit=20, tags=("string", "declarative"),
          note="a nested pair inside a balanced group: a run that is balanced, has no balanced proper prefix, and is longer than []"),
+
+    dict(id="he_133_sum_squares", name="sumSquaresCeil", source="HumanEval/133",
+         params=[("lst", "List ℚ")], ret="Int",
+         description="Given a list of numbers, return the sum of squared numbers in the list, rounding each element to the upper integer (ceiling) first.",
+         post="result = (lst.map (fun x => (⌈x⌉ : Int) * (⌈x⌉ : Int))).sum",
+         code="lst.foldl (fun (acc : Int) x => acc + (⌈x⌉ : Int) * (⌈x⌉ : Int)) 0",
+         int_limit=1000, tags=("list", "float", "loop")),
+
+    dict(id="he_134_check_if_last_char_is_a_letter", name="checkIfLastCharIsALetter", source="HumanEval/134",
+         params=[("txt", "String")], ret="Bool",
+         description="Return true if the last character of the given string is an alphabetical character and is not a part of a word (a word is a group of characters separated by spaces), and false otherwise.",
+         post="result = true ↔ (txt.length ≥ 1 ∧ txt.toList[txt.length - 1]!.isAlpha = true ∧ (txt.length = 1 ∨ txt.toList[txt.length - 2]! = ' '))",
+         code="""match txt.toList.reverse with
+| [] => false
+| [c] => c.isAlpha
+| c :: d :: _ => c.isAlpha && d == ' '""",
+         valid=lambda a: a[0].isascii(), size_limit=30, tags=("string", "declarative")),
+
+    dict(id="he_135_can_arrange", name="canArrange", source="HumanEval/135",
+         params=[("arr", "List Int")], ret="Int",
+         description="Return the largest index of an element which is not greater than or equal to the element immediately preceding it. If no such element exists, return -1. The given array does not contain duplicate values.",
+         pre="arr.Nodup",
+         post="""(result = -1 ∧ ∀ i, i < arr.length → 1 ≤ i → arr[i - 1]! ≤ arr[i]!) ∨
+  (∃ i, i < arr.length ∧ 1 ≤ i ∧ result = (i : Int) ∧ arr[i]! < arr[i - 1]! ∧ ∀ j, j < arr.length → i < j → arr[j - 1]! ≤ arr[j]!)""",
+         code="""Id.run do
+  let mut ans : Int := -1
+  for i in [1:arr.length] do
+    if arr[i]! < arr[i - 1]! then ans := (i : Int)
+  return ans""",
+         valid=lambda a: len(set(a[0])) == len(a[0]), tags=("list", "loop")),
+
+    dict(id="he_136_largest_smallest_integers", name="largestSmallestIntegers", source="HumanEval/136",
+         params=[("lst", "List Int")], ret="Option Int × Option Int",
+         description="Return a pair (a, b) where a is the largest of the negative integers and b is the smallest of the positive integers in the list. If there is no negative or positive integer, return them as none.",
+         post="""((result.1 = none ∧ ∀ x ∈ lst, x ≥ 0) ∨ (∃ a ∈ lst, result.1 = some a ∧ a < 0 ∧ ∀ x ∈ lst, x < 0 → x ≤ a)) ∧
+  ((result.2 = none ∧ ∀ x ∈ lst, x ≤ 0) ∨ (∃ b ∈ lst, result.2 = some b ∧ 0 < b ∧ ∀ x ∈ lst, 0 < x → b ≤ x))""",
+         code="((lst.filter (fun x => x < 0)).max?, (lst.filter (fun x => x > 0)).min?)",
+         tags=("list", "option", "declarative")),
+
+    dict(id="he_137_compare_one", name="compareOne", source="HumanEval/137",
+         params=[("a", "ℚ ⊕ String"), ("b", "ℚ ⊕ String")], ret="Option (ℚ ⊕ String)",
+         description="Take integers, floats, or strings representing real numbers (the decimal separator may be '.' or ',') and return the larger variable in its given variable type. Return none if the values are equal.",
+         pre_aux="""def parseQ (s : String) : ℚ :=
+  match (s.map (fun c => if c == ',' then '.' else c)).splitOn "." with
+  | [w] => (w.toNat! : ℚ)
+  | [w, f] => (w.toNat! : ℚ) + (f.toNat! : ℚ) / ((10 : ℚ) ^ f.length)
+  | _ => 0
+def valQ : ℚ ⊕ String → ℚ
+  | Sum.inl q => q
+  | Sum.inr s => parseQ s""",
+         pre="True",
+         post="(valQ a = valQ b → result = none) ∧ (valQ b < valQ a → result = some a) ∧ (valQ a < valQ b → result = some b)",
+         code="if valQ a = valQ b then none else if valQ b < valQ a then some a else some b",
+         valid=lambda a: all((isinstance(v, (int, float)) and not isinstance(v, bool)) or (isinstance(v, str) and re.fullmatch(r"[0-9]+([.,][0-9]+)?", v)) for v in a),
+         tags=("scalar", "string", "sum", "option", "declarative")),
 ]

@@ -1,0 +1,31 @@
+{
+    "id": "he_147_get_max_triples",
+    "signature": {
+        "name": "getMaxTriples",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "n ≥ 1",
+        "postconditions": "result = ((List.range n).map (fun i => ((List.range n).map (fun j => ((List.range n).filter (fun k => i < j ∧ j < k ∧ (seqA (i + 1) + seqA (j + 1) + seqA (k + 1)) % 3 = 0)).length)).sum)).sum"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/147"
+        },
+        "tags": [
+            "scalar",
+            "declarative"
+        ],
+        "note": "the canonical solution returns False (= 0) for n <= 2; the reference here uses its counting formula, the specification counts the triples"
+    },
+    "test_file": "./test.json"
+}

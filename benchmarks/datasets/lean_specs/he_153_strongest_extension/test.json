@@ -1,0 +1,146 @@
+[
+    {
+        "input": {
+            "class_name": "\"K\"",
+            "extensions": "[\"Ta\", \"TAR\", \"t234An\", \"cosSo\"]"
+        },
+        "expected": "K.TAR",
+        "unexpected": [
+            "K.TARx",
+            "K.TA",
+            "RAT.K"
+        ]
+    },
+    {
+        "input": {
+            "class_name": "\"__HAHA\"",
+            "extensions": "[\"Tab\", \"123\", \"781345\", \"-_-\"]"
+        },
+        "expected": "__HAHA.123",
+        "unexpected": [
+            "__HAHA.123x",
+            "__HAHA.12",
+            "321.AHAH__"
+        ]
+    },
+    {
+        "input": {
+            "class_name": "\"_\"",
+            "extensions": "[\"Bb\", \"91245\"]"
+        },
+        "expected": "_.Bb",
+        "unexpected": [
+            "_.Bbx",
+            "_.B",
+            "bB._"
+        ]
+    },
+    {
+        "input": {
+            "class_name": "\"Sp\"",
+            "extensions": "[\"671235\", \"Bb\"]"
+        },
+        "expected": "Sp.671235",
+        "unexpected": [
+            "Sp.671235x",
+            "Sp.67123",
+            "532176.pS"
+        ]
+    },
+    {
+        "input": {
+            "class_name": "\"Person\"",
+            "extensions": "[\"TEst\", \"Name\", \"naMe\", \"AGE\"]"
+        },
+        "expected": "Person.AGE",
+        "unexpected": [
+            "Person.AGEx",
+            "Person.AG",
+            "EGA.nosreP"
+        ]
+    },
+    {
+        "input": {
+            "class_name": "\"Animaal\"",
+            "extensions": "[\"CAMel\", \"hOrSE\", \"DoG\"]"
+        },
+        "expected": "Animaal.CAMel",
+        "unexpected": [
+            "Animaal.CAMelx",
+            "Animaal.CAMe",
+            "leMAC.laaminA"
+        ]
+    },
+    {
+        "input": {
+            "class_name": "\"MyClass\"",
+            "extensions": "[\"AbcDEFg\", \"hIjKlmn\", \"OPqrst\", \"UVWxYZ\"]"
+        },
+        "expected": "MyClass.UVWxYZ",
+        "unexpected": [
+            "MyClass.UVWxYZx",
+            "MyClass.UVWxY",
+            "ZYxWVU.ssalCyM"
+        ]
+    },
+    {
+        "input": {
+            "class_name": "\"My_class\"",
+            "extensions": "[\"Aaa\", \"ZZZZ\", \"ddd\", \"E\", \"HHHHHH\", \"E\"]"
+        },
+        "expected": "My_class.HHHHHH",
+        "unexpected": [
+            "My_class.HHHHHHx",
+            "My_class.HHHHH",
+            "HHHHHH.ssalc_yM"
+        ]
+    },
+    {
+        "input": {
+            "class_name": "\"AAA\"",
+            "extensions": "[\"AbcDEFg\", \"hIjKlmn\", \"OPqrst\", \"UVWxYZ\"]"
+        },
+        "expected": "AAA.UVWxYZ",
+        "unexpected": [
+            "AAA.UVWxYZx",
+            "AAA.UVWxY",
+            "ZYxWVU.AAA"
+        ]
+    },
+    {
+        "input": {
+            "class_name": "\"MyClass\"",
+            "extensions": "[\"AbcDEFg\", \"hIjKlmn\", \"Bbcde\", \"UVWxYZ\"]"
+        },
+        "expected": "MyClass.UVWxYZ",
+        "unexpected": [
+            "MyClass.UVWxYZx",
+            "MyClass.UVWxY",
+            "ZYxWVU.ssalCyM"
+        ]
+    },
+    {
+        "input": {
+            "class_name": "\"TESTING2\"",
+            "extensions": "[\"AAAaA\", \"bbBbB\", \"CcCcC\", \"ddddDDD\", \"EEE\", \"hello\", \"kLMNop\"]"
+        },
+        "expected": "TESTING2.AAAaA",
+        "unexpected": [
+            "TESTING2.AAAaAx",
+            "TESTING2.AAAa",
+            "AaAAA.2GNITSET"
+        ]
+    },
+    {
+        "input": {
+            "class_name": "\"Tg\"",
+            "extensions": "[\"AbcDEFg\", \"hIjKlmn\", \"OPqrst\", \"UVWxYZ\", \"UVWxYZ\"]"
+        },
+        "expected": "Tg.UVWxYZ",
+        "unexpected": [
+            "Tg.UVWxYZx",
+            "Tg.UVWxY",
+            "ZYxWVU.gT"
+        ]
+    }
+]

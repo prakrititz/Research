@@ -1,0 +1,36 @@
+{
+    "id": "he_163_generate_integers",
+    "signature": {
+        "name": "generateIntegers",
+        "parameters": [
+            {
+                "param_name": "a",
+                "param_type": "Nat"
+            },
+            {
+                "param_name": "b",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "List Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "(∀ i, i < result.length - 1 → result[i]! < result[i + 1]!) ∧ (∀ d ∈ result, d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b ∧ d < 10) ∧\n  ∀ d, d < 10 → d % 2 = 0 → min a b ≤ d → d ≤ max a b → d ∈ result"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/163"
+        },
+        "tags": [
+            "list",
+            "scalar",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}
