@@ -15,6 +15,13 @@
 | 6. Refinement on Verina | **engine built; opens 188 of 189 goals; no model run yet** | Lean-native engine (doc 23): hand-written derivations certified for 36 of 36 library tasks and 24 of 25 Verina tasks (not written by us); model-driven agent built and tested with a scripted model; waiting for a model run |
 | 7. Harder families | not started | — |
 
+**Decision (2026-10-11): Z3 is discarded from the pipeline for now.** The base is Lean only, because it is the stronger prover and its kernel is the single trusted judge; accuracy of the outputs comes first, speed second. Z3 may come back later as an optional fast screen (the old code is kept in the tree and in git, untouched; nothing is deleted). What was done to make "Lean only" true rather than nominal:
+
+* `FormalLLM/lean/session.py` no longer imports the Z3-era `FormalLLM/verification` package: it has its own `Toolchain` (elan home, Lake project, REPL path, `short_path`), and `benchmarks/lean_persistent.py` uses it too.
+* Checked by blocking the imports `z3`, `lark` and the legacy packages `FormalLLM.{lspec,refinement,verification,lpl,agent,execution}`: the six Lean test files (`test_lean_core`, `_agent`, `_agent_run`, `_dynamic`, `_cli`, `_specs`) pass, 237 of 237 (one stale assertion in `test_lean_core.py` about a `set_option` prefix was fixed on the way). `test_lean_batch.py` tests the old Lean *obligation backend* and still uses the legacy package, so it is outside the Lean pipeline.
+* `FormalLLM/requirements-lean.txt` lists what the Lean pipeline needs (`evalplus`, `pytest`); `requirements.txt` (with `z3-solver`, `lark`) belongs to the old engine.
+* What Z3 used to do is covered in Lean: step proofs by the tactic cascade (99.7% of all stored obligations), counter-examples by `plausible` and by running the loop (76% of wrong steps), final certification by the kernel and `#print axioms`.
+
 ## 2026-10-11 — The Lean specification library now covers all 164 HumanEval problems (no model run)
 
 User instruction: "continue in Lean, for HumanEval for now keep doing that". The snapshot already held 143 specifications (the figure of 42 in the entry below is the state of 2026-10-08; `he_lean/` had grown to problems 0-132 and 138-139, 150, 152, 157 since). Written now: the 26 that were missing, HumanEval **133-137, 140-149, 151, 153-156, 158-163** (`benchmarks/datasets/he_lean/p120_139.py` for 133-137, new `p140_163.py` for the rest).

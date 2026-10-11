@@ -61,7 +61,7 @@ def test_tests_are_rendered_as_lean_literals(tasks):
     assert render("abc", "String") == '"abc"' and render("some 2", "Option Int") == "some 2"
     assert render([1, -2], "Array Int") == "#[1, (-2)]"
     commands = tasks["max3"].test_commands()
-    assert len(commands) == 2 and commands[0].startswith("#eval ((maxOfThree (1) (5) (3)")
+    assert len(commands) == 2 and "#eval (((maxOfThree (1) (5) (3)" in commands[0]  # preceded by a heartbeat option
 
 
 # --- laws: the text they generate ----------------------------------------------------------------------------------

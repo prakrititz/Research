@@ -25,13 +25,9 @@ IMPORTS = ("import Mathlib.Data.Real.Basic\nimport Mathlib.Tactic.Linarith\nimpo
 
 class PersistentLean:
     def __init__(self, imports: str = IMPORTS, timeout_s: float = 240.0):
-        from FormalLLM.verification.backends.lean_backend import LeanBackend, short_path
-        backend = LeanBackend()
+        from FormalLLM.lean.session import Toolchain
         self.timeout_s = timeout_s
-        repl = os.path.join(HOME, "repl", ".lake", "build", "bin", "repl.exe" if os.name == "nt" else "repl")
-        self.process = subprocess.Popen([backend.lake, "env", repl], cwd=short_path(backend.project), env=backend._env(),
-                                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-                                        text=True, encoding="utf8", bufsize=1)
+        self.process = Toolchain().spawn_repl()
         started = time.time()
         reply = self._ask({"cmd": imports})
         self.startup_seconds = time.time() - started
