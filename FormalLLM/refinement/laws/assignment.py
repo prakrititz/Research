@@ -34,6 +34,8 @@ class AssignmentLaw(RefinementLaw):
             goal=q_substituted,
             params=obligation_params(spec),
             description="the assignment must establish the postcondition: P => Q[x := E]",
+            advice=("Choose a different expression E, or a different law: for these values no "
+                    "assignment of this shape establishes the postcondition."),
         )
         
         program = Assignment(variable, expr)

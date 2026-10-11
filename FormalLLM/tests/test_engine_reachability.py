@@ -111,7 +111,7 @@ def test_integer_division_is_reachable():
                {"variable": "r", "expr": parse_expr("n")})
 
     body = apply_step(graph, engine, roles["body"], "sequential",
-                      expr_params(intermediate="(q+1)*d + r = n && r >= 0 && r < r0"))
+                      expr_params(intermediate="(q+1)*d + r = n && r >= 0 && r < V0"))
     apply_step(graph, engine, body["part1"], "assignment",
                {"variable": "r", "expr": parse_expr("r - d")})
     apply_step(graph, engine, body["part2"], "assignment",

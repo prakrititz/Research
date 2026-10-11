@@ -133,11 +133,37 @@ python benchmarks/run_bench.py --configs llama3.1 qwen3.5-think --laws all
 ```
 The results are output in JSON Lines format and can be analyzed using `benchmarks/analyse.py`.
 
+## Quick start
+
+One command from a specification to a program that Coq and Lean have re-checked:
+
+```bash
+export FORMALLLM_REMOTE_AUTH="user:password"        # only for the hosted model; never commit it
+python main.py --case C5-sqrt-paper --config gpt-oss-120b-low --assist --certify coq lean --run N=10,e=1
+```
+
+| Want | Command |
+|---|---|
+| list the built-in specifications | `python main.py --list-cases` |
+| measure reliability over many trials (counts + 95 % intervals) | `python benchmarks/reliability.py --config gpt-oss-120b-low --trials 100 --assist --certify coq` |
+| re-derive a stored study offline, without the model | `python benchmarks/replay.py "benchmarks/results/reliability/*.jsonl" --assist --strict 0` |
+| the paper's Table 7 analogue | `python benchmarks/classic.py --certify coq lean` |
+| HumanEval / EvalPlus: direct baseline, formal-spec pilot | `python -m benchmarks.datasets.direct_baseline` · `python -m benchmarks.datasets.he_refine` |
+| the other benchmark cases, many trials each, one table (resumable) | `python benchmarks/reliability_batch.py --trials 20` (Windows: double-click `run_other_cases.bat`) |
+| re-measure integer division after the assist fix, plus the impossible-spec control | `python benchmarks/reliability_batch.py --prefix v7 --cases D1-intdiv A4-impossible` (Windows: double-click `run_v7_check.bat`) |
+| the HumanEval pilot with the model (3 tries per problem) | `python -m benchmarks.datasets.he_refine --repeats 3 --assist --strict 0 --certify coq --out pilot.jsonl` (Windows: double-click `run_humaneval_pilot.bat`) |
+| what the pilot can at best score: hand derivations through the engine and the real tests (no model) | `python -m benchmarks.datasets.he_oracle` |
+| do the proved programs also *run* correctly? (no model) | `python benchmarks/cross_check.py "benchmarks/results/reliability/v6_*.jsonl" --random 200` |
+| re-score stored HumanEval baseline answers offline | `python -m benchmarks.datasets.direct_baseline --reevaluate FILE` |
+
+Provers: Z3 searches (fast, gives counterexamples); `--certify coq lean` re-checks every proof obligation of the finished derivation; `--backend z3+lean` lets Lean prove steps Z3 leaves undecided. The step-by-step explanation of every part, written for a newcomer, is in [`Reading Material/`](Reading%20Material/00_START_HERE.md).
+
 ## Dependencies
 - Python 3.10+
 - `lark` (for parsing $L_{spec}$)
 - `z3-solver` (for automated theorem proving)
 - `pytest` (for running the validation suites)
+- optional: Rocq/Coq 9 (`coqc` on `PATH`) and Lean 4 + Mathlib (via `elan`) for certification; `evalplus` for the HumanEval experiments
 
 ## Installation & Testing
 

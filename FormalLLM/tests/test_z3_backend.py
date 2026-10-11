@@ -18,3 +18,41 @@ def test_obligation_params_includes_frame_types():
     
     q_param = next(p for p in params if p.name == "q")
     assert type(q_param.type_).__name__ == "IntType", "Frame variable 'q' lost its integer type"
+
+
+def _obl(src_pre, src_post):
+    from FormalLLM.lspec.parser import parse_spec
+    spec = parse_spec(f"Precondition: (x:int) := {src_pre}.\nPostcondition: (x:int) := {src_post}.")
+    return ProofObligation([spec.precondition.expr], spec.postcondition.expr, params=spec.precondition.params)
+
+
+def test_valid_obligation_is_proved():
+    status, _ = verify_obligation(_obl("x > 0", "x >= 0"))
+    assert status == "PROVED"
+
+
+def test_invalid_obligation_fails_with_counterexample():
+    status, msg = verify_obligation(_obl("x >= 0", "x > 0"))
+    assert status == "FAILED" and "x = 0" in msg
+
+
+def test_unsupported_operator_is_reported_not_silent():
+    from FormalLLM.lspec.ast import BinaryOp, Number
+    bad = ProofObligation([], BinaryOp(Number("1"), "^^", Number("2")))
+    status, msg = verify_obligation(bad)
+    assert status == "UNKNOWN" and "Unsupported binary operator" in msg
+
+
+def test_timeout_yields_unknown_not_hang():
+    # Nonlinear integer arithmetic that Z3 cannot settle quickly.
+    from FormalLLM.lspec.parser import parse_spec
+    spec = parse_spec(r"Precondition: (x:int)(y:int)(z:int) := x > 2 /\ y > 2 /\ z > 2.""\n"
+                      r"Postcondition: (x:int)(y:int)(z:int) := x*x*x + y*y*y <> z*z*z.")
+    ob = ProofObligation([spec.precondition.expr], spec.postcondition.expr, params=spec.precondition.params)
+    status, _ = verify_obligation(ob, timeout_ms=200)
+    assert status in ("UNKNOWN", "PROVED")
+
+
+def test_unknown_is_a_distinct_error_type():
+    from FormalLLM.refinement.engine import VerificationError, VerificationUnknown
+    assert issubclass(VerificationUnknown, VerificationError)

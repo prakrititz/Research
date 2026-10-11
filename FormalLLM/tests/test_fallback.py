@@ -136,7 +136,10 @@ def test_law_may_be_retried_with_different_parameters():
     # and proposes the strong invariant; init and body then succeed.
     responses = [weak, assign_zero, assign_step, assign_step,
                  strong, assign_zero, assign_step]
-    refiner = AutomatedRefiner(RefinementEngine(), MockProvider(responses),
+    # The feasibility check would refuse the weak invariant outright (its body is infeasible
+    # at N = 1, x = -1, see test_robustness.py). This test is about what the refiner does when
+    # an *accepted* step fails below it, so that check is switched off here.
+    refiner = AutomatedRefiner(RefinementEngine(check_feasibility=False), MockProvider(responses),
                                max_retries=2)
     graph = RefinementGraph(spec)
 

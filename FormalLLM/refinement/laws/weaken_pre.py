@@ -24,6 +24,7 @@ class WeakenPreconditionLaw(RefinementLaw):
             goal=intermediate_pre,
             params=obligation_params(spec),
             description="the new precondition must be weaker than the old one: P => R",
+            advice="The original precondition P must imply R for these values; choose a weaker R.",
         )
         
         # Create sub-spec: [R, Q]

@@ -1,0 +1,64 @@
+[fresh attempt — law: initialised_iteration]
+
+You are an expert in Morgan's refinement calculus. You derive a correct program from a formal specification one refinement law at a time. An automatic theorem prover checks every step, so only logically sound choices are accepted; you cannot see the prover's work, only its verdicts.
+
+A specification  x : [P, Q]  reads: starting in any state that satisfies the precondition P, change only the frame variables x so that the postcondition Q holds when the program stops. Names outside the frame are constants: they never change, so whatever P says about them stays true everywhere. A refinement law replaces a specification by a program or by simpler specifications; the law's side condition is proved automatically.
+
+Expression language (use it for every formula you write):
+- numbers such as 3 or 0.5; booleans true and false
+- arithmetic + - * / and parentheses (for int operands / gives a whole number; for float operands it is exact)
+- comparisons < <= = > >= !=   (equality is a single =)
+- logic: && (and), || (or), ! (not). There is no implication operator: write 'A implies B' as !(A) || B.
+- quantifiers, only if the specification uses them, are written like the specification writes them: forall (k:int) formula   or   exists (k:int) formula  (binder in parentheses, then the formula; no colon, dot or comma). A quantifier reaches as far right as possible, so put it in parentheses when anything follows it: 0 <= i && (forall (k:int) !(k < i) || a[k] <= m)
+- array reading a[i]
+- v0 is the value variable v had before this step
+- there are NO function calls of any kind (no pow, floor, len, ...) and no if-then-else expressions: build every formula from the operators above.
+- only frame variables may be assigned; every other name is a fixed constant.
+
+## The specification to refine
+Frame (the only names the program may assign): g:int, x:int, y:int
+Constants (never assigned): a:int, b:int
+Precondition P (may be assumed on entry):
+  - a > 0
+  - b > 0
+Postcondition Q (must hold on exit):
+  - g > 0
+  - a = g * (a / g)
+  - b = g * (b / g)
+  - forall (d:int) d <= 0 || d > a || (!(a = d * (a / d) && b = d * (b / d))) || d <= g
+
+## The law you chose: initialised_iteration
+- initialised_iteration: set-up step followed by a loop with your own invariant
+    rule: x : [P, Q]  refines to  x : [P, I] ; while G do x : [I and G and V = V0, I and V < V0]     provided  I and not G implies Q
+    parameters: "invariant" = I, true after the set-up and after every iteration; "guard" = G, the loop condition; "variant" = V, an expression that must get smaller on every iteration
+    use when: the postcondition is reached by repeating a step: search, accumulate, scan, approach a bound. It introduces the set-up step [P, I] and the loop together. Follow the loop recipe.
+    termination: V must stay >= 0 and be strictly smaller after every iteration.
+
+## What the system will check for this specification
+The system checks the exit condition: I and not G implies Q. Here Q is:
+    - g > 0
+    - a = g * (a / g)
+    - b = g * (b / g)
+    - forall (d:int) d <= 0 || d > a || (!(a = d * (a / d) && b = d * (b / d))) || d <= g
+Then these specifications are refined next:
+  set-up       [ P , I ]
+  loop body    [ I and G and V = V0 ,  I and 0 <= V and V < V0 ]   (V0 is the value of V when the body starts)
+  facts about constants added to I automatically: a > 0; b > 0
+
+Loop recipe (general):
+1. Look at Q. When it is a conjunction, one part A can usually be made true by a simple initial assignment, while another part B is what the loop must achieve.
+2. Invariant I: start from A and add every fact the loop body relies on, for instance the range or sign of each variable the body changes and the relations between loop variables and constants. I must be true after the set-up and be preserved by one iteration.
+3. Guard G: the negation of B, so that when the loop stops (I and not G) the postcondition Q holds.
+4. Variant V: an expression measuring how far the state is from satisfying B; V must stay >= 0 and be strictly smaller after every iteration.
+5. The loop body is then usually a single assignment (or two in sequence) that moves a variable towards satisfying B.
+
+Example (a different problem: a product built by repeated addition):
+  Frame: r:int, i:int.
+  Precondition: (a:int)(b:int) := b >= 0.
+  Postcondition: (a:int)(b:int) := r = a * b.
+  reply: {"parameters": {"invariant": "r = a * i && 0 <= i && i <= b", "guard": "i < b", "variant": "b - i"}}
+
+## Reply format
+Reply with one JSON object and nothing else:
+{"parameters": {<one entry per key: "invariant", "guard", "variant">}, "rationale": "<one or two sentences>"}
+Use exactly the parameter keys listed for the law, with each formula written as a string.

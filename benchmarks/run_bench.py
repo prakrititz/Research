@@ -49,6 +49,11 @@ CONFIGS = {
     # capacity: every local model failed Tier B, so we could not tell a hard
     # case from a weak guide. These arms separate the two.
     "gpt-oss-120b": dict(kind="openai", model="gpt-oss:120b"),
+    # Same model, with the reasoning budget set explicitly. Measured on the hosted
+    # endpoint: about 24 s per call by default, 12 s at medium, 7 s at low.
+    "gpt-oss-120b-low": dict(kind="openai", model="gpt-oss:120b", reasoning_effort="low"),
+    "gpt-oss-120b-medium": dict(kind="openai", model="gpt-oss:120b", reasoning_effort="medium"),
+    "gpt-oss-120b-high": dict(kind="openai", model="gpt-oss:120b", reasoning_effort="high"),
     "qwen3-coder-next": dict(kind="openai", model="qwen3-coder-next:latest"),
 }
 
@@ -77,12 +82,15 @@ def expand_configs(names):
     return out
 
 
-def make_provider(cfg, temperature, timeout=900):
+def make_provider(cfg, temperature, timeout=900, seed=None):
     if cfg["kind"] == "openai":
+        extra = {"seed": seed} if seed is not None else None
         return OpenAIChatProvider(
             model_name=cfg["model"],
             base_url=REMOTE_BASE_URL,
             temperature=temperature,
+            reasoning_effort=cfg.get("reasoning_effort"),
+            extra_body=extra,
             # Reasoning models spend hundreds of tokens thinking before the
             # answer; at 512 gpt-oss returned no content at all and only its
             # reasoning channel, which is prose rather than the JSON we need.
@@ -120,8 +128,18 @@ def main():
     ap.add_argument("--laws", choices=sorted(LAW_SETS), default="all",
                     help="restrict the engine to a law set so that the law set "
                          "is the only variable between arms")
+    ap.add_argument("--turns", type=int, choices=(1, 2), default=2,
+                    help="2 = law choice then parameters (the paper's Algorithm 1); 1 = one call per step")
+    ap.add_argument("--assist", action="store_true",
+                    help="let the prover close one-line leaves without an LLM call (not in the paper)")
+    ap.add_argument("--strict", choices=("1", "0"), default=None,
+                    help="FORMALLLM_STRICT_VARIANT: 1 requires 0 <= V (default), 0 is the paper's Lemma 6.7")
+    ap.add_argument("--certify", nargs="*", default=None, choices=("coq", "lean"),
+                    help="after a successful trial, have these proof assistants re-check its derivation")
     ap.add_argument("--out", default="benchmarks/results/results.jsonl")
     args = ap.parse_args()
+    if args.strict is not None:
+        os.environ["FORMALLLM_STRICT_VARIANT"] = args.strict
 
     config_names = expand_configs(args.configs)
     cases = [c for c in CASES if args.cases is None or c["id"] in args.cases]
@@ -139,8 +157,13 @@ def main():
                                     max_retries=args.max_retries,
                                     budget=args.budget,
                                     law_set=LAW_SETS[args.laws],
-                                    max_depth=args.max_depth)
+                                    max_depth=args.max_depth,
+                                    use_multi_turn=(args.turns == 2),
+                                    assist=args.assist,
+                                    certify=args.certify)
                     rec["temperature"] = args.temperature
+                    rec["turns"] = args.turns
+                    rec["strict_variant"] = os.environ.get("FORMALLLM_STRICT_VARIANT", "1")
                     rec["law_arm"] = args.laws
                     rec["model"] = cfg.get("model")
                     fh.write(json.dumps(rec) + "\n")

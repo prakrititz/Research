@@ -1,0 +1,138 @@
+You are an expert in Morgan's refinement calculus. You derive a correct program from a formal specification one refinement law at a time. An automatic theorem prover checks every step, so only logically sound choices are accepted; you cannot see the prover's work, only its verdicts.
+
+A specification  x : [P, Q]  reads: starting in any state that satisfies the precondition P, change only the frame variables x so that the postcondition Q holds when the program stops. Names outside the frame are constants: they never change, so whatever P says about them stays true everywhere. A refinement law replaces a specification by a program or by simpler specifications; the law's side condition is proved automatically.
+
+Expression language (use it for every formula you write):
+- numbers such as 3 or 0.5; booleans true and false
+- arithmetic + - * / and parentheses (for int operands / gives a whole number; for float operands it is exact)
+- comparisons < <= = > >= !=   (equality is a single =)
+- logic: && (and), || (or), ! (not). There is no implication operator: write 'A implies B' as !(A) || B.
+- quantifiers, only if the specification uses them, are written like the specification writes them: forall (k:int) formula   or   exists (k:int) formula  (binder in parentheses, then the formula; no colon, dot or comma). A quantifier reaches as far right as possible, so put it in parentheses when anything follows it: 0 <= i && (forall (k:int) !(k < i) || a[k] <= m)
+- array reading a[i]
+- v0 is the value variable v had before this step
+- there are NO function calls of any kind (no pow, floor, len, ...) and no if-then-else expressions: build every formula from the operators above.
+- only frame variables may be assigned; every other name is a fixed constant.
+
+## The specification to refine
+Frame (the only names the program may assign): g:int, x:int, y:int
+Constants (never assigned): a:int, b:int
+Precondition P (may be assumed on entry):
+  - a > 0
+  - b > 0
+Postcondition Q (must hold on exit):
+  - g > 0
+  - a = g * (a / g)
+  - b = g * (b / g)
+  - forall (d:int) d <= 0 || d > a || (!(a = d * (a / d) && b = d * (b / d))) || d <= g
+
+System check: P does NOT imply Q, so skip is not valid (for example, a = 1, b = 1, g = 0 satisfy P but not Q).
+
+## Available laws
+- assignment: finish with one assignment
+    rule: x : [P, Q]  refines to  x := E     provided  P implies Q[x := E]
+    parameters: "variable" = the frame variable to assign; "expr" = E, an expression over the constants and frame variables
+    use when: Q can be made true by setting one variable directly: Q pins a variable to a formula of the others, or a simple constant already satisfies Q. If Q constrains the variable only through inequalities that no single formula satisfies for every input, one assignment will not do; split the problem or use a loop.
+    for this specification:
+      The system checks that P implies Q with the assigned variable v replaced by E (E is the formula you write). Written out:
+        if v is g, then E must make all of these true:
+          - E > 0
+          - a = E * (a / E)
+          - b = E * (b / E)
+          - forall (d:int) d <= 0 || d > a || (!(a = d * (a / d) && b = d * (b / d))) || d <= E
+        if v is x, then E must make all of these true:
+          - g > 0
+          - a = g * (a / g)
+          - b = g * (b / g)
+          - forall (d:int) d <= 0 || d > a || (!(a = d * (a / d) && b = d * (b / d))) || d <= g
+        if v is y, then E must make all of these true:
+          - g > 0
+          - a = g * (a / g)
+          - b = g * (b / g)
+          - forall (d:int) d <= 0 || d > a || (!(a = d * (a / d) && b = d * (b / d))) || d <= g
+- skip: do nothing
+    rule: x : [P, Q]  refines to  skip     provided  P implies Q
+    parameters: none
+    use when: the precondition already guarantees the postcondition.
+    for this specification:
+      The system checks that P implies Q.
+- initialized_skip: do nothing, keeping every variable's old value
+    rule: x : [P, Q]  refines to  skip     provided  P and (v = v0 for every frame variable v) implies Q
+    parameters: none
+    use when: Q is satisfied as long as every frame variable keeps the value it had on entry.
+    for this specification:
+      The system checks that P together with v = v0 for every frame variable v implies Q.
+- sequential: split into two stages
+    rule: x : [P, Q]  refines to  x : [P, R] ; x : [R, Q]     for any formula R
+    parameters: "intermediate" = R, the state reached between the two stages
+    use when: the task has stages: first reach an intermediate state R, then reach Q from R. A good R is the result of one stage: a conjunct of Q that an easy initialisation establishes, or a state from which what remains is a single loop. R becomes the postcondition of the first half and the precondition of the second half, so it must contain every fact the second half will need (ranges, signs, relations between variables; if the second half is a loop, R is its invariant). The facts P states about constants are added for you. R must differ from P and from Q.
+    for this specification:
+      Two new specifications are created and refined next (no proof condition now):
+        first half   [ P , R ]
+        second half  [ R , Q ]
+        facts about constants added to R automatically: a > 0; b > 0
+- flexible_sequential: split into two stages with independent conditions
+    rule: x : [P, Q]  refines to  x : [A, B] ; x : [C, D]     provided  P implies A, B implies C and D implies Q
+    parameters: "pre1" = A; "post1" = B; "pre2" = C; "post2" = D
+    use when: a split in which the halves' conditions need not be exactly P, R, R, Q: A may be weaker than P and D stronger than Q.
+    for this specification:
+      The system checks: P implies A, B implies C, and D implies Q.
+- alternation: split into two cases
+    rule: x : [P, Q]  refines to  if G then x : [P and G, Q] else x : [P and not G, Q]
+    parameters: "guard" = G, a test on the state
+    use when: different inputs need different treatment, or one case makes Q easy. G should test the inputs (names that never change), or a variable the precondition already constrains. A test on a variable the program is still computing, whose starting value is arbitrary, cannot tell cases of the problem apart and is refused.
+    for this specification:
+      Two new specifications are created and refined next:
+        then-branch  [ P and G , Q ]
+        else-branch  [ P and not G , Q ]
+- iteration: loop whose invariant is the precondition
+    rule: x : [P, Q]  refines to  while G do x : [P and G and V = V0, P and V < V0]     provided  P and not G implies Q
+    parameters: "guard" = G, the loop condition; "variant" = V, an expression that must get smaller on every iteration
+    use when: P already holds on entry and is itself a good invariant (it stays true after each iteration). If the loop needs a set-up step or a stronger invariant than P, use sequential first or use initialised_iteration.
+    termination: V must stay >= 0 and be strictly smaller after every iteration.
+    for this specification:
+      The system checks the exit condition: P and not G implies Q.
+      Then these specifications are refined next:
+        loop body    [ P and G and V = V0 ,  P and 0 <= V and V < V0 ]   (V0 is the value of V when the body starts)
+- initialised_iteration: set-up step followed by a loop with your own invariant
+    rule: x : [P, Q]  refines to  x : [P, I] ; while G do x : [I and G and V = V0, I and V < V0]     provided  I and not G implies Q
+    parameters: "invariant" = I, true after the set-up and after every iteration; "guard" = G, the loop condition; "variant" = V, an expression that must get smaller on every iteration
+    use when: the postcondition is reached by repeating a step: search, accumulate, scan, approach a bound. It introduces the set-up step [P, I] and the loop together. Follow the loop recipe.
+    termination: V must stay >= 0 and be strictly smaller after every iteration.
+    for this specification:
+      The system checks the exit condition: I and not G implies Q.
+      Then these specifications are refined next:
+        set-up       [ P , I ]
+        loop body    [ I and G and V = V0 ,  I and 0 <= V and V < V0 ]   (V0 is the value of V when the body starts)
+        facts about constants added to I automatically: a > 0; b > 0
+- strengthen_post: aim at a stronger postcondition
+    rule: x : [P, Q]  refines to  x : [P, R]     provided  R implies Q
+    parameters: "intermediate_post" = R, a formula that implies Q
+    use when: a more specific target R implies Q and is easier to reach, or R adds a constraint that later steps need. It never makes the task easier by itself: the program must then establish R. R must be strictly stronger than Q.
+    for this specification:
+      The system checks R implies Q, then refines [ P , R ].
+- weaken_pre: assume less
+    rule: x : [P, Q]  refines to  x : [R, Q]     provided  P implies R
+    parameters: "intermediate_pre" = R, a formula implied by P
+    use when: to drop assumptions that are not needed, so that the specification matches a simpler pattern. It never helps by itself: the program must then work under the weaker assumption R. R must be strictly weaker than P.
+    for this specification:
+      The system checks P implies R, then refines [ R , Q ].
+
+How to choose the next step (a general method):
+1. If the system check says skip is valid, use skip.
+2. If one assignment could establish Q (Q pins a frame variable to a formula, or a simple constant already satisfies it), use assignment.
+3. If Q is reached by repeating a step (searching, accumulating, scanning, approaching a bound), design a loop with initialised_iteration, or use sequential and then iteration. Follow the loop recipe.
+4. If the task has distinct stages, use sequential with an intermediate assertion R that holds every fact the next stage needs.
+5. If different inputs need different treatment, use alternation on a test G.
+6. strengthen_post and weaken_pre only reshape the specification; they never make the task easier by themselves. Use them only if you can name the concrete fact they add or drop and why the next step needs it, and never apply one to the result of the other.
+Every step must make progress: the sub-specifications it produces must differ from the one you started with.
+
+Loop recipe (general):
+1. Look at Q. When it is a conjunction, one part A can usually be made true by a simple initial assignment, while another part B is what the loop must achieve.
+2. Invariant I: start from A and add every fact the loop body relies on, for instance the range or sign of each variable the body changes and the relations between loop variables and constants. I must be true after the set-up and be preserved by one iteration.
+3. Guard G: the negation of B, so that when the loop stops (I and not G) the postcondition Q holds.
+4. Variant V: an expression measuring how far the state is from satisfying B; V must stay >= 0 and be strictly smaller after every iteration.
+5. The loop body is then usually a single assignment (or two in sequence) that moves a variable towards satisfying B.
+
+## Reply format
+Choose the law only; its parameters are requested next. Reply with one JSON object and nothing else:
+{"law": "<one of the law names above>", "rationale": "<one or two sentences>"}

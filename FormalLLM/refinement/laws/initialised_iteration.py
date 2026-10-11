@@ -6,7 +6,7 @@ from FormalLLM.lpl.ast import While, SequentialComposition
 from FormalLLM.verification.proof_obligations import ProofObligation
 from FormalLLM.refinement.frame import derive as _derive, rigid_context
 from FormalLLM.refinement.frame import obligation_params
-from FormalLLM.refinement.laws.iteration import to_previous_state
+from FormalLLM.refinement.laws.iteration import to_previous_state, fresh_variant_start
 
 class InitialisedIterationLaw(RefinementLaw):
     """Iteration with an LLM-supplied invariant (paper Table 5, Lemma 6.6).
@@ -40,10 +40,12 @@ class InitialisedIterationLaw(RefinementLaw):
             goal=copy.deepcopy(spec.postcondition.expr),
             params=obligation_params(spec),
             description="on exit the invariant and the negated guard must imply the postcondition: I /\\ ~G => Q",
+            advice=("Change the invariant I and/or the guard G so that I and not G imply the "
+                    "postcondition for these values -- typically strengthen I until it excludes them."),
         )
         
         # V0 is the variant evaluated in the pre-state of the body
-        v0_expr = to_previous_state(variant_expr)
+        v0_expr = fresh_variant_start(spec, variant_expr)
         
         # Sub-spec precondition: I ∧ G ∧ (V = V0)
         pre_expr = BinaryOp(copy.deepcopy(invariant_expr), '/\\', copy.deepcopy(guard_expr))

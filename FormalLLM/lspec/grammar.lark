@@ -47,8 +47,8 @@ params: "(" NAME ":" type ")"
     | "-" expr -> neg_expr
     | "(" expr ")"
     | PREV_STATE -> prev_state
-    | NAME "[" atom "]" -> array_select
-    | NAME "[" atom ":" atom "]" -> array_slice
+    | NAME "[" term "]" -> array_select
+    | NAME "[" term ":" term "]" -> array_slice
 
 PREV_STATE: NAME "0"
 NAME: /[a-zA-Z_][a-zA-Z0-9_]*/

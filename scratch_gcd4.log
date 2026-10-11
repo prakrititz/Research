@@ -1,0 +1,5 @@
+z3 5.1.0
+trial 0: None  332 s  verdicts {'sat': 713, 'unsat': 2, 'unknown': 183}
+trial 1: None  325 s  verdicts {'sat': 791, 'unsat': 2, 'unknown': 167}
+trial 2: None  299 s  verdicts {'sat': 929, 'unsat': 2, 'unknown': 149}
+trial 3: None  293 s  verdicts {'sat': 804, 'unsat': 2, 'unknown': 149}

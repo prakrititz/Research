@@ -1,0 +1,222 @@
+[
+ {
+  "index": 0,
+  "description": "on exit the invariant and the negated guard must imply the postcondition: I /\\ ~G => Q",
+  "assumptions": 2,
+  "z3": {
+   "status": "PROVED",
+   "seconds": 0.002,
+   "note": ""
+  },
+  "coq": {
+   "status": "PROVED",
+   "seconds": 0.576,
+   "note": ""
+  },
+  "lean": {
+   "status": "PROVED",
+   "seconds": 8.712,
+   "note": ""
+  }
+ },
+ {
+  "index": 1,
+  "description": "skip is only valid when the precondition already implies the postcondition: P => Q",
+  "assumptions": 1,
+  "z3": {
+   "status": "PROVED",
+   "seconds": 0.002,
+   "note": ""
+  },
+  "coq": {
+   "status": "PROVED",
+   "seconds": 0.504,
+   "note": ""
+  },
+  "lean": {
+   "status": "PROVED",
+   "seconds": 7.129,
+   "note": ""
+  }
+ },
+ {
+  "index": 2,
+  "description": "the assignment must establish the postcondition: P => Q[x := E]",
+  "assumptions": 1,
+  "z3": {
+   "status": "PROVED",
+   "seconds": 0.002,
+   "note": ""
+  },
+  "coq": {
+   "status": "PROVED",
+   "seconds": 0.506,
+   "note": ""
+  },
+  "lean": {
+   "status": "PROVED",
+   "seconds": 7.153,
+   "note": ""
+  }
+ },
+ {
+  "index": 3,
+  "description": "on exit the invariant and the negated guard must imply the postcondition: I /\\ ~G => Q",
+  "assumptions": 2,
+  "z3": {
+   "status": "PROVED",
+   "seconds": 0.007,
+   "note": ""
+  },
+  "coq": {
+   "status": "PROVED",
+   "seconds": 0.562,
+   "note": ""
+  },
+  "lean": {
+   "status": "PROVED",
+   "seconds": 7.326,
+   "note": ""
+  }
+ },
+ {
+  "index": 4,
+  "description": "the assignment must establish the postcondition: P => Q[x := E]",
+  "assumptions": 1,
+  "z3": {
+   "status": "PROVED",
+   "seconds": 0.001,
+   "note": ""
+  },
+  "coq": {
+   "status": "PROVED",
+   "seconds": 0.539,
+   "note": ""
+  },
+  "lean": {
+   "status": "PROVED",
+   "seconds": 7.629,
+   "note": ""
+  }
+ },
+ {
+  "index": 5,
+  "description": "the assignment must establish the postcondition: P => Q[x := E]",
+  "assumptions": 1,
+  "z3": {
+   "status": "PROVED",
+   "seconds": 0.001,
+   "note": ""
+  },
+  "coq": {
+   "status": "PROVED",
+   "seconds": 0.515,
+   "note": ""
+  },
+  "lean": {
+   "status": "PROVED",
+   "seconds": 7.351,
+   "note": ""
+  }
+ },
+ {
+  "index": 6,
+  "description": "the assignment must establish the postcondition: P => Q[x := E]",
+  "assumptions": 1,
+  "z3": {
+   "status": "PROVED",
+   "seconds": 0.002,
+   "note": ""
+  },
+  "coq": {
+   "status": "PROVED",
+   "seconds": 0.548,
+   "note": ""
+  },
+  "lean": {
+   "status": "PROVED",
+   "seconds": 7.472,
+   "note": ""
+  }
+ },
+ {
+  "index": 7,
+  "description": "the assignment must establish the postcondition: P => Q[x := E]",
+  "assumptions": 1,
+  "z3": {
+   "status": "PROVED",
+   "seconds": 0.001,
+   "note": ""
+  },
+  "coq": {
+   "status": "PROVED",
+   "seconds": 0.559,
+   "note": ""
+  },
+  "lean": {
+   "status": "PROVED",
+   "seconds": 7.31,
+   "note": ""
+  }
+ },
+ {
+  "index": 8,
+  "description": "on exit the invariant and the negated guard must imply the postcondition: I /\\ ~G => Q",
+  "assumptions": 2,
+  "z3": {
+   "status": "PROVED",
+   "seconds": 0.004,
+   "note": ""
+  },
+  "coq": {
+   "status": "PROVED",
+   "seconds": 0.534,
+   "note": ""
+  },
+  "lean": {
+   "status": "PROVED",
+   "seconds": 7.373,
+   "note": ""
+  }
+ },
+ {
+  "index": 9,
+  "description": "the assignment must establish the postcondition: P => Q[x := E]",
+  "assumptions": 1,
+  "z3": {
+   "status": "PROVED",
+   "seconds": 0.001,
+   "note": ""
+  },
+  "coq": {
+   "status": "PROVED",
+   "seconds": 0.529,
+   "note": ""
+  },
+  "lean": {
+   "status": "PROVED",
+   "seconds": 7.322,
+   "note": ""
+  }
+ },
+ {
+  "index": 10,
+  "description": "the assignment must establish the postcondition: P => Q[x := E]",
+  "assumptions": 1,
+  "z3": {
+   "status": "PROVED",
+   "seconds": 0.004,
+   "note": ""
+  },
+  "coq": {
+   "status": "PROVED",
+   "seconds": 0.508,
+   "note": ""
+  },
+  "lean": {
+   "status": "PROVED",
+   "seconds": 7.627,
+   "note": ""
+  }
+ }
+]

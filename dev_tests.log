@@ -1,0 +1,14 @@
+........................................................................ [ 16%]
+........................................................................ [ 32%]
+........................................................................ [ 48%]
+........................................................................ [ 64%]
+........................................................................ [ 81%]
+........................................................................ [ 97%]
+............                                                             [100%]
+============================== warnings summary ===============================
+FormalLLM\execution\testcase.py:4
+  C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM_dev\FormalLLM\execution\testcase.py:4: PytestCollectionWarning: cannot collect test class 'TestCase' because it has a __init__ constructor (from: FormalLLM/tests/test_execution.py)
+    @dataclass
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+444 passed, 1 warning in 199.43s (0:03:19)
