@@ -5,7 +5,8 @@ from FormalLLM.refinement.engine import RefinementEngine
 from FormalLLM.agent.refiner import AutomatedRefiner
 from FormalLLM.llm.provider import OllamaProvider
 from FormalLLM.refinement.graph.graph import RefinementGraph
-from FormalLLM.lpl.to_python import to_python, expr_to_python
+from FormalLLM.lpl.to_python import expr_to_python
+from FormalLLM.lpl.typed_python import python_for
 from FormalLLM.execution.runner import run
 from FormalLLM.execution.testcase import TestCase
 from benchmarks.cases import CASES_BY_ID
@@ -62,7 +63,7 @@ def main():
             program_ast = graph.reconstruct_program()
             
             try:
-                python_code = to_python(program_ast)
+                python_code = python_for(program_ast, spec)      # `/` on two integers is whole-number division
                 print("Generated Python: SUCCESS")
                 # print(python_code)
                 

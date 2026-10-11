@@ -1,0 +1,1 @@
+Check if in the given list of numbers there are two numbers closer to each other than the given threshold.

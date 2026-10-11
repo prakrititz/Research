@@ -1,0 +1,1 @@
+Given the length of a side and the height, return the area of a triangle.

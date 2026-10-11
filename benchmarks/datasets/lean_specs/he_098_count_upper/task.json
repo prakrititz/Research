@@ -1,0 +1,31 @@
+{
+    "id": "he_098_count_upper",
+    "signature": {
+        "name": "countUpper",
+        "parameters": [
+            {
+                "param_name": "s",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = ((List.range s.length).filter (fun i => i % 2 = 0 ∧ s.toList[i]! ∈ ['A', 'E', 'I', 'O', 'U'])).length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/98"
+        },
+        "tags": [
+            "string",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

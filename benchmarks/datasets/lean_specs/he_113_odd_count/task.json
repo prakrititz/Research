@@ -1,0 +1,32 @@
+{
+    "id": "he_113_odd_count",
+    "signature": {
+        "name": "oddCount",
+        "parameters": [
+            {
+                "param_name": "lst",
+                "param_type": "List String"
+            }
+        ],
+        "return_type": "List String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "∀ s ∈ lst, s.toList.all Char.isDigit = true",
+        "postconditions": "result.length = lst.length ∧ ∀ k, k < lst.length → result[k]! = oddMsg (oddDigits lst[k]!)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/113"
+        },
+        "tags": [
+            "list",
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

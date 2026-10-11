@@ -1,0 +1,32 @@
+{
+    "id": "he_032_find_zero",
+    "signature": {
+        "name": "findZero",
+        "parameters": [
+            {
+                "param_name": "xs",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "ℚ"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "xs ≠ [] ∧ xs.length % 2 = 0 ∧ xs.getLast! ≠ 0",
+        "postconditions": "|polyEval xs result| < (1 / 10000 : ℚ)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/32"
+        },
+        "tags": [
+            "list",
+            "float",
+            "declarative"
+        ],
+        "note": "any root is accepted (the canonical solution runs Newton's method from 0); HumanEval's own test asserts |poly(x)| < 1e-4"
+    },
+    "test_file": "./test.json"
+}

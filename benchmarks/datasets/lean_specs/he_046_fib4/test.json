@@ -1,0 +1,131 @@
+[
+    {
+        "input": {
+            "n": "5"
+        },
+        "expected": 4,
+        "unexpected": [
+            5,
+            3,
+            11
+        ]
+    },
+    {
+        "input": {
+            "n": "8"
+        },
+        "expected": 28,
+        "unexpected": [
+            29,
+            27,
+            59
+        ]
+    },
+    {
+        "input": {
+            "n": "10"
+        },
+        "expected": 104,
+        "unexpected": [
+            105,
+            103,
+            211
+        ]
+    },
+    {
+        "input": {
+            "n": "12"
+        },
+        "expected": 386,
+        "unexpected": [
+            387,
+            385,
+            775
+        ]
+    },
+    {
+        "input": {
+            "n": "1"
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "n": "3"
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "n": "7"
+        },
+        "expected": 14,
+        "unexpected": [
+            15,
+            13,
+            31
+        ]
+    },
+    {
+        "input": {
+            "n": "15"
+        },
+        "expected": 2764,
+        "unexpected": [
+            2765,
+            2763,
+            5531
+        ]
+    },
+    {
+        "input": {
+            "n": "21"
+        },
+        "expected": 141776,
+        "unexpected": [
+            141777,
+            141775,
+            283555
+        ]
+    },
+    {
+        "input": {
+            "n": "14"
+        },
+        "expected": 1434,
+        "unexpected": [
+            1435,
+            1433,
+            2871
+        ]
+    },
+    {
+        "input": {
+            "n": "0"
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "n": "24"
+        },
+        "expected": 1015378,
+        "unexpected": [
+            1015379,
+            1015377,
+            2030759
+        ]
+    }
+]

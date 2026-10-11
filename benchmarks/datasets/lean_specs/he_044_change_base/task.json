@@ -1,0 +1,36 @@
+{
+    "id": "he_044_change_base",
+    "signature": {
+        "name": "changeBase",
+        "parameters": [
+            {
+                "param_name": "x",
+                "param_type": "Nat"
+            },
+            {
+                "param_name": "base",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "2 ≤ base ∧ base < 10",
+        "postconditions": "result.toList.all (fun c => c.isDigit && c.toNat - '0'.toNat < base) = true ∧\n  result.toList.foldl (fun acc c => acc * base + (c.toNat - '0'.toNat)) 0 = x ∧\n  (x = 0 → result = \"0\") ∧ (x > 0 → result.toList.head! ≠ '0')"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/44"
+        },
+        "tags": [
+            "scalar",
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,1 @@
+Filter a given list of any Python values, keeping only the integers (a boolean is not an integer here).

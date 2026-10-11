@@ -1,0 +1,32 @@
+{
+    "id": "he_022_filter_integers",
+    "signature": {
+        "name": "filterIntegers",
+        "parameters": [
+            {
+                "param_name": "values",
+                "param_type": "List PyVal"
+            }
+        ],
+        "return_type": "List Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = values.filterMap (fun v => match v with | PyVal.int n => some n | _ => none)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/22"
+        },
+        "tags": [
+            "list",
+            "any",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

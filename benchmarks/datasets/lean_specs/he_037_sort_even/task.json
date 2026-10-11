@@ -1,0 +1,31 @@
+{
+    "id": "he_037_sort_even",
+    "signature": {
+        "name": "sortEven",
+        "parameters": [
+            {
+                "param_name": "l",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "List Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.length = l.length ∧ (∀ i, i < l.length → i % 2 ≠ 0 → result[i]! = l[i]!) ∧\n  (atMod 2 result).isPerm (atMod 2 l) ∧ ∀ i, i < (atMod 2 result).length - 1 → (atMod 2 result)[i]! ≤ (atMod 2 result)[i + 1]!"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/37"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

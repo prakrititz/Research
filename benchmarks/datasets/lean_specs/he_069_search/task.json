@@ -1,0 +1,31 @@
+{
+    "id": "he_069_search",
+    "signature": {
+        "name": "search",
+        "parameters": [
+            {
+                "param_name": "lst",
+                "param_type": "List Nat"
+            }
+        ],
+        "return_type": "Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "lst ≠ [] ∧ ∀ x ∈ lst, x > 0",
+        "postconditions": "(result = -1 ∧ ∀ x ∈ lst, lst.count x < x) ∨\n  (result > 0 ∧ result.toNat ∈ lst ∧ lst.count result.toNat ≥ result.toNat ∧ ∀ x ∈ lst, lst.count x ≥ x → x ≤ result.toNat)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/69"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

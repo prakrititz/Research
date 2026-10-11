@@ -1,0 +1,36 @@
+{
+    "id": "he_129_min_path",
+    "signature": {
+        "name": "minPath",
+        "parameters": [
+            {
+                "param_name": "grid",
+                "param_type": "List (List Nat)"
+            },
+            {
+                "param_name": "k",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "List Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "grid.length ≥ 2 ∧ (∀ r ∈ grid, r.length = grid.length) ∧ grid.flatten.isPerm (List.range' 1 (grid.length * grid.length)) ∧ k ≥ 1",
+        "postconditions": "(∃ w ∈ walksOf grid.length k, w.map (cellAt grid) = result) ∧ ∀ w ∈ walksOf grid.length k, ¬ (w.map (cellAt grid) < result)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/129"
+        },
+        "tags": [
+            "list",
+            "grid",
+            "declarative"
+        ],
+        "note": "stated as the problem states it: the lexicographically least among all walks of length k (evaluated on grids up to 4x4 and k <= 9)"
+    },
+    "test_file": "./test.json"
+}

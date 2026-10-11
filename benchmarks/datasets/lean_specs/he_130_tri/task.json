@@ -1,0 +1,32 @@
+{
+    "id": "he_130_tri",
+    "signature": {
+        "name": "tri",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "List Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.length = n + 1 ∧ result[0]! = 1 ∧ (n ≥ 1 → result[1]! = 3) ∧\n  ∀ i, i < n + 1 → 2 ≤ i → result[i]! = (if i % 2 = 0 then 1 + i / 2 else result[i - 1]! + result[i - 2]! + (1 + (i + 1) / 2))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/130"
+        },
+        "tags": [
+            "scalar",
+            "list",
+            "declarative"
+        ],
+        "note": "the values are integers (Python prints some of them as floats)"
+    },
+    "test_file": "./test.json"
+}

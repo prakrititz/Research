@@ -1,0 +1,123 @@
+[
+    {
+        "input": {
+            "n": "1"
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "n": "2"
+        },
+        "expected": 3,
+        "unexpected": [
+            4,
+            2,
+            9
+        ]
+    },
+    {
+        "input": {
+            "n": "3"
+        },
+        "expected": 5,
+        "unexpected": [
+            6,
+            4,
+            13
+        ]
+    },
+    {
+        "input": {
+            "n": "4"
+        },
+        "expected": 13,
+        "unexpected": [
+            14,
+            12,
+            29
+        ]
+    },
+    {
+        "input": {
+            "n": "5"
+        },
+        "expected": 89,
+        "unexpected": [
+            90,
+            88,
+            181
+        ]
+    },
+    {
+        "input": {
+            "n": "6"
+        },
+        "expected": 233,
+        "unexpected": [
+            234,
+            232,
+            469
+        ]
+    },
+    {
+        "input": {
+            "n": "7"
+        },
+        "expected": 1597,
+        "unexpected": [
+            1598,
+            1596,
+            3197
+        ]
+    },
+    {
+        "input": {
+            "n": "8"
+        },
+        "expected": 28657,
+        "unexpected": [
+            28658,
+            28656,
+            57317
+        ]
+    },
+    {
+        "input": {
+            "n": "9"
+        },
+        "expected": 514229,
+        "unexpected": [
+            514230,
+            514228,
+            1028461
+        ]
+    },
+    {
+        "input": {
+            "n": "10"
+        },
+        "expected": 433494437,
+        "unexpected": [
+            433494438,
+            433494436,
+            866988877
+        ]
+    },
+    {
+        "input": {
+            "n": "11"
+        },
+        "expected": 2971215073,
+        "unexpected": [
+            2971215074,
+            2971215072,
+            5942430149
+        ]
+    }
+]

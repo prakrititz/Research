@@ -1,0 +1,178 @@
+[
+    {
+        "input": {
+            "word": "\"yogurt\""
+        },
+        "expected": "u",
+        "unexpected": [
+            "ux",
+            "",
+            "uyy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"full\""
+        },
+        "expected": "u",
+        "unexpected": [
+            "ux",
+            "",
+            "uyy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"easy\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"eAsy\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"ali\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"bad\""
+        },
+        "expected": "a",
+        "unexpected": [
+            "ax",
+            "",
+            "ayy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"most\""
+        },
+        "expected": "o",
+        "unexpected": [
+            "ox",
+            "",
+            "oyy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"ab\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"ba\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"quick\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"anime\""
+        },
+        "expected": "i",
+        "unexpected": [
+            "ix",
+            "",
+            "iyy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"Asia\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"Above\""
+        },
+        "expected": "o",
+        "unexpected": [
+            "ox",
+            "",
+            "oyy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"hello\""
+        },
+        "expected": "e",
+        "unexpected": [
+            "ex",
+            "",
+            "eyy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"ehehhhimutehimutehilohi\""
+        },
+        "expected": "o",
+        "unexpected": [
+            "ox",
+            "",
+            "oyy"
+        ]
+    },
+    {
+        "input": {
+            "word": "\"lalbkike\""
+        },
+        "expected": "i",
+        "unexpected": [
+            "ix",
+            "",
+            "iyy"
+        ]
+    }
+]

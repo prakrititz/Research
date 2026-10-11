@@ -1,0 +1,31 @@
+{
+    "id": "he_105_by_length",
+    "signature": {
+        "name": "byLength",
+        "parameters": [
+            {
+                "param_name": "arr",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "List String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "let ds := arr.filter (fun x => 1 ≤ x ∧ x ≤ 9)\nresult = (ds.mergeSort (fun a b => a ≥ b)).map numName"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/105"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

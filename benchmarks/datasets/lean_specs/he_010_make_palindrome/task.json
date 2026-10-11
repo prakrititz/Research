@@ -1,0 +1,31 @@
+{
+    "id": "he_010_make_palindrome",
+    "signature": {
+        "name": "makePalindrome",
+        "parameters": [
+            {
+                "param_name": "string",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "∃ i, i ≤ string.length ∧ isPal (string.toList.drop i) ∧ (∀ j, j < i → ¬ isPal (string.toList.drop j)) ∧\n    result.toList = string.toList ++ (string.toList.take i).reverse"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/10"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

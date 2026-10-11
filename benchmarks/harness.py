@@ -9,13 +9,16 @@ from FormalLLM.refinement.engine import RefinementEngine
 from FormalLLM.refinement.graph.graph import RefinementGraph
 from FormalLLM.refinement.graph.status import AttemptStatus, NodeStatus
 from FormalLLM.agent.refiner import AutomatedRefiner, RefinementExhausted
-from FormalLLM.llm.provider import LLMProvider, OllamaProvider
+from FormalLLM.llm.provider import LLMProvider, OllamaProvider, LLMBudgetExhausted
 from FormalLLM.llm.prompts import to_string
-from FormalLLM.lpl.to_python import to_python
+from FormalLLM.llm.transport import NETWORK, lost_to_network
+from FormalLLM.lpl.typed_python import python_for
 
 
-class BudgetExhausted(Exception):
-    """Raised to abort a trial once the LLM-call budget is spent."""
+# Kept under its old name for callers that import it from here; the class itself
+# lives in the provider module so the refiner can recognise it without importing
+# the benchmark package.
+BudgetExhausted = LLMBudgetExhausted
 
 
 class InstrumentedProvider(LLMProvider):
@@ -108,7 +111,10 @@ def run_trial(case: Dict[str, Any],
               max_retries: int = 4,
               budget: int = 30,
               law_set: Optional[List[str]] = None,
-              max_depth: int = 6) -> Dict[str, Any]:
+              max_depth: int = 6,
+              use_multi_turn: bool = True,
+              assist: bool = False,
+              certify: Optional[List[str]] = None) -> Dict[str, Any]:
     inst = InstrumentedProvider(provider, budget)
     spec = parse_spec(case["spec"])
     graph = RefinementGraph(spec)
@@ -118,10 +124,10 @@ def run_trial(case: Dict[str, Any],
         # The refiner reads engine.laws for both TOTAL_LAWS and the prompt, so
         # filtering here removes the law from advertising, parsing and search.
         engine.laws = {k: v for k, v in engine.laws.items() if k in law_set}
-    use_multi_turn = True
     refiner = AutomatedRefiner(engine, inst, max_retries=max_retries,
                                max_depth=max_depth,
-                               use_multi_turn=use_multi_turn)
+                               use_multi_turn=use_multi_turn,
+                               assist=assist)
 
     t0 = time.time()
     outcome = "UNKNOWN"
@@ -138,7 +144,8 @@ def run_trial(case: Dict[str, Any],
             # than re-deriving it later keeps the code that runs identical to
             # the code the prover accepted.
             try:
-                program_python = to_python(program_ast)
+                # types decide what `/` means: whole-number division for two integers, as the prover read it
+                program_python = python_for(program_ast, spec)
             except Exception as e:
                 detail = f"program emitted but to_python failed: {type(e).__name__}: {e}"
         else:
@@ -158,7 +165,22 @@ def run_trial(case: Dict[str, Any],
         detail = f"{type(e).__name__}: {e}\n{traceback.format_exc(limit=4)}"
     wall = time.time() - t0
 
+    # A finished derivation can be re-checked by the proof assistants. This runs
+    # after the clock stops: certification is a post-pass, not part of the search.
+    certificate = None
+    if certify and outcome == "SUCCESS":
+        try:
+            from FormalLLM.verification.backends import get_backend
+            from FormalLLM.verification.certify import certify_derivation
+            certificate = certify_derivation(graph, engine, {n: get_backend(n) for n in certify})
+        except Exception as e:                       # never lose a result to a certifier problem
+            certificate = {"error": f"{type(e).__name__}: {e}"}
+
     calls = inst.calls
+    graph_summary = summarise_graph(graph)
+    if outcome != "SUCCESS" and lost_to_network([c["response"] for c in calls], graph_summary["error_messages"]):
+        # every call failed to connect: the model was never consulted, so this says nothing about the method
+        outcome, detail = NETWORK, "the model endpoint was unreachable on every call; not counted as a failure. " + detail
     lat = [c["latency_s"] for c in calls]
     return dict(
         config=config_name,
@@ -172,11 +194,15 @@ def run_trial(case: Dict[str, Any],
         law_set=sorted(engine.laws),
         wall_s=round(wall, 2),
         llm_calls=len(calls),
+        assist=assist,
+        subtree_budget=refiner.subtree_budget,
+        certificate=certificate,
+        assist_discharges=refiner.assist_discharges,
         llm_time_s=round(sum(lat), 2),
         mean_latency_s=round(sum(lat) / len(lat), 2) if lat else None,
         output_tokens=sum(c["output_tokens"] or 0 for c in calls),
         prompt_tokens=sum(c["prompt_tokens"] or 0 for c in calls),
         thinking_channel_used=any(c.get("used_thinking_channel") for c in calls),
-        graph=summarise_graph(graph),
+        graph=graph_summary,
         raw_responses=[c["response"] for c in calls],
     )

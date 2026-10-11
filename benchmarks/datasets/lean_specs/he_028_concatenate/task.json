@@ -1,0 +1,32 @@
+{
+    "id": "he_028_concatenate",
+    "signature": {
+        "name": "concatenate",
+        "parameters": [
+            {
+                "param_name": "strings",
+                "param_type": "List String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = String.join strings"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/28"
+        },
+        "tags": [
+            "string",
+            "list",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

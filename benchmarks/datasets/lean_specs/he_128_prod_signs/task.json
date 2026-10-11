@@ -1,0 +1,32 @@
+{
+    "id": "he_128_prod_signs",
+    "signature": {
+        "name": "prodSigns",
+        "parameters": [
+            {
+                "param_name": "arr",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Option Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "match result with\n| none => arr = []\n| some r => arr ≠ [] ∧ r = (arr.map (fun (x : Int) => (x.natAbs : Int))).sum * (arr.map Int.sign).prod"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/128"
+        },
+        "tags": [
+            "list",
+            "option",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

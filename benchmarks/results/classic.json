@@ -1,0 +1,175 @@
+{
+ "rows": [
+  {
+   "problem": "Factorial",
+   "note": "fact is an array with fact[0] = 1 and fact[k+1] = (k+1) * fact[k]",
+   "core": {
+    "calculus": "core",
+    "steps": 8,
+    "laws": {
+     "sequential": 3,
+     "assignment": 4,
+     "iteration": 1
+    },
+    "obligations": 5,
+    "z3_seconds": 0.093,
+    "complete": true
+   },
+   "extended": {
+    "calculus": "extended",
+    "steps": 7,
+    "laws": {
+     "initialised_iteration": 1,
+     "sequential": 2,
+     "assignment": 4
+    },
+    "obligations": 5,
+    "z3_seconds": 0.036,
+    "complete": true
+   }
+  },
+  {
+   "problem": "Exponentiation",
+   "note": "repeated multiplication, not the paper's squaring: squaring needs pow with a changing base, i.e. a function symbol L_spec does not have",
+   "core": {
+    "calculus": "core",
+    "steps": 8,
+    "laws": {
+     "sequential": 3,
+     "assignment": 4,
+     "iteration": 1
+    },
+    "obligations": 5,
+    "z3_seconds": 0.039,
+    "complete": true
+   },
+   "extended": {
+    "calculus": "extended",
+    "steps": 7,
+    "laws": {
+     "initialised_iteration": 1,
+     "sequential": 2,
+     "assignment": 4
+    },
+    "obligations": 5,
+    "z3_seconds": 0.034,
+    "complete": true
+   }
+  },
+  {
+   "problem": "Linear Search",
+   "note": "found is an integer flag (0/1): boolean variables are not supported by the proof assistants' translators",
+   "core": {
+    "calculus": "core",
+    "steps": 8,
+    "laws": {
+     "sequential": 2,
+     "assignment": 4,
+     "iteration": 1,
+     "alternation": 1
+    },
+    "obligations": 5,
+    "z3_seconds": 0.046,
+    "complete": true
+   },
+   "extended": {
+    "calculus": "extended",
+    "steps": 7,
+    "laws": {
+     "initialised_iteration": 1,
+     "sequential": 1,
+     "assignment": 4,
+     "alternation": 1
+    },
+    "obligations": 5,
+    "z3_seconds": 0.039,
+    "complete": true
+   }
+  },
+  {
+   "problem": "Max Element",
+   "note": "",
+   "core": {
+    "calculus": "core",
+    "steps": 10,
+    "laws": {
+     "sequential": 3,
+     "assignment": 5,
+     "iteration": 1,
+     "alternation": 1
+    },
+    "obligations": 6,
+    "z3_seconds": 1.864,
+    "complete": true
+   },
+   "extended": {
+    "calculus": "extended",
+    "steps": 9,
+    "laws": {
+     "initialised_iteration": 1,
+     "sequential": 2,
+     "assignment": 5,
+     "alternation": 1
+    },
+    "obligations": 6,
+    "z3_seconds": 1.551,
+    "complete": true
+   }
+  }
+ ],
+ "open": {
+  "Logarithm": "floor(log2 N) with 2^l as an axiomatised array and `n / 2` in the body: Z3 returns `unknown` (incomplete quantifiers). Candidate for a Coq/Lean proof with hand-instantiated axioms.",
+  "Dutch Flag Sort": "needs assignment to array elements (swap), which L_pl does not have",
+  "Pattern Matching": "needs strings and nested loops over them; not expressible in L_spec today"
+ },
+ "paper_table_7": {
+  "Factorial": [
+   [
+    5,
+    5,
+    3
+   ],
+   [
+    3.6,
+    1.5,
+    0.4
+   ]
+  ],
+  "Exponentiation": [
+   [
+    7,
+    7,
+    5
+   ],
+   [
+    15.2,
+    14.4,
+    10.4
+   ]
+  ],
+  "Linear Search": [
+   [
+    5,
+    5,
+    4
+   ],
+   [
+    0.4,
+    0.2,
+    0.1
+   ]
+  ],
+  "Max Element": [
+   [
+    9,
+    10,
+    5
+   ],
+   [
+    1.2,
+    1.0,
+    0.2
+   ]
+  ]
+ }
+}

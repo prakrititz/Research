@@ -1,0 +1,35 @@
+{
+    "id": "he_005_intersperse",
+    "signature": {
+        "name": "intersperse",
+        "parameters": [
+            {
+                "param_name": "numbers",
+                "param_type": "List Int"
+            },
+            {
+                "param_name": "delimeter",
+                "param_type": "Int"
+            }
+        ],
+        "return_type": "List Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.length = (if numbers.length = 0 then 0 else 2 * numbers.length - 1) ∧\n  (∀ i, i < numbers.length → result[2 * i]! = numbers[i]!) ∧\n  (∀ i, i < numbers.length - 1 → result[2 * i + 1]! = delimeter)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/5"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

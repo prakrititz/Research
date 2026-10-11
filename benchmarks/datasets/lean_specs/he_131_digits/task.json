@@ -1,0 +1,31 @@
+{
+    "id": "he_131_digits",
+    "signature": {
+        "name": "digits",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "n ≥ 1",
+        "postconditions": "let ds := (toString n).toList.map (fun c => c.toNat - 48)\nresult = (if ds.any (fun d => d % 2 = 1) then (ds.filter (fun d => d % 2 = 1)).prod else 0)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/131"
+        },
+        "tags": [
+            "scalar",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

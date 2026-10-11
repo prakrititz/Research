@@ -1,0 +1,189 @@
+{"task": "verina_advanced_1", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.34}
+{"task": "verina_advanced_10", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.19}
+{"task": "verina_advanced_11", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.09}
+{"task": "verina_advanced_12", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.09}
+{"task": "verina_advanced_13", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.47}
+{"task": "verina_advanced_14", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.43}
+{"task": "verina_advanced_15", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.08}
+{"task": "verina_advanced_16", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.06}
+{"task": "verina_advanced_17", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.07}
+{"task": "verina_advanced_18", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.25}
+{"task": "verina_advanced_19", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.14}
+{"task": "verina_advanced_2", "status": "ERROR", "errors": ["Unknown constant `Array.mkArray`", "Invalid field notation: Type of", "Invalid field notation: Type of"], "sorries": 1, "seconds": 1.91}
+{"task": "verina_advanced_20", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.44}
+{"task": "verina_advanced_21", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.42}
+{"task": "verina_advanced_22", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.11}
+{"task": "verina_advanced_23", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.51}
+{"task": "verina_advanced_24", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.13}
+{"task": "verina_advanced_25", "status": "ERROR", "errors": ["Unknown constant `Array.mkArray`"], "sorries": 1, "seconds": 0.13}
+{"task": "verina_advanced_26", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.12}
+{"task": "verina_advanced_27", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.53}
+{"task": "verina_advanced_28", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.15}
+{"task": "verina_advanced_29", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.23}
+{"task": "verina_advanced_3", "status": "ERROR", "errors": ["Unknown constant `Array.mkArray`", "Invalid field notation: Type of", "Invalid field notation: Type of"], "sorries": 1, "seconds": 1.71}
+{"task": "verina_advanced_30", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.1}
+{"task": "verina_advanced_31", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.09}
+{"task": "verina_advanced_32", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.11}
+{"task": "verina_advanced_33", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.09}
+{"task": "verina_advanced_34", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.41}
+{"task": "verina_advanced_35", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.1}
+{"task": "verina_advanced_36", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.07}
+{"task": "verina_advanced_37", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.07}
+{"task": "verina_advanced_38", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.14}
+{"task": "verina_advanced_39", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_advanced_4", "status": "ERROR", "errors": ["Unknown constant `Array.mkArray`"], "sorries": 1, "seconds": 0.44}
+{"task": "verina_advanced_40", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_advanced_41", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_advanced_42", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.09}
+{"task": "verina_advanced_43", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.1}
+{"task": "verina_advanced_44", "status": "ERROR", "errors": ["Unknown constant `Array.mkArray`", "Invalid field notation: Type of"], "sorries": 1, "seconds": 0.83}
+{"task": "verina_advanced_45", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.06}
+{"task": "verina_advanced_46", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.08}
+{"task": "verina_advanced_47", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.13}
+{"task": "verina_advanced_48", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.13}
+{"task": "verina_advanced_49", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.45}
+{"task": "verina_advanced_5", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.71}
+{"task": "verina_advanced_50", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.87}
+{"task": "verina_advanced_51", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.34}
+{"task": "verina_advanced_52", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.06}
+{"task": "verina_advanced_53", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.28}
+{"task": "verina_advanced_54", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_advanced_55", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.09}
+{"task": "verina_advanced_56", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.07}
+{"task": "verina_advanced_57", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.57}
+{"task": "verina_advanced_58", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.25}
+{"task": "verina_advanced_59", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.86}
+{"task": "verina_advanced_6", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_advanced_60", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_advanced_61", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.1}
+{"task": "verina_advanced_62", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.49}
+{"task": "verina_advanced_63", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_advanced_64", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_advanced_65", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.03}
+{"task": "verina_advanced_66", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_advanced_67", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.07}
+{"task": "verina_advanced_68", "status": "ERROR", "errors": ["Invalid field notation: Type of", "stuck at solving universe constraint"], "sorries": 1, "seconds": 0.84}
+{"task": "verina_advanced_69", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_advanced_7", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_advanced_70", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.09}
+{"task": "verina_advanced_71", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.1}
+{"task": "verina_advanced_72", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_advanced_73", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_advanced_74", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.08}
+{"task": "verina_advanced_75", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_advanced_76", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.09}
+{"task": "verina_advanced_77", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.62}
+{"task": "verina_advanced_78", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.08}
+{"task": "verina_advanced_79", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.08}
+{"task": "verina_advanced_8", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.1}
+{"task": "verina_advanced_80", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.13}
+{"task": "verina_advanced_81", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.07}
+{"task": "verina_advanced_9", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.46}
+{"task": "verina_basic_1", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.03}
+{"task": "verina_basic_10", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_100", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_101", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_102", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.64}
+{"task": "verina_basic_103", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_104", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.18}
+{"task": "verina_basic_105", "status": "ERROR", "errors": ["Unknown constant `Array.mkArray`"], "sorries": 1, "seconds": 1.34}
+{"task": "verina_basic_106", "status": "ERROR", "errors": ["Unknown constant `Array.mkArray`"], "sorries": 1, "seconds": 1.98}
+{"task": "verina_basic_107", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.08}
+{"task": "verina_basic_108", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.12}
+{"task": "verina_basic_11", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_12", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_13", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_14", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_15", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.06}
+{"task": "verina_basic_16", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_17", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.06}
+{"task": "verina_basic_18", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.85}
+{"task": "verina_basic_19", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.2}
+{"task": "verina_basic_2", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_20", "status": "ERROR", "errors": ["Unknown constant `Std.HashSet.empty`"], "sorries": 1, "seconds": 4.14}
+{"task": "verina_basic_21", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.36}
+{"task": "verina_basic_22", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.1}
+{"task": "verina_basic_23", "status": "ERROR", "errors": ["Tactic `simp` failed with a nested error:", "Function expected at"], "sorries": 1, "seconds": 5.27}
+{"task": "verina_basic_24", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 3.21}
+{"task": "verina_basic_25", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.14}
+{"task": "verina_basic_26", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_27", "status": "ERROR", "errors": ["Unknown constant `Std.HashSet.empty`"], "sorries": 1, "seconds": 2.51}
+{"task": "verina_basic_28", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.25}
+{"task": "verina_basic_29", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_3", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_30", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_31", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.06}
+{"task": "verina_basic_32", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.08}
+{"task": "verina_basic_33", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_34", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.07}
+{"task": "verina_basic_35", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.06}
+{"task": "verina_basic_36", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_37", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.46}
+{"task": "verina_basic_38", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.06}
+{"task": "verina_basic_39", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.06}
+{"task": "verina_basic_4", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_40", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 2.24}
+{"task": "verina_basic_41", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.53}
+{"task": "verina_basic_42", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_43", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.06}
+{"task": "verina_basic_44", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.07}
+{"task": "verina_basic_45", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.1}
+{"task": "verina_basic_46", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 3.19}
+{"task": "verina_basic_47", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.45}
+{"task": "verina_basic_48", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.03}
+{"task": "verina_basic_49", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.08}
+{"task": "verina_basic_5", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_50", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.08}
+{"task": "verina_basic_51", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 3.02}
+{"task": "verina_basic_52", "status": "ERROR", "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `bubbleInner`"], "sorries": 1, "seconds": 6.49}
+{"task": "verina_basic_53", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.48}
+{"task": "verina_basic_54", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.05}
+{"task": "verina_basic_55", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_56", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.09}
+{"task": "verina_basic_57", "status": "ERROR", "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `countLessThan`"], "sorries": 1, "seconds": 5.22}
+{"task": "verina_basic_58", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 2.33}
+{"task": "verina_basic_59", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.03}
+{"task": "verina_basic_6", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_60", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 2.81}
+{"task": "verina_basic_61", "status": "ERROR", "errors": ["Invalid field notation: Function `String.Iterator.curr` does not have a usable parameter of type `String.Iterator` for which to substitute `it`", "Invalid field notation: Function `String.Iterator.next` does not have a usable parameter of type `String.Iterator` for which to substitute `it`", "fail to show termination for"], "sorries": 1, "seconds": 0.44}
+{"task": "verina_basic_62", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.62}
+{"task": "verina_basic_63", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 2.76}
+{"task": "verina_basic_64", "status": "ERROR", "errors": ["Unknown constant `Array.mkArray`"], "sorries": 1, "seconds": 0.09}
+{"task": "verina_basic_65", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_66", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.03}
+{"task": "verina_basic_67", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.45}
+{"task": "verina_basic_68", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.27}
+{"task": "verina_basic_69", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.31}
+{"task": "verina_basic_7", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.75}
+{"task": "verina_basic_70", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.4}
+{"task": "verina_basic_71", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 2.49}
+{"task": "verina_basic_72", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 2.31}
+{"task": "verina_basic_73", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 1.31}
+{"task": "verina_basic_74", "status": "ERROR", "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `maxArray_aux`"], "sorries": 1, "seconds": 4.75}
+{"task": "verina_basic_75", "status": "ERROR", "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `loop`"], "sorries": 1, "seconds": 4.99}
+{"task": "verina_basic_76", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.03}
+{"task": "verina_basic_77", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.07}
+{"task": "verina_basic_78", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_79", "status": "ERROR", "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `findBest`"], "sorries": 1, "seconds": 6.19}
+{"task": "verina_basic_8", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.03}
+{"task": "verina_basic_80", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 2.44}
+{"task": "verina_basic_81", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_82", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 2.1}
+{"task": "verina_basic_83", "status": "ERROR", "errors": ["Unknown constant `Array.mkArray`"], "sorries": 1, "seconds": 2.25}
+{"task": "verina_basic_84", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 2.73}
+{"task": "verina_basic_85", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 2.87}
+{"task": "verina_basic_86", "status": "ERROR", "errors": ["Tactic `simp` failed with a nested error:", "Unknown constant `Array.mkArray`", "Unknown identifier `rotateAux`"], "sorries": 1, "seconds": 2.77}
+{"task": "verina_basic_87", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.08}
+{"task": "verina_basic_88", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_89", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.07}
+{"task": "verina_basic_9", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_90", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 3.26}
+{"task": "verina_basic_91", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_92", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_93", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_94", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 2.11}
+{"task": "verina_basic_95", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}
+{"task": "verina_basic_96", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_97", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_98", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.04}
+{"task": "verina_basic_99", "status": "SORRY", "errors": [], "sorries": 1, "seconds": 0.05}

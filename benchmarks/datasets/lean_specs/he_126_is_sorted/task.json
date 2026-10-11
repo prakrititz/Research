@@ -1,0 +1,30 @@
+{
+    "id": "he_126_is_sorted",
+    "signature": {
+        "name": "isSorted",
+        "parameters": [
+            {
+                "param_name": "lst",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "∀ x ∈ lst, x ≥ 0",
+        "postconditions": "result = true ↔ ((∀ i, i < lst.length - 1 → lst[i]! ≤ lst[i + 1]!) ∧ ∀ x ∈ lst, lst.count x ≤ 2)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/126"
+        },
+        "tags": [
+            "list"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

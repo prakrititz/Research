@@ -1,0 +1,194 @@
+[
+    {
+        "input": {
+            "interval1": "(1, 2)",
+            "interval2": "(2, 3)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(-1, 1)",
+            "interval2": "(0, 4)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(-3, -1)",
+            "interval2": "(-5, 5)"
+        },
+        "expected": "YES",
+        "unexpected": [
+            "YESx",
+            "YE",
+            "SEY"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(-2, 2)",
+            "interval2": "(-4, 0)"
+        },
+        "expected": "YES",
+        "unexpected": [
+            "YESx",
+            "YE",
+            "SEY"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(-11, 2)",
+            "interval2": "(-1, -1)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(1, 2)",
+            "interval2": "(3, 5)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(1, 2)",
+            "interval2": "(1, 2)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(-2, -2)",
+            "interval2": "(-3, -2)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(0, 0)",
+            "interval2": "(0, 1)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(6, 10)",
+            "interval2": "(6, 10)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(0, 5)",
+            "interval2": "(3, 10)"
+        },
+        "expected": "YES",
+        "unexpected": [
+            "YESx",
+            "YE",
+            "SEY"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(-999, -999)",
+            "interval2": "(-1000, -999)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(-999, 151)",
+            "interval2": "(-999, 151)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(-5, 10)",
+            "interval2": "(-5, 10)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(-19, 26)",
+            "interval2": "(-19, 26)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    },
+    {
+        "input": {
+            "interval1": "(24, 24)",
+            "interval2": "(24, 24)"
+        },
+        "expected": "NO",
+        "unexpected": [
+            "NOx",
+            "N",
+            "ON"
+        ]
+    }
+]

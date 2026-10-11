@@ -1,0 +1,36 @@
+{
+    "id": "he_074_total_match",
+    "signature": {
+        "name": "totalMatch",
+        "parameters": [
+            {
+                "param_name": "lst1",
+                "param_type": "List String"
+            },
+            {
+                "param_name": "lst2",
+                "param_type": "List String"
+            }
+        ],
+        "return_type": "List String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = (if (lst1.map String.length).sum ≤ (lst2.map String.length).sum then lst1 else lst2)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/74"
+        },
+        "tags": [
+            "list",
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

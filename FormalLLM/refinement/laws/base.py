@@ -24,11 +24,18 @@ class RefinementResult:
                  program: Optional[ProgramNode] = None,
                  sub_specs: Optional[List[Spec]] = None,
                  obligations: Optional[List[ProofObligation]] = None,
-                 roles: Optional[List[str]] = None):
+                 roles: Optional[List[str]] = None,
+                 advisory: Optional[List[ProofObligation]] = None):
         self.program = program
         self.sub_specs = sub_specs or []
         self.obligations = obligations or []
         self.roles = roles or []
+        #: Necessary conditions for the sub-specifications to be refinable at all
+        #: (for example "the set-up step is possible from every input"). They are
+        #: not part of the law's soundness, so they are not certified; a *refuted*
+        #: one rejects the step early and with a precise reason, anything else
+        #: (proved, unknown, timed out) is ignored.
+        self.advisory = advisory or []
 
         if self.sub_specs and len(self.roles) != len(self.sub_specs):
             raise ValueError(

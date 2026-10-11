@@ -1,0 +1,31 @@
+{
+    "id": "he_104_unique_digits",
+    "signature": {
+        "name": "uniqueDigits",
+        "parameters": [
+            {
+                "param_name": "x",
+                "param_type": "List Nat"
+            }
+        ],
+        "return_type": "List Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.isPerm (x.filter noEvenDigit) ∧ ∀ i, i < result.length - 1 → result[i]! ≤ result[i + 1]!"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/104"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

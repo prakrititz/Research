@@ -1,0 +1,32 @@
+{
+    "id": "he_139_special_factorial",
+    "signature": {
+        "name": "specialFactorial",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "n > 0",
+        "postconditions": "result = ((List.range n).map (fun i => factSpec (i + 1))).prod"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/139"
+        },
+        "tags": [
+            "scalar",
+            "loop",
+            "recursive-spec"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

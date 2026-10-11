@@ -1,0 +1,32 @@
+{
+    "id": "he_084_solve",
+    "signature": {
+        "name": "solve84",
+        "parameters": [
+            {
+                "param_name": "N",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "isBinary result.toList (((toString N).toList.map (fun c => c.toNat - '0'.toNat)).sum)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/84"
+        },
+        "tags": [
+            "scalar",
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

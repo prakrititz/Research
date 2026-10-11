@@ -1,0 +1,35 @@
+{
+    "id": "he_087_get_row",
+    "signature": {
+        "name": "getRow",
+        "parameters": [
+            {
+                "param_name": "lst",
+                "param_type": "List (List Int)"
+            },
+            {
+                "param_name": "x",
+                "param_type": "Int"
+            }
+        ],
+        "return_type": "List (Nat × Nat)"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "(∀ p ∈ result, p.1 < lst.length ∧ p.2 < lst[p.1]!.length ∧ (lst[p.1]!)[p.2]! = x) ∧\n  (∀ i, i < lst.length → ∀ j, j < lst[i]!.length → (lst[i]!)[j]! = x → (i, j) ∈ result) ∧ result.Nodup ∧\n  ∀ k, k < result.length - 1 → result[k]!.1 < result[k + 1]!.1 ∨ (result[k]!.1 = result[k + 1]!.1 ∧ result[k + 1]!.2 < result[k]!.2)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/87"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

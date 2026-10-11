@@ -1,0 +1,35 @@
+{
+    "id": "he_127_intersection",
+    "signature": {
+        "name": "intersection",
+        "parameters": [
+            {
+                "param_name": "interval1",
+                "param_type": "Int × Int"
+            },
+            {
+                "param_name": "interval2",
+                "param_type": "Int × Int"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "interval1.1 ≤ interval1.2 ∧ interval2.1 ≤ interval2.2",
+        "postconditions": "let len := min interval1.2 interval2.2 - max interval1.1 interval2.1\n(result = \"YES\" ∨ result = \"NO\") ∧ (result = \"YES\" ↔ (len ≥ 2 ∧ Nat.Prime len.toNat))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/127"
+        },
+        "tags": [
+            "scalar",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

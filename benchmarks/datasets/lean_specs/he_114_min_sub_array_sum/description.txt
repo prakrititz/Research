@@ -1,0 +1,1 @@
+Given a non-empty list of integers, find the minimum sum of any non-empty contiguous sub-list.

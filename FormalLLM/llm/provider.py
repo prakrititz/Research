@@ -43,6 +43,18 @@ class Spinner:
             self.spinner_thread.join()
 
 
+class LLMBudgetExhausted(Exception):
+    """The run's allowance of LLM calls is spent.
+
+    This is a signal about the *whole run*, not a failed refinement attempt, so
+    the refiner must let it propagate. Before it had its own type the refiner's
+    blanket ``except Exception`` caught it, logged it as a failed attempt at
+    every level of the tree, and the harness then reported the run as
+    ``EXHAUSTED`` ("the model ran out of options") when it had in fact stopped
+    on its budget.
+    """
+
+
 class LLMProvider(ABC):
     @abstractmethod
     def generate(self, prompt: str, max_tokens: int = None) -> str:
@@ -197,7 +209,8 @@ class OpenAIChatProvider(LLMProvider):
                  timeout: int = 900,
                  stream: bool = True,
                  max_transport_retries: int = 4,
-                 extra_body: dict = None):
+                 extra_body: dict = None,
+                 reasoning_effort: str = None):
         self.model_name = model_name
         self.base_url = base_url.rstrip("/")
         self.auth = auth if auth is not None else os.environ.get(auth_env)
@@ -214,7 +227,12 @@ class OpenAIChatProvider(LLMProvider):
         # endpoints that do not support SSE.
         self.stream = stream
         self.max_transport_retries = max_transport_retries
-        self.extra_body = extra_body or {}
+        self.extra_body = dict(extra_body or {})
+        # gpt-oss style models spend most of a call's time reasoning; the
+        # endpoint honours `reasoning_effort` ("low" | "medium" | "high"),
+        # which measured 7 s / 12 s / 24 s for the same prompt.
+        if reasoning_effort:
+            self.extra_body.setdefault("reasoning_effort", reasoning_effort)
         self.last_meta = {}
 
     def _headers(self) -> dict:

@@ -1,0 +1,35 @@
+{
+    "id": "he_018_how_many_times",
+    "signature": {
+        "name": "howManyTimes",
+        "parameters": [
+            {
+                "param_name": "string",
+                "param_type": "String"
+            },
+            {
+                "param_name": "substring",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = ((List.range string.length).filter (fun i => substring.toList.isPrefixOf (string.toList.drop i))).length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/18"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

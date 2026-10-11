@@ -1,0 +1,161 @@
+[
+    {
+        "input": {
+            "arr": "[1, 2, 2, -4]"
+        },
+        "expected": "some (-9)",
+        "unexpected": [
+            "none",
+            "some (-8)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[0, 1]"
+        },
+        "expected": "some (0)",
+        "unexpected": [
+            "none",
+            "some (1)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[1, 1, 1, 2, 3, -1, 1]"
+        },
+        "expected": "some (-10)",
+        "unexpected": [
+            "none",
+            "some (-9)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[]"
+        },
+        "expected": "none",
+        "unexpected": [
+            "some (7)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[2, 4, 1, 2, -1, -1, 9]"
+        },
+        "expected": "some (20)",
+        "unexpected": [
+            "none",
+            "some (21)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[-1, 1, -1, 1]"
+        },
+        "expected": "some (4)",
+        "unexpected": [
+            "none",
+            "some (5)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[-1, 1, 1, 1]"
+        },
+        "expected": "some (-4)",
+        "unexpected": [
+            "none",
+            "some (-3)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[-1, 1, 1, 0]"
+        },
+        "expected": "some (0)",
+        "unexpected": [
+            "none",
+            "some (1)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[0, 0, 0, 0]"
+        },
+        "expected": "some (0)",
+        "unexpected": [
+            "none",
+            "some (1)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[0, 0, 0, -1]"
+        },
+        "expected": "some (0)",
+        "unexpected": [
+            "none",
+            "some (1)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[0, 2, 2, 3, -5, 10, 7, -10, -10, 10, 10, -10]"
+        },
+        "expected": "some (0)",
+        "unexpected": [
+            "none",
+            "some (1)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[1, 2, 0, -3, 6, -1, 6, -1]"
+        },
+        "expected": "some (0)",
+        "unexpected": [
+            "none",
+            "some (1)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[0, 0, 0, 0, -1, 2, 1, 11, 1, 1, 0, 0, 0]"
+        },
+        "expected": "some (0)",
+        "unexpected": [
+            "none",
+            "some (1)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[-1, 2, 4, -4, -5, -1]"
+        },
+        "expected": "some (17)",
+        "unexpected": [
+            "none",
+            "some (18)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[-1, 8, 0, 0, -1]"
+        },
+        "expected": "some (0)",
+        "unexpected": [
+            "none",
+            "some (1)"
+        ]
+    },
+    {
+        "input": {
+            "arr": "[2, 3, -10, -3, -2, -8]"
+        },
+        "expected": "some (28)",
+        "unexpected": [
+            "none",
+            "some (29)"
+        ]
+    }
+]

@@ -33,21 +33,27 @@ class FlexibleSequentialCompositionLaw(RefinementLaw):
         ob1 = ProofObligation(
             assumptions=[spec.precondition.expr],
             goal=pre1_expr,
-            params=params
+            params=params,
+            description="the first half's precondition must follow from the specification's: P => A",
+            advice="A must be implied by P for these values; choose a weaker A.",
         )
         
         # Obligation 2: B ⇒ C
         ob2 = ProofObligation(
             assumptions=[post1_expr],
             goal=pre2_expr,
-            params=params
+            params=params,
+            description="the first half's postcondition must imply the second half's precondition: B => C",
+            advice="B must imply C for these values; strengthen B or weaken C.",
         )
         
         # Obligation 3: D ⇒ Q
         ob3 = ProofObligation(
             assumptions=[post2_expr],
             goal=spec.postcondition.expr,
-            params=params
+            params=params,
+            description="the second half's postcondition must imply the specification's: D => Q",
+            advice="D must imply Q for these values; choose a stronger D.",
         )
         
         # Create sub-spec 1: [A, B]

@@ -1,0 +1,121 @@
+[
+    {
+        "input": {
+            "string": "\"\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"asdfgh\""
+        },
+        "expected": "[\"a\", \"as\", \"asd\", \"asdf\", \"asdfg\", \"asdfgh\"]",
+        "unexpected": [
+            "[\"a\", \"as\", \"asd\", \"asdf\", \"asdfg\"]",
+            "[\"a\", \"as\", \"asd\", \"asdf\", \"asdfg\", \"asdfgh\", \"z\"]",
+            "[\"asdfgh\", \"asdfg\", \"asdf\", \"asd\", \"as\", \"a\"]"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"WWW\""
+        },
+        "expected": "[\"W\", \"WW\", \"WWW\"]",
+        "unexpected": [
+            "[\"W\", \"WW\"]",
+            "[\"W\", \"WW\", \"WWW\", \"z\"]",
+            "[\"WWW\", \"WW\", \"W\"]"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"Hello there!\""
+        },
+        "expected": "[\"H\", \"He\", \"Hel\", \"Hell\", \"Hello\", \"Hello \", \"Hello t\", \"Hello th\", \"Hello the\", \"Hello ther\", \"Hello there\", \"Hello there!\"]",
+        "unexpected": [
+            "[\"H\", \"He\", \"Hel\", \"Hell\", \"Hello\", \"Hello \", \"Hello t\", \"Hello th\", \"Hello the\", \"Hello ther\", \"Hello there\"]",
+            "[\"H\", \"He\", \"Hel\", \"Hell\", \"Hello\", \"Hello \", \"Hello t\", \"Hello th\", \"Hello the\", \"Hello ther\", \"Hello there\", \"Hello there!\", \"z\"]",
+            "[\"Hello there!\", \"Hello there\", \"Hello ther\", \"Hello the\", \"Hello th\", \"Hello t\", \"Hello \", \"Hello\", \"Hell\", \"Hel\", \"He\", \"H\"]"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"1233455\""
+        },
+        "expected": "[\"1\", \"12\", \"123\", \"1233\", \"12334\", \"123345\", \"1233455\"]",
+        "unexpected": [
+            "[\"1\", \"12\", \"123\", \"1233\", \"12334\", \"123345\"]",
+            "[\"1\", \"12\", \"123\", \"1233\", \"12334\", \"123345\", \"1233455\", \"z\"]",
+            "[\"1233455\", \"123345\", \"12334\", \"1233\", \"123\", \"12\", \"1\"]"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"This\""
+        },
+        "expected": "[\"T\", \"Th\", \"Thi\", \"This\"]",
+        "unexpected": [
+            "[\"T\", \"Th\", \"Thi\"]",
+            "[\"T\", \"Th\", \"Thi\", \"This\", \"z\"]",
+            "[\"This\", \"Thi\", \"Th\", \"T\"]"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"123cabcd890\""
+        },
+        "expected": "[\"1\", \"12\", \"123\", \"123c\", \"123ca\", \"123cab\", \"123cabc\", \"123cabcd\", \"123cabcd8\", \"123cabcd89\", \"123cabcd890\"]",
+        "unexpected": [
+            "[\"1\", \"12\", \"123\", \"123c\", \"123ca\", \"123cab\", \"123cabc\", \"123cabcd\", \"123cabcd8\", \"123cabcd89\"]",
+            "[\"1\", \"12\", \"123\", \"123c\", \"123ca\", \"123cab\", \"123cabc\", \"123cabcd\", \"123cabcd8\", \"123cabcd89\", \"123cabcd890\", \"z\"]",
+            "[\"123cabcd890\", \"123cabcd89\", \"123cabcd8\", \"123cabcd\", \"123cabc\", \"123cab\", \"123ca\", \"123c\", \"123\", \"12\", \"1\"]"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"AZYXWVPONBAXrC\""
+        },
+        "expected": "[\"A\", \"AZ\", \"AZY\", \"AZYX\", \"AZYXW\", \"AZYXWV\", \"AZYXWVP\", \"AZYXWVPO\", \"AZYXWVPON\", \"AZYXWVPONB\", \"AZYXWVPONBA\", \"AZYXWVPONBAX\", \"AZYXWVPONBAXr\", \"AZYXWVPONBAXrC\"]",
+        "unexpected": [
+            "[\"A\", \"AZ\", \"AZY\", \"AZYX\", \"AZYXW\", \"AZYXWV\", \"AZYXWVP\", \"AZYXWVPO\", \"AZYXWVPON\", \"AZYXWVPONB\", \"AZYXWVPONBA\", \"AZYXWVPONBAX\", \"AZYXWVPONBAXr\"]",
+            "[\"A\", \"AZ\", \"AZY\", \"AZYX\", \"AZYXW\", \"AZYXWV\", \"AZYXWVP\", \"AZYXWVPO\", \"AZYXWVPON\", \"AZYXWVPONB\", \"AZYXWVPONBA\", \"AZYXWVPONBAX\", \"AZYXWVPONBAXr\", \"AZYXWVPONBAXrC\", \"z\"]",
+            "[\"AZYXWVPONBAXrC\", \"AZYXWVPONBAXr\", \"AZYXWVPONBAX\", \"AZYXWVPONBA\", \"AZYXWVPONB\", \"AZYXWVPON\", \"AZYXWVPO\", \"AZYXWVP\", \"AZYXWV\", \"AZYXW\", \"AZYX\", \"AZY\", \"AZ\", \"A\"]"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"This spaces\""
+        },
+        "expected": "[\"T\", \"Th\", \"Thi\", \"This\", \"This \", \"This s\", \"This sp\", \"This spa\", \"This spac\", \"This space\", \"This spaces\"]",
+        "unexpected": [
+            "[\"T\", \"Th\", \"Thi\", \"This\", \"This \", \"This s\", \"This sp\", \"This spa\", \"This spac\", \"This space\"]",
+            "[\"T\", \"Th\", \"Thi\", \"This\", \"This \", \"This s\", \"This sp\", \"This spa\", \"This spac\", \"This space\", \"This spaces\", \"z\"]",
+            "[\"This spaces\", \"This space\", \"This spac\", \"This spa\", \"This sp\", \"This s\", \"This \", \"This\", \"Thi\", \"Th\", \"T\"]"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"h\""
+        },
+        "expected": "[\"h\"]",
+        "unexpected": [
+            "[]",
+            "[\"h\", \"z\"]",
+            "[\"h\", \"h\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"spayouHehaslo,\""
+        },
+        "expected": "[\"s\", \"sp\", \"spa\", \"spay\", \"spayo\", \"spayou\", \"spayouH\", \"spayouHe\", \"spayouHeh\", \"spayouHeha\", \"spayouHehas\", \"spayouHehasl\", \"spayouHehaslo\", \"spayouHehaslo,\"]",
+        "unexpected": [
+            "[\"s\", \"sp\", \"spa\", \"spay\", \"spayo\", \"spayou\", \"spayouH\", \"spayouHe\", \"spayouHeh\", \"spayouHeha\", \"spayouHehas\", \"spayouHehasl\", \"spayouHehaslo\"]",
+            "[\"s\", \"sp\", \"spa\", \"spay\", \"spayo\", \"spayou\", \"spayouH\", \"spayouHe\", \"spayouHeh\", \"spayouHeha\", \"spayouHehas\", \"spayouHehasl\", \"spayouHehaslo\", \"spayouHehaslo,\", \"z\"]",
+            "[\"spayouHehaslo,\", \"spayouHehaslo\", \"spayouHehasl\", \"spayouHehas\", \"spayouHeha\", \"spayouHeh\", \"spayouHe\", \"spayouH\", \"spayou\", \"spayo\", \"spay\", \"spa\", \"sp\", \"s\"]"
+        ]
+    }
+]

@@ -1,0 +1,32 @@
+{
+    "id": "classic_isqrt",
+    "signature": {
+        "name": "isqrt",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result * result ≤ n ∧ n < (result + 1) * (result + 1)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "original",
+            "task_id": "original"
+        },
+        "tags": [
+            "scalar",
+            "loop",
+            "classic"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

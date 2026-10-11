@@ -1,0 +1,161 @@
+[
+    {
+        "input": {
+            "s": "\"aBCdEf\""
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "s": "\"abcdefg\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\"dBBE\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\"B\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\"U\""
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "s": "\"\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\"EEEE\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "s": "\"DbdOH\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\"ABCAnbCdEfGhIjKlMABCDnOpQrStUabcDEfvD\""
+        },
+        "expected": 5,
+        "unexpected": [
+            6,
+            4,
+            13
+        ]
+    },
+    {
+        "input": {
+            "s": "\"AEIOUaeiouBCDFGjkLmnOPrsTxyz\""
+        },
+        "expected": 4,
+        "unexpected": [
+            5,
+            3,
+            11
+        ]
+    },
+    {
+        "input": {
+            "s": "\"AEIOUaeiouBCDxyz\""
+        },
+        "expected": 3,
+        "unexpected": [
+            4,
+            2,
+            9
+        ]
+    },
+    {
+        "input": {
+            "s": "\"yfUFjsyqqpPazeMePJwoSTKnkKfLtn\""
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "s": "\"zbvXuyrwqpmlkjhgfedcbaZXJUTSRPONMLKI\""
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "s": "\"zAbCdEfGhIjKlMnOpQrStUvWxYz\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\"FzjyNNyfbYapORjKDimUqVsxzvGnsqqpPazeMeP\""
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    }
+]

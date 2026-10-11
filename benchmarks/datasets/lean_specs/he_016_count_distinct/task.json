@@ -1,0 +1,30 @@
+{
+    "id": "he_016_count_distinct",
+    "signature": {
+        "name": "countDistinctCharacters",
+        "parameters": [
+            {
+                "param_name": "s",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = (s.toLower.toList.eraseDups).length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/16"
+        },
+        "tags": [
+            "string"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

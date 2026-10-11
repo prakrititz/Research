@@ -1,0 +1,188 @@
+[
+    {
+        "input": {
+            "lst1": "[]",
+            "lst2": "[]"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"hi\", \"admin\"]",
+            "lst2": "[\"hi\", \"hi\"]"
+        },
+        "expected": "[\"hi\", \"hi\"]",
+        "unexpected": [
+            "[\"hi\"]",
+            "[\"hi\", \"hi\", \"z\"]",
+            "[\"hi\", \"hi\", \"hi\", \"hi\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"hi\", \"admin\"]",
+            "lst2": "[\"hi\", \"hi\", \"admin\", \"project\"]"
+        },
+        "expected": "[\"hi\", \"admin\"]",
+        "unexpected": [
+            "[\"hi\"]",
+            "[\"hi\", \"admin\", \"z\"]",
+            "[\"admin\", \"hi\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"4\"]",
+            "lst2": "[\"1\", \"2\", \"3\", \"4\", \"5\"]"
+        },
+        "expected": "[\"4\"]",
+        "unexpected": [
+            "[]",
+            "[\"4\", \"z\"]",
+            "[\"4\", \"4\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"hi\", \"admin\"]",
+            "lst2": "[\"hI\", \"Hi\"]"
+        },
+        "expected": "[\"hI\", \"Hi\"]",
+        "unexpected": [
+            "[\"hI\"]",
+            "[\"hI\", \"Hi\", \"z\"]",
+            "[\"Hi\", \"hI\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"hi\", \"admin\"]",
+            "lst2": "[\"hI\", \"hi\", \"hi\"]"
+        },
+        "expected": "[\"hI\", \"hi\", \"hi\"]",
+        "unexpected": [
+            "[\"hI\", \"hi\"]",
+            "[\"hI\", \"hi\", \"hi\", \"z\"]",
+            "[\"hi\", \"hi\", \"hI\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"hi\", \"admin\"]",
+            "lst2": "[\"hI\", \"hi\", \"hii\"]"
+        },
+        "expected": "[\"hi\", \"admin\"]",
+        "unexpected": [
+            "[\"hi\"]",
+            "[\"hi\", \"admin\", \"z\"]",
+            "[\"admin\", \"hi\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[]",
+            "lst2": "[\"this\"]"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"this\"]",
+            "lst2": "[]"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"\"]",
+            "lst2": "[\"hello\"]"
+        },
+        "expected": "[\"\"]",
+        "unexpected": [
+            "[]",
+            "[\"\", \"z\"]",
+            "[\"\", \"\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"is\", \"awesome\", \"awesome\"]",
+            "lst2": "[\"is\", \"awesome\", \"awesome\"]"
+        },
+        "expected": "[\"is\", \"awesome\", \"awesome\"]",
+        "unexpected": [
+            "[\"is\", \"awesome\"]",
+            "[\"is\", \"awesome\", \"awesome\", \"z\"]",
+            "[\"awesome\", \"awesome\", \"is\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"LO\", \"HELLO\", \"WORLD\", \"1elit0\", \"YOU\"]",
+            "lst2": "[\"LO\", \"HELLO\", \"WORLD\", \"1elit0\", \"YOU\"]"
+        },
+        "expected": "[\"LO\", \"HELLO\", \"WORLD\", \"1elit0\", \"YOU\"]",
+        "unexpected": [
+            "[\"LO\", \"HELLO\", \"WORLD\", \"1elit0\"]",
+            "[\"LO\", \"HELLO\", \"WORLD\", \"1elit0\", \"YOU\", \"z\"]",
+            "[\"YOU\", \"1elit0\", \"WORLD\", \"HELLO\", \"LO\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"\", \"banana\", \"jumpste\", \"cherry\", \"date\", \"jue\", \"Lorem\", \"cherry\"]",
+            "lst2": "[\"\", \"banana\", \"jumpste\", \"cherry\", \"date\", \"jue\", \"Lorem\", \"cherry\"]"
+        },
+        "expected": "[\"\", \"banana\", \"jumpste\", \"cherry\", \"date\", \"jue\", \"Lorem\", \"cherry\"]",
+        "unexpected": [
+            "[\"\", \"banana\", \"jumpste\", \"cherry\", \"date\", \"jue\", \"Lorem\"]",
+            "[\"\", \"banana\", \"jumpste\", \"cherry\", \"date\", \"jue\", \"Lorem\", \"cherry\", \"z\"]",
+            "[\"cherry\", \"Lorem\", \"jue\", \"date\", \"cherry\", \"jumpste\", \"banana\", \"\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"z\", \"abcdefg\", \"qrstuv\", \"wxxyz\", \"qrstuv\", \"abcdefg\", \"abcdefg\"]",
+            "lst2": "[\"z\", \"abcdefg\", \"qrstuv\", \"wxxyz\", \"qrstuv\", \"abcdefg\", \"abcdefg\"]"
+        },
+        "expected": "[\"z\", \"abcdefg\", \"qrstuv\", \"wxxyz\", \"qrstuv\", \"abcdefg\", \"abcdefg\"]",
+        "unexpected": [
+            "[\"z\", \"abcdefg\", \"qrstuv\", \"wxxyz\", \"qrstuv\", \"abcdefg\"]",
+            "[\"z\", \"abcdefg\", \"qrstuv\", \"wxxyz\", \"qrstuv\", \"abcdefg\", \"abcdefg\", \"z\"]",
+            "[\"abcdefg\", \"abcdefg\", \"qrstuv\", \"wxxyz\", \"qrstuv\", \"abcdefg\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"HELLO\", \"HOW\", \"ARE\", \"YOU\"]",
+            "lst2": "[\"HELLO\", \"HOW\", \"ARE\", \"YOU\"]"
+        },
+        "expected": "[\"HELLO\", \"HOW\", \"ARE\", \"YOU\"]",
+        "unexpected": [
+            "[\"HELLO\", \"HOW\", \"ARE\"]",
+            "[\"HELLO\", \"HOW\", \"ARE\", \"YOU\", \"z\"]",
+            "[\"YOU\", \"ARE\", \"HOW\", \"HELLO\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst1": "[\"Date\"]",
+            "lst2": "[\"Date\"]"
+        },
+        "expected": "[\"Date\"]",
+        "unexpected": [
+            "[]",
+            "[\"Date\", \"z\"]",
+            "[\"Date\", \"Date\", \"z\"]"
+        ]
+    }
+]

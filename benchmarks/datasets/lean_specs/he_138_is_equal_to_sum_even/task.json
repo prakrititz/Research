@@ -1,0 +1,31 @@
+{
+    "id": "he_138_is_equal_to_sum_even",
+    "signature": {
+        "name": "isEqualToSumEven",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ (n ≥ 8 ∧ n % 2 = 0)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/138"
+        },
+        "tags": [
+            "scalar",
+            "term"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

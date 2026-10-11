@@ -1,0 +1,166 @@
+[
+    {
+        "input": {
+            "n": "2"
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "n": "1"
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "n": "5"
+        },
+        "expected": 4,
+        "unexpected": [
+            5,
+            3,
+            11
+        ]
+    },
+    {
+        "input": {
+            "n": "8"
+        },
+        "expected": 24,
+        "unexpected": [
+            25,
+            23,
+            51
+        ]
+    },
+    {
+        "input": {
+            "n": "10"
+        },
+        "expected": 81,
+        "unexpected": [
+            82,
+            80,
+            165
+        ]
+    },
+    {
+        "input": {
+            "n": "12"
+        },
+        "expected": 274,
+        "unexpected": [
+            275,
+            273,
+            551
+        ]
+    },
+    {
+        "input": {
+            "n": "14"
+        },
+        "expected": 927,
+        "unexpected": [
+            928,
+            926,
+            1857
+        ]
+    },
+    {
+        "input": {
+            "n": "20"
+        },
+        "expected": 35890,
+        "unexpected": [
+            35891,
+            35889,
+            71783
+        ]
+    },
+    {
+        "input": {
+            "n": "15"
+        },
+        "expected": 1705,
+        "unexpected": [
+            1706,
+            1704,
+            3413
+        ]
+    },
+    {
+        "input": {
+            "n": "25"
+        },
+        "expected": 755476,
+        "unexpected": [
+            755477,
+            755475,
+            1510955
+        ]
+    },
+    {
+        "input": {
+            "n": "19"
+        },
+        "expected": 19513,
+        "unexpected": [
+            19514,
+            19512,
+            39029
+        ]
+    },
+    {
+        "input": {
+            "n": "18"
+        },
+        "expected": 10609,
+        "unexpected": [
+            10610,
+            10608,
+            21221
+        ]
+    },
+    {
+        "input": {
+            "n": "26"
+        },
+        "expected": 1389537,
+        "unexpected": [
+            1389538,
+            1389536,
+            2779077
+        ]
+    },
+    {
+        "input": {
+            "n": "27"
+        },
+        "expected": 2555757,
+        "unexpected": [
+            2555758,
+            2555756,
+            5111517
+        ]
+    },
+    {
+        "input": {
+            "n": "3"
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    }
+]

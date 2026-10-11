@@ -1,0 +1,181 @@
+[
+    {
+        "input": {
+            "s": "\"5 apples and 6 oranges\"",
+            "n": "19"
+        },
+        "expected": 8,
+        "unexpected": [
+            9,
+            7,
+            19
+        ]
+    },
+    {
+        "input": {
+            "s": "\"5 apples and 6 oranges\"",
+            "n": "21"
+        },
+        "expected": 10,
+        "unexpected": [
+            11,
+            9,
+            23
+        ]
+    },
+    {
+        "input": {
+            "s": "\"0 apples and 1 oranges\"",
+            "n": "3"
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "s": "\"1 apples and 0 oranges\"",
+            "n": "3"
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "s": "\"2 apples and 3 oranges\"",
+            "n": "100"
+        },
+        "expected": 95,
+        "unexpected": [
+            96,
+            94,
+            193
+        ]
+    },
+    {
+        "input": {
+            "s": "\"2 apples and 3 oranges\"",
+            "n": "5"
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\"1 apples and 100 oranges\"",
+            "n": "120"
+        },
+        "expected": 19,
+        "unexpected": [
+            20,
+            18,
+            41
+        ]
+    },
+    {
+        "input": {
+            "s": "\"10 apples and 20 oranges\"",
+            "n": "50"
+        },
+        "expected": 20,
+        "unexpected": [
+            21,
+            19,
+            43
+        ]
+    },
+    {
+        "input": {
+            "s": "\"2 apples and 0 oranges\"",
+            "n": "50"
+        },
+        "expected": 48,
+        "unexpected": [
+            49,
+            47,
+            99
+        ]
+    },
+    {
+        "input": {
+            "s": "\"3 apples and 7 oranges\"",
+            "n": "20"
+        },
+        "expected": 10,
+        "unexpected": [
+            11,
+            9,
+            23
+        ]
+    },
+    {
+        "input": {
+            "s": "\"20 apples and 0 oranges\"",
+            "n": "107"
+        },
+        "expected": 87,
+        "unexpected": [
+            88,
+            86,
+            177
+        ]
+    },
+    {
+        "input": {
+            "s": "\"99 apples and 1 oranges\"",
+            "n": "101"
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "s": "\"0 apples and 0 oranges\"",
+            "n": "104"
+        },
+        "expected": 104,
+        "unexpected": [
+            105,
+            103,
+            211
+        ]
+    },
+    {
+        "input": {
+            "s": "\"0 apples and 0 oranges\"",
+            "n": "18"
+        },
+        "expected": 18,
+        "unexpected": [
+            19,
+            17,
+            39
+        ]
+    },
+    {
+        "input": {
+            "s": "\"91 apples and 9 oranges\"",
+            "n": "106"
+        },
+        "expected": 6,
+        "unexpected": [
+            7,
+            5,
+            15
+        ]
+    }
+]

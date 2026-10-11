@@ -1,0 +1,31 @@
+{
+    "id": "he_090_next_smallest",
+    "signature": {
+        "name": "nextSmallest",
+        "parameters": [
+            {
+                "param_name": "lst",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Option Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "match result with\n| none => ∀ x ∈ lst, ∀ y ∈ lst, x = y\n| some r => r ∈ lst ∧ (∃ m ∈ lst, m < r) ∧ ∀ x ∈ lst, (∃ m ∈ lst, m < x) → r ≤ x"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/90"
+        },
+        "tags": [
+            "list",
+            "option"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

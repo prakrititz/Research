@@ -1,0 +1,31 @@
+{
+    "id": "he_086_anti_shuffle",
+    "signature": {
+        "name": "antiShuffle",
+        "parameters": [
+            {
+                "param_name": "s",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "let ws := s.splitOn \" \"\nlet rs := result.splitOn \" \"\nrs.length = ws.length ∧ ∀ i, i < ws.length → rs[i]!.toList.isPerm ws[i]!.toList ∧\n  ∀ j, j < rs[i]!.length - 1 → rs[i]!.toList[j]!.toNat ≤ rs[i]!.toList[j + 1]!.toNat"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/86"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

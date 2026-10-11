@@ -1,0 +1,31 @@
+{
+    "id": "he_057_monotonic",
+    "signature": {
+        "name": "monotonic",
+        "parameters": [
+            {
+                "param_name": "l",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ ((∀ i, i < l.length - 1 → l[i]! ≤ l[i + 1]!) ∨ (∀ i, i < l.length - 1 → l[i]! ≥ l[i + 1]!))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/57"
+        },
+        "tags": [
+            "list",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

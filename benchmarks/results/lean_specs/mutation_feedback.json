@@ -1,0 +1,2080 @@
+{
+ "summary": {
+  "mutants": 344,
+  "outcomes": {
+   "unproved_with_counterexample": 248,
+   "unproved": 94,
+   "survived_certified": 2
+  },
+  "killed": 342,
+  "kill_rate": 0.994,
+  "counterexample_share_of_killed": 0.725,
+  "seconds": 884.6
+ },
+ "rows": [
+  {
+   "task": "he_097_multiply",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := -10, b := -2"
+  },
+  {
+   "task": "he_138_is_equal_to_sum_even",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 8"
+  },
+  {
+   "task": "he_138_is_equal_to_sum_even",
+   "mutation": "root:term.expr:ge->gt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 8"
+  },
+  {
+   "task": "he_138_is_equal_to_sum_even",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 10"
+  },
+  {
+   "task": "he_157_right_angle_triangle",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := 0, b := 1, c := 0"
+  },
+  {
+   "task": "he_157_right_angle_triangle",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := 0, b := 1, c := 0"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2, i := 2, s := 2"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2, i := 2, s := 1"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 1, s = 1)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 2, s = 1)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 0, s = 1)  invariant false  variant 1 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1"
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1"
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 1, acc = [1])  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1"
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 1, acc = [1])  invariant true  variant 1 -> 0\n    state (i = 1, acc = [1])  invariant true  guard true\n      your step gives (i = 2, acc = [1, 3])  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 2, acc = [1])  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 0, acc = [1])  invariant false  variant 1 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 2, acc = [1])  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 0, acc = [1])  invariant false  variant 1 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [], t := 0"
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [], t := 0"
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [], t := 0"
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [], t := 0"
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [], t := 0\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0], t := 0\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 2, ok = false)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0], t := 0\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 0, ok = false)  invariant false  variant 1 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "0:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [-9, -6, 9, -2], t := -9\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant false  variant 4 -> 3   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "0:term.expr:and->or",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0], t := 0\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "root:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "root:bind.prop:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "root:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "root:bind.prop:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "root:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0, 0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [1]"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.variant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0, 0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant true  variant 0 -> 0   <- the variant does not decrease"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0/0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0, 0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 2, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0/0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0, 0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 0, ok = true)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0/0:term.expr:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [-6, -6]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = false)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0/0:term.expr:and->or",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0, -1]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1:bind.prop:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1:bind.prop:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.variant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0/0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0/0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0/0:term.expr:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0/0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [-1, 2], j := 2, found := true"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [5, -5, 0, 4], j := 4, found := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [-1, 0], j := 2, found := true"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [], j := 0, found := false, hit := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0:bind.prop:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [3, 3], j := 1, found := false, i := 1, seen := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0:bind.prop:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [3, -1], j := 1, found := false, i := 1, seen := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [1], j := 0, found := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [1, -2, 3], j := 2, found := false, i := 2, seen := true"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.invariant:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [-1, -2, -4, -4], j := 3, found := false, i := 3, seen := true"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0, 0], j := 0, found := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [1], j := 0, found := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [1], j := 0, found := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [1], j := 0, found := false\n    state (i = 0, seen = false)  invariant true  guard true\n      your step gives (i = 1, seen = false)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0/0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0, 3], j := 1, found := false\n    state (i = 0, seen = false)  invariant true  guard true\n      your step gives (i = 2, seen = false)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0/0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [-1, -1], j := 1, found := false\n    state (i = 0, seen = false)  invariant true  guard true\n      your step gives (i = 0, seen = false)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0/0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [-1, -1], j := 1, found := false\n    state (i = 0, seen = false)  invariant true  guard true\n      your step gives (i = 1, seen = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/1:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0], j := 0, found := false, hit := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/1:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0], j := 0, found := false, hit := false"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0, 0]\n    state (i = 1, m = 0)  invariant true  guard true\n      your step gives (i = 3, m = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0, 0]\n    state (i = 1, m = 0)  invariant true  guard true\n      your step gives (i = 0, m = 0)  invariant false  variant 1 -> 2   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "root:cases.cond:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "root:cases.cond:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.invariant:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2\n    state (d = 2, ok = true)  invariant true  guard true\n      your step gives (d = 3, ok = false)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1/0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 3\n    state (d = 2, ok = true)  invariant true  guard true\n      your step gives (d = 4, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1/0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 3\n    state (d = 2, ok = true)  invariant true  guard true\n      your step gives (d = 1, ok = true)  invariant false  variant 1 -> 2   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1/0:term.expr:and->or",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 4\n    state (d = 2, ok = true)  invariant true  guard true\n      your step gives (d = 3, ok = true)  invariant false  variant 2 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2"
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2"
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2"
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "root:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 3\n    state (d = 2)  invariant true  guard true\n      your step gives (d = 0)  invariant false  variant 2 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 2, acc = [])  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 0, acc = [])  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := []"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := [0, 0]\n    state (k = 0, acc = [])  invariant true  guard true\n      your step gives (k = 1, acc = [0])  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := [0, 1]"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := []"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := []"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.variant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := [0, 0]\n    state (k = 0, acc = [])  invariant true  guard true\n      your step gives (k = 1, acc = [0])  invariant true  variant 0 -> 0   <- the variant does not decrease"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := [0, 0]\n    state (k = 0, acc = [])  invariant true  guard true\n      your step gives (k = 2, acc = [0])  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := [0, 0]\n    state (k = 0, acc = [])  invariant true  guard true\n      your step gives (k = 0, acc = [0])  invariant false  variant 1 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): game := [], guess := []"
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): game := [-1], guess := [1]"
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): game := [], guess := []"
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): game := [], guess := []"
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): game := [], guess := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): game := [0], guess := [0]\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 2, acc = [0])  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): game := [0], guess := [0]\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 0, acc = [0])  invariant false  variant 1 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := [0]\n    state (i = 0, bal = 0, neg = false)  invariant true  guard true\n      your step gives (i = 2, bal = 0, neg = false)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := [0]\n    state (i = 0, bal = 0, neg = false)  invariant true  guard true\n      your step gives (i = 0, bal = 0, neg = false)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "0:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := [0]\n    state (i = 0, bal = 0, neg = false)  invariant true  guard true\n      your step gives (i = 1, bal = 0, neg = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [1]"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [-12, 10, -7, -12], i := 4, s := 0"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 1, s = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 1, s = 0)  invariant true  variant 1 -> 0\n    state (i = 1, s = 0)  invariant true  guard true\n      your step gives (i = 2, s = 0)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 2, s = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 0, s = 0)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [1]\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 1, s = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 1, s = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 2, s = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 0, s = 0)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [-2]\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 1, s = -2)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, a = 0, b = 1)  invariant true  guard true\n      your step gives (i = 1, a = 1, b = 1)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0\n    state (i = 0, a = 0, b = 1)  invariant true  guard true\n      your step gives (i = 1, a = 1, b = 1)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, a = 0, b = 1)  invariant true  guard true\n      your step gives (i = 2, a = 1, b = 1)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, a = 0, b = 1)  invariant true  guard true\n      your step gives (i = 0, a = 1, b = 1)  invariant false  variant 1 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, fact = 1, total = 1)  invariant true  guard true\n      your step gives (i = 1, fact = 1, total = 1)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, fact = 1, total = 1)  invariant true  guard true\n      your step gives (i = 1, fact = 1, total = 1)  invariant true  variant 1 -> 0\n    state (i = 1, fact = 1, total = 1)  invariant true  guard true\n      your step gives (i = 2, fact = 2, total = 2)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, fact = 1, total = 1)  invariant true  guard true\n      your step gives (i = 2, fact = 1, total = 1)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (i = 0, fact = 1, total = 1)  invariant true  guard true\n      your step gives (i = 0, fact = 1, total = 1)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): text := \"\""
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): text := \"\\x00A\""
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): text := \"\""
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): text := \"\""
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): text := \"\"\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): text := \"\\x01\"\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 2, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): text := \"\\x01\"\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 0, ok = true)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "0:term.expr:and->or",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): text := \"\\x00A\"\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant false  variant 2 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): text := \"\\x01\"\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = false)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "root:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "root:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "root:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): q := [], w := 0"
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): q := [0, 1], w := 0"
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): q := [], w := 0"
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): q := [], w := 0"
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): q := [], w := 0\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0/0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): q := [0], w := 0\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 2, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0/0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): q := [0], w := 0\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 0, ok = true)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0/0:term.expr:and->or",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): q := [0, 1], w := 0\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant false  variant 2 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0/0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): q := [0], w := 0\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = false)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "1:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "1:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := []"
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := []"
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := []"
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := [\"\"]\n    state (i = 0, acc = )  invariant true  guard true\n      your step gives (i = 2, acc = )  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := [\"\"]\n    state (i = 0, acc = )  invariant true  guard true\n      your step gives (i = 0, acc = )  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := [], prefix_ := \"\""
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := [], prefix_ := \"\""
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := [], prefix_ := \"\""
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := [], prefix_ := \"\"\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := [\"\"], prefix_ := \"\"\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 2, acc = [])  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): strings := [\"\"], prefix_ := \"\"\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 0, acc = [])  invariant false  variant 1 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"1\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"1\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"1\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"1\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): brackets := \"\""
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): brackets := \"\""
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): brackets := \"\""
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.invariant:ge->gt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): brackets := \"\""
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): brackets := \"\""
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): brackets := \"\"\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.result:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.result:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.result:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): brackets := \"\\x01\"\n    state (i = 0, d = 0, ok = true)  invariant true  guard true\n      your step gives (i = 2, d = 0, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): brackets := \"\\x01\"\n    state (i = 0, d = 0, ok = true)  invariant true  guard true\n      your step gives (i = 0, d = 0, ok = true)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "0:term.expr:ge->gt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): brackets := \"\\x01\"\n    state (i = 0, d = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, d = 0, ok = false)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "0:term.expr:and->or",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): brackets := \")\"\n    state (i = 0, d = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, d = -1, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): brackets := \"\\x01\"\n    state (i = 0, d = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, d = 1, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "root:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "root:bind.prop:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "root:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "root:bind.prop:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "root:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0, 0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [1]"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.variant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0, 0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant true  variant 0 -> 0   <- the variant does not decrease"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0/0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0, 0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 2, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0/0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0, 0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 0, ok = true)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0/0:term.expr:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [1, 1]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = false)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0/0:term.expr:and->or",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [1, 0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1:bind.prop:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0/0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0/0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0/0:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0/0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/1:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_isqrt",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "classic_isqrt",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "classic_isqrt",
+   "mutation": "root:loop.guard:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, r := 0"
+  },
+  {
+   "task": "classic_isqrt",
+   "mutation": "root:loop.guard:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_isqrt",
+   "mutation": "root:loop.guard:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, r := 0"
+  },
+  {
+   "task": "classic_isqrt",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (r = 0)  invariant true  guard true\n      your step gives (r = 2)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "classic_isqrt",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 1\n    state (r = 0)  invariant true  guard true\n      your step gives (r = 0)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "classic_sqrt_approx",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_sqrt_approx",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_sqrt_approx",
+   "mutation": "root:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_sqrt_approx",
+   "mutation": "root:loop.guard:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_sqrt_approx",
+   "mutation": "root:loop.guard:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_sqrt_approx",
+   "mutation": "root:loop.variant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_sqrt_approx",
+   "mutation": "root:loop.variant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_sqrt_approx",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_sqrt_approx",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_fast_power",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_fast_power",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_fast_power",
+   "mutation": "root:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_fast_power",
+   "mutation": "0:cases.cond:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_fast_power",
+   "mutation": "0:cases.cond:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_fast_power",
+   "mutation": "0/0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_fast_power",
+   "mutation": "0/1:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_sort_list",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "classic_reverse",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "classic_reverse",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "classic_reverse",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "classic_reverse",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index"
+  },
+  {
+   "task": "classic_reverse",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 2, acc = [0])  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "classic_reverse",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]\n    state (i = 0, acc = [])  invariant true  guard true\n      your step gives (i = 0, acc = [0])  invariant false  variant 1 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "root:bind.prop:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0, x := 0, y := 0"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0:cases.cond:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2, x := -2, y := -1"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0:cases.cond:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2, x := -2, y := -1"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2, x := -1, y := -1"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2, x := -1, y := -1"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2, x := -1, y := -1"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2, x := -1, y := -1"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.invariant:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2, x := -1, y := -1"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 2, x := -1, y := -1\n    state (d = 2, ok = true)  invariant true  guard true\n      your step gives (d = 3, ok = false)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1/0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 3, x := 4, y := 0\n    state (d = 2, ok = true)  invariant true  guard true\n      your step gives (d = 4, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1/0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 3, x := 4, y := 0\n    state (d = 2, ok = true)  invariant true  guard true\n      your step gives (d = 1, ok = true)  invariant false  variant 1 -> 2   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1/0:term.expr:and->or",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 4, x := 1, y := -2\n    state (d = 2, ok = true)  invariant true  guard true\n      your step gives (d = 3, ok = true)  invariant false  variant 2 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "1:cases.cond:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, x := 1, y := 0, p := false"
+  }
+ ]
+}

@@ -1,0 +1,35 @@
+{
+    "id": "he_049_modp",
+    "signature": {
+        "name": "modp",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            },
+            {
+                "param_name": "p",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "p > 0",
+        "postconditions": "result = 2 ^ n % p"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/49"
+        },
+        "tags": [
+            "scalar",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

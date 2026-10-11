@@ -1,0 +1,156 @@
+[
+    {
+        "input": {
+            "s": "\"Hi\""
+        },
+        "expected": "Hi",
+        "unexpected": [
+            "Hix",
+            "H",
+            "iH"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"hello\""
+        },
+        "expected": "ehllo",
+        "unexpected": [
+            "ehllox",
+            "ehll",
+            "ollhe"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"number\""
+        },
+        "expected": "bemnru",
+        "unexpected": [
+            "bemnrux",
+            "bemnr",
+            "urnmeb"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"abcd\""
+        },
+        "expected": "abcd",
+        "unexpected": [
+            "abcdx",
+            "abc",
+            "dcba"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"Hello World!!!\""
+        },
+        "expected": "Hello !!!Wdlor",
+        "unexpected": [
+            "Hello !!!Wdlorx",
+            "Hello !!!Wdlo",
+            "roldW!!! olleH"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"12345\""
+        },
+        "expected": "12345",
+        "unexpected": [
+            "12345x",
+            "1234",
+            "54321"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"CjumpsC\""
+        },
+        "expected": "CCjmpsu",
+        "unexpected": [
+            "CCjmpsux",
+            "CCjmps",
+            "uspmjCC"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"CjjjD\""
+        },
+        "expected": "CDjjj",
+        "unexpected": [
+            "CDjjjx",
+            "CDjj",
+            "jjjDC"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"AbCdEfGMnKOpQrStCUvWx\""
+        },
+        "expected": "ACCEGKMOQSUWbdfnprtvx",
+        "unexpected": [
+            "ACCEGKMOQSUWbdfnprtvxx",
+            "ACCEGKMOQSUWbdfnprtv",
+            "xvtrpnfdbWUSQOMKGECCA"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"qwkTzPZd\""
+        },
+        "expected": "PTZdkqwz",
+        "unexpected": [
+            "PTZdkqwzx",
+            "PTZdkqw",
+            "zwqkdZTP"
+        ]
+    },
+    {
+        "input": {
+            "s": "\" \\t\\n\\x0c\\r\\x0b A B C   D E F     G H I      \""
+        },
+        "expected": " \t\n\u000b\f\r A B C   D E F     G H I      ",
+        "unexpected": [
+            " \t\n\u000b\f\r A B C   D E F     G H I      x",
+            " \t\n\u000b\f\r A B C   D E F     G H I     ",
+            "      I H G     F E D   C B A \r\f\u000b\n\t "
+        ]
+    },
+    {
+        "input": {
+            "s": "\"progrprognramming.rng\""
+        },
+        "expected": ".aggggimmnnnoopprrrrr",
+        "unexpected": [
+            ".aggggimmnnnoopprrrrrx",
+            ".aggggimmnnnoopprrrr",
+            "rrrrrppoonnnmmigggga."
+        ]
+    },
+    {
+        "input": {
+            "s": "\"AbCdEfGhIjinterpreted,KlMtEUv\""
+        },
+        "expected": ",ACEEGIKMUbddeeefhijlnprrtttv",
+        "unexpected": [
+            ",ACEEGIKMUbddeeefhijlnprrtttvx",
+            ",ACEEGIKMUbddeeefhijlnprrttt",
+            "vtttrrpnljihfeeeddbUMKIGEECA,"
+        ]
+    }
+]
