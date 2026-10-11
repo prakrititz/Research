@@ -23,6 +23,60 @@ from typing import List, Optional
 
 HOME = os.path.join(os.path.expanduser("~"), ".formalllm")
 
+
+# --- where Lean lives (self-contained: nothing here depends on the earlier Z3-era ``FormalLLM/verification`` package) --------
+
+def short_path(path: str) -> str:
+    """Windows 8.3 form of ``path`` (no spaces), which Lake and Lean handle more reliably; unchanged elsewhere."""
+    if os.name != "nt" or not os.path.exists(path):
+        return path
+    try:
+        import ctypes
+        buf = ctypes.create_unicode_buffer(32768)
+        if ctypes.windll.kernel32.GetShortPathNameW(path, buf, len(buf)):
+            return buf.value
+    except Exception:
+        pass
+    return path
+
+
+@dataclass
+class Toolchain:
+    """``elan`` in ``~/.formalllm/elan`` and a Lake project requiring Mathlib in ``~/.formalllm/lean-env-parent/lean-env``
+    (override with ``FORMALLLM_ELAN_HOME`` / ``FORMALLLM_LEAN_PROJECT``; the REPL with ``FORMALLLM_LEAN_REPL``)."""
+    elan_home: str = field(default_factory=lambda: os.environ.get("FORMALLLM_ELAN_HOME") or os.path.join(HOME, "elan"))
+    project: str = field(default_factory=lambda: os.environ.get("FORMALLLM_LEAN_PROJECT")
+                         or os.path.join(HOME, "lean-env-parent", "lean-env"))
+    repl: str = field(default_factory=lambda: os.environ.get("FORMALLLM_LEAN_REPL") or os.path.join(
+        HOME, "repl", ".lake", "build", "bin", "repl.exe" if os.name == "nt" else "repl"))
+
+    @property
+    def lake(self) -> str:
+        return os.path.join(self.elan_home, "bin", "lake.exe" if os.name == "nt" else "lake")
+
+    @property
+    def available(self) -> bool:
+        return os.path.exists(self.lake) and os.path.isdir(self.project) and os.path.exists(self.repl)
+
+    def env(self) -> dict:
+        env = dict(os.environ)
+        env["ELAN_HOME"] = short_path(self.elan_home)
+        env["PATH"] = short_path(os.path.join(self.elan_home, "bin")) + os.pathsep + env.get("PATH", "")
+        return env
+
+    def command(self, *tail: str) -> list:
+        """``lake env <tail>`` inside the project (run it with ``cwd=short_path(project)`` and ``env=self.env()``)."""
+        return [self.lake, "env", *tail]
+
+    def spawn_repl(self) -> subprocess.Popen:
+        if not self.available:
+            raise LeanUnavailable(f"Lean project ({self.project}), lake ({self.lake}) or the REPL ({self.repl}) is missing; "
+                                  "see Reading Material/22")
+        return subprocess.Popen(self.command(self.repl), cwd=short_path(self.project), env=self.env(),
+                                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                                text=True, encoding="utf8", bufsize=1)
+
+
 #: Small imports that cover the arithmetic, list and counter-example tactics the refinement obligations use.
 DEFAULT_IMPORTS = ("import Mathlib.Data.Real.Basic\nimport Mathlib.Tactic.Linarith\nimport Mathlib.Tactic.Positivity\n"
                    "import Mathlib.Tactic.NormNum\nimport Mathlib.Tactic.Ring\nimport Mathlib.Data.List.Basic\nimport Mathlib.Data.List.Sort\n"
@@ -80,15 +134,7 @@ class LeanSession:
     # --- process management ---------------------------------------------------------------------------------------
 
     def _start(self):
-        from FormalLLM.verification.backends.lean_backend import LeanBackend, short_path
-        backend = LeanBackend()
-        repl = os.environ.get("FORMALLLM_LEAN_REPL") or os.path.join(
-            HOME, "repl", ".lake", "build", "bin", "repl.exe" if os.name == "nt" else "repl")
-        if not (backend.available and os.path.exists(repl)):
-            raise LeanUnavailable(f"Lean project, lake or the REPL ({repl}) is missing; see Reading Material/22")
-        self.process = subprocess.Popen([backend.lake, "env", repl], cwd=short_path(backend.project), env=backend._env(),
-                                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-                                        text=True, encoding="utf8", bufsize=1)
+        self.process = Toolchain().spawn_repl()
         started = time.time()
         reply = self._exchange({"cmd": self.imports}, self.startup_timeout)
         if reply is None:

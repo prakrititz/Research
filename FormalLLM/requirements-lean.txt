@@ -1,0 +1,4 @@
+# The Lean pipeline (FormalLLM/lean, benchmarks/datasets/lean_specs*, benchmarks/verina_*) needs no Z3 and no Lark.
+# Lean 4 + Mathlib itself is installed with elan (see Reading Material/22, entry 2026-10-11).
+evalplus     # HumanEval / EvalPlus tests for the specification library
+pytest
