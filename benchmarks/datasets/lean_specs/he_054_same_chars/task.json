@@ -1,0 +1,35 @@
+{
+    "id": "he_054_same_chars",
+    "signature": {
+        "name": "sameChars",
+        "parameters": [
+            {
+                "param_name": "s0",
+                "param_type": "String"
+            },
+            {
+                "param_name": "s1",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ ((∀ c ∈ s0.toList, c ∈ s1.toList) ∧ (∀ c ∈ s1.toList, c ∈ s0.toList))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/54"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

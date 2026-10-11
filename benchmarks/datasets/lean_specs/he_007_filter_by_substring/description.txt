@@ -1,0 +1,1 @@
+Filter an input list of strings, keeping only the ones that contain the given substring.

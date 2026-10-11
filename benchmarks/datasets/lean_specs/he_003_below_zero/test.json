@@ -1,0 +1,128 @@
+[
+    {
+        "input": {
+            "operations": "[]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "operations": "[1, 2, -3, 1, 2, -3]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "operations": "[1, 2, -4, 5, 6]"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "operations": "[1, -1, 2, -2, 5, -5, 4, -4]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "operations": "[1, -1, 2, -2, 5, -5, 4, -5]"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "operations": "[1, -2, 2, -2, 5, -5, 4, -4]"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "operations": "[0]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "operations": "[1, 2, 3, -6, -6, -6]"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "operations": "[1, 2, 3, 4, -10, 5, 6, -15, 3, 4]"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "operations": "[1, 2, 3, 4, 5, -15, 7, 8, 9, 21, -19]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "operations": "[100, 300, -400, 500, -1000, 500]"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "operations": "[1, 7, 2, 3, 6, 4, 5, 7, 8, 26, 9, -19, 21, 4]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "operations": "[7, 5, 1, 16, 4, 5, -15, 7, 9, -19, 21]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "operations": "[-5, -20, 16, -25, 100, -5]"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    }
+]

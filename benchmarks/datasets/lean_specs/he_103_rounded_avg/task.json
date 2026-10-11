@@ -1,0 +1,37 @@
+{
+    "id": "he_103_rounded_avg",
+    "signature": {
+        "name": "roundedAvg",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            },
+            {
+                "param_name": "m",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Option String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "match result with\n| none => n > m\n| some b => n ≤ m ∧ b.length ≥ 3 ∧ b.toList.take 2 = ['0', 'b'] ∧ isBinary (b.toList.drop 2) (roundedHalfEven (n + m))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/103"
+        },
+        "tags": [
+            "scalar",
+            "string",
+            "option",
+            "declarative"
+        ],
+        "note": "Python returns -1 or a string; here -1 is none"
+    },
+    "test_file": "./test.json"
+}

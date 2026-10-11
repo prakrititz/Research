@@ -24,6 +24,7 @@ class StrengthenPostconditionLaw(RefinementLaw):
             goal=spec.postcondition.expr,
             params=obligation_params(spec),
             description="the new postcondition must be stronger than the old one: R => Q",
+            advice="R must imply the original postcondition Q for these values; choose a stronger R.",
         )
         
         # Create sub-spec: [P, R]

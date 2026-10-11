@@ -1,0 +1,32 @@
+{
+    "id": "he_014_all_prefixes",
+    "signature": {
+        "name": "allPrefixes",
+        "parameters": [
+            {
+                "param_name": "string",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "List String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.length = string.length ∧ ∀ i, i < string.length → result[i]! = String.mk (string.toList.take (i + 1))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/14"
+        },
+        "tags": [
+            "string",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

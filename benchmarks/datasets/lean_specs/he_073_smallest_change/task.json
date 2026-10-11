@@ -1,0 +1,31 @@
+{
+    "id": "he_073_smallest_change",
+    "signature": {
+        "name": "smallestChange",
+        "parameters": [
+            {
+                "param_name": "arr",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = ((List.range (arr.length / 2)).filter (fun i => arr[i]! ≠ arr[arr.length - 1 - i]!)).length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/73"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

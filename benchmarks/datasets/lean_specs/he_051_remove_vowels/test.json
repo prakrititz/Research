@@ -1,0 +1,167 @@
+[
+    {
+        "input": {
+            "text": "\"\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"abcdef\\nghijklm\""
+        },
+        "expected": "bcdf\nghjklm",
+        "unexpected": [
+            "bcdf\nghjklmx",
+            "bcdf\nghjkl",
+            "mlkjhg\nfdcb"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"fedcba\""
+        },
+        "expected": "fdcb",
+        "unexpected": [
+            "fdcbx",
+            "fdc",
+            "bcdf"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"eeeee\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"acBAA\""
+        },
+        "expected": "cB",
+        "unexpected": [
+            "cBx",
+            "c",
+            "Bc"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"EcBOO\""
+        },
+        "expected": "cB",
+        "unexpected": [
+            "cBx",
+            "c",
+            "Bc"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"ybcd\""
+        },
+        "expected": "ybcd",
+        "unexpected": [
+            "ybcdx",
+            "ybc",
+            "dcby"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"hello\""
+        },
+        "expected": "hll",
+        "unexpected": [
+            "hllx",
+            "hl",
+            "llh"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"The\""
+        },
+        "expected": "Th",
+        "unexpected": [
+            "Thx",
+            "T",
+            "hT"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"Hlo wor\""
+        },
+        "expected": "Hl wr",
+        "unexpected": [
+            "Hl wrx",
+            "Hl w",
+            "rw lH"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"efghijklmnopqrsttuvwxyz\""
+        },
+        "expected": "fghjklmnpqrsttvwxyz",
+        "unexpected": [
+            "fghjklmnpqrsttvwxyzx",
+            "fghjklmnpqrsttvwxy",
+            "zyxwvttsrqpnmlkjhgf"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"punctuat!oHello\""
+        },
+        "expected": "pnctt!Hll",
+        "unexpected": [
+            "pnctt!Hllx",
+            "pnctt!Hl",
+            "llH!ttcnp"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"\\n\""
+        },
+        "expected": "\n",
+        "unexpected": [
+            "\nx",
+            "",
+            "\nyy"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"dHello,  hh  tare you today?og.h\""
+        },
+        "expected": "dHll,  hh  tr y tdy?g.h",
+        "unexpected": [
+            "dHll,  hh  tr y tdy?g.hx",
+            "dHll,  hh  tr y tdy?g.",
+            "h.g?ydt y rt  hh  ,llHd"
+        ]
+    },
+    {
+        "input": {
+            "text": "\"AEEIOUaeHdo.elHlofox\""
+        },
+        "expected": "Hd.lHlfx",
+        "unexpected": [
+            "Hd.lHlfxx",
+            "Hd.lHlf",
+            "xflHl.dH"
+        ]
+    }
+]

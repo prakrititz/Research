@@ -1,0 +1,189 @@
+{"task": "verina_advanced_1", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.37}
+{"task": "verina_advanced_10", "compiles": true, "errors": [], "tests": 6, "passed": 0, "unproved": 6, "seconds": 1.7}
+{"task": "verina_advanced_11", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 0.2}
+{"task": "verina_advanced_12", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.18}
+{"task": "verina_advanced_13", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.52}
+{"task": "verina_advanced_14", "compiles": true, "errors": [], "tests": 13, "passed": 13, "unproved": 0, "seconds": 0.4}
+{"task": "verina_advanced_15", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 0.16}
+{"task": "verina_advanced_16", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.12}
+{"task": "verina_advanced_17", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.12}
+{"task": "verina_advanced_18", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 1.1}
+{"task": "verina_advanced_19", "compiles": true, "errors": [], "tests": 5, "passed": 0, "unproved": 10, "seconds": 0.19}
+{"task": "verina_advanced_2", "compiles": false, "errors": ["Unknown constant `Array.mkArray`", "Invalid field notation: Type of"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 1.02}
+{"task": "verina_advanced_20", "compiles": true, "errors": [], "tests": 10, "passed": 10, "unproved": 0, "seconds": 0.48}
+{"task": "verina_advanced_21", "compiles": true, "errors": [], "tests": 5, "passed": 0, "unproved": 5, "seconds": 1.07}
+{"task": "verina_advanced_22", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 0.29}
+{"task": "verina_advanced_23", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 2.7}
+{"task": "verina_advanced_24", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.21}
+{"task": "verina_advanced_25", "compiles": false, "errors": ["Unknown constant `Array.mkArray`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 0.1}
+{"task": "verina_advanced_26", "compiles": true, "errors": [], "tests": 7, "passed": 0, "unproved": 7, "seconds": 0.45}
+{"task": "verina_advanced_27", "compiles": true, "errors": [], "tests": 5, "passed": 0, "unproved": 10, "seconds": 0.95}
+{"task": "verina_advanced_28", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.31}
+{"task": "verina_advanced_29", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.31}
+{"task": "verina_advanced_3", "compiles": false, "errors": ["Unknown constant `Array.mkArray`", "Invalid field notation: Type of"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 1.1}
+{"task": "verina_advanced_30", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 0.26}
+{"task": "verina_advanced_31", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.25}
+{"task": "verina_advanced_32", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.38}
+{"task": "verina_advanced_33", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.26}
+{"task": "verina_advanced_34", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 2.19}
+{"task": "verina_advanced_35", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.25}
+{"task": "verina_advanced_36", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.22}
+{"task": "verina_advanced_37", "compiles": true, "errors": [], "tests": 10, "passed": 10, "unproved": 0, "seconds": 0.32}
+{"task": "verina_advanced_38", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.28}
+{"task": "verina_advanced_39", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.14}
+{"task": "verina_advanced_4", "compiles": false, "errors": ["Unknown constant `Array.mkArray`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 0.32}
+{"task": "verina_advanced_40", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.14}
+{"task": "verina_advanced_41", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.12}
+{"task": "verina_advanced_42", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.22}
+{"task": "verina_advanced_43", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.2}
+{"task": "verina_advanced_44", "compiles": false, "errors": ["Unknown constant `Array.mkArray`", "Invalid field notation: Type of"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 0.45}
+{"task": "verina_advanced_45", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.17}
+{"task": "verina_advanced_46", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.26}
+{"task": "verina_advanced_47", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 0.31}
+{"task": "verina_advanced_48", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.37}
+{"task": "verina_advanced_49", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 1.13}
+{"task": "verina_advanced_5", "compiles": true, "errors": [], "tests": 4, "passed": 4, "unproved": 0, "seconds": 1.97}
+{"task": "verina_advanced_50", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 2.54}
+{"task": "verina_advanced_51", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 1.39}
+{"task": "verina_advanced_52", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.36}
+{"task": "verina_advanced_53", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.74}
+{"task": "verina_advanced_54", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.25}
+{"task": "verina_advanced_55", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.36}
+{"task": "verina_advanced_56", "compiles": true, "errors": [], "tests": 9, "passed": 9, "unproved": 0, "seconds": 0.35}
+{"task": "verina_advanced_57", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 1.53}
+{"task": "verina_advanced_58", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.64}
+{"task": "verina_advanced_59", "compiles": true, "errors": [], "tests": 6, "passed": 0, "unproved": 7, "seconds": 2.06}
+{"task": "verina_advanced_6", "compiles": true, "errors": [], "tests": 6, "passed": 0, "unproved": 6, "seconds": 0.11}
+{"task": "verina_advanced_60", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.2}
+{"task": "verina_advanced_61", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.28}
+{"task": "verina_advanced_62", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 3.07}
+{"task": "verina_advanced_63", "compiles": true, "errors": [], "tests": 11, "passed": 11, "unproved": 0, "seconds": 0.37}
+{"task": "verina_advanced_64", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.2}
+{"task": "verina_advanced_65", "compiles": true, "errors": [], "tests": 5, "passed": 0, "unproved": 5, "seconds": 0.12}
+{"task": "verina_advanced_66", "compiles": true, "errors": [], "tests": 5, "passed": 0, "unproved": 6, "seconds": 0.14}
+{"task": "verina_advanced_67", "compiles": true, "errors": [], "tests": 5, "passed": 0, "unproved": 5, "seconds": 0.24}
+{"task": "verina_advanced_68", "compiles": false, "errors": ["Invalid field notation: Type of", "stuck at solving universe constraint"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 0.75}
+{"task": "verina_advanced_69", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 0.23}
+{"task": "verina_advanced_7", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 0.18}
+{"task": "verina_advanced_70", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.28}
+{"task": "verina_advanced_71", "compiles": true, "errors": [], "tests": 9, "passed": 0, "unproved": 18, "seconds": 0.46}
+{"task": "verina_advanced_72", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 0.19}
+{"task": "verina_advanced_73", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.16}
+{"task": "verina_advanced_74", "compiles": true, "errors": [], "tests": 5, "passed": 0, "unproved": 5, "seconds": 0.17}
+{"task": "verina_advanced_75", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.23}
+{"task": "verina_advanced_76", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.25}
+{"task": "verina_advanced_77", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 1.17}
+{"task": "verina_advanced_78", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.34}
+{"task": "verina_advanced_79", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.25}
+{"task": "verina_advanced_8", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 0.33}
+{"task": "verina_advanced_80", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.34}
+{"task": "verina_advanced_81", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.22}
+{"task": "verina_advanced_9", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.8}
+{"task": "verina_basic_1", "compiles": true, "errors": [], "tests": 11, "passed": 11, "unproved": 0, "seconds": 0.15}
+{"task": "verina_basic_10", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 0.21}
+{"task": "verina_basic_100", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.11}
+{"task": "verina_basic_101", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.1}
+{"task": "verina_basic_102", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 3.52}
+{"task": "verina_basic_103", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.34}
+{"task": "verina_basic_104", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.47}
+{"task": "verina_basic_105", "compiles": false, "errors": ["Unknown constant `Array.mkArray`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 1.26}
+{"task": "verina_basic_106", "compiles": false, "errors": ["Unknown constant `Array.mkArray`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 1.24}
+{"task": "verina_basic_107", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.09}
+{"task": "verina_basic_108", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.27}
+{"task": "verina_basic_11", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.16}
+{"task": "verina_basic_12", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.1}
+{"task": "verina_basic_13", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.14}
+{"task": "verina_basic_14", "compiles": true, "errors": [], "tests": 9, "passed": 0, "unproved": 9, "seconds": 0.09}
+{"task": "verina_basic_15", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.17}
+{"task": "verina_basic_16", "compiles": true, "errors": [], "tests": 7, "passed": 0, "unproved": 18, "seconds": 0.18}
+{"task": "verina_basic_17", "compiles": true, "errors": [], "tests": 6, "passed": 0, "unproved": 7, "seconds": 0.13}
+{"task": "verina_basic_18", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 0.74}
+{"task": "verina_basic_19", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 0.41}
+{"task": "verina_basic_2", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.16}
+{"task": "verina_basic_20", "compiles": false, "errors": ["Unknown constant `Std.HashSet.empty`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 2.38}
+{"task": "verina_basic_21", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.62}
+{"task": "verina_basic_22", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.31}
+{"task": "verina_basic_23", "compiles": false, "errors": ["Tactic `simp` failed with a nested error:", "Function expected at"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 3.34}
+{"task": "verina_basic_24", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 3.82}
+{"task": "verina_basic_25", "compiles": true, "errors": [], "tests": 4, "passed": 4, "unproved": 0, "seconds": 0.25}
+{"task": "verina_basic_26", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.09}
+{"task": "verina_basic_27", "compiles": false, "errors": ["Unknown constant `Std.HashSet.empty`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 1.58}
+{"task": "verina_basic_28", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 1.71}
+{"task": "verina_basic_29", "compiles": true, "errors": [], "tests": 4, "passed": 4, "unproved": 0, "seconds": 0.18}
+{"task": "verina_basic_3", "compiles": true, "errors": [], "tests": 12, "passed": 12, "unproved": 0, "seconds": 0.17}
+{"task": "verina_basic_30", "compiles": true, "errors": [], "tests": 3, "passed": 3, "unproved": 0, "seconds": 0.15}
+{"task": "verina_basic_31", "compiles": true, "errors": [], "tests": 5, "passed": 0, "unproved": 6, "seconds": 0.14}
+{"task": "verina_basic_32", "compiles": true, "errors": [], "tests": 4, "passed": 4, "unproved": 0, "seconds": 0.28}
+{"task": "verina_basic_33", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.19}
+{"task": "verina_basic_34", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 0.19}
+{"task": "verina_basic_35", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.15}
+{"task": "verina_basic_36", "compiles": true, "errors": [], "tests": 4, "passed": 0, "unproved": 7, "seconds": 0.11}
+{"task": "verina_basic_37", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 1.59}
+{"task": "verina_basic_38", "compiles": true, "errors": [], "tests": 6, "passed": 0, "unproved": 6, "seconds": 0.12}
+{"task": "verina_basic_39", "compiles": true, "errors": [], "tests": 4, "passed": 4, "unproved": 0, "seconds": 0.13}
+{"task": "verina_basic_4", "compiles": true, "errors": [], "tests": 10, "passed": 10, "unproved": 0, "seconds": 0.22}
+{"task": "verina_basic_40", "compiles": true, "errors": [], "tests": 6, "passed": 0, "unproved": 6, "seconds": 3.14}
+{"task": "verina_basic_41", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 1.7}
+{"task": "verina_basic_42", "compiles": true, "errors": [], "tests": 7, "passed": 0, "unproved": 7, "seconds": 0.12}
+{"task": "verina_basic_43", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 0.13}
+{"task": "verina_basic_44", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 0.2}
+{"task": "verina_basic_45", "compiles": true, "errors": [], "tests": 3, "passed": 3, "unproved": 0, "seconds": 0.2}
+{"task": "verina_basic_46", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 2.99}
+{"task": "verina_basic_47", "compiles": true, "errors": [], "tests": 4, "passed": 4, "unproved": 0, "seconds": 0.53}
+{"task": "verina_basic_48", "compiles": true, "errors": [], "tests": 10, "passed": 0, "unproved": 10, "seconds": 1.48}
+{"task": "verina_basic_49", "compiles": true, "errors": [], "tests": 6, "passed": 6, "unproved": 0, "seconds": 0.21}
+{"task": "verina_basic_5", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 0.15}
+{"task": "verina_basic_50", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.11}
+{"task": "verina_basic_51", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 3.03}
+{"task": "verina_basic_52", "compiles": false, "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `bubbleInner`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 4.84}
+{"task": "verina_basic_53", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.48}
+{"task": "verina_basic_54", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 1.42}
+{"task": "verina_basic_55", "compiles": true, "errors": [], "tests": 2, "passed": 2, "unproved": 0, "seconds": 0.07}
+{"task": "verina_basic_56", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.29}
+{"task": "verina_basic_57", "compiles": false, "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `countLessThan`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 3.85}
+{"task": "verina_basic_58", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 2.42}
+{"task": "verina_basic_59", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.12}
+{"task": "verina_basic_6", "compiles": true, "errors": [], "tests": 9, "passed": 9, "unproved": 0, "seconds": 0.2}
+{"task": "verina_basic_60", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 3.23}
+{"task": "verina_basic_61", "compiles": false, "errors": ["Invalid field notation: Function `String.Iterator.curr` does not have a usable parameter of type `String.Iterator` for which to substitute `it`", "Invalid field notation: Function `String.Iterator.next` does not have a usable parameter of type `String.Iterator` for which to substitute `it`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 0.22}
+{"task": "verina_basic_62", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 1.69}
+{"task": "verina_basic_63", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 3.51}
+{"task": "verina_basic_64", "compiles": false, "errors": ["Unknown constant `Array.mkArray`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 0.05}
+{"task": "verina_basic_65", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.13}
+{"task": "verina_basic_66", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.12}
+{"task": "verina_basic_67", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 1.68}
+{"task": "verina_basic_68", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 1.5}
+{"task": "verina_basic_69", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 1.54}
+{"task": "verina_basic_7", "compiles": true, "errors": [], "tests": 7, "passed": 7, "unproved": 0, "seconds": 0.72}
+{"task": "verina_basic_70", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 1.52}
+{"task": "verina_basic_71", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 2.54}
+{"task": "verina_basic_72", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 2.42}
+{"task": "verina_basic_73", "compiles": true, "errors": [], "tests": 5, "passed": 0, "unproved": 10, "seconds": 1.54}
+{"task": "verina_basic_74", "compiles": false, "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `maxArray_aux`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 3.66}
+{"task": "verina_basic_75", "compiles": false, "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `loop`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 3.19}
+{"task": "verina_basic_76", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.15}
+{"task": "verina_basic_77", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.26}
+{"task": "verina_basic_78", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.11}
+{"task": "verina_basic_79", "compiles": false, "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `findBest`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 3.88}
+{"task": "verina_basic_8", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.14}
+{"task": "verina_basic_80", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 2.49}
+{"task": "verina_basic_81", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.15}
+{"task": "verina_basic_82", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 2.38}
+{"task": "verina_basic_83", "compiles": false, "errors": ["Unknown constant `Array.mkArray`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 1.31}
+{"task": "verina_basic_84", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 3.24}
+{"task": "verina_basic_85", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 3.34}
+{"task": "verina_basic_86", "compiles": false, "errors": ["Tactic `simp` failed with a nested error:", "Unknown constant `Array.mkArray`"], "tests": 0, "passed": 0, "unproved": 0, "seconds": 1.84}
+{"task": "verina_basic_87", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.17}
+{"task": "verina_basic_88", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.13}
+{"task": "verina_basic_89", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.1}
+{"task": "verina_basic_9", "compiles": true, "errors": [], "tests": 8, "passed": 8, "unproved": 0, "seconds": 0.25}
+{"task": "verina_basic_90", "compiles": true, "errors": [], "tests": 5, "passed": 2, "unproved": 3, "seconds": 5.1}
+{"task": "verina_basic_91", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.12}
+{"task": "verina_basic_92", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.19}
+{"task": "verina_basic_93", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.16}
+{"task": "verina_basic_94", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 2.27}
+{"task": "verina_basic_95", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.26}
+{"task": "verina_basic_96", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.15}
+{"task": "verina_basic_97", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.17}
+{"task": "verina_basic_98", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.09}
+{"task": "verina_basic_99", "compiles": true, "errors": [], "tests": 5, "passed": 5, "unproved": 0, "seconds": 0.1}

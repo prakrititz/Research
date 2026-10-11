@@ -1,0 +1,31 @@
+{
+    "id": "he_094_skjkasdkd",
+    "signature": {
+        "name": "skjkasdkd",
+        "parameters": [
+            {
+                "param_name": "lst",
+                "param_type": "List Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "∃ x ∈ lst, Nat.Prime x",
+        "postconditions": "∃ p ∈ lst, Nat.Prime p ∧ (∀ x ∈ lst, Nat.Prime x → x ≤ p) ∧ result = ((toString p).toList.map (fun c => c.toNat - '0'.toNat)).sum"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/94"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

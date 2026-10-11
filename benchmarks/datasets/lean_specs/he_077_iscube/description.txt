@@ -1,0 +1,1 @@
+Return true if the integer a is a cube of some integer number.

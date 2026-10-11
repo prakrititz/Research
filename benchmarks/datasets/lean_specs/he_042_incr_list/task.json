@@ -1,0 +1,30 @@
+{
+    "id": "he_042_incr_list",
+    "signature": {
+        "name": "incrList",
+        "parameters": [
+            {
+                "param_name": "l",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "List Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.length = l.length ∧ ∀ i, i < l.length → result[i]! = l[i]! + 1"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/42"
+        },
+        "tags": [
+            "list"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

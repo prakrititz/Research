@@ -1,0 +1,31 @@
+{
+    "id": "he_041_car_race_collision",
+    "signature": {
+        "name": "carRaceCollision",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = n * n"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/41"
+        },
+        "tags": [
+            "scalar",
+            "term"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

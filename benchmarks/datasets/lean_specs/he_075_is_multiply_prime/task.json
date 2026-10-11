@@ -1,0 +1,31 @@
+{
+    "id": "he_075_is_multiply_prime",
+    "signature": {
+        "name": "isMultiplyPrime",
+        "parameters": [
+            {
+                "param_name": "a",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "a < 100",
+        "postconditions": "result = true ↔ ∃ p, p < a + 1 ∧ ∃ q, q < a + 1 ∧ ∃ r, r < a + 1 ∧ p * q * r = a ∧ Nat.Prime p ∧ Nat.Prime q ∧ Nat.Prime r"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/75"
+        },
+        "tags": [
+            "scalar",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

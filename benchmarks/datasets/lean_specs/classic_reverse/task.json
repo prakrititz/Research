@@ -1,0 +1,32 @@
+{
+    "id": "classic_reverse",
+    "signature": {
+        "name": "reverseList",
+        "parameters": [
+            {
+                "param_name": "l",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "List Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.length = l.length ∧ ∀ i, i < l.length → result[i]! = l[l.length - 1 - i]!"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "original",
+            "task_id": "original"
+        },
+        "tags": [
+            "list",
+            "loop",
+            "classic"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

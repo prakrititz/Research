@@ -1,0 +1,137 @@
+[
+    {
+        "input": {
+            "keys": "[(PyVal.str \"p\"), (PyVal.str \"b\")]"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"p\"), (PyVal.str \"A\"), (PyVal.str \"B\")]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"p\"), (PyVal.str \"5\"), (PyVal.str \"a\")]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"Name\"), (PyVal.str \"Age\"), (PyVal.str \"City\")]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"STATE\"), (PyVal.str \"ZIP\")]"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"fruit\"), (PyVal.str \"taste\")]"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "keys": "[]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"FIRST_NAME\"), (PyVal.str \"LAST_NAME\"), (PyVal.str \"AGE\"), (PyVal.str \"CITY\"), (PyVal.str \"INCOME\")]"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"firstName\"), (PyVal.str \"Age\"), (PyVal.str \"cItY\"), (PyVal.str \"Income\")]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"first_name\"), (PyVal.str \"Last_Name\"), (PyVal.str \"Age\"), (PyVal.str \"city\"), (PyVal.str \"Income\"), (PyVal.str \"FIRST_NAME\"), (PyVal.str \"Incoome\"), (PyVal.str \"\")]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"Age\"), (PyVal.str \"cItY\"), (PyVal.str \"Income\")]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"firstName\"), (PyVal.str \"LASTNAME\"), (PyVal.str \"Income\"), (PyVal.str \"8\"), (PyVal.str \"$50,,000\")]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"Dooe\"), (PyVal.str \"Age\"), (PyVal.str \"Anew yorrk\")]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"firstName\"), (PyVal.str \"LASTNAME\"), (PyVal.str \"Income\"), (PyVal.str \"IncIome\"), (PyVal.str \"DIncome\")]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "keys": "[(PyVal.str \"firstName\"), (PyVal.str \"LASTNAME\"), (PyVal.str \"Age\"), (PyVal.str \"Income\"), (PyVal.str \"IncIome\"), (PyVal.str \"eAge\")]"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    }
+]

@@ -1,0 +1,31 @@
+{
+    "id": "he_082_prime_length",
+    "signature": {
+        "name": "primeLength",
+        "parameters": [
+            {
+                "param_name": "string",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ Nat.Prime string.length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/82"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

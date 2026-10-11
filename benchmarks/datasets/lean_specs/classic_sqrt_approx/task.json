@@ -1,0 +1,37 @@
+{
+    "id": "classic_sqrt_approx",
+    "signature": {
+        "name": "sqrtApprox",
+        "parameters": [
+            {
+                "param_name": "N",
+                "param_type": "ℚ"
+            },
+            {
+                "param_name": "e",
+                "param_type": "ℚ"
+            }
+        ],
+        "return_type": "ℚ"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "N ≥ 0 ∧ e > 0",
+        "postconditions": "result ≥ 0 ∧ result * result ≤ N ∧ N < (result + e) * (result + e)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "original",
+            "task_id": "original"
+        },
+        "tags": [
+            "scalar",
+            "loop",
+            "classic",
+            "paper"
+        ],
+        "note": "the paper's flagship example, over the rationals so that it can be executed; the paper has it over the reals"
+    },
+    "test_file": "./test.json"
+}

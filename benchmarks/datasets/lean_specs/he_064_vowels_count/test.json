@@ -1,0 +1,167 @@
+[
+    {
+        "input": {
+            "s": "\"abcde\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "s": "\"Alone\""
+        },
+        "expected": 3,
+        "unexpected": [
+            4,
+            2,
+            9
+        ]
+    },
+    {
+        "input": {
+            "s": "\"key\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "s": "\"bye\""
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "s": "\"keY\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "s": "\"bYe\""
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "s": "\"ACEDY\""
+        },
+        "expected": 3,
+        "unexpected": [
+            4,
+            2,
+            9
+        ]
+    },
+    {
+        "input": {
+            "s": "\"hello\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "s": "\"applebaglueaeiyectiieme\""
+        },
+        "expected": 13,
+        "unexpected": [
+            14,
+            12,
+            29
+        ]
+    },
+    {
+        "input": {
+            "s": "\"cryptogracpy\""
+        },
+        "expected": 3,
+        "unexpected": [
+            4,
+            2,
+            9
+        ]
+    },
+    {
+        "input": {
+            "s": "\"iaeaoeiiouyfacetiousnessioouy\""
+        },
+        "expected": 21,
+        "unexpected": [
+            22,
+            20,
+            45
+        ]
+    },
+    {
+        "input": {
+            "s": "\"facetifoubcdffghjklfmnpqrustvwxyzsness\""
+        },
+        "expected": 7,
+        "unexpected": [
+            8,
+            6,
+            17
+        ]
+    },
+    {
+        "input": {
+            "s": "\"AEIOUy\""
+        },
+        "expected": 6,
+        "unexpected": [
+            7,
+            5,
+            15
+        ]
+    },
+    {
+        "input": {
+            "s": "\"ographty\""
+        },
+        "expected": 3,
+        "unexpected": [
+            4,
+            2,
+            9
+        ]
+    },
+    {
+        "input": {
+            "s": "\"absas\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    }
+]

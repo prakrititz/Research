@@ -1,0 +1,32 @@
+{
+    "id": "he_099_closest_integer",
+    "signature": {
+        "name": "closestInteger",
+        "parameters": [
+            {
+                "param_name": "value",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "let body := if value.startsWith \"-\" then String.mk (value.toList.drop 1) else value\n(body.all (fun c => c.isDigit || c == '.') && (body.toList.filter (fun c => c == '.')).length ≤ 1 && body.toList.any Char.isDigit) = true",
+        "postconditions": "let q := parseDec value\n|q - (result : ℚ)| < 1 / 2 ∨ (|q - (result : ℚ)| = 1 / 2 ∧ |q| < |(result : ℚ)|)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/99"
+        },
+        "tags": [
+            "string",
+            "scalar",
+            "float"
+        ],
+        "note": "the string is read as the exact decimal number it denotes (the canonical solution goes through a float, which can round a long decimal)"
+    },
+    "test_file": "./test.json"
+}

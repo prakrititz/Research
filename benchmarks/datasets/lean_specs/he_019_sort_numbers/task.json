@@ -1,0 +1,32 @@
+{
+    "id": "he_019_sort_numbers",
+    "signature": {
+        "name": "sortNumbers",
+        "parameters": [
+            {
+                "param_name": "numbers",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "numbers = \"\" ∨ ∀ t ∈ numbers.splitOn \" \", t ∈ numeralNames",
+        "postconditions": "let toks := if numbers = \"\" then [] else numbers.splitOn \" \"\nlet sorted := if result = \"\" then [] else result.splitOn \" \"\nsorted.isPerm toks ∧ ∀ i, i < sorted.length - 1 → numeralValue sorted[i]! ≤ numeralValue sorted[i + 1]!"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/19"
+        },
+        "tags": [
+            "string",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

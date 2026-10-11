@@ -1,0 +1,36 @@
+{
+    "id": "he_029_filter_by_prefix",
+    "signature": {
+        "name": "filterByPrefix",
+        "parameters": [
+            {
+                "param_name": "strings",
+                "param_type": "List String"
+            },
+            {
+                "param_name": "prefix_",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "List String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = strings.filter (fun s => s.startsWith prefix_)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/29"
+        },
+        "tags": [
+            "string",
+            "list",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

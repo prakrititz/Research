@@ -1,0 +1,174 @@
+[
+    {
+        "input": {
+            "n": "1",
+            "m": "5"
+        },
+        "expected": "some (\"0b11\")",
+        "unexpected": [
+            "none",
+            "some (\"0b11x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "7",
+            "m": "13"
+        },
+        "expected": "some (\"0b1010\")",
+        "unexpected": [
+            "none",
+            "some (\"0b1010x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "964",
+            "m": "977"
+        },
+        "expected": "some (\"0b1111001010\")",
+        "unexpected": [
+            "none",
+            "some (\"0b1111001010x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "996",
+            "m": "997"
+        },
+        "expected": "some (\"0b1111100100\")",
+        "unexpected": [
+            "none",
+            "some (\"0b1111100100x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "560",
+            "m": "851"
+        },
+        "expected": "some (\"0b1011000010\")",
+        "unexpected": [
+            "none",
+            "some (\"0b1011000010x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "185",
+            "m": "546"
+        },
+        "expected": "some (\"0b101101110\")",
+        "unexpected": [
+            "none",
+            "some (\"0b101101110x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "362",
+            "m": "496"
+        },
+        "expected": "some (\"0b110101101\")",
+        "unexpected": [
+            "none",
+            "some (\"0b110101101x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "350",
+            "m": "902"
+        },
+        "expected": "some (\"0b1001110010\")",
+        "unexpected": [
+            "none",
+            "some (\"0b1001110010x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "197",
+            "m": "233"
+        },
+        "expected": "some (\"0b11010111\")",
+        "unexpected": [
+            "none",
+            "some (\"0b11010111x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "7",
+            "m": "5"
+        },
+        "expected": "none",
+        "unexpected": [
+            "some (\"z\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "5",
+            "m": "1"
+        },
+        "expected": "none",
+        "unexpected": [
+            "some (\"z\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "5",
+            "m": "5"
+        },
+        "expected": "some (\"0b101\")",
+        "unexpected": [
+            "none",
+            "some (\"0b101x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "1",
+            "m": "1"
+        },
+        "expected": "some (\"0b1\")",
+        "unexpected": [
+            "none",
+            "some (\"0b1x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "3000",
+            "m": "3000"
+        },
+        "expected": "some (\"0b101110111000\")",
+        "unexpected": [
+            "none",
+            "some (\"0b101110111000x\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "12001",
+            "m": "12000"
+        },
+        "expected": "none",
+        "unexpected": [
+            "some (\"z\")"
+        ]
+    },
+    {
+        "input": {
+            "n": "54320",
+            "m": "5000"
+        },
+        "expected": "none",
+        "unexpected": [
+            "some (\"z\")"
+        ]
+    }
+]

@@ -1,0 +1,33 @@
+{
+    "id": "he_012_longest",
+    "signature": {
+        "name": "longest",
+        "parameters": [
+            {
+                "param_name": "strings",
+                "param_type": "List String"
+            }
+        ],
+        "return_type": "Option String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "match result with\n  | none => strings = []\n  | some s => ∃ i, i < strings.length ∧ strings[i]! = s ∧ (∀ t ∈ strings, t.length ≤ s.length) ∧\n      ∀ j, j < i → strings[j]!.length < s.length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/12"
+        },
+        "tags": [
+            "list",
+            "string",
+            "option",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

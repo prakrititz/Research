@@ -1,0 +1,123 @@
+[
+    {
+        "input": {
+            "lst": "[\"1234567\"]"
+        },
+        "expected": "[\"the number of odd elements 4n the str4ng 4 of the 4nput.\"]",
+        "unexpected": [
+            "[]",
+            "[\"the number of odd elements 4n the str4ng 4 of the 4nput.\", \"z\"]",
+            "[\"the number of odd elements 4n the str4ng 4 of the 4nput.\", \"the number of odd elements 4n the str4ng 4 of the 4nput.\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"3\", \"11111111\"]"
+        },
+        "expected": "[\"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 8n the str8ng 8 of the 8nput.\"]",
+        "unexpected": [
+            "[\"the number of odd elements 1n the str1ng 1 of the 1nput.\"]",
+            "[\"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 8n the str8ng 8 of the 8nput.\", \"z\"]",
+            "[\"the number of odd elements 8n the str8ng 8 of the 8nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"271\", \"137\", \"314\"]"
+        },
+        "expected": "[\"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\"]",
+        "unexpected": [
+            "[\"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\"]",
+            "[\"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"z\"]",
+            "[\"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"2468\"]"
+        },
+        "expected": "[\"the number of odd elements 0n the str0ng 0 of the 0nput.\"]",
+        "unexpected": [
+            "[]",
+            "[\"the number of odd elements 0n the str0ng 0 of the 0nput.\", \"z\"]",
+            "[\"the number of odd elements 0n the str0ng 0 of the 0nput.\", \"the number of odd elements 0n the str0ng 0 of the 0nput.\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"11111\", \"824680888\"]"
+        },
+        "expected": "[\"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 0n the str0ng 0 of the 0nput.\"]",
+        "unexpected": [
+            "[\"the number of odd elements 5n the str5ng 5 of the 5nput.\"]",
+            "[\"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 0n the str0ng 0 of the 0nput.\", \"z\"]",
+            "[\"the number of odd elements 0n the str0ng 0 of the 0nput.\", \"the number of odd elements 5n the str5ng 5 of the 5nput.\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"9999999999999999999999999\", \"999999999999911111111999999999999\", \"11111111111111111111\", \"99999999999999\", \"33333333333333333333333333333\"]"
+        },
+        "expected": "[\"the number of odd elements 25n the str25ng 25 of the 25nput.\", \"the number of odd elements 33n the str33ng 33 of the 33nput.\", \"the number of odd elements 20n the str20ng 20 of the 20nput.\", \"the number of odd elements 14n the str14ng 14 of the 14nput.\", \"the number of odd elements 29n the str29ng 29 of the 29nput.\"]",
+        "unexpected": [
+            "[\"the number of odd elements 25n the str25ng 25 of the 25nput.\", \"the number of odd elements 33n the str33ng 33 of the 33nput.\", \"the number of odd elements 20n the str20ng 20 of the 20nput.\", \"the number of odd elements 14n the str14ng 14 of the 14nput.\"]",
+            "[\"the number of odd elements 25n the str25ng 25 of the 25nput.\", \"the number of odd elements 33n the str33ng 33 of the 33nput.\", \"the number of odd elements 20n the str20ng 20 of the 20nput.\", \"the number of odd elements 14n the str14ng 14 of the 14nput.\", \"the number of odd elements 29n the str29ng 29 of the 29nput.\", \"z\"]",
+            "[\"the number of odd elements 29n the str29ng 29 of the 29nput.\", \"the number of odd elements 14n the str14ng 14 of the 14nput.\", \"the number of odd elements 20n the str20ng 20 of the 20nput.\", \"the number of odd elements 33n the str33ng 33 of the 33nput.\", \"the number of odd elements 25n the str25ng 25 of the 25nput.\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"246890\", \"24689013\", \"24689013579\", \"23\", \"13579\", \"24689013\"]"
+        },
+        "expected": "[\"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 6n the str6ng 6 of the 6nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\"]",
+        "unexpected": [
+            "[\"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 6n the str6ng 6 of the 6nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 5n the str5ng 5 of the 5nput.\"]",
+            "[\"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 6n the str6ng 6 of the 6nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"z\"]",
+            "[\"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 6n the str6ng 6 of the 6nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"11010011\", \"10001100\", \"10001100\"]"
+        },
+        "expected": "[\"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\"]",
+        "unexpected": [
+            "[\"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\"]",
+            "[\"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"z\"]",
+            "[\"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 3n the str3ng 3 of the 3nput.\", \"the number of odd elements 5n the str5ng 5 of the 5nput.\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"10103333333333333310101\", \"101031233333333333333310101\", \"11010011\", \"456\", \"10110100111001100\"]"
+        },
+        "expected": "[\"the number of odd elements 19n the str19ng 19 of the 19nput.\", \"the number of odd elements 22n the str22ng 22 of the 22nput.\", \"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 9n the str9ng 9 of the 9nput.\"]",
+        "unexpected": [
+            "[\"the number of odd elements 19n the str19ng 19 of the 19nput.\", \"the number of odd elements 22n the str22ng 22 of the 22nput.\", \"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\"]",
+            "[\"the number of odd elements 19n the str19ng 19 of the 19nput.\", \"the number of odd elements 22n the str22ng 22 of the 22nput.\", \"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 9n the str9ng 9 of the 9nput.\", \"z\"]",
+            "[\"the number of odd elements 9n the str9ng 9 of the 9nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 5n the str5ng 5 of the 5nput.\", \"the number of odd elements 22n the str22ng 22 of the 22nput.\", \"the number of odd elements 19n the str19ng 19 of the 19nput.\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"8789\", \"2466\", \"123\", \"789\", \"246\"]"
+        },
+        "expected": "[\"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 0n the str0ng 0 of the 0nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 0n the str0ng 0 of the 0nput.\"]",
+        "unexpected": [
+            "[\"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 0n the str0ng 0 of the 0nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\"]",
+            "[\"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 0n the str0ng 0 of the 0nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 0n the str0ng 0 of the 0nput.\", \"z\"]",
+            "[\"the number of odd elements 0n the str0ng 0 of the 0nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\", \"the number of odd elements 0n the str0ng 0 of the 0nput.\", \"the number of odd elements 2n the str2ng 2 of the 2nput.\"]"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"9999999999999999999999999\", \"2463\", \"33333333333333333333333333333\"]"
+        },
+        "expected": "[\"the number of odd elements 25n the str25ng 25 of the 25nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 29n the str29ng 29 of the 29nput.\"]",
+        "unexpected": [
+            "[\"the number of odd elements 25n the str25ng 25 of the 25nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\"]",
+            "[\"the number of odd elements 25n the str25ng 25 of the 25nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 29n the str29ng 29 of the 29nput.\", \"z\"]",
+            "[\"the number of odd elements 29n the str29ng 29 of the 29nput.\", \"the number of odd elements 1n the str1ng 1 of the 1nput.\", \"the number of odd elements 25n the str25ng 25 of the 25nput.\"]"
+        ]
+    }
+]

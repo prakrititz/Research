@@ -1,0 +1,145 @@
+[
+    {
+        "input": {
+            "message": "\"TEST\""
+        },
+        "expected": "tgst",
+        "unexpected": [
+            "tgstx",
+            "tgs",
+            "tsgt"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"Mudasir\""
+        },
+        "expected": "mWDCSKR",
+        "unexpected": [
+            "mWDCSKRx",
+            "mWDCSK",
+            "RKSCDWm"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"YES\""
+        },
+        "expected": "ygs",
+        "unexpected": [
+            "ygsx",
+            "yg",
+            "sgy"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"This is a message\""
+        },
+        "expected": "tHKS KS C MGSSCGG",
+        "unexpected": [
+            "tHKS KS C MGSSCGGx",
+            "tHKS KS C MGSSCG",
+            "GGCSSGM C SK SKHt"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"I DoNt KnOw WhAt tO WrItE\""
+        },
+        "expected": "k dQnT kNqW wHcT Tq wRkTg",
+        "unexpected": [
+            "k dQnT kNqW wHcT Tq wRkTgx",
+            "k dQnT kNqW wHcT Tq wRkT",
+            "gTkRw qT TcHw WqNk TnQd k"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"abcdefghijklmnopqrstuvwxyz\""
+        },
+        "expected": "CBCDGFGHKJKLMNQPQRSTWVWXYZ",
+        "unexpected": [
+            "CBCDGFGHKJKLMNQPQRSTWVWXYZx",
+            "CBCDGFGHKJKLMNQPQRSTWVWXY",
+            "ZYXWVWTSRQPQNMLKJKHGFGDCBC"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"ovQwertyuiopasDfghjklzXcVbnmer\""
+        },
+        "expected": "QVqWGRTYWKQPCSdFGHJKLZxCvBNMGR",
+        "unexpected": [
+            "QVqWGRTYWKQPCSdFGHJKLZxCvBNMGRx",
+            "QVqWGRTYWKQPCSdFGHJKLZxCvBNMG",
+            "RGMNBvCxZLKJHGFdSCPQKWYTRGWqVQ"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"the\""
+        },
+        "expected": "THG",
+        "unexpected": [
+            "THGx",
+            "TH",
+            "GHT"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"QwertyujgumpsiopasbDfsghklzXcVbnm\""
+        },
+        "expected": "qWGRTYWJGWMPSKQPCSBdFSGHKLZxCvBNM",
+        "unexpected": [
+            "qWGRTYWJGWMPSKQPCSBdFSGHKLZxCvBNMx",
+            "qWGRTYWJGWMPSKQPCSBdFSGHKLZxCvBN",
+            "MNBvCxZLKHGSFdBSCPQKSPMWGJWYTRGWq"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"tQwertyujgumpsilaaycVbnmAabThe\""
+        },
+        "expected": "TqWGRTYWJGWMPSKLCCYCvBNMcCBtHG",
+        "unexpected": [
+            "TqWGRTYWJGWMPSKLCCYCvBNMcCBtHGx",
+            "TqWGRTYWJGWMPSKLCCYCvBNMcCBtH",
+            "GHtBCcMNBvCYCCLKSPMWGJWYTRGWqT"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"WiT\""
+        },
+        "expected": "wKt",
+        "unexpected": [
+            "wKtx",
+            "wK",
+            "tKw"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"HTiHWiTH\""
+        },
+        "expected": "htKhwKth",
+        "unexpected": [
+            "htKhwKthx",
+            "htKhwKt",
+            "htKwhKth"
+        ]
+    },
+    {
+        "input": {
+            "message": "\"ToWsfooxoxfoo\""
+        },
+        "expected": "tQwSFQQXQXFQQ",
+        "unexpected": [
+            "tQwSFQQXQXFQQx",
+            "tQwSFQQXQXFQ",
+            "QQFXQXQQFSwQt"
+        ]
+    }
+]

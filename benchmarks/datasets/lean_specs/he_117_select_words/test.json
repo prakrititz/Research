@@ -1,0 +1,164 @@
+[
+    {
+        "input": {
+            "s": "\"Mary had a little lamb\"",
+            "n": "4"
+        },
+        "expected": "[\"little\"]",
+        "unexpected": [
+            "[]",
+            "[\"little\", \"z\"]",
+            "[\"little\", \"little\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"Mary had a little lamb\"",
+            "n": "3"
+        },
+        "expected": "[\"Mary\", \"lamb\"]",
+        "unexpected": [
+            "[\"Mary\"]",
+            "[\"Mary\", \"lamb\", \"z\"]",
+            "[\"lamb\", \"Mary\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"simple white space\"",
+            "n": "2"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"Hello world\"",
+            "n": "4"
+        },
+        "expected": "[\"world\"]",
+        "unexpected": [
+            "[]",
+            "[\"world\", \"z\"]",
+            "[\"world\", \"world\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"Uncle sam\"",
+            "n": "3"
+        },
+        "expected": "[\"Uncle\"]",
+        "unexpected": [
+            "[]",
+            "[\"Uncle\", \"z\"]",
+            "[\"Uncle\", \"Uncle\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"\"",
+            "n": "4"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"a b c d e f\"",
+            "n": "1"
+        },
+        "expected": "[\"b\", \"c\", \"d\", \"f\"]",
+        "unexpected": [
+            "[\"b\", \"c\", \"d\"]",
+            "[\"b\", \"c\", \"d\", \"f\", \"z\"]",
+            "[\"f\", \"d\", \"c\", \"b\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"apple banana cherry\"",
+            "n": "3"
+        },
+        "expected": "[\"apple\", \"banana\"]",
+        "unexpected": [
+            "[\"apple\"]",
+            "[\"apple\", \"banana\", \"z\"]",
+            "[\"banana\", \"apple\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"iii\"",
+            "n": "6"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"thher quick buuurownfox\"",
+            "n": "9"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"Misesissippi River\"",
+            "n": "12"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"iiTheooo\"",
+            "n": "9"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"ABCDEFGH\"",
+            "n": "11"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"browonABCDEFGHr\"",
+            "n": "12"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"overxQwertyuiopasdfghjklzxcvbnm\"",
+            "n": "10"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    }
+]

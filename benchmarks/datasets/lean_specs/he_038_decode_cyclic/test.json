@@ -1,0 +1,178 @@
+[
+    {
+        "input": {
+            "s": "\"uzfplzjfzcltmdly\""
+        },
+        "expected": "fuzzplzjftcllmdy",
+        "unexpected": [
+            "fuzzplzjftcllmdyx",
+            "fuzzplzjftcllmd",
+            "ydmllctfjzlpzzuf"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"nzyegaghrzqwrdzxckn\""
+        },
+        "expected": "ynzaegrghwzqzrdkxcn",
+        "unexpected": [
+            "ynzaegrghwzqzrdkxcnx",
+            "ynzaegrghwzqzrdkxc",
+            "ncxkdrzqzwhgrgeazny"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"zxolecqvzyausohgzdod\""
+        },
+        "expected": "ozxclezqvuyahsodgzod",
+        "unexpected": [
+            "ozxclezqvuyahsodgzodx",
+            "ozxclezqvuyahsodgzo",
+            "dozgdoshayuvqzelcxzo"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"cjhzuelsabstpbq\""
+        },
+        "expected": "hcjezualstbsqpb",
+        "unexpected": [
+            "hcjezualstbsqpbx",
+            "hcjezualstbsqp",
+            "bpqsbtslauzejch"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"lfgmjpqnvzwvbusr\""
+        },
+        "expected": "glfpmjvqnvzwsbur",
+        "unexpected": [
+            "glfpmjvqnvzwsburx",
+            "glfpmjvqnvzwsbu",
+            "rubswzvnqvjmpflg"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"cvxcvhmtgbeweum\""
+        },
+        "expected": "xcvhcvgmtwbemeu",
+        "unexpected": [
+            "xcvhcvgmtwbemeux",
+            "xcvhcvgmtwbeme",
+            "uemebwtmgvchvcx"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"jgjvebqagrtwheytsyff\""
+        },
+        "expected": "jjgbvegqawrtyheytsff",
+        "unexpected": [
+            "jjgbvegqawrtyheytsffx",
+            "jjgbvegqawrtyheytsf",
+            "ffstyehytrwaqgevbgjj"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"swbkfgqnvuahcnqgpcu\""
+        },
+        "expected": "bswgkfvqnhuaqcncgpu",
+        "unexpected": [
+            "bswgkfvqnhuaqcncgpux",
+            "bswgkfvqnhuaqcncgp",
+            "upgcncqauhnqvfkgwsb"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"ssjgajmprs\""
+        },
+        "expected": "jssjgarmps",
+        "unexpected": [
+            "jssjgarmpsx",
+            "jssjgarmp",
+            "spmragjssj"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"enrrdusnffcnkotf\""
+        },
+        "expected": "renurdfsnnfctkof",
+        "unexpected": [
+            "renurdfsnnfctkofx",
+            "renurdfsnnfctko",
+            "foktcfnnsfdruner"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"cpfgdusjrzf\""
+        },
+        "expected": "fcpugdrsjzf",
+        "unexpected": [
+            "fcpugdrsjzfx",
+            "fcpugdrsjz",
+            "fzjsrdgupcf"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"gconqokfgb\""
+        },
+        "expected": "ogconqgkfb",
+        "unexpected": [
+            "ogconqgkfbx",
+            "ogconqgkf",
+            "bfkgqnocgo"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"effmnsvrgsdbhffn\""
+        },
+        "expected": "fefsmngvrbsdfhfn",
+        "unexpected": [
+            "fefsmngvrbsdfhfnx",
+            "fefsmngvrbsdfhf",
+            "nfhfdsbrvgnmsfef"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"zwsrgynxlmh\""
+        },
+        "expected": "szwyrglnxmh",
+        "unexpected": [
+            "szwyrglnxmhx",
+            "szwyrglnxm",
+            "hmxnlgrywzs"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"nqdjadvhlu\""
+        },
+        "expected": "dnqdjalvhu",
+        "unexpected": [
+            "dnqdjalvhux",
+            "dnqdjalvh",
+            "uhvlajdqnd"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"fpkocdqllglypkj\""
+        },
+        "expected": "kfpdoclqlygljpk",
+        "unexpected": [
+            "kfpdoclqlygljpkx",
+            "kfpdoclqlygljp",
+            "kpjlgylqlcodpfk"
+        ]
+    }
+]

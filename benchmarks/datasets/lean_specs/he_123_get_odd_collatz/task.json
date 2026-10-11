@@ -1,0 +1,32 @@
+{
+    "id": "he_123_get_odd_collatz",
+    "signature": {
+        "name": "getOddCollatz",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "List Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "n ≥ 1",
+        "postconditions": "result.isPerm ((collatzSeq 5000 n).filter (fun x => x % 2 = 1)) ∧ ∀ i, i < result.length - 1 → result[i]! ≤ result[i + 1]!"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/123"
+        },
+        "tags": [
+            "scalar",
+            "list",
+            "declarative"
+        ],
+        "note": "the sequence is followed for at most 5000 steps (the longest start below 10^5 needs 350)"
+    },
+    "test_file": "./test.json"
+}

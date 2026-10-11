@@ -1,0 +1,111 @@
+[
+    {
+        "input": {
+            "strings": "[]"
+        },
+        "expected": "none",
+        "unexpected": [
+            "some (\"z\")"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"x\", \"y\", \"z\"]"
+        },
+        "expected": "some (\"x\")",
+        "unexpected": [
+            "none",
+            "some (\"xx\")"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"x\", \"yyy\", \"zzzz\", \"www\", \"kkkk\", \"abc\"]"
+        },
+        "expected": "some (\"zzzz\")",
+        "unexpected": [
+            "none",
+            "some (\"zzzzx\")"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"\", \"a\", \"aa\", \"aaa\"]"
+        },
+        "expected": "some (\"aaa\")",
+        "unexpected": [
+            "none",
+            "some (\"aaax\")"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"apple\", \"banana\", \"banna\", \"banana\", \"banana\"]"
+        },
+        "expected": "some (\"banana\")",
+        "unexpected": [
+            "none",
+            "some (\"bananax\")"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"\", \"a\", \"aaa\", \"aa\", \"a\", \"bba\"]"
+        },
+        "expected": "some (\"aaa\")",
+        "unexpected": [
+            "none",
+            "some (\"aaax\")"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"apple\", \"banana\", \"pear\", \"ppphorse\", \"pear\", \"odogpear\", \"pear\"]"
+        },
+        "expected": "some (\"ppphorse\")",
+        "unexpected": [
+            "none",
+            "some (\"ppphorsex\")"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"666666\", \"æ\", \"666666\"]"
+        },
+        "expected": "some (\"666666\")",
+        "unexpected": [
+            "none",
+            "some (\"666666x\")"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"  a  \", \"bb\", \"  a  \", \"  a  \"]"
+        },
+        "expected": "some (\"  a  \")",
+        "unexpected": [
+            "none",
+            "some (\"  a  x\")"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"\", \"        \", \"     \", \"22\", \"   \\t\"]"
+        },
+        "expected": "some (\"        \")",
+        "unexpected": [
+            "none",
+            "some (\"        x\")"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"\", \"öäü\", \"ß\", \"Ø\", \"æ\", \"œ\", \"\", \"œ\"]"
+        },
+        "expected": "some (\"öäü\")",
+        "unexpected": [
+            "none",
+            "some (\"öäüx\")"
+        ]
+    }
+]

@@ -1,0 +1,3 @@
+study: v4_relaxed_noassist  trials=30  turns=2  budget=30  max_retries=4  strict=0  assist=False
+results -> C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM\benchmarks\results\reliability\v4_relaxed_noassist_20261003-093317.jsonl
+transcripts -> C:\Users\PRAKRI~1\AppData\Local\Temp\runs\transcripts\v4_relaxed_noassist_20261003-093317

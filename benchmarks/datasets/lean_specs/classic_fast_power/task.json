@@ -1,0 +1,36 @@
+{
+    "id": "classic_fast_power",
+    "signature": {
+        "name": "fastPower",
+        "parameters": [
+            {
+                "param_name": "b",
+                "param_type": "Int"
+            },
+            {
+                "param_name": "e",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = b ^ e"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "original",
+            "task_id": "original"
+        },
+        "tags": [
+            "scalar",
+            "loop",
+            "classic"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

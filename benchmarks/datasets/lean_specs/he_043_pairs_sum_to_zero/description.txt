@@ -1,0 +1,1 @@
+Decide whether the list has two distinct elements (at different positions) that sum to zero.

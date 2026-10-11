@@ -1,0 +1,30 @@
+{
+    "id": "he_100_make_a_pile",
+    "signature": {
+        "name": "makeAPile",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "List Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "n > 0",
+        "postconditions": "result.length = n ∧ ∀ i, i < n → result[i]! = n + 2 * i"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/100"
+        },
+        "tags": [
+            "list"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

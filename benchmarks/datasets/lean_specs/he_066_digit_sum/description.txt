@@ -1,0 +1,1 @@
+Return the sum of the ASCII codes of the upper-case characters of the string only.

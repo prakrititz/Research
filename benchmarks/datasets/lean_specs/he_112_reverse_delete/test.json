@@ -1,0 +1,178 @@
+[
+    {
+        "input": {
+            "s": "\"abcde\"",
+            "c": "\"ae\""
+        },
+        "expected": "(\"bcd\", false)",
+        "unexpected": [
+            "(\"bcdx\", false)",
+            "(\"bcd\", true)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"abcdef\"",
+            "c": "\"b\""
+        },
+        "expected": "(\"acdef\", false)",
+        "unexpected": [
+            "(\"acdefx\", false)",
+            "(\"acdef\", true)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"abcdedcba\"",
+            "c": "\"ab\""
+        },
+        "expected": "(\"cdedc\", true)",
+        "unexpected": [
+            "(\"cdedcx\", true)",
+            "(\"cdedc\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"dwik\"",
+            "c": "\"w\""
+        },
+        "expected": "(\"dik\", false)",
+        "unexpected": [
+            "(\"dikx\", false)",
+            "(\"dik\", true)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"a\"",
+            "c": "\"a\""
+        },
+        "expected": "(\"\", true)",
+        "unexpected": [
+            "(\"x\", true)",
+            "(\"\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"abcdedcba\"",
+            "c": "\"\""
+        },
+        "expected": "(\"abcdedcba\", true)",
+        "unexpected": [
+            "(\"abcdedcbax\", true)",
+            "(\"abcdedcba\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"abcdedcba\"",
+            "c": "\"v\""
+        },
+        "expected": "(\"abcdedcba\", true)",
+        "unexpected": [
+            "(\"abcdedcbax\", true)",
+            "(\"abcdedcba\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"vabba\"",
+            "c": "\"v\""
+        },
+        "expected": "(\"abba\", true)",
+        "unexpected": [
+            "(\"abbax\", true)",
+            "(\"abba\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"mamma\"",
+            "c": "\"mia\""
+        },
+        "expected": "(\"\", true)",
+        "unexpected": [
+            "(\"x\", true)",
+            "(\"\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"racecar\"",
+            "c": "\"ace\""
+        },
+        "expected": "(\"rr\", true)",
+        "unexpected": [
+            "(\"rrx\", true)",
+            "(\"rr\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"level\"",
+            "c": "\"ev\""
+        },
+        "expected": "(\"ll\", true)",
+        "unexpected": [
+            "(\"llx\", true)",
+            "(\"ll\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"t\"",
+            "c": "\"tt\""
+        },
+        "expected": "(\"\", true)",
+        "unexpected": [
+            "(\"x\", true)",
+            "(\"\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"mmdam\"",
+            "c": "\"mdam\""
+        },
+        "expected": "(\"\", true)",
+        "unexpected": [
+            "(\"x\", true)",
+            "(\"\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"ammadayz\"",
+            "c": "\"ammadalmxxyz\""
+        },
+        "expected": "(\"\", true)",
+        "unexpected": [
+            "(\"x\", true)",
+            "(\"\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"asymrical\"",
+            "c": "\"asymmetical\""
+        },
+        "expected": "(\"r\", true)",
+        "unexpected": [
+            "(\"rx\", true)",
+            "(\"r\", false)"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"asymtmetrical\"",
+            "c": "\"asymtmetrical\""
+        },
+        "expected": "(\"\", true)",
+        "unexpected": [
+            "(\"x\", true)",
+            "(\"\", false)"
+        ]
+    }
+]

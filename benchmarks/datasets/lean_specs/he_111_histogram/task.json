@@ -1,0 +1,32 @@
+{
+    "id": "he_111_histogram",
+    "signature": {
+        "name": "histogram",
+        "parameters": [
+            {
+                "param_name": "test",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "List (String × Nat)"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "let ws := (test.splitOn \" \").filter (fun w => w != \"\")\n(ws = [] → result = []) ∧\n(ws ≠ [] → (∀ p ∈ result, p.1 ∈ ws ∧ p.2 = ws.count p.1 ∧ ∀ w ∈ ws, ws.count w ≤ p.2) ∧\n  (∀ w ∈ ws, (∀ v ∈ ws, ws.count v ≤ ws.count w) → ∃ p ∈ result, p.1 = w) ∧ (result.map Prod.fst).Nodup)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/111"
+        },
+        "tags": [
+            "string",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

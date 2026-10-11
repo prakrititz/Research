@@ -1,0 +1,31 @@
+{
+    "id": "he_066_digit_sum",
+    "signature": {
+        "name": "digitSum",
+        "parameters": [
+            {
+                "param_name": "s",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = ((s.toList.filter Char.isUpper).map Char.toNat).sum"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/66"
+        },
+        "tags": [
+            "string",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

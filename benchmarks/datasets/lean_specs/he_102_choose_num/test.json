@@ -1,0 +1,194 @@
+[
+    {
+        "input": {
+            "x": "12",
+            "y": "15"
+        },
+        "expected": 14,
+        "unexpected": [
+            15,
+            13,
+            31
+        ]
+    },
+    {
+        "input": {
+            "x": "13",
+            "y": "12"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "x": "33",
+            "y": "12354"
+        },
+        "expected": 12354,
+        "unexpected": [
+            12355,
+            12353,
+            24711
+        ]
+    },
+    {
+        "input": {
+            "x": "5234",
+            "y": "5233"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "x": "6",
+            "y": "29"
+        },
+        "expected": 28,
+        "unexpected": [
+            29,
+            27,
+            59
+        ]
+    },
+    {
+        "input": {
+            "x": "27",
+            "y": "10"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "x": "7",
+            "y": "7"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "x": "546",
+            "y": "546"
+        },
+        "expected": 546,
+        "unexpected": [
+            547,
+            545,
+            1095
+        ]
+    },
+    {
+        "input": {
+            "x": "20",
+            "y": "30"
+        },
+        "expected": 30,
+        "unexpected": [
+            31,
+            29,
+            63
+        ]
+    },
+    {
+        "input": {
+            "x": "100",
+            "y": "23"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "x": "32",
+            "y": "33"
+        },
+        "expected": 32,
+        "unexpected": [
+            33,
+            31,
+            67
+        ]
+    },
+    {
+        "input": {
+            "x": "1003",
+            "y": "1001"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "x": "102",
+            "y": "101"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "x": "17",
+            "y": "8"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "x": "999",
+            "y": "5"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    },
+    {
+        "input": {
+            "x": "1998",
+            "y": "999"
+        },
+        "expected": -1,
+        "unexpected": [
+            0,
+            -2,
+            1
+        ]
+    }
+]

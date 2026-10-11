@@ -1,0 +1,2689 @@
+[
+ {
+  "id": "he_003_below_zero",
+  "source": "HumanEval/3",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 14,
+  "wrong_total": 14,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_013_gcd",
+  "source": "HumanEval/13",
+  "tags": [
+   "scalar",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 36,
+  "wrong_total": 36,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_016_count_distinct",
+  "source": "HumanEval/16",
+  "tags": [
+   "string"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 38,
+  "wrong_total": 38,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_023_strlen",
+  "source": "HumanEval/23",
+  "tags": [
+   "string",
+   "term"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 32,
+  "wrong_total": 32,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_024_largest_divisor",
+  "source": "HumanEval/24",
+  "tags": [
+   "scalar",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_028_concatenate",
+  "source": "HumanEval/28",
+  "tags": [
+   "string",
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_029_filter_by_prefix",
+  "source": "HumanEval/29",
+  "tags": [
+   "string",
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 10,
+  "reference_passes": 10,
+  "accepts_expected": 10,
+  "rejects_wrong": 18,
+  "wrong_total": 18,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_030_get_positive",
+  "source": "HumanEval/30",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 30,
+  "wrong_total": 30,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_031_is_prime",
+  "source": "HumanEval/31",
+  "tags": [
+   "scalar",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_034_unique",
+  "source": "HumanEval/34",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 9,
+  "reference_passes": 9,
+  "accepts_expected": 9,
+  "rejects_wrong": 27,
+  "wrong_total": 27,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_035_max_element",
+  "source": "HumanEval/35",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 10,
+  "reference_passes": 10,
+  "accepts_expected": 10,
+  "rejects_wrong": 30,
+  "wrong_total": 30,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_041_car_race_collision",
+  "source": "HumanEval/41",
+  "tags": [
+   "scalar",
+   "term"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_042_incr_list",
+  "source": "HumanEval/42",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 31,
+  "wrong_total": 31,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_043_pairs_sum_to_zero",
+  "source": "HumanEval/43",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_048_is_palindrome",
+  "source": "HumanEval/48",
+  "tags": [
+   "string"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 15,
+  "wrong_total": 15,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_052_below_threshold",
+  "source": "HumanEval/52",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 14,
+  "wrong_total": 14,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_055_fib",
+  "source": "HumanEval/55",
+  "tags": [
+   "scalar",
+   "loop",
+   "recursive-spec"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 38,
+  "wrong_total": 38,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_057_monotonic",
+  "source": "HumanEval/57",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_058_common",
+  "source": "HumanEval/58",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 34,
+  "wrong_total": 34,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_060_sum_to_n",
+  "source": "HumanEval/60",
+  "tags": [
+   "scalar",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_061_correct_bracketing",
+  "source": "HumanEval/61",
+  "tags": [
+   "string",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_062_derivative",
+  "source": "HumanEval/62",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 37,
+  "wrong_total": 37,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_066_digit_sum",
+  "source": "HumanEval/66",
+  "tags": [
+   "string",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 44,
+  "wrong_total": 44,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_072_will_it_fly",
+  "source": "HumanEval/72",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 14,
+  "wrong_total": 14,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_085_add_even_at_odd",
+  "source": "HumanEval/85",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 36,
+  "wrong_total": 36,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_090_next_smallest",
+  "source": "HumanEval/90",
+  "tags": [
+   "list",
+   "option"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 26,
+  "wrong_total": 26,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_097_multiply",
+  "source": "HumanEval/97",
+  "tags": [
+   "scalar",
+   "term"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_098_count_upper",
+  "source": "HumanEval/98",
+  "tags": [
+   "string",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_100_make_a_pile",
+  "source": "HumanEval/100",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_121_solution",
+  "source": "HumanEval/121",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_126_is_sorted",
+  "source": "HumanEval/126",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_138_is_equal_to_sum_even",
+  "source": "HumanEval/138",
+  "tags": [
+   "scalar",
+   "term"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_139_special_factorial",
+  "source": "HumanEval/139",
+  "tags": [
+   "scalar",
+   "loop",
+   "recursive-spec"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 36,
+  "wrong_total": 36,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_150_x_or_y",
+  "source": "HumanEval/150",
+  "tags": [
+   "scalar",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_152_compare",
+  "source": "HumanEval/152",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 36,
+  "wrong_total": 36,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_157_right_angle_triangle",
+  "source": "HumanEval/157",
+  "tags": [
+   "scalar",
+   "term"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_114_min_sub_array_sum",
+  "source": "HumanEval/114",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "classic_isqrt",
+  "source": "original",
+  "tags": [
+   "scalar",
+   "loop",
+   "classic"
+  ],
+  "compiles": true,
+  "tests": 23,
+  "reference_passes": 23,
+  "accepts_expected": 23,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "classic_sqrt_approx",
+  "source": "original",
+  "tags": [
+   "scalar",
+   "loop",
+   "classic",
+   "paper"
+  ],
+  "compiles": true,
+  "tests": 7,
+  "reference_passes": 7,
+  "accepts_expected": 7,
+  "rejects_wrong": 13,
+  "wrong_total": 13,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "classic_fast_power",
+  "source": "original",
+  "tags": [
+   "scalar",
+   "loop",
+   "classic"
+  ],
+  "compiles": true,
+  "tests": 8,
+  "reference_passes": 8,
+  "accepts_expected": 8,
+  "rejects_wrong": 12,
+  "wrong_total": 12,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "classic_sort_list",
+  "source": "original",
+  "tags": [
+   "list",
+   "classic"
+  ],
+  "compiles": true,
+  "tests": 7,
+  "reference_passes": 7,
+  "accepts_expected": 7,
+  "rejects_wrong": 11,
+  "wrong_total": 11,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "classic_reverse",
+  "source": "original",
+  "tags": [
+   "list",
+   "loop",
+   "classic"
+  ],
+  "compiles": true,
+  "tests": 5,
+  "reference_passes": 5,
+  "accepts_expected": 5,
+  "rejects_wrong": 8,
+  "wrong_total": 8,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_000_has_close_elements",
+  "source": "HumanEval/0",
+  "tags": [
+   "list",
+   "float",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 15,
+  "wrong_total": 15,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_001_separate_paren_groups",
+  "source": "HumanEval/1",
+  "tags": [
+   "string",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 36,
+  "wrong_total": 36,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_002_truncate_number",
+  "source": "HumanEval/2",
+  "tags": [
+   "float",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_004_mean_absolute_deviation",
+  "source": "HumanEval/4",
+  "tags": [
+   "list",
+   "float"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_005_intersperse",
+  "source": "HumanEval/5",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 29,
+  "wrong_total": 29,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_006_parse_nested_parens",
+  "source": "HumanEval/6",
+  "tags": [
+   "string",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 31,
+  "wrong_total": 31,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_007_filter_by_substring",
+  "source": "HumanEval/7",
+  "tags": [
+   "string",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 32,
+  "wrong_total": 32,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_008_sum_product",
+  "source": "HumanEval/8",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 26,
+  "wrong_total": 26,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_009_rolling_max",
+  "source": "HumanEval/9",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 34,
+  "wrong_total": 34,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_010_make_palindrome",
+  "source": "HumanEval/10",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_011_string_xor",
+  "source": "HumanEval/11",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_012_longest",
+  "source": "HumanEval/12",
+  "tags": [
+   "list",
+   "string",
+   "option",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 21,
+  "wrong_total": 21,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_014_all_prefixes",
+  "source": "HumanEval/14",
+  "tags": [
+   "string",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 31,
+  "wrong_total": 31,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_015_string_sequence",
+  "source": "HumanEval/15",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_017_parse_music",
+  "source": "HumanEval/17",
+  "tags": [
+   "string",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 37,
+  "wrong_total": 37,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_018_how_many_times",
+  "source": "HumanEval/18",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 31,
+  "wrong_total": 31,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_019_sort_numbers",
+  "source": "HumanEval/19",
+  "tags": [
+   "string",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_020_find_closest_elements",
+  "source": "HumanEval/20",
+  "tags": [
+   "list",
+   "float",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 26,
+  "wrong_total": 26,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_021_rescale_to_unit",
+  "source": "HumanEval/21",
+  "tags": [
+   "list",
+   "float"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_022_filter_integers",
+  "source": "HumanEval/22",
+  "tags": [
+   "list",
+   "any",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 25,
+  "wrong_total": 25,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_025_factorize",
+  "source": "HumanEval/25",
+  "tags": [
+   "scalar",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_026_remove_duplicates",
+  "source": "HumanEval/26",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 27,
+  "wrong_total": 27,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_027_flip_case",
+  "source": "HumanEval/27",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_032_find_zero",
+  "source": "HumanEval/32",
+  "tags": [
+   "list",
+   "float",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 47,
+  "wrong_total": 47,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": true,
+  "reference_mode": "spec",
+  "failures": []
+ },
+ {
+  "id": "he_033_sort_third",
+  "source": "HumanEval/33",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_036_fizz_buzz",
+  "source": "HumanEval/36",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_037_sort_even",
+  "source": "HumanEval/37",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_038_decode_cyclic",
+  "source": "HumanEval/38",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_039_prime_fib",
+  "source": "HumanEval/39",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_040_triples_sum_to_zero",
+  "source": "HumanEval/40",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_044_change_base",
+  "source": "HumanEval/44",
+  "tags": [
+   "scalar",
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_045_triangle_area",
+  "source": "HumanEval/45",
+  "tags": [
+   "scalar",
+   "float",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_046_fib4",
+  "source": "HumanEval/46",
+  "tags": [
+   "scalar",
+   "recursive-spec",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_047_median",
+  "source": "HumanEval/47",
+  "tags": [
+   "list",
+   "float"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_049_modp",
+  "source": "HumanEval/49",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_050_decode_shift",
+  "source": "HumanEval/50",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_051_remove_vowels",
+  "source": "HumanEval/51",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_053_add",
+  "source": "HumanEval/53",
+  "tags": [
+   "scalar",
+   "term",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_054_same_chars",
+  "source": "HumanEval/54",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 15,
+  "wrong_total": 15,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_056_correct_bracketing",
+  "source": "HumanEval/56",
+  "tags": [
+   "string",
+   "loop",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_059_largest_prime_factor",
+  "source": "HumanEval/59",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_063_fibfib",
+  "source": "HumanEval/63",
+  "tags": [
+   "scalar",
+   "recursive-spec",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 44,
+  "wrong_total": 44,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_064_vowels_count",
+  "source": "HumanEval/64",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_065_circular_shift",
+  "source": "HumanEval/65",
+  "tags": [
+   "scalar",
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_067_fruit_distribution",
+  "source": "HumanEval/67",
+  "tags": [
+   "string",
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 44,
+  "wrong_total": 44,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_068_pluck",
+  "source": "HumanEval/68",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 38,
+  "wrong_total": 38,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_069_search",
+  "source": "HumanEval/69",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_070_strange_sort_list",
+  "source": "HumanEval/70",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 46,
+  "wrong_total": 46,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_071_triangle_area",
+  "source": "HumanEval/71",
+  "tags": [
+   "scalar",
+   "float",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_073_smallest_change",
+  "source": "HumanEval/73",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_074_total_match",
+  "source": "HumanEval/74",
+  "tags": [
+   "list",
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 42,
+  "wrong_total": 42,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_075_is_multiply_prime",
+  "source": "HumanEval/75",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 12,
+  "wrong_total": 12,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_076_is_simple_power",
+  "source": "HumanEval/76",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_077_iscube",
+  "source": "HumanEval/77",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_078_hex_key",
+  "source": "HumanEval/78",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 40,
+  "wrong_total": 40,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_079_decimal_to_binary",
+  "source": "HumanEval/79",
+  "tags": [
+   "scalar",
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 36,
+  "wrong_total": 36,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_080_is_happy",
+  "source": "HumanEval/80",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_081_numerical_letter_grade",
+  "source": "HumanEval/81",
+  "tags": [
+   "list",
+   "float",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 42,
+  "wrong_total": 42,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_082_prime_length",
+  "source": "HumanEval/82",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_083_starts_one_ends",
+  "source": "HumanEval/83",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 5,
+  "reference_passes": 5,
+  "accepts_expected": 5,
+  "rejects_wrong": 15,
+  "wrong_total": 15,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_084_solve",
+  "source": "HumanEval/84",
+  "tags": [
+   "scalar",
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_086_anti_shuffle",
+  "source": "HumanEval/86",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 42,
+  "wrong_total": 42,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_087_get_row",
+  "source": "HumanEval/87",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 24,
+  "wrong_total": 24,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_088_sort_array",
+  "source": "HumanEval/88",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 43,
+  "wrong_total": 43,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_089_encrypt",
+  "source": "HumanEval/89",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_091_is_bored",
+  "source": "HumanEval/91",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 31,
+  "wrong_total": 31,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_092_any_int",
+  "source": "HumanEval/92",
+  "tags": [
+   "scalar",
+   "any",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_093_encode",
+  "source": "HumanEval/93",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_094_skjkasdkd",
+  "source": "HumanEval/94",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 42,
+  "wrong_total": 42,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_095_check_dict_case",
+  "source": "HumanEval/95",
+  "tags": [
+   "any",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 15,
+  "wrong_total": 15,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_096_count_up_to",
+  "source": "HumanEval/96",
+  "tags": [
+   "scalar",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 42,
+  "wrong_total": 42,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_099_closest_integer",
+  "source": "HumanEval/99",
+  "tags": [
+   "string",
+   "scalar",
+   "float"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 38,
+  "wrong_total": 38,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_101_words_string",
+  "source": "HumanEval/101",
+  "tags": [
+   "string",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 38,
+  "wrong_total": 38,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_102_choose_num",
+  "source": "HumanEval/102",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_103_rounded_avg",
+  "source": "HumanEval/103",
+  "tags": [
+   "scalar",
+   "string",
+   "option",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 28,
+  "wrong_total": 28,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_104_unique_digits",
+  "source": "HumanEval/104",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 28,
+  "wrong_total": 28,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_105_by_length",
+  "source": "HumanEval/105",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 37,
+  "wrong_total": 37,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_106_f",
+  "source": "HumanEval/106",
+  "tags": [
+   "scalar",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 34,
+  "wrong_total": 34,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_107_even_odd_palindrome",
+  "source": "HumanEval/107",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 32,
+  "wrong_total": 32,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_108_count_nums",
+  "source": "HumanEval/108",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_109_move_one_ball",
+  "source": "HumanEval/109",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 13,
+  "wrong_total": 13,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_110_exchange",
+  "source": "HumanEval/110",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_111_histogram",
+  "source": "HumanEval/111",
+  "tags": [
+   "string",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 37,
+  "wrong_total": 43,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": [
+   {
+    "kind": "reject",
+    "input": "(\"a b b a\")",
+    "value": "wrong [(\"b\", 2), (\"a\", 2)]"
+   },
+   {
+    "kind": "reject",
+    "input": "(\"a b c a b\")",
+    "value": "wrong [(\"b\", 2), (\"a\", 2)]"
+   },
+   {
+    "kind": "reject",
+    "input": "(\"a b c d g\")",
+    "value": "wrong [(\"g\", 1), (\"d\", 1), (\"c\", 1), (\"b\", 1), (\"a\", 1)]"
+   },
+   {
+    "kind": "reject",
+    "input": "(\"r t g\")",
+    "value": "wrong [(\"g\", 1), (\"t\", 1), (\"r\", 1)]"
+   }
+  ]
+ },
+ {
+  "id": "he_112_reverse_delete",
+  "source": "HumanEval/112",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 32,
+  "wrong_total": 32,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_113_odd_count",
+  "source": "HumanEval/113",
+  "tags": [
+   "list",
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_115_max_fill",
+  "source": "HumanEval/115",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 37,
+  "wrong_total": 37,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_116_sort_array",
+  "source": "HumanEval/116",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 43,
+  "wrong_total": 43,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_117_select_words",
+  "source": "HumanEval/117",
+  "tags": [
+   "string",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 27,
+  "wrong_total": 27,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_118_get_closest_vowel",
+  "source": "HumanEval/118",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_119_match_parens",
+  "source": "HumanEval/119",
+  "tags": [
+   "string",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_120_maximum",
+  "source": "HumanEval/120",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 46,
+  "wrong_total": 46,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_122_add_elements",
+  "source": "HumanEval/122",
+  "tags": [
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 38,
+  "wrong_total": 38,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_123_get_odd_collatz",
+  "source": "HumanEval/123",
+  "tags": [
+   "scalar",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 36,
+  "wrong_total": 36,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_124_valid_date",
+  "source": "HumanEval/124",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_125_split_words",
+  "source": "HumanEval/125",
+  "tags": [
+   "string",
+   "list",
+   "sum",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 47,
+  "wrong_total": 47,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_127_intersection",
+  "source": "HumanEval/127",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_128_prod_signs",
+  "source": "HumanEval/128",
+  "tags": [
+   "list",
+   "option",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 31,
+  "wrong_total": 31,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_129_min_path",
+  "source": "HumanEval/129",
+  "tags": [
+   "list",
+   "grid",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_130_tri",
+  "source": "HumanEval/130",
+  "tags": [
+   "scalar",
+   "list",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_131_digits",
+  "source": "HumanEval/131",
+  "tags": [
+   "scalar",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 44,
+  "wrong_total": 44,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ },
+ {
+  "id": "he_132_is_nested",
+  "source": "HumanEval/132",
+  "tags": [
+   "string",
+   "declarative"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": [],
+  "permissive": false,
+  "reference_mode": "equal",
+  "failures": []
+ }
+]

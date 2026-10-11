@@ -1,0 +1,31 @@
+{
+    "id": "he_114_min_sub_array_sum",
+    "signature": {
+        "name": "minSubArraySum",
+        "parameters": [
+            {
+                "param_name": "nums",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "nums ≠ []",
+        "postconditions": "(∃ j, j ≤ nums.length ∧ ∃ i, i < j ∧ ((nums.drop i).take (j - i)).sum = result) ∧ ∀ j, j ≤ nums.length → ∀ i, i < j → result ≤ ((nums.drop i).take (j - i)).sum"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/114"
+        },
+        "tags": [
+            "list",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,177 @@
+[
+    {
+        "input": {
+            "txt": "\"Hello world!\""
+        },
+        "expected": "Sum.inl ([\"Hello\", \"world!\"])",
+        "unexpected": [
+            "Sum.inl ([\"Hello\"])",
+            "Sum.inl ([\"Hello\", \"world!\", \"z\"])",
+            "Sum.inl ([\"world!\", \"Hello\"])"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"Hello,world!\""
+        },
+        "expected": "Sum.inl ([\"Hello\", \"world!\"])",
+        "unexpected": [
+            "Sum.inl ([\"Hello\"])",
+            "Sum.inl ([\"Hello\", \"world!\", \"z\"])",
+            "Sum.inl ([\"world!\", \"Hello\"])"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"Hello world,!\""
+        },
+        "expected": "Sum.inl ([\"Hello\", \"world,!\"])",
+        "unexpected": [
+            "Sum.inl ([\"Hello\"])",
+            "Sum.inl ([\"Hello\", \"world,!\", \"z\"])",
+            "Sum.inl ([\"world,!\", \"Hello\"])"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"Hello,Hello,world !\""
+        },
+        "expected": "Sum.inl ([\"Hello,Hello,world\", \"!\"])",
+        "unexpected": [
+            "Sum.inl ([\"Hello,Hello,world\"])",
+            "Sum.inl ([\"Hello,Hello,world\", \"!\", \"z\"])",
+            "Sum.inl ([\"!\", \"Hello,Hello,world\"])"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"abcdef\""
+        },
+        "expected": "Sum.inr (3)",
+        "unexpected": [
+            "Sum.inr (4)",
+            "Sum.inr (2)",
+            "Sum.inr (9)"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"aaabb\""
+        },
+        "expected": "Sum.inr (2)",
+        "unexpected": [
+            "Sum.inr (3)",
+            "Sum.inr (1)",
+            "Sum.inr (7)"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"aaaBb\""
+        },
+        "expected": "Sum.inr (1)",
+        "unexpected": [
+            "Sum.inr (2)",
+            "Sum.inr (0)",
+            "Sum.inr (5)"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"\""
+        },
+        "expected": "Sum.inr (0)",
+        "unexpected": [
+            "Sum.inr (1)",
+            "Sum.inr (3)"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"Hello?\""
+        },
+        "expected": "Sum.inr (2)",
+        "unexpected": [
+            "Sum.inr (3)",
+            "Sum.inr (1)",
+            "Sum.inr (7)"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"HHelblo ,Helaabc123lo? rl\""
+        },
+        "expected": "Sum.inl ([\"HHelblo\", \",Helaabc123lo?\", \"rl\"])",
+        "unexpected": [
+            "Sum.inl ([\"HHelblo\", \",Helaabc123lo?\"])",
+            "Sum.inl ([\"HHelblo\", \",Helaabc123lo?\", \"rl\", \"z\"])",
+            "Sum.inl ([\"rl\", \",Helaabc123lo?\", \"HHelblo\"])"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"onlyed!lowercasevhllxblxyqv\""
+        },
+        "expected": "Sum.inr (14)",
+        "unexpected": [
+            "Sum.inr (15)",
+            "Sum.inr (13)",
+            "Sum.inr (31)"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"words\""
+        },
+        "expected": "Sum.inr (2)",
+        "unexpected": [
+            "Sum.inr (3)",
+            "Sum.inr (1)",
+            "Sum.inr (7)"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"2onlyed!lowercasevhllxblxyqv6\""
+        },
+        "expected": "Sum.inr (14)",
+        "unexpected": [
+            "Sum.inr (15)",
+            "Sum.inr (13)",
+            "Sum.inr (31)"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"hhjklpzryoebaproyqtmq.\""
+        },
+        "expected": "Sum.inr (11)",
+        "unexpected": [
+            "Sum.inr (12)",
+            "Sum.inr (10)",
+            "Sum.inr (25)"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"spaspsos,ces,Testinaserror\""
+        },
+        "expected": "Sum.inl ([\"spaspsos\", \"ces\", \"Testinaserror\"])",
+        "unexpected": [
+            "Sum.inl ([\"spaspsos\", \"ces\"])",
+            "Sum.inl ([\"spaspsos\", \"ces\", \"Testinaserror\", \"z\"])",
+            "Sum.inl ([\"Testinaserror\", \"ces\", \"spaspsos\"])"
+        ]
+    },
+    {
+        "input": {
+            "txt": "\"xdkkaism,zwhui\""
+        },
+        "expected": "Sum.inl ([\"xdkkaism\", \"zwhui\"])",
+        "unexpected": [
+            "Sum.inl ([\"xdkkaism\"])",
+            "Sum.inl ([\"xdkkaism\", \"zwhui\", \"z\"])",
+            "Sum.inl ([\"zwhui\", \"xdkkaism\"])"
+        ]
+    }
+]

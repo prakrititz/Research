@@ -1,0 +1,31 @@
+{
+    "id": "he_083_starts_one_ends",
+    "signature": {
+        "name": "startsOneEnds",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "n ≥ 1",
+        "postconditions": "result = ((List.range (10 ^ n)).filter (fun m => 10 ^ (n - 1) ≤ m ∧ (m / 10 ^ (n - 1) = 1 ∨ m % 10 = 1))).length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/83"
+        },
+        "tags": [
+            "scalar",
+            "declarative"
+        ],
+        "note": "the postcondition counts the numbers; it can be evaluated only for n <= 5, which is why the tests stop there"
+    },
+    "test_file": "./test.json"
+}

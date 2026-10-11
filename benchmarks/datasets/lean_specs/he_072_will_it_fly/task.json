@@ -1,0 +1,34 @@
+{
+    "id": "he_072_will_it_fly",
+    "signature": {
+        "name": "willItFly",
+        "parameters": [
+            {
+                "param_name": "q",
+                "param_type": "List Int"
+            },
+            {
+                "param_name": "w",
+                "param_type": "Int"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ ((∀ i, i < q.length → q[i]! = q[q.length - 1 - i]!) ∧ q.sum ≤ w)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/72"
+        },
+        "tags": [
+            "list"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

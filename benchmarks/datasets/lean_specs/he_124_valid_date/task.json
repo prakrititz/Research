@@ -1,0 +1,31 @@
+{
+    "id": "he_124_valid_date",
+    "signature": {
+        "name": "validDate",
+        "parameters": [
+            {
+                "param_name": "date",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "let l := date.toList\nresult = true ↔ (l.length = 10 ∧ l[2]! = '-' ∧ l[5]! = '-' ∧ (l.take 2).all Char.isDigit = true ∧ ((l.drop 3).take 2).all Char.isDigit = true ∧\n  (l.drop 6).all Char.isDigit = true ∧ 1 ≤ natOf (l.take 2) ∧ natOf (l.take 2) ≤ 12 ∧ 1 ≤ natOf ((l.drop 3).take 2) ∧\n  natOf ((l.drop 3).take 2) ≤ daysIn (natOf (l.take 2)))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/124"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

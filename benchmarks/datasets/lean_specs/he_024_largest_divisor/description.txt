@@ -1,0 +1,1 @@
+For a given number n greater than 1, find the largest number that divides n evenly and is smaller than n.

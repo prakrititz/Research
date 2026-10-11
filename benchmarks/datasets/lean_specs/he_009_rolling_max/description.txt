@@ -1,0 +1,1 @@
+From a given list of integers, generate the list of the rolling maximum element found until the given moment in the sequence.

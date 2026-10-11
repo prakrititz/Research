@@ -1,0 +1,162 @@
+[
+    {
+        "input": {
+            "x": "16",
+            "n": "2"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "4",
+            "n": "2"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "9",
+            "n": "3"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "16",
+            "n": "4"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "24",
+            "n": "2"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "128",
+            "n": "4"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "12",
+            "n": "6"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "1",
+            "n": "1"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "1",
+            "n": "12"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "25",
+            "n": "5"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "x": "125",
+            "n": "6"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "2189",
+            "n": "2188"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "245",
+            "n": "2189"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "244",
+            "n": "2188"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "80",
+            "n": "245"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "x": "245",
+            "n": "81"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    }
+]

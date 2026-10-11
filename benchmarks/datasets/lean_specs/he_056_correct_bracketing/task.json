@@ -1,0 +1,32 @@
+{
+    "id": "he_056_correct_bracketing",
+    "signature": {
+        "name": "correctBracketing56",
+        "parameters": [
+            {
+                "param_name": "brackets",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "brackets.toList.all (fun c => c == '<' || c == '>') = true",
+        "postconditions": "result = true ↔ ((∀ k, k ≤ brackets.length → (brackets.toList.take k).count '>' ≤ (brackets.toList.take k).count '<') ∧\n    brackets.toList.count '<' = brackets.toList.count '>')"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/56"
+        },
+        "tags": [
+            "string",
+            "loop",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

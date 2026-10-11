@@ -1,0 +1,31 @@
+{
+    "id": "he_132_is_nested",
+    "signature": {
+        "name": "isNested",
+        "parameters": [
+            {
+                "param_name": "string",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "string.toList.all (fun c => c == '[' || c == ']') = true",
+        "postconditions": "result = true ↔ ∃ i, i < string.length ∧ ∃ len, len ≤ string.length - i ∧ 4 ≤ len ∧\n    isBalancedSq ((string.toList.drop i).take len) ∧ ∀ k, k < len → 0 < k → ¬ isBalancedSq (((string.toList.drop i).take len).take k)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/132"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": "a nested pair inside a balanced group: a run that is balanced, has no balanced proper prefix, and is longer than []"
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,115 @@
+[
+    {
+        "input": {
+            "values": "[]"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[7]"
+        ]
+    },
+    {
+        "input": {
+            "values": "[(PyVal.int (4)), (PyVal.dict []), (PyVal.list []), (PyVal.float (6530219459687219 / 281474976710656 : ℚ)), (PyVal.int (9)), (PyVal.str \"adasd\")]"
+        },
+        "expected": "[4, 9]",
+        "unexpected": [
+            "[4]",
+            "[4, 9, 7]",
+            "[9, 4]"
+        ]
+    },
+    {
+        "input": {
+            "values": "[(PyVal.int (3)), (PyVal.str \"c\"), (PyVal.int (3)), (PyVal.int (3)), (PyVal.str \"a\"), (PyVal.str \"b\")]"
+        },
+        "expected": "[3, 3, 3]",
+        "unexpected": [
+            "[3, 3]",
+            "[3, 3, 3, 7]",
+            "[3, 3, 3, 3, 3, 3, 7]"
+        ]
+    },
+    {
+        "input": {
+            "values": "[(PyVal.int (1)), (PyVal.int (2)), (PyVal.int (3)), (PyVal.int (4)), (PyVal.int (5))]"
+        },
+        "expected": "[1, 2, 3, 4, 5]",
+        "unexpected": [
+            "[1, 2, 3, 4]",
+            "[1, 2, 3, 4, 5, 7]",
+            "[5, 4, 3, 2, 1]"
+        ]
+    },
+    {
+        "input": {
+            "values": "[(PyVal.list [(PyVal.int (1)), (PyVal.str \"2\")]), (PyVal.list [(PyVal.str \"3\"), (PyVal.list [(PyVal.int (4)), (PyVal.str \"5\")])]), (PyVal.list []), (PyVal.list [(PyVal.str \"abc\"), (PyVal.str \"def\")])]"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[7]"
+        ]
+    },
+    {
+        "input": {
+            "values": "[(PyVal.list [(PyVal.int (1)), (PyVal.str \"2\")]), (PyVal.list [(PyVal.str \"3\"), (PyVal.str \"fe\"), (PyVal.int (4))]), (PyVal.list [(PyVal.int (5)), (PyVal.str \"six\")]), (PyVal.list []), (PyVal.list [(PyVal.str \"seven\"), (PyVal.str \"8\")])]"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[7]"
+        ]
+    },
+    {
+        "input": {
+            "values": "[(PyVal.list [(PyVal.int (4))]), (PyVal.int (8))]"
+        },
+        "expected": "[8]",
+        "unexpected": [
+            "[]",
+            "[8, 7]",
+            "[8, 8, 7]"
+        ]
+    },
+    {
+        "input": {
+            "values": "[(PyVal.list []), (PyVal.list []), (PyVal.list [(PyVal.int (5))]), (PyVal.list [(PyVal.bool true), (PyVal.bool true), (PyVal.bool true), (PyVal.bool true), (PyVal.bool false), (PyVal.bool true), (PyVal.bool true), (PyVal.bool true), (PyVal.bool true)]), (PyVal.list [(PyVal.int (7)), (PyVal.int (8))]), (PyVal.int (9)), (PyVal.int (9)), (PyVal.list [(PyVal.int (5))]), (PyVal.list [(PyVal.int (5))]), (PyVal.list [(PyVal.bool true), (PyVal.bool true), (PyVal.bool true), (PyVal.bool true), (PyVal.bool false), (PyVal.bool true), (PyVal.bool true), (PyVal.bool true), (PyVal.bool true)])]"
+        },
+        "expected": "[9, 9]",
+        "unexpected": [
+            "[9]",
+            "[9, 9, 7]",
+            "[9, 9, 9, 9, 7]"
+        ]
+    },
+    {
+        "input": {
+            "values": "[(PyVal.list [(PyVal.int (1)), (PyVal.str \"2\")]), (PyVal.list [(PyVal.str \"3\"), (PyVal.str \"JGIGeY3\"), (PyVal.str \"33\"), (PyVal.int (4))]), (PyVal.list [(PyVal.int (5)), (PyVal.str \"six\")]), (PyVal.list []), (PyVal.list [(PyVal.str \"seven\"), (PyVal.str \"8\")])]"
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[7]"
+        ]
+    },
+    {
+        "input": {
+            "values": "[(PyVal.int (1)), (PyVal.str \"2\"), (PyVal.int (29)), (PyVal.dict [((PyVal.str \"three\"), (PyVal.int (3)))]), (PyVal.list [(PyVal.int (4)), (PyVal.int (5))])]"
+        },
+        "expected": "[1, 29]",
+        "unexpected": [
+            "[1]",
+            "[1, 29, 7]",
+            "[29, 1]"
+        ]
+    },
+    {
+        "input": {
+            "values": "[(PyVal.int (1)), (PyVal.list [(PyVal.int (2)), (PyVal.str \"3\")]), (PyVal.list [(PyVal.int (5)), (PyVal.int (6))]), (PyVal.int (9)), (PyVal.list [(PyVal.int (7)), (PyVal.int (8))])]"
+        },
+        "expected": "[1, 9]",
+        "unexpected": [
+            "[1]",
+            "[1, 9, 7]",
+            "[9, 1]"
+        ]
+    }
+]

@@ -1,0 +1,40 @@
+study: v4_relaxed_assist  trials=30  turns=2  budget=30  max_retries=4  strict=0  assist=True
+results -> C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM\benchmarks\results\reliability\v4_relaxed_assist_20261003-091422.jsonl
+transcripts -> C:\Users\PRAKRI~1\AppData\Local\Temp\runs\transcripts\v4_relaxed_assist_20261003-091422
+[ 1/30] SUCCESS   calls=2   wall=   14.1s   running: 1/1  certified: coq 3/3
+[ 2/30] SUCCESS   calls=3   wall=   21.6s   running: 2/2  certified: coq 3/3
+[ 3/30] SUCCESS   calls=2   wall=   15.6s   running: 3/3  certified: coq 3/3
+[ 4/30] SUCCESS   calls=2   wall=   12.2s   running: 4/4  certified: coq 3/3
+[ 5/30] SUCCESS   calls=2   wall=   12.0s   running: 5/5  certified: coq 3/3
+[ 6/30] SUCCESS   calls=2   wall=   13.4s   running: 6/6  certified: coq 3/3
+[ 7/30] SUCCESS   calls=3   wall=   18.9s   running: 7/7  certified: coq 3/3
+[ 8/30] SUCCESS   calls=2   wall=   11.9s   running: 8/8  certified: coq 3/3
+[ 9/30] SUCCESS   calls=2   wall=   13.1s   running: 9/9  certified: coq 3/3
+[10/30] SUCCESS   calls=2   wall=    9.7s   running: 10/10  certified: coq 3/3
+[11/30] SUCCESS   calls=3   wall=   26.6s   running: 11/11  certified: coq 3/3
+[12/30] SUCCESS   calls=5   wall=   31.0s   running: 12/12  certified: coq 4/4
+[13/30] SUCCESS   calls=2   wall=   13.3s   running: 13/13  certified: coq 3/3
+[14/30] SUCCESS   calls=2   wall=   14.1s   running: 14/14  certified: coq 3/3
+[15/30] SUCCESS   calls=3   wall=   19.0s   running: 15/15  certified: coq 3/3
+[16/30] SUCCESS   calls=2   wall=   12.9s   running: 16/16  certified: coq 3/3
+[17/30] SUCCESS   calls=2   wall=   12.7s   running: 17/17  certified: coq 3/3
+[18/30] SUCCESS   calls=2   wall=   14.0s   running: 18/18  certified: coq 3/3
+[19/30] SUCCESS   calls=2   wall=   13.2s   running: 19/19  certified: coq 3/3
+[20/30] BUDGET    calls=30  wall=  274.9s   running: 19/20
+[21/30] SUCCESS   calls=3   wall=   22.7s   running: 20/21  certified: coq 3/3
+[22/30] SUCCESS   calls=2   wall=   12.9s   running: 21/22  certified: coq 3/3
+[23/30] SUCCESS   calls=2   wall=   11.3s   running: 22/23  certified: coq 3/3
+[24/30] SUCCESS   calls=5   wall=   28.0s   running: 23/24  certified: coq 4/4
+[25/30] SUCCESS   calls=2   wall=   13.2s   running: 24/25  certified: coq 3/3
+[26/30] SUCCESS   calls=2   wall=   13.6s   running: 25/26  certified: coq 3/3
+[27/30] SUCCESS   calls=3   wall=   16.3s   running: 26/27  certified: coq 3/3
+[28/30] SUCCESS   calls=2   wall=    9.6s   running: 27/28  certified: coq 3/3
+[29/30] SUCCESS   calls=2   wall=   12.2s   running: 28/29  certified: coq 3/3
+[30/30] SUCCESS   calls=2   wall=   12.1s   running: 29/30  certified: coq 3/3
+
+==== summary ====
+success: 29/30 = 97%   (95% Wilson interval 83% - 99%)
+outcomes: {'SUCCESS': 29, 'BUDGET': 1}
+successful trials: calls median 2 (min 2, max 5); wall median 13s
+all trials: mean calls 3.3, mean wall 24s
+finished

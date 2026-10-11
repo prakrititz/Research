@@ -1,0 +1,31 @@
+{
+    "id": "he_078_hex_key",
+    "signature": {
+        "name": "hexKey",
+        "parameters": [
+            {
+                "param_name": "num",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = (num.toList.filter (fun c => ['2', '3', '5', '7', 'B', 'D'].contains c)).length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/78"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

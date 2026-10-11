@@ -1,0 +1,1 @@
+Decide whether the elements of the list are monotonically increasing or monotonically decreasing.

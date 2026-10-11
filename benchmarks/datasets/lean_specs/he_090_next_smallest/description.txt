@@ -1,0 +1,1 @@
+Return the 2nd smallest distinct element of the list, or none if there is no such element.

@@ -1,0 +1,32 @@
+{
+    "id": "he_079_decimal_to_binary",
+    "signature": {
+        "name": "decimalToBinary",
+        "parameters": [
+            {
+                "param_name": "decimal",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "let l := result.toList\nl.length ≥ 5 ∧ l.take 2 = ['d', 'b'] ∧ l.drop (l.length - 2) = ['d', 'b'] ∧ isBinary ((l.drop 2).take (l.length - 4)) decimal"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/79"
+        },
+        "tags": [
+            "scalar",
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}
