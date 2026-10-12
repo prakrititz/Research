@@ -28,5 +28,6 @@
         ],
         "note": "integers and floats are told apart by the sum type: the canonical solution ignores 3.0 because str(3.0) contains a dot"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

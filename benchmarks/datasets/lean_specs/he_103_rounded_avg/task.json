@@ -33,5 +33,6 @@
         ],
         "note": "Python returns -1 or a string; here -1 is none"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

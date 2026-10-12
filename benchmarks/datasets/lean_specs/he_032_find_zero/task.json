@@ -28,5 +28,6 @@
         ],
         "note": "any root is accepted (the canonical solution runs Newton's method from 0); HumanEval's own test asserts |poly(x)| < 1e-4"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

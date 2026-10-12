@@ -27,5 +27,6 @@
         ],
         "note": "stable: for every weight the elements of that weight appear in the original order; with the same length and ordered weights this fixes the output"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

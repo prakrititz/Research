@@ -74,6 +74,15 @@ def lean_string(text: str) -> str:
     return '"' + "".join(out) + '"'
 
 
+def lean_char(c: str) -> str:
+    escapes = {"\n": "\\n", "\t": "\\t", "\r": "\\r", "\\": "\\\\", "'": "\\'", '"': '\\"'}
+    if c in escapes:
+        return f"'{escapes[c]}'"
+    if ord(c) < 32 or ord(c) == 127:
+        return f"'\\x{ord(c):02x}'"
+    return f"'{c}'"
+
+
 def strip_imports(text: str) -> str:
     return "\n".join(line for line in text.splitlines() if not re.match(r"\s*import\s", line))
 
@@ -87,7 +96,11 @@ def render(value, type_text: str) -> str:
         return f"({value})" if value < 0 else str(value)
     if isinstance(value, str):
         # the dataset stores non-String expected values as Lean literals ("some 2", "#[1, 2]"): use them as written
-        return lean_string(value) if t == "String" else value
+        if t == "String":
+            return lean_string(value)
+        if t == "Char" and len(value) == 1:
+            return lean_char(value)
+        return value
     if isinstance(value, list):
         inner = re.match(r"(?:Array|List)\s+(.*)", t)
         elem = inner.group(1) if inner else ""
@@ -108,6 +121,12 @@ class LeanTask:
     prelude: str                                # helper definitions, f_precond, f_postcond (no imports, no code, no proof)
     tests: List[dict] = field(default_factory=list)
     directory: str = ""
+    #: How ``test.json`` writes the *inputs*. ``"lean"``: every input is Lean source as it is (ours: ``"abc"`` with its quotes,
+    #: ``[1, 2]``). ``"json"``: Verina's: numbers and strings are JSON values (``abc`` is the String ``"abc"``, ``,`` the Char
+    #: ``','``) and only compound values are Lean source. Expected values are written the same way in both.
+    encoding: str = "lean"
+    #: Lean source that a task file of this dataset needs on this Lean version (a renamed constant): put before the file.
+    compat: str = ""
 
     # --- names ----------------------------------------------------------------------------------------------------
 
@@ -137,8 +156,19 @@ class LeanTask:
 
     # --- loading --------------------------------------------------------------------------------------------------
 
+    def input_literal(self, case: dict, name: str) -> str:
+        """The Lean literal of parameter ``name`` in test ``case``."""
+        value = case["input"][name]
+        if self.encoding == "json":
+            return render(value, dict(self.params)[name])
+        return str(value)
+
+    def call_args(self, case: dict) -> str:
+        """``(a) (b) ...`` the arguments of one test, parenthesised."""
+        return " ".join(f"({self.input_literal(case, n)})" for n, _ in self.params)
+
     @classmethod
-    def from_dir(cls, directory: str) -> "LeanTask":
+    def from_dir(cls, directory: str, encoding: str = "") -> "LeanTask":
         meta = json.load(open(os.path.join(directory, "task.json"), encoding="utf8"))
         lean = open(os.path.join(directory, "task.lean"), encoding="utf8").read()
         name = meta["signature"]["name"]
@@ -146,8 +176,10 @@ class LeanTask:
         description = open(os.path.join(directory, "description.txt"), encoding="utf8").read().strip()
         tests_path = os.path.join(directory, "test.json")
         tests = json.load(open(tests_path, encoding="utf8")) if os.path.exists(tests_path) else []
+        encoding = encoding or meta.get("input_encoding") or "lean"
         return cls(id=meta["id"], name=name, params=params, ret=meta["signature"]["return_type"],
-                   description=description, prelude=cls._prelude(lean, name), tests=tests, directory=directory)
+                   description=description, prelude=cls._prelude(lean, name), tests=tests, directory=directory,
+                   encoding=encoding)
 
     @staticmethod
     def _prelude(lean: str, name: str) -> str:
@@ -164,15 +196,14 @@ class LeanTask:
     def define(self, program: str, aux: str = "") -> str:
         """The prelude, optional helpers, and ``def f ... := program`` (the program may use ``h_precond``)."""
         body = program if "\n" not in program else "\n".join("  " + line for line in program.splitlines()).lstrip()
-        return (f"{self.prelude}\n{aux}\n"
+        return (f"{self.compat}\n{self.prelude}\n{aux}\n"
                 f"def {self.name} {self.binders()} : {self.ret} :=\n  {body}\n")
 
     def test_commands(self) -> List[str]:
         """``#eval`` checks of the defined function on the tests of ``test.json``."""
-        types = dict(self.params)
         commands = []
         for case in self.tests:
-            args = " ".join(f"({case['input'][n]})" for n in types)
+            args = self.call_args(case)
             proof = precondition_proof(self.pre_name)
             commands.append(f"set_option maxHeartbeats 2000000 in\n#eval {same_expr(self.ret, f'({self.name} {args} {proof})', render(case['expected'], self.ret))}")
         return commands

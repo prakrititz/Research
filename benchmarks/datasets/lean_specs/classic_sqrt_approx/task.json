@@ -33,5 +33,6 @@
         ],
         "note": "the paper's flagship example, over the rationals so that it can be executed; the paper has it over the reals"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

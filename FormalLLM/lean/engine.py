@@ -41,8 +41,15 @@ def make_cascade(extra_simp=()):
               f"(simp_all [{simp}, Nat.mul_comm]; done) | (simp_all [{simp}, mul_assoc]; done) | "
               f"(split <;> simp_all [{simp}]; done) | "
               f"(split_ifs <;> simp_all [{simp}] <;> omega) | (simp_all [{simp}, Nat.mul_comm, Nat.mul_left_comm]; done) | "
+              # a quantifier over members whose predicate mentions a loop variable (``∀ w ∈ words, f w ≤ f words[b]!``): turn it into
+              # the index form the invariant uses, then let ``grind`` close it (``simp_all`` leaves it open: found on he_158)
+              f"(rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | "
               + helpers + "nlinarith | (aesop; done))")
-    return tactic, tactic[:-1] + " | sorry)"
+    diagnose = tactic[:-1] + " | sorry)"
+    if extra_simp:
+        whole = " | ".join(f"(apply {n}; all_goals first | done | (simp_all; done) | omega | grind)" for n in extra_simp)
+        return f"first | {whole} | ({tactic})", f"first | {whole} | ({diagnose})"
+    return tactic, diagnose
 
 
 CASCADE, DIAGNOSE = make_cascade()

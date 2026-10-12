@@ -28,5 +28,6 @@
         ],
         "note": "the values are integers (Python prints some of them as floats)"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

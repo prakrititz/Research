@@ -89,8 +89,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", nargs="*")
     ap.add_argument("--limit", type=int, default=0, help="at most this many mutants per derivation (0 = all)")
+    ap.add_argument("--dataset", default="lean_specs", help="verina, humaneval, classic or lean_specs")
     args = ap.parse_args()
-    from benchmarks.datasets.lean_oracle import LIBRARY, ORACLES
+    from FormalLLM.lean.dataset import get
+    ds = get(args.dataset)
+    ORACLES = ds.oracles()
     from FormalLLM.lean.engine import Derivation
     from FormalLLM.lean.session import LeanSession
     from FormalLLM.lean.task import LeanTask
@@ -100,7 +103,7 @@ def main():
         for task_id, tree in ORACLES.items():
             if args.only and task_id not in args.only:
                 continue
-            task = LeanTask.from_dir(os.path.join(LIBRARY, task_id))
+            task = ds.load(task_id)
             local = collections.Counter()
             options = list(mutants(tree))
             if args.limit:
@@ -126,8 +129,7 @@ def main():
                "kill_rate": round(killed / total, 3) if total else None,
                "counterexample_share_of_killed": round(counts["unproved_with_counterexample"] / killed, 3) if killed else None,
                "seconds": round(time.time() - started, 1)}
-    os.makedirs(RESULTS, exist_ok=True)
-    with open(os.path.join(RESULTS, "mutation_feedback.json"), "w", encoding="utf8") as handle:
+    with open(ds.result_path("mutation_feedback.json"), "w", encoding="utf8") as handle:
         json.dump({"summary": summary, "rows": rows}, handle, indent=1, ensure_ascii=False)
     print(json.dumps(summary, indent=1))
 

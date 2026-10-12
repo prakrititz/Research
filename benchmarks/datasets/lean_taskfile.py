@@ -84,7 +84,8 @@ def write_task(root: str, task_id: str, name: str, params: Sequence[Tuple[str, s
                           "return_type": ret},
             "description_file": "./description.txt", "lean_file": "./task.lean",
             "specification": specification or {"preconditions": "", "postconditions": ""},
-            "metadata": metadata or {}, "test_file": "./test.json"}
+            "metadata": metadata or {}, "test_file": "./test.json",
+            "input_encoding": "lean"}      # test.json inputs are Lean source as written (Verina's are JSON values; see LeanTask)
     with open(os.path.join(directory, "task.json"), "w", encoding="utf8", newline="\n") as handle:
         json.dump(meta, handle, indent=4, ensure_ascii=False)
     with open(os.path.join(directory, "description.txt"), "w", encoding="utf8", newline="\n") as handle:

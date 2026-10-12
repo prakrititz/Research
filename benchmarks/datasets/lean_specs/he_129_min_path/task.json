@@ -32,5 +32,6 @@
         ],
         "note": "stated as the problem states it: the lexicographically least among all walks of length k (evaluated on grids up to 4x4 and k <= 9)"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

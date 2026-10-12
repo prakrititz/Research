@@ -15,6 +15,16 @@
 | 6. Refinement on Verina | **engine built; opens 188 of 189 goals; no model run yet** | Lean-native engine (doc 23): hand-written derivations certified for 36 of 36 library tasks and 24 of 25 Verina tasks (not written by us); model-driven agent built and tested with a scripted model; waiting for a model run |
 | 7. Harder families | not started | — |
 
+## 2026-10-13 — Derivations for the 26 new specifications; Verina and HumanEval behind one interface (no model run)
+
+User instruction: write the derivations; no model yet; make Verina and HumanEval "the same page" so that one can be replaced by the other. Details: **doc 26**.
+
+* **Derivations:** the 26 specifications added on 2026-10-11 all have a hand-written derivation now, and all 26 certify (tests of the derived programs pass). The library as a whole: **62 / 62** certified (36 earlier + 26), Verina **24 / 25** as before. Written in `benchmarks/datasets/lean_oracle.py` (section "HumanEval 133-163").
+* **What they exposed in the engine (kept):** three lemmas (an element at an index is a member, also of a prefix); a cascade alternative `rw [forall_mem_iff_idx]; grind` for member quantifiers that mention a loop variable; helper lemmas are tried on the whole goal first (a literal `List.range 10` made `simp_all` run out of heartbeats). A worked-out lemma each for the stability of a sort, a two-key sort, the Option-valued extrema, and two witness disjunctions.
+* **One interface:** `FormalLLM/lean/dataset.py` (registry), `FormalLLM/lean/evaluate.py` (one evaluator, one validator), `benchmarks/lean_eval.py` (list | validate | reference | compile | goals | automation | oracles), `benchmarks/lean_baseline.py`, `--dataset` on the agent runner and on `python -m FormalLLM.lean`. The old `verina_*` commands are shims.
+* **The first real difference found and fixed:** Verina writes a String/Char input as the raw text, ours as Lean source; the old Verina harness did not quote it (so many "reference fails" were the harness). `LeanTask.encoding` and `call_args` make both go through one function.
+* **Verina through the same four specification checks as ours** (first time): 189 tasks, 180 compile on 4.34.1 (two renamed constants re-defined in `Dataset.compat`), **165 / 189 pass all four checks**; 14 have a postcondition Lean cannot execute, 9 do not compile, 1 is weak.
+
 **Decision (2026-10-11): Z3 is discarded from the pipeline for now.** The base is Lean only, because it is the stronger prover and its kernel is the single trusted judge; accuracy of the outputs comes first, speed second. Z3 may come back later as an optional fast screen (the old code is kept in the tree and in git, untouched; nothing is deleted). What was done to make "Lean only" true rather than nominal:
 
 * `FormalLLM/lean/session.py` no longer imports the Z3-era `FormalLLM/verification` package: it has its own `Toolchain` (elan home, Lake project, REPL path, `short_path`), and `benchmarks/lean_persistent.py` uses it too.

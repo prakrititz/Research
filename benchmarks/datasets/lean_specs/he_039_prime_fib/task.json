@@ -27,5 +27,6 @@
         ],
         "note": "the index of the Fibonacci number is searched below 300 (the 12th prime Fibonacci number has index 83)"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

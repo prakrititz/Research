@@ -1,6 +1,6 @@
 """Command line for the Lean core.
 
-    python -m FormalLLM.lean show   benchmarks/datasets/lean_specs/he_060_sum_to_n
+    python -m FormalLLM.lean show   he_060_sum_to_n            # a task id of any dataset, or a task directory
     python -m FormalLLM.lean check  benchmarks/datasets/lean_specs/he_060_sum_to_n tree.json [--source]
     python -m FormalLLM.lean oracle he_060_sum_to_n [--source]          # the hand-written derivation of a library or Verina task
     python -m FormalLLM.lean solve  benchmarks/datasets/lean_specs/he_060_sum_to_n --config ornith [--budget 30]
@@ -20,9 +20,13 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 
-def _task(path: str):
-    from FormalLLM.lean.task import LeanTask
-    return LeanTask.from_dir(path)
+def _task(path_or_id: str):
+    """A task directory, or the id of a task of any registered dataset (``he_060_sum_to_n``, ``verina_basic_5``)."""
+    if os.path.isdir(path_or_id):
+        from FormalLLM.lean.task import LeanTask
+        return LeanTask.from_dir(path_or_id)
+    from FormalLLM.lean.dataset import resolve
+    return resolve(path_or_id).load(path_or_id)
 
 
 def _session(imports: str):
@@ -70,16 +74,18 @@ def check(args) -> int:
 
 
 def oracle(args) -> int:
-    from benchmarks.datasets import lean_oracle, verina_oracle
+    from FormalLLM.lean.dataset import resolve
     from FormalLLM.lean.engine import Derivation
-    if args.id in lean_oracle.ORACLES:
-        tree, library = lean_oracle.ORACLES[args.id], lean_oracle.LIBRARY
-    elif args.id in verina_oracle.ORACLES:
-        tree, library = verina_oracle.ORACLES[args.id], verina_oracle.DATASET
-    else:
-        print(f"no hand-written derivation for {args.id}")
+    try:
+        ds = resolve(args.id)
+    except KeyError:
+        print(f"no hand-written derivation for {args.id} (it belongs to no dataset)")
         return 2
-    task = _task(os.path.join(library, args.id))
+    tree = ds.oracles().get(args.id)
+    if tree is None:
+        print(f"no hand-written derivation for {args.id} in {ds.name}")
+        return 2
+    task = ds.load(args.id)
     with _session(args.imports) as lean:
         derivation = Derivation(task, lean)
         return _report(derivation, derivation.apply_tree(tree), args.source)

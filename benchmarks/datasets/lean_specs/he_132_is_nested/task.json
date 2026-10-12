@@ -27,5 +27,6 @@
         ],
         "note": "a nested pair inside a balanced group: a run that is balanced, has no balanced proper prefix, and is longer than []"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }
