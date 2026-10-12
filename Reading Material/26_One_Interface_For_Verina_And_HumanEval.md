@@ -52,8 +52,8 @@ Old command names still work: `verina_eval.py oracle`, `verina_goal_check.py`, `
 
 The 24 Verina tasks that do not pass all four, by cause (`results/verina/validation.jsonl`):
 
-* **14 have a postcondition Lean cannot run** (`failed to synthesize Decidable (f_postcond ...)`: an unbounded `∃`/`∀` or a Prop-valued helper). Our specifications are all written in the decidable shape, so every one of ours can be spot-checked; these 14 can only be judged by a proof. Not a harness problem.
-* **9 do not compile on 4.34.1** even with the proof removed: `simp` or `omega` inside the reference code or the helper definitions (7), `String.Iterator.curr` (1), an elaboration-order change (`c.isDigit`, 1).
+* **14 have a postcondition Lean cannot run** (`failed to synthesize Decidable (f_postcond ...)`). They are correct Lean, written for proving, with unbounded quantifiers such as `∃ k : Int, n = 11 * k` or `∃ x : Nat, pow 2 x = n`; a quantifier over all integers cannot be decided by running. Our specifications are all written in the decidable shape, so every one of ours can be spot-checked; these 14 can only be judged by a proof. Not a harness problem.
+* **9 do not compile on 4.34.1** even with the proof removed. Seven are a `let rec` loop without a termination hint whose automatic termination proof times out on 4.34 (a Lean version change; raising the recursion or heartbeat limits did not help, so it needs a `termination_by` added to Verina's code, which we do not do); `verina_basic_61` uses `String.Iterator.curr`/`next`, whose signature changed; `verina_advanced_68` hits an elaboration-order change (`c.isDigit` with `c`'s type not yet known).
 * **1 specification is weak** (`verina_basic_72` accepts 1 of 15 deliberately wrong outputs).
 
 ## 4. Derivations on both (hand-written, no model)
@@ -62,7 +62,7 @@ The 24 Verina tasks that do not pass all four, by cause (`results/verina/validat
 
 | | tasks | derivations | certified | tests of the derived programs |
 |---|---|---|---|---|
-| HumanEval | 164 | 56 (49 before today + 7 more below) | **56 / 56** | all pass |
+| HumanEval | 164 | **57** (107 problems still have none) | **57 / 57** | all pass |
 | classic | 5 | 5 | 5 / 5 | all pass |
 | Verina | 189 | 25 | 24 / 25 (`verina_basic_4` needs a witness) | all pass |
 
@@ -93,3 +93,9 @@ Each pair differs only in `--dataset`.
 3. **Verina's references** are Lean programs for Lean 4.18 (14 + 9 of its tasks do not run as stored, §3); HumanEval's are written by us on 4.34.1.
 4. **Floats**: our specifications read Python floats as rationals up to 1e-6 (EvalPlus's tolerance); Verina has two `Float` tasks that are compared with `==`.
 5. **The test inputs of our library depend on the EvalPlus data version** (rebuilding the library with `evalplus 0.3.x` here produced different EvalPlus samples for some problems than the stored ones from the Windows laptop). The stored `test.json` files are authoritative; `lean_specs.py build` should not be re-run casually.
+
+## 7. How the derivations were verified (2026-10-13)
+
+1. **Independent recompilation** (`benchmarks/verify_derivations.py`): every finished derivation file is compiled by a plain `lake env lean` in its own process (not the REPL the engine used) and checked from that process's output: no error; `#print axioms` lists only `propext`, `Classical.choice`, `Quot.sound`; the file contains the dataset's own precondition/postcondition regions as written; every test of `test.json` prints `true`. **Ours 62 / 62; Verina 24 / 24** (the 25th Verina derivation, `verina_basic_4`, is not complete, so there is no file).
+2. **Mutation testing of the 26 new derivations** (`benchmarks/lean_mutation_feedback.py --dataset humaneval`): every step was changed once (a number +1, `<` ↔ `≤`, `+` ↔ `-`, a condition...): **152 mutants, 146 rejected (96.1%)**, 85 of them with a counter-example; the 6 survivors are equivalent mutants (the program is still correct, certified and passes its tests): `he_137` second condition after the equal case was excluded; `he_158` replacing the best by an equal string; `he_159` `need = remaining` gives the same result in both branches; `he_136` the initial value of `m` is unused while no element was seen, and the same equal-element case. **No mutant was accepted and failed a test.**
+3. **Not verified by either:** that a specification means what the English says (checked against test data only, doc 24), and the four *definitional* derivations (140, 156, 160, 162) say nothing beyond "the specification is itself a definition".

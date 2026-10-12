@@ -15,6 +15,10 @@
 | 6. Refinement on Verina | **engine built; opens 188 of 189 goals; no model run yet** | Lean-native engine (doc 23): hand-written derivations certified for 36 of 36 library tasks and 24 of 25 Verina tasks (not written by us); model-driven agent built and tested with a scripted model; waiting for a model run |
 | 7. Harder families | not started | — |
 
+## 2026-10-13 (later) — Verification of the derivations
+
+`benchmarks/verify_derivations.py` recompiles each derivation in a fresh plain Lean process and checks errors, axioms, that the statement is the dataset's own, and the tests: **62 / 62 of ours and 24 / 24 complete Verina derivations**. Mutation testing of the 26 new ones: 152 mutants, 146 rejected, 6 equivalent survivors, none accepted-and-wrong. HumanEval has **57** derivations of 164 (107 missing; the earlier count of 56 was taken before `he_141` was added). Doc 26 §7.
+
 ## 2026-10-13 — Derivations for the 26 new specifications; Verina and HumanEval behind one interface (no model run)
 
 User instruction: write the derivations; no model yet; make Verina and HumanEval "the same page" so that one can be replaced by the other. Details: **doc 26**.
