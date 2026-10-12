@@ -1,0 +1,506 @@
+[
+ {
+  "id": "verina_advanced_16",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_advanced_16.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 20.9,
+  "verified": true
+ },
+ {
+  "id": "verina_advanced_17",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_advanced_17.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 20.9,
+  "verified": true
+ },
+ {
+  "id": "verina_advanced_39",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_advanced_39.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 15.2,
+  "verified": true
+ },
+ {
+  "id": "verina_advanced_40",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_advanced_40.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 15.1,
+  "verified": true
+ },
+ {
+  "id": "verina_advanced_41",
+  "laws": 7,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_advanced_41.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 15.8,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_1",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_1.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 15.8,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_10",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 7,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_10.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 7,
+  "seconds": 17.6,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_100",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_100.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 17.5,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_105",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_105.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 15.5,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_106",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_106.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 15.4,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_107",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_107.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 21.9,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_11",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 8,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_11.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 8,
+  "seconds": 21.8,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_12",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_12.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 14.4,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_13",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_13.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 14.4,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_19",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 7,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_19.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 7,
+  "seconds": 16.2,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_2",
+  "laws": 4,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 8,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_2.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 8,
+  "seconds": 16.2,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_26",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_26.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 21.2,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_30",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 3,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_30.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 3,
+  "seconds": 21.3,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_4",
+  "laws": 0,
+  "helpers": 0,
+  "complete": false,
+  "error": "derivation incomplete"
+ },
+ {
+  "id": "verina_basic_44",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 7,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_44.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 7,
+  "seconds": 14.7,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_47",
+  "laws": 2,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 4,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_47.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 4,
+  "seconds": 14.2,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_5",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 7,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_5.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 7,
+  "seconds": 17.1,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_50",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_50.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 16.8,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_53",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_53.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 16.0,
+  "verified": true
+ },
+ {
+  "id": "verina_basic_55",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 2,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_basic_55.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 2,
+  "seconds": 15.9,
+  "verified": true
+ }
+]

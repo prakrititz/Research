@@ -1,0 +1,954 @@
+{
+ "summary": {
+  "mutants": 152,
+  "outcomes": {
+   "unproved": 41,
+   "unproved_with_counterexample": 85,
+   "ill_formed": 20,
+   "survived_certified": 6
+  },
+  "killed": 146,
+  "kill_rate": 0.961,
+  "counterexample_share_of_killed": 0.582,
+  "survivors": [
+   [
+    "he_137_compare_one",
+    "1:cases.cond:lt->le"
+   ],
+   [
+    "he_158_find_max",
+    "1/0/0:term.expr:lt->le"
+   ],
+   [
+    "he_159_eat",
+    "root:cases.cond:le->lt"
+   ],
+   [
+    "he_136_largest_smallest_integers",
+    "0:loop.init:number+1"
+   ],
+   [
+    "he_136_largest_smallest_integers",
+    "1/0:loop.init:number+1"
+   ],
+   [
+    "he_136_largest_smallest_integers",
+    "1/0/0:term.expr:lt->le"
+   ]
+  ]
+ },
+ "rows": [
+  {
+   "task": "he_134_check_if_last_char_is_a_letter",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_134_check_if_last_char_is_a_letter",
+   "mutation": "root:term.expr:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_134_check_if_last_char_is_a_letter",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "txt := \"\\x01\""
+  },
+  {
+   "task": "he_135_can_arrange",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := [0, -1]"
+  },
+  {
+   "task": "he_135_can_arrange",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := [0, 1]"
+  },
+  {
+   "task": "he_135_can_arrange",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := [1]"
+  },
+  {
+   "task": "he_135_can_arrange",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := []"
+  },
+  {
+   "task": "he_135_can_arrange",
+   "mutation": "root:loop.guard:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_135_can_arrange",
+   "mutation": "root:loop.guard:le->lt",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_135_can_arrange",
+   "mutation": "root:loop.result:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_135_can_arrange",
+   "mutation": "root:loop.result:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_135_can_arrange",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := [0, -1, 1]\n    state (i = 2)  invariant true  guard true\n      your step gives (i = 0)  invariant false  variant 2 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_137_compare_one",
+   "mutation": "root:cases.cond:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_137_compare_one",
+   "mutation": "1:cases.cond:lt->le",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "he_141_file_name_check",
+   "mutation": "root:cases.cond:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_141_file_name_check",
+   "mutation": "root:cases.cond:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_141_file_name_check",
+   "mutation": "root:cases.cond:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_141_file_name_check",
+   "mutation": "root:cases.cond:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_141_file_name_check",
+   "mutation": "root:cases.cond:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_142_sum_squares",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_142_sum_squares",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_142_sum_squares",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [-1, -4, 0, -5, -3], i := 5, acc := 1"
+  },
+  {
+   "task": "he_142_sum_squares",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_142_sum_squares",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_142_sum_squares",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    backtrace:\n    0   repl                                0x000000010ae4b4a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x000000010ae41fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x000000010ae42108 lean_panic_fn_borrowed + 64\n    3   repl                                0x0000000104af717c List.get!Internal [boxed, arity↓] + 28\n    4   repl                                0x00000001046fdff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x00000001046fc2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x00000001046fe1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x00000001046fc2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x00000001046fe1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x00000001046fc2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "he_142_sum_squares",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, acc = 0)  invariant true  guard true\n      your step gives (i = 2, acc = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_142_sum_squares",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, acc = 0)  invariant true  guard true\n      your step gives (i = 0, acc = 0)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_142_sum_squares",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [-1]\n    state (i = 0, acc = 0)  invariant true  guard true\n      your step gives (i = 1, acc = -1)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_144_simplify",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_144_simplify",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_146_special_filter",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): nums := []"
+  },
+  {
+   "task": "he_146_special_filter",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): nums := []"
+  },
+  {
+   "task": "he_146_special_filter",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_146_special_filter",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): nums := []"
+  },
+  {
+   "task": "he_146_special_filter",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): nums := []"
+  },
+  {
+   "task": "he_146_special_filter",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): nums := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    backtrace:\n    0   repl                                0x00000001071434a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000107139fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x000000010713a108 lean_panic_fn_borrowed + 64\n    3   repl                                0x0000000100def17c List.get!Internal [boxed, arity↓] + 28\n    4   repl                                0x00000001009f5ff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x00000001009f61f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x00000001009f61f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "he_146_special_filter",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): nums := [0]\n    state (i = 0, acc = 0)  invariant true  guard true\n      your step gives (i = 2, acc = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_146_special_filter",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): nums := [0]\n    state (i = 0, acc = 0)  invariant true  guard true\n      your step gives (i = 0, acc = 0)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_146_special_filter",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): nums := [15]\n    state (i = 0, acc = 0)  invariant true  guard true\n      your step gives (i = 1, acc = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_151_double_the_difference",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_151_double_the_difference",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_151_double_the_difference",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_151_double_the_difference",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_151_double_the_difference",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_151_double_the_difference",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_151_double_the_difference",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_151_double_the_difference",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_151_double_the_difference",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_153_strongest_extension",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): class_name := \"\", extensions := [\"\"]"
+  },
+  {
+   "task": "he_153_strongest_extension",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): class_name := \"\", extensions := [\"\"]"
+  },
+  {
+   "task": "he_153_strongest_extension",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): class_name := \"\", extensions := [\"\"]"
+  },
+  {
+   "task": "he_153_strongest_extension",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_153_strongest_extension",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): class_name := \"\", extensions := [\"\"]"
+  },
+  {
+   "task": "he_153_strongest_extension",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): class_name := \"\", extensions := [\"\"]\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    backtrace:\n    0   repl                                0x00000001071434a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000107139fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x000000010713a108 lean_panic_fn_borrowed + 64\n    3   repl                                0x0000000100def17c List.get!Internal [boxed, arity↓] + 28\n    4   repl                                0x00000001009f5ff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x00000001009f61f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x00000001009f61f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "he_153_strongest_extension",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): class_name := \"\\x02\", extensions := [\"\", \"\"]\n    state (k = 1, b = 0)  invariant true  guard true\n      your step gives (k = 3, b = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_153_strongest_extension",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): class_name := \"\\x02\", extensions := [\"\", \"\"]\n    state (k = 1, b = 0)  invariant true  guard true\n      your step gives (k = 0, b = 0)  invariant false  variant 1 -> 2   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_153_strongest_extension",
+   "mutation": "0:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): class_name := \"\\x00\\x02\", extensions := [\"\", \"21\"]\n    state (k = 1, b = 0)  invariant true  guard true\n      your step gives (k = 2, b = 1)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_154_cycpattern_check",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := \"\", b := \"\""
+  },
+  {
+   "task": "he_154_cycpattern_check",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := \"\", b := \"\""
+  },
+  {
+   "task": "he_154_cycpattern_check",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := \"\", b := \"\""
+  },
+  {
+   "task": "he_154_cycpattern_check",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := \"\", b := \"\""
+  },
+  {
+   "task": "he_154_cycpattern_check",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := \"\", b := \"\"\n    state (i = 0, found = false)  invariant true  guard true\n      your step gives (i = 1, found = true)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_154_cycpattern_check",
+   "mutation": "root:loop.result:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := \"\", b := \"\", i := 0, found := false"
+  },
+  {
+   "task": "he_154_cycpattern_check",
+   "mutation": "root:loop.result:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := \"\", b := \"\", i := 0, found := false"
+  },
+  {
+   "task": "he_154_cycpattern_check",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := \"\", b := \"A\"\n    state (i = 0, found = false)  invariant true  guard true\n      your step gives (i = 2, found = false)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_154_cycpattern_check",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := \"\", b := \"A\"\n    state (i = 0, found = false)  invariant true  guard true\n      your step gives (i = 0, found = false)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  },
+  {
+   "task": "he_155_even_odd_count",
+   "mutation": "root:bind.prop:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "num := 0"
+  },
+  {
+   "task": "he_155_even_odd_count",
+   "mutation": "1:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): num := -1, ds := ['1']"
+  },
+  {
+   "task": "he_155_even_odd_count",
+   "mutation": "1:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): num := -1, ds := ['1']"
+  },
+  {
+   "task": "he_155_even_odd_count",
+   "mutation": "1:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): num := -1, ds := ['1']"
+  },
+  {
+   "task": "he_155_even_odd_count",
+   "mutation": "1:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_155_even_odd_count",
+   "mutation": "1:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_155_even_odd_count",
+   "mutation": "1:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): num := -1, ds := ['1']"
+  },
+  {
+   "task": "he_155_even_odd_count",
+   "mutation": "1:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): num := -1, ds := ['1']\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    backtrace:\n    0   repl                                0x00000001071434a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000107139fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x000000010713a108 lean_panic_fn_borrowed + 64\n    3   repl                                0x0000000100def17c List.get!Internal [boxed, arity↓] + 28\n    4   repl                                0x00000001009f5ff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x00000001009f61f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x00000001009f61f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "he_155_even_odd_count",
+   "mutation": "1/0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): num := -1, ds := ['1']\n    state (i = 0, e = 0, o = 0)  invariant true  guard true\n      your step gives (i = 2, e = 0, o = 1)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_155_even_odd_count",
+   "mutation": "1/0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): num := -1, ds := ['1']\n    state (i = 0, e = 0, o = 0)  invariant true  guard true\n      your step gives (i = 0, e = 0, o = 1)  invariant false  variant 1 -> 1   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_155_even_odd_count",
+   "mutation": "1/0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): num := -1, ds := ['1']\n    state (i = 0, e = 0, o = 0)  invariant true  guard true\n      your step gives (i = 1, e = 1, o = 1)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "root:cases.cond:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "words := [\"a\"]"
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1:bind.prop:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1/0:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): words := [\"\"]"
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1/0:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): words := [\"\"]"
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1/0:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): words := [\"\"]"
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1/0:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1/0:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): words := [\"\"]"
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1/0:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1/0:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): words := [\"\"]\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    backtrace:\n    0   repl                                0x00000001071434a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000107139fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x000000010713a108 lean_panic_fn_borrowed + 64\n    3   repl                                0x0000000100def17c List.get!Internal [boxed, arity↓] + 28\n    4   repl                                0x00000001009f5ff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x00000001009f61f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x00000001009f61f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1/0/0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): words := [\"\", \"\"]\n    state (k = 1, b = 0)  invariant true  guard true\n      your step gives (k = 3, b = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1/0/0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): words := [\"\", \"\"]\n    state (k = 1, b = 0)  invariant true  guard true\n      your step gives (k = 0, b = 0)  invariant false  variant 1 -> 2   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1/0/0:term.expr:lt->le",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "he_158_find_max",
+   "mutation": "1/0/0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): words := [\"0\", \"\"]\n    state (k = 1, b = 0)  invariant true  guard true\n      your step gives (k = 2, b = 1)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_159_eat",
+   "mutation": "root:cases.cond:le->lt",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "he_159_eat",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "number := 0, need := 1, remaining := 1"
+  },
+  {
+   "task": "he_159_eat",
+   "mutation": "1:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "number := 0, need := 1, remaining := 0"
+  },
+  {
+   "task": "he_159_eat",
+   "mutation": "1:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "number := 0, need := 2, remaining := 1"
+  },
+  {
+   "task": "he_161_solve",
+   "mutation": "root:cases.cond:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_162_string_to_md5",
+   "mutation": "root:cases.cond:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "text := \"\\\\\""
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "root:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "root:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "root:bind.prop:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "root:bind.prop:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "root:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0:loop.init:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, m = 0, f = false)  invariant true  guard true\n      your step gives (i = 1, m = 0, f = false)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [-1]"
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0:loop.invariant:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    backtrace:\n    0   repl                                0x00000001071434a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000107139fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x000000010713a108 lean_panic_fn_borrowed + 64\n    3   repl                                0x0000000100def17c List.get!Internal [boxed, arity↓] + 28\n    4   repl                                0x00000001009f5ff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x00000001009f61f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x00000001009f61f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x00000001009f42f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0:loop.result:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0/0:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0/0:term.expr:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0/0:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [-1, 0]\n    state (i = 0, m = 0, f = false)  invariant true  guard true\n      your step gives (i = 1, m = -1, f = true)  invariant true  variant 2 -> 1\n    state (i = 1, m = -1, f = true)  invariant true  guard true\n      your step gives (i = 2, m = 0, f = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "0/0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [-1]\n    state (i = 0, m = 0, f = false)  invariant true  guard true\n      your step gives (i = 1, m = 0, f = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1:bind.prop:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0:loop.init:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0:loop.invariant:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0:loop.invariant:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0:loop.result:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0/0:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0/0:term.expr:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0/0:term.expr:lt->le",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "he_136_largest_smallest_integers",
+   "mutation": "1/0/0:term.expr:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_145_order_by_points",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [1, -12]"
+  },
+  {
+   "task": "he_147_get_max_triples",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 5"
+  },
+  {
+   "task": "he_147_get_max_triples",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 4"
+  },
+  {
+   "task": "he_147_get_max_triples",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 3"
+  },
+  {
+   "task": "he_147_get_max_triples",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 3"
+  },
+  {
+   "task": "he_148_bf",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_148_bf",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_149_sorted_list_sum",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [\", \"]"
+  },
+  {
+   "task": "he_149_sorted_list_sum",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [\"C;\", \":;\"]"
+  },
+  {
+   "task": "he_149_sorted_list_sum",
+   "mutation": "root:term.expr:and->or",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [\",\\x06\\x08\\ncB\", \":;\"]"
+  },
+  {
+   "task": "he_149_sorted_list_sum",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [\"\"]"
+  },
+  {
+   "task": "he_163_generate_integers",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_163_generate_integers",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_163_generate_integers",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "he_133_sum_squares",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_133_sum_squares",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_133_sum_squares",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_133_sum_squares",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []"
+  },
+  {
+   "task": "he_133_sum_squares",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    backtrace:\n    0   repl                                0x000000010abff4a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x000000010abf5fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x000000010abf6108 lean_panic_fn_borrowed + 64\n    3   repl                                0x00000001048ab17c List.get!Internal [boxed, arity↓] + 28\n    4   repl                                0x00000001044b1ff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x00000001044b02f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x00000001044b21f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x00000001044b02f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x00000001044b21f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x00000001044b02f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "he_133_sum_squares",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, acc = 0)  invariant true  guard true\n      your step gives (i = 2, acc = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "he_133_sum_squares",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    state (i = 0, acc = 0)  invariant true  guard true\n      your step gives (i = 0, acc = 0)  invariant true  variant 1 -> 1   <- the variant does not decrease"
+  }
+ ]
+}

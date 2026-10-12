@@ -90,6 +90,8 @@ def main():
     ap.add_argument("--only", nargs="*")
     ap.add_argument("--limit", type=int, default=0, help="at most this many mutants per derivation (0 = all)")
     ap.add_argument("--dataset", default="lean_specs", help="verina, humaneval, classic or lean_specs")
+    ap.add_argument("--imports", choices=["default", "full"], default="default",
+                    help="full: import all of Mathlib (needed by a task that uses e.g. the ceiling notation)")
     args = ap.parse_args()
     from FormalLLM.lean.dataset import get
     ds = get(args.dataset)
@@ -99,7 +101,8 @@ def main():
     from FormalLLM.lean.task import LeanTask
     rows, counts = [], collections.Counter()
     started = time.time()
-    with LeanSession() as lean:
+    from FormalLLM.lean.session import DEFAULT_IMPORTS, FULL_IMPORTS
+    with LeanSession(imports=FULL_IMPORTS if args.imports == "full" else DEFAULT_IMPORTS, startup_timeout=1200) as lean:
         for task_id, tree in ORACLES.items():
             if args.only and task_id not in args.only:
                 continue
