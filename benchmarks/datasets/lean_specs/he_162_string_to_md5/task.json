@@ -28,5 +28,6 @@
         ],
         "note": "MD5 has no description shorter than its definition; md5Hex is RFC 1321 and is checked on every test against Python's hashlib output"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

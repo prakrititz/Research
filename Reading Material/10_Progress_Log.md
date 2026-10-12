@@ -2,6 +2,10 @@
 
 Newest first. One entry per working session, so you can see what changed and why.
 
+## 2026-10-13 — Derivations for all of HumanEval's new specs, and one interface for Verina and HumanEval (no model run)
+
+**You said** "write the derivations ... don't run a small model ... make Verina and HumanEval the same page ... modular for both". Done: the 26 new specifications each have a certified hand-written derivation (62 / 62 across the library, Verina 24 / 25 unchanged); a dataset registry and one evaluator/validator/CLI take `--dataset verina|humaneval`; Verina now goes through the same four specification checks as ours (165 / 189 pass; 14 have a postcondition Lean cannot run, 9 do not compile on 4.34.1, 1 is weak). The comparison also found a real harness bug (String/Char inputs were unquoted for Verina). Doc 26 has the table of differences that remain.
+
 ## 2026-10-11 — Lean specifications for all of HumanEval (no model run)
 
 **You said** "continue in Lean, for HumanEval for now keep doing that". The library had 138 HumanEval specifications; the 26 missing (133-137, 140-149, 151, 153-156, 158-163) are written and validated: **169 specifications, 2,332 tests, reference 2,332/2,332, specification accepts 2,332/2,332, rejects 5,651/5,657** (the 6 are one deliberately permissive dictionary specification). Lean 4.34.1 + Mathlib were installed on this Mac for the check. Details: `22` (entry 2026-10-11). Next: derivations for the new specifications, then a first model run on the Lean engine.

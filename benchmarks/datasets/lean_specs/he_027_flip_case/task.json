@@ -27,5 +27,6 @@
         ],
         "note": "inputs are limited to ASCII: Lean's Char.isUpper/isLower know ASCII only, Python's swapcase knows Unicode"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

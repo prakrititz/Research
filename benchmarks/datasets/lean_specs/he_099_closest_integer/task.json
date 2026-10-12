@@ -28,5 +28,6 @@
         ],
         "note": "the string is read as the exact decimal number it denotes (the canonical solution goes through a float, which can round a long decimal)"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

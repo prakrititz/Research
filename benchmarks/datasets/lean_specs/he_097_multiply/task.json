@@ -31,5 +31,6 @@
         ],
         "note": "the unit digit is taken of the absolute value (EvalPlus' expected outputs), not Python's % on a negative number"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

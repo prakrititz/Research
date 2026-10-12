@@ -27,5 +27,6 @@
         ],
         "note": "stated as the inverse of encode_cyclic: encoding the result gives back the input"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

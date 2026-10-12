@@ -27,5 +27,6 @@
         ],
         "note": "the canonical solution returns False (= 0) for n <= 2; the reference here uses its counting formula, the specification counts the triples"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

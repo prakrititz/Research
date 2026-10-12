@@ -28,5 +28,6 @@
         ],
         "note": "the sequence is followed for at most 5000 steps (the longest start below 10^5 needs 350)"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

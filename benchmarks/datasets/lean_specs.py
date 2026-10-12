@@ -480,8 +480,11 @@ def build(only: Optional[List[str]] = None) -> List[str]:
 
 
 def validate(only: Optional[List[str]] = None, imports: str = "import Mathlib") -> List[dict]:
+    """The four checks of the module docstring on our specifications; the checks themselves are
+    ``FormalLLM.lean.evaluate.validate_task``, shared with every other dataset (``benchmarks/lean_eval.py validate``)."""
+    from FormalLLM.lean.evaluate import validate_task
     from FormalLLM.lean.session import LeanSession
-    from FormalLLM.lean.task import LeanTask, precondition_proof, render, same_expr
+    from FormalLLM.lean.task import LeanTask
     rows = []
     with LeanSession(imports=imports, startup_timeout=1200) as lean:
         print(f"imports ready in {lean.startup_seconds:.0f} s", flush=True)
@@ -489,60 +492,17 @@ def validate(only: Optional[List[str]] = None, imports: str = "import Mathlib") 
             if only and spec.id not in only:
                 continue
             directory = os.path.join(LIBRARY, spec.id)
-            row = {"id": spec.id, "source": spec.source, "tags": list(spec.tags), "compiles": False, "tests": 0,
-                   "reference_passes": 0, "accepts_expected": 0, "rejects_wrong": 0, "wrong_total": 0, "undecidable": 0,
-                   "errors": [], "permissive": spec.permissive, "reference_mode": spec.reference_mode}
-            rows.append(row)
             if not os.path.isdir(directory):
-                row["errors"].append("not built")
+                rows.append({"id": spec.id, "compiles": False, "tests": 0, "reference_passes": 0, "accepts_expected": 0,
+                             "rejects_wrong": 0, "wrong_total": 0, "undecidable": 0, "errors": ["not built"], "failures": [],
+                             "permissive": spec.permissive, "reference_mode": spec.reference_mode})
                 continue
-            task = LeanTask.from_dir(directory)
-            program = open(os.path.join(directory, "task.lean"), encoding="utf8").read()
-            source = "\n".join(l for l in program.splitlines() if not l.strip().startswith("import "))
-            reply, env = lean.load(source, timeout=240)
-            row["compiles"] = env is not None
-            row["tests"] = len(task.tests)
-            if env is None:
-                row["errors"] = [e[:300] for e in (reply.errors or ["timeout"])[:2]]
+            row = validate_task(lean, LeanTask.from_dir(directory), spec.reference_mode, spec.permissive)
+            row.update(source=spec.source, tags=list(spec.tags))
+            rows.append(row)
+            if not row["compiles"]:
                 print(f"{spec.id:34s} DOES NOT COMPILE: {row['errors'][0][:110]!r}", flush=True)
                 continue
-            proof = precondition_proof(task.pre_name)
-
-            row["failures"] = []
-
-            def value(command: str) -> Optional[str]:
-                answer = lean.run("set_option maxHeartbeats 2000000 in\n" + command, timeout=120, env=env)
-                if answer.errors or not answer.infos:
-                    if len(row["errors"]) < 3:
-                        row["errors"].append((answer.errors or ["no output"])[0][:200])
-                    return None
-                return answer.infos[0].strip()
-
-            def fail(kind: str, args: str, detail: str):
-                if len(row["failures"]) < 4:
-                    row["failures"].append({"kind": kind, "input": args[:160], "value": detail[:100]})
-
-            for case in task.tests:
-                args = " ".join(f"({case['input'][n]})" for n, _ in task.params)
-                want = render(case["expected"], task.ret)
-                if spec.reference_mode == "spec":
-                    ran = value(f"#eval decide ({task.post_name} {args} ({task.name} {args} {proof}) {proof})")
-                else:
-                    ran = value(f"#eval {same_expr(task.ret, f'({task.name} {args} {proof})', want)}")
-                row["reference_passes"] += ran == "true"
-                if ran != "true":
-                    fail("reference", args, f"expected {want}" + ("" if ran else " (did not run)"))
-                accepted = value(f"#eval decide ({task.post_name} {args} ({want}) {proof})")
-                row["accepts_expected"] += accepted == "true"
-                row["undecidable"] += accepted is None
-                if accepted != "true":
-                    fail("accept", args, f"expected {want}" + ("" if accepted else " (spec did not run)"))
-                for wrong in case.get("unexpected", []):
-                    row["wrong_total"] += 1
-                    shown = value(f"#eval decide ({task.post_name} {args} ({render(wrong, task.ret)}) {proof})")
-                    row["rejects_wrong"] += shown == "false"
-                    if shown != "false":
-                        fail("reject", args, f"wrong {render(wrong, task.ret)}" + ("" if shown else " (spec did not run)"))
             print(f"{spec.id:34s} tests {row['tests']:2d}  reference {row['reference_passes']:2d}  accepts {row['accepts_expected']:2d}"
                   f"  rejects {row['rejects_wrong']:3d}/{row['wrong_total']:3d}  undecidable {row['undecidable']}"
                   f"  {(row['errors'] or [''])[0][:70]}", flush=True)

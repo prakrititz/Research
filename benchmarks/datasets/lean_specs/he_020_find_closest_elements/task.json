@@ -28,5 +28,6 @@
         ],
         "note": "any closest pair is accepted (the canonical solution returns the first in sorted order)"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

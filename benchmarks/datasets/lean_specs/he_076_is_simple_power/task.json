@@ -31,5 +31,6 @@
         ],
         "note": "the exponent is searched below |x| + 3, which covers every case (for |n| >= 2 a solution has k <= |x|; n in {0, 1, -1} need k <= 2)"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

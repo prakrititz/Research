@@ -32,5 +32,6 @@
         ],
         "note": "the specification reduces the highest-precedence operator first (the rightmost of the ** ones, else the leftmost); nonnegative operands make // and ** agree with Python"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

@@ -27,5 +27,6 @@
         ],
         "note": "only the keys matter; they are given as Python values because the problem allows non-string keys"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

@@ -35,6 +35,21 @@ theorem mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) :
   have := exists_mem_iff_idx l (fun y => y = x)
   simpa using this
 
+theorem getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l := by
+  rw [getElem!_pos l k h]; exact List.getElem_mem h
+
+theorem getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) :
+    l[k]! ∈ l.take n := by
+  have h1 : k < (l.take n).length := by simp; omega
+  rw [getElem!_pos l k hl]
+  have h2 : l[k] = (l.take n)[k] := by simp [List.getElem_take]
+  rw [h2]; exact List.getElem_mem h1
+
+theorem head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1 := by
+  cases l with
+  | nil => contradiction
+  | cons x xs => simp
+
 theorem take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) :
     l.take (i + 1) = l.take i ++ [l[i]!] := by
   rw [List.take_succ_eq_append_getElem h, getElem!_pos l i h]
@@ -120,12 +135,12 @@ end Refine
 #: ``l.take i ++ [l[i]]`` back into ``l.take (i + 1)``: with ``take_succ_bang`` unfolding it, ``simp`` loops (found with
 #: ``set_option trace.Meta.Tactic.simp.rewrite true``).
 SIMP_SET = ", ".join([f"Refine.{name}" for name in (
-    "forall_mem_iff_idx", "exists_mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
+    "forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
     "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ",
     "take_string_length", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
     "exists_mem_array_iff_idx")] + ["String.length_toList", "List.range_succ", "-List.take_append_getElem"])
 
-NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
+NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
          "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ", "take_string_length",
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
          "exists_mem_array_iff_idx")

@@ -214,6 +214,188 @@ ORACLES = {
 }
 
 
+# --- HumanEval 133-163 (the specifications added on 2026-10-11) -------------------------------------------------------------
+# Three kinds: a real loop with an invariant; a ``term``/``cases`` that restates a decidable specification (the derivation is
+# one step, the obligation is that the two readings agree); and a *definitional* one, where the specification is itself a
+# recursive definition (``fixSpec``, ``evalOps``, ``romanSpec``, ``md5Hex``) and the answer is that definition. The last kind
+# shows the task is reachable, not that a search found anything.
+ORACLES.update({
+    "he_133_sum_squares": loop([["i", "Nat"], ["acc", "Int"]], ["0", "0"],
+                               "i ≤ lst.length ∧ acc = ((lst.take i).map (fun x => (⌈x⌉ : Int) * (⌈x⌉ : Int))).sum",
+                               "i < lst.length", "lst.length - i", "acc",
+                               term("(i + 1, acc + (⌈lst[i]!⌉ : Int) * (⌈lst[i]!⌉ : Int))")),
+    "he_134_check_if_last_char_is_a_letter": term(
+        "decide (txt.length ≥ 1 ∧ txt.toList[txt.length - 1]!.isAlpha = true ∧ (txt.length = 1 ∨ txt.toList[txt.length - 2]! = ' '))"),
+    "he_135_can_arrange": with_lemmas(
+        loop([["i", "Nat"]], ["arr.length - 1"],
+             "i ≤ arr.length - 1 ∧ ∀ m, m < arr.length → i < m → arr[m - 1]! ≤ arr[m]!",
+             "1 ≤ i ∧ arr[i - 1]! ≤ arr[i]!", "i", "if i = 0 then (-1 : Int) else (i : Int)", term("i - 1")),
+        # the exit: a disjunction with a witness, which the cascade does not construct on its own
+        [{"name": "canArrange_exit",
+          "statement": "∀ (arr : List Int) (i : Nat), i ≤ arr.length - 1 → (∀ m, m < arr.length → i < m → arr[m - 1]! ≤ arr[m]!) → "
+                       "¬ (1 ≤ i ∧ arr[i - 1]! ≤ arr[i]!) → "
+                       "(((if i = 0 then (-1 : Int) else (i : Int)) = -1 ∧ ∀ j, j < arr.length → 1 ≤ j → arr[j - 1]! ≤ arr[j]!) ∨ "
+                       "(∃ j, j < arr.length ∧ 1 ≤ j ∧ (if i = 0 then (-1 : Int) else (i : Int)) = (j : Int) ∧ arr[j]! < arr[j - 1]! ∧ "
+                       "∀ m, m < arr.length → j < m → arr[m - 1]! ≤ arr[m]!))",
+          "proof": "by intro arr i hi hall hg\n  by_cases h0 : i = 0\n  · subst h0\n    left\n    refine ⟨by simp, ?_⟩\n"
+                   "    intro j hj hj1\n    exact hall j hj (by omega)\n  · right\n"
+                   "    have hn : ¬ (arr[i - 1]! ≤ arr[i]!) := fun h => hg ⟨by omega, h⟩\n"
+                   "    refine ⟨i, by omega, by omega, by simp [h0], by omega, hall⟩"}]),
+    "he_137_compare_one": cases("valQ a = valQ b", term("none"), cases("valQ b < valQ a", term("some a"), term("some b"))),
+    "he_141_file_name_check": cases(
+        "(file_name.toList.filter Char.isDigit).length ≤ 3 ∧ file_name.toList.count '.' = 1 ∧ ∃ i, i < file_name.length ∧ "
+        "file_name.toList[i]! = '.' ∧ 0 < i ∧ file_name.toList[0]!.isAlpha = true ∧ "
+        "(file_name.toList.drop (i + 1) = \"txt\".toList ∨ file_name.toList.drop (i + 1) = \"exe\".toList ∨ "
+        "file_name.toList.drop (i + 1) = \"dll\".toList)",
+        term("\"Yes\""), term("\"No\"")),
+    "he_142_sum_squares": loop([["i", "Nat"], ["acc", "Int"]], ["0", "0"],
+                               "i ≤ lst.length ∧ acc = ((List.range i).map (fun k => if k % 3 = 0 then lst[k]! ^ 2 else "
+                               "if k % 4 = 0 then lst[k]! ^ 3 else lst[k]!)).sum",
+                               "i < lst.length", "lst.length - i", "acc",
+                               term("(i + 1, acc + (if i % 3 = 0 then lst[i]! ^ 2 else if i % 4 = 0 then lst[i]! ^ 3 else lst[i]!))")),
+    "he_144_simplify": term("decide ((numOf x * numOf n) % (denOf x * denOf n) = 0)"),
+    "he_146_special_filter": loop([["i", "Nat"], ["acc", "Nat"]], ["0", "0"],
+                                  "i ≤ nums.length ∧ acc = ((nums.take i).filter (fun x => x > 10 ∧ firstDigit x.natAbs % 2 = 1 ∧ "
+                                  "x.natAbs % 10 % 2 = 1)).length",
+                                  "i < nums.length", "nums.length - i", "acc",
+                                  term("(i + 1, if nums[i]! > 10 ∧ firstDigit nums[i]!.natAbs % 2 = 1 ∧ nums[i]!.natAbs % 10 % 2 = 1 "
+                                       "then acc + 1 else acc)")),
+    "he_151_double_the_difference": loop(
+        [["i", "Nat"], ["acc", "Int"]], ["0", "0"],
+        "i ≤ lst.length ∧ acc = ((lst.take i).map (Sum.elim (fun (x : Int) => if x > 0 ∧ x % 2 = 1 then x * x else 0) "
+        "(fun (_ : ℚ) => 0))).sum",
+        "i < lst.length", "lst.length - i", "acc",
+        term("(i + 1, acc + Sum.elim (fun (x : Int) => if x > 0 ∧ x % 2 = 1 then x * x else 0) (fun (_ : ℚ) => 0) lst[i]!)")),
+    "he_153_strongest_extension": loop(
+        [["k", "Nat"], ["b", "Nat"]], ["1", "0"],
+        "1 ≤ k ∧ k ≤ extensions.length ∧ b < k ∧ (∀ j, j < k → strength extensions[j]! ≤ strength extensions[b]!) ∧ "
+        "∀ j, j < b → strength extensions[j]! < strength extensions[b]!",
+        "k < extensions.length", "extensions.length - k", "class_name ++ \".\" ++ extensions[b]!",
+        term("(k + 1, if strength extensions[b]! < strength extensions[k]! then k else b)")),
+    "he_154_cycpattern_check": loop(
+        [["i", "Nat"], ["found", "Bool"]], ["0", "false"],
+        "i ≤ b.length ∧ (found = true ↔ ∃ k, k < i ∧ (b.toList.drop k ++ b.toList.take k) <:+: a.toList)",
+        "i < b.length", "b.length - i", "decide (b.length = 0) || found",
+        term("(i + 1, found || decide ((b.toList.drop i ++ b.toList.take i) <:+: a.toList))")),
+    "he_155_even_odd_count": bind(
+        "ds", "List Char", "ds = (toString num.natAbs).toList", term("(toString num.natAbs).toList"),
+        loop([["i", "Nat"], ["e", "Nat"], ["o", "Nat"]], ["0", "0", "0"],
+             "i ≤ ds.length ∧ e = ((ds.take i).filter (fun c => (c.toNat - 48) % 2 = 0)).length ∧ "
+             "o = ((ds.take i).filter (fun c => (c.toNat - 48) % 2 = 1)).length",
+             "i < ds.length", "ds.length - i", "(e, o)",
+             term("(i + 1, if (ds[i]!.toNat - 48) % 2 = 0 then e + 1 else e, "
+                  "if (ds[i]!.toNat - 48) % 2 = 1 then o + 1 else o)"))),
+    "he_158_find_max": cases(
+        "words = []", term("\"\""),
+        bind("m", "String", "m ∈ words ∧ (∀ w ∈ words, uniqChars w ≤ uniqChars m) ∧ "
+                            "∀ w ∈ words, uniqChars w = uniqChars m → ¬ (w < m)",
+             loop([["k", "Nat"], ["b", "Nat"]], ["1", "0"],
+                  "1 ≤ k ∧ k ≤ words.length ∧ b < k ∧ (∀ j, j < k → uniqChars words[j]! ≤ uniqChars words[b]!) ∧ "
+                  "∀ j, j < k → uniqChars words[j]! = uniqChars words[b]! → ¬ (words[j]! < words[b]!)",
+                  "k < words.length", "words.length - k", "words[b]!",
+                  term("(k + 1, if uniqChars words[k]! > uniqChars words[b]! ∨ (uniqChars words[k]! = uniqChars words[b]! ∧ "
+                       "words[k]! < words[b]!) then k else b)")),
+             term("m"))),
+    "he_159_eat": cases("need ≤ remaining", term("[number + need, remaining - need]"), term("[number + remaining, 0]")),
+    "he_161_solve": cases("s.toList.any Char.isAlpha = true", term("String.mk (s.toList.map swapCase)"),
+                          term("String.mk s.toList.reverse")),
+    "he_162_string_to_md5": cases("text = \"\"", term("none"), term("some (md5Hex text)")),
+    # definitional: the specification is the recursive definition itself
+    "he_140_fix_spaces": term("String.mk (fixSpec text.length text.toList)"),
+    "he_160_do_algebra": term("evalOps operator.length operand operator"),
+    "he_156_int_to_mini_roman": term("romanSpec number number"),
+})
+
+
+# --- the remaining new HumanEval specifications: sorting with a stability / order lemma, witnesses, the Option-valued pair ----
+# Helper lemmas are stated for any input and proved by Lean before the step is accepted (a false one is refused).
+_ORDER_BY_POINTS = {
+    "name": "order_ok",
+    "statement": "∀ (nums : List Int), (nums.mergeSort (fun a b => decide (digitWeight a ≤ digitWeight b))).length = nums.length ∧ (∀ i, i < (nums.mergeSort (fun a b => decide (digitWeight a ≤ digitWeight b))).length - 1 → digitWeight (nums.mergeSort (fun a b => decide (digitWeight a ≤ digitWeight b)))[i]! ≤ digitWeight (nums.mergeSort (fun a b => decide (digitWeight a ≤ digitWeight b)))[i + 1]!) ∧ ∀ x ∈ nums, (nums.mergeSort (fun a b => decide (digitWeight a ≤ digitWeight b))).filter (fun y => digitWeight y == digitWeight x) = nums.filter (fun y => digitWeight y == digitWeight x)",
+    "proof": "by\n  intro nums\n  have htrans : ∀ (a b c : Int), decide (digitWeight a ≤ digitWeight b) = true → decide (digitWeight b ≤ digitWeight c) = true →\n      decide (digitWeight a ≤ digitWeight c) = true := by\n    intro a b c h1 h2; simp at *; omega\n  have htotal : ∀ (a b : Int), (decide (digitWeight a ≤ digitWeight b) || decide (digitWeight b ≤ digitWeight a)) = true := by\n    intro a b; simp; omega\n  have hp : (nums.mergeSort (fun a b => decide (digitWeight a ≤ digitWeight b))).Perm nums := List.mergeSort_perm nums _\n  have hs : List.Pairwise (fun a b => decide (digitWeight a ≤ digitWeight b) = true)\n      (nums.mergeSort (fun a b => decide (digitWeight a ≤ digitWeight b))) := List.pairwise_mergeSort htrans htotal nums\n  refine ⟨List.length_mergeSort .., ?_, ?_⟩\n  · intro i hi\n    rw [List.pairwise_iff_getElem] at hs\n    have hi' : i + 1 < (nums.mergeSort (fun a b => decide (digitWeight a ≤ digitWeight b))).length := by omega\n    have := hs i (i + 1) (by omega) hi' (by omega)\n    rw [getElem!_pos _ i (by omega), getElem!_pos _ (i + 1) hi']\n    simpa using this\n  · intro x hx\n    set p : Int → Bool := fun y => digitWeight y == digitWeight x with hpdef\n    set s := nums.mergeSort (fun a b => decide (digitWeight a ≤ digitWeight b)) with hsdef\n    have hc : (nums.filter p).Pairwise (fun a b => decide (digitWeight a ≤ digitWeight b) = true) := by\n      apply List.pairwise_of_forall_mem_list\n      intro a ha b hb\n      simp [hpdef] at ha hb\n      simp; omega\n    have hsub : (nums.filter p).Sublist s := List.sublist_mergeSort htrans htotal hc (List.filter_sublist)\n    have hself : (nums.filter p).filter p = nums.filter p := by\n      rw [List.filter_filter]; simp\n    have hsub2 : (nums.filter p).Sublist (s.filter p) := by\n      have := hsub.filter p\n      rwa [hself] at this\n    have hlen : (nums.filter p).length = (s.filter p).length := (List.Perm.filter p hp).length_eq.symm\n    exact (hsub2.eq_of_length hlen).symm"
+}
+_SORTED_LIST_SUM = {
+    "name": "sorted_ok",
+    "statement": "∀ (L : List String), (L.mergeSort (fun a b => decide (a.length < b.length) || (a.length == b.length && !decide (b < a)))).Perm L ∧ ∀ i, i < (L.mergeSort (fun a b => decide (a.length < b.length) || (a.length == b.length && !decide (b < a)))).length - 1 → ((L.mergeSort (fun a b => decide (a.length < b.length) || (a.length == b.length && !decide (b < a))))[i]!.length < (L.mergeSort (fun a b => decide (a.length < b.length) || (a.length == b.length && !decide (b < a))))[i + 1]!.length ∨ ((L.mergeSort (fun a b => decide (a.length < b.length) || (a.length == b.length && !decide (b < a))))[i]!.length = (L.mergeSort (fun a b => decide (a.length < b.length) || (a.length == b.length && !decide (b < a))))[i + 1]!.length ∧ ¬ ((L.mergeSort (fun a b => decide (a.length < b.length) || (a.length == b.length && !decide (b < a))))[i + 1]! < (L.mergeSort (fun a b => decide (a.length < b.length) || (a.length == b.length && !decide (b < a))))[i]!)))",
+    "proof": "by\n  intro L\n  have htrans : ∀ (a b c : String), (decide (a.length < b.length) || (a.length == b.length && !decide (b < a))) = true →\n      (decide (b.length < c.length) || (b.length == c.length && !decide (c < b))) = true →\n      (decide (a.length < c.length) || (a.length == c.length && !decide (c < a))) = true := by\n    intro a b c h1 h2\n    simp only [Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true, beq_iff_eq, Bool.not_eq_true', decide_eq_false_iff_not] at *\n    rcases h1 with h1 | ⟨h1, h1'⟩ <;> rcases h2 with h2 | ⟨h2, h2'⟩\n    · left; omega\n    · left; omega\n    · left; omega\n    · right\n      refine ⟨by omega, ?_⟩\n      intro hca\n      exact h2' (Std.lt_of_lt_of_le hca h1')\n  have htotal : ∀ (a b : String), ((decide (a.length < b.length) || (a.length == b.length && !decide (b < a))) ||\n      (decide (b.length < a.length) || (b.length == a.length && !decide (a < b)))) = true := by\n    intro a b\n    simp only [Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true, beq_iff_eq, Bool.not_eq_true', decide_eq_false_iff_not]\n    by_cases h : a.length < b.length\n    · left; left; exact h\n    · by_cases h' : b.length < a.length\n      · right; left; exact h'\n      · have he : a.length = b.length := by omega\n        by_cases hl : b < a\n        · right; right; exact ⟨he.symm, String.lt_asymm hl⟩\n        · left; right; exact ⟨he, hl⟩\n  have hp : (L.mergeSort (fun a b => decide (a.length < b.length) || (a.length == b.length && !decide (b < a)))).Perm L :=\n    List.mergeSort_perm L _\n  have hs := List.pairwise_mergeSort htrans htotal L\n  refine ⟨hp, ?_⟩\n  intro i hi\n  rw [List.pairwise_iff_getElem] at hs\n  have hi' : i + 1 < (L.mergeSort (fun a b => decide (a.length < b.length) || (a.length == b.length && !decide (b < a)))).length := by omega\n  have := hs i (i + 1) (by omega) hi' (by omega)\n  rw [getElem!_pos _ i (by omega), getElem!_pos _ (i + 1) hi']\n  simpa only [Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true, beq_iff_eq, Bool.not_eq_true', decide_eq_false_iff_not] using this"
+}
+_GENERATE_OK = {
+    "name": "generate_ok",
+    "statement": "∀ (a b : Nat), (∀ i, i < ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b))).length - 1 → ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b)))[i]! < ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b)))[i + 1]!) ∧ (∀ d ∈ ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b))), d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b ∧ d < 10) ∧ ∀ d, d < 10 → d % 2 = 0 → min a b ≤ d → d ≤ max a b → d ∈ ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b)))",
+    "proof": "by intro a b\n  have hs : List.Pairwise (· < ·) ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b))) :=\n    (List.pairwise_lt_range).filter _\n  refine ⟨?_, ?_, ?_⟩\n  · intro i hi\n    rw [List.pairwise_iff_getElem] at hs\n    have hi' : i + 1 < ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b))).length := by omega\n    have := hs i (i + 1) (by omega) hi' (by omega)\n    rw [getElem!_pos _ i (by omega), getElem!_pos _ (i + 1) hi']\n    exact this\n  · intro d hd\n    simp at hd\n    omega\n  · intro d hd h2 h3 h4\n    simp\n    omega"
+}
+_PLANET_WITNESS = {
+    "name": "planet_witness",
+    "statement": "∀ (p1 p2 : String), p1 ∈ solarPlanets → p2 ∈ solarPlanets → ∃ i, i < 8 ∧ solarPlanets[i]! = p1 ∧ ∃ j, j < 8 ∧ solarPlanets[j]! = p2 ∧ (solarPlanets.drop (min (solarPlanets.idxOf p1) (solarPlanets.idxOf p2) + 1)).take (max (solarPlanets.idxOf p1) (solarPlanets.idxOf p2) - min (solarPlanets.idxOf p1) (solarPlanets.idxOf p2) - 1) = (solarPlanets.drop (min i j + 1)).take (max i j - min i j - 1)",
+    "proof": "by intro p1 p2 h1 h2\n  have e1 : solarPlanets.idxOf p1 < solarPlanets.length := List.idxOf_lt_length_of_mem h1\n  have e2 : solarPlanets.idxOf p2 < solarPlanets.length := List.idxOf_lt_length_of_mem h2\n  have hl : solarPlanets.length = 8 := rfl\n  refine ⟨solarPlanets.idxOf p1, by omega, ?_, solarPlanets.idxOf p2, by omega, ?_, rfl⟩\n  · rw [getElem!_pos solarPlanets _ e1]; exact List.getElem_idxOf e1\n  · rw [getElem!_pos solarPlanets _ e2]; exact List.getElem_idxOf e2"
+}
+
+
+_NEG_EXIT = {
+    "name": "neg_exit",
+    "statement": "∀ (lst : List Int) (m : Int) (f : Bool), (f = true ↔ ∃ k, k < lst.length ∧ lst[k]! < 0) → "
+                 "(f = true → (∃ k, k < lst.length ∧ lst[k]! = m) ∧ m < 0 ∧ ∀ k, k < lst.length → lst[k]! < 0 → lst[k]! ≤ m) → "
+                 "(((if f = true then some m else none) = none ∧ ∀ x ∈ lst, x ≥ 0) ∨ "
+                 "(∃ y ∈ lst, (if f = true then some m else none) = some y ∧ y < 0 ∧ ∀ x ∈ lst, x < 0 → x ≤ y))",
+    "proof": "by intro lst m f h1 h2\n  by_cases hf : f = true\n  · right\n    obtain ⟨⟨k, hk, hkm⟩, hm, hall⟩ := h2 hf\n"
+             "    refine ⟨m, ?_, by simp [hf], hm, ?_⟩\n    · rw [← hkm]; exact Refine.getElem_bang_mem lst k hk\n"
+             "    · intro x hx hx0\n      obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n      exact hall j hj hx0\n"
+             "  · left\n    refine ⟨by simp [hf], ?_⟩\n    intro x hx\n    obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n"
+             "    by_contra hneg\n    exact hf (h1.mpr ⟨j, hj, by omega⟩)"}
+_POS_EXIT = {
+    "name": "pos_exit",
+    "statement": "∀ (lst : List Int) (m : Int) (f : Bool), (f = true ↔ ∃ k, k < lst.length ∧ lst[k]! > 0) → "
+                 "(f = true → (∃ k, k < lst.length ∧ lst[k]! = m) ∧ 0 < m ∧ ∀ k, k < lst.length → lst[k]! > 0 → m ≤ lst[k]!) → "
+                 "(((if f = true then some m else none) = none ∧ ∀ x ∈ lst, x ≤ 0) ∨ "
+                 "(∃ y ∈ lst, (if f = true then some m else none) = some y ∧ 0 < y ∧ ∀ x ∈ lst, 0 < x → y ≤ x))",
+    "proof": "by intro lst m f h1 h2\n  by_cases hf : f = true\n  · right\n    obtain ⟨⟨k, hk, hkm⟩, hm, hall⟩ := h2 hf\n"
+             "    refine ⟨m, ?_, by simp [hf], hm, ?_⟩\n    · rw [← hkm]; exact Refine.getElem_bang_mem lst k hk\n"
+             "    · intro x hx hx0\n      obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n      exact hall j hj hx0\n"
+             "  · left\n    refine ⟨by simp [hf], ?_⟩\n    intro x hx\n    obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n"
+             "    by_contra hpos\n    exact hf (h1.mpr ⟨j, hj, by omega⟩)"}
+
+
+def _extreme_scan(order, bound):
+    """Scan ``lst`` keeping the best element so far (``order`` is ``m < lst[i]!`` or ``lst[i]! < m``) among those with the sign
+    ``bound`` (``< 0`` or ``> 0``); the result is ``some m`` once one was seen."""
+    sign = "lst[k]! < 0" if bound == "neg" else "lst[k]! > 0"
+    better = "lst[i]! < 0" if bound == "neg" else "lst[i]! > 0"
+    best = "lst[k]! ≤ m" if bound == "neg" else "m ≤ lst[k]!"
+    return loop([["i", "Nat"], ["m", "Int"], ["f", "Bool"]], ["0", "0", "false"],
+                f"i ≤ lst.length ∧ (f = true ↔ ∃ k, k < i ∧ {sign}) ∧ "
+                f"(f = true → (∃ k, k < i ∧ lst[k]! = m) ∧ {'m < 0' if bound == 'neg' else '0 < m'} ∧ ∀ k, k < i → {sign} → {best})",
+                "i < lst.length", "lst.length - i", "if f = true then some m else none",
+                term(f"(i + 1, if {better} ∧ (f = false ∨ {order}) then lst[i]! else m, f || decide ({better}))"))
+
+
+ORACLES.update({
+    "he_136_largest_smallest_integers": bind(
+        "a", "Option Int", "(a = none ∧ ∀ x ∈ lst, x ≥ 0) ∨ (∃ y ∈ lst, a = some y ∧ y < 0 ∧ ∀ x ∈ lst, x < 0 → x ≤ y)",
+        with_lemmas(_extreme_scan("m < lst[i]!", "neg"), [_NEG_EXIT]),
+        bind("b", "Option Int", "(b = none ∧ ∀ x ∈ lst, x ≤ 0) ∨ (∃ y ∈ lst, b = some y ∧ 0 < y ∧ ∀ x ∈ lst, 0 < x → y ≤ x)",
+             with_lemmas(_extreme_scan("lst[i]! < m", "pos"), [_POS_EXIT]), term("(a, b)"))),
+    "he_143_words_in_sentence": term('" ".intercalate ((sentence.splitOn " ").filter (fun w => decide (Nat.Prime w.length)))'),
+    "he_145_order_by_points": with_lemmas(term("nums.mergeSort (fun a b => decide (digitWeight a ≤ digitWeight b))"),
+                                          [_ORDER_BY_POINTS]),
+    "he_147_get_max_triples": term(
+        "((List.range n).map (fun i => ((List.range n).map (fun j => ((List.range n).filter (fun k => i < j ∧ j < k ∧ "
+        "(seqA (i + 1) + seqA (j + 1) + seqA (k + 1)) % 3 = 0)).length)).sum)).sum"),
+    "he_148_bf": with_lemmas(
+        cases("planet1 ∈ solarPlanets ∧ planet2 ∈ solarPlanets",
+              term("(solarPlanets.drop (min (solarPlanets.idxOf planet1) (solarPlanets.idxOf planet2) + 1)).take "
+                   "(max (solarPlanets.idxOf planet1) (solarPlanets.idxOf planet2) - "
+                   "min (solarPlanets.idxOf planet1) (solarPlanets.idxOf planet2) - 1)"),
+              term("[]")),
+        [_PLANET_WITNESS]),
+    "he_149_sorted_list_sum": with_lemmas(
+        term("(lst.filter (fun s => decide (s.length % 2 = 0))).mergeSort "
+             "(fun a b => decide (a.length < b.length) || (a.length == b.length && !decide (b < a)))"),
+        [_SORTED_LIST_SUM]),
+    "he_163_generate_integers": with_lemmas(
+        term("(List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b))"), [_GENERATE_OK]),
+})
+
+
 def run(only=None, imports=None, oracles=None, library=None):
     from FormalLLM.lean.engine import Derivation
     from FormalLLM.lean.session import DEFAULT_IMPORTS, FULL_IMPORTS, LeanSession

@@ -36,5 +36,6 @@
         ],
         "note": "the area is the root of a rational, so the postcondition says that the result is a multiple of 1/100 within 1/200 of it"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

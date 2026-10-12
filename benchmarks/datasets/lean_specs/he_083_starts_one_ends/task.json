@@ -27,5 +27,6 @@
         ],
         "note": "the postcondition counts the numbers; it can be evaluated only for n <= 5, which is why the tests stop there"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }

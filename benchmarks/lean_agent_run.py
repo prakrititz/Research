@@ -1,7 +1,7 @@
 r"""Run the Lean agent on tasks, one record per trial, scored per problem; replay stored trials without a model.
 
-    python benchmarks/lean_agent_run.py run --config ornith --library lean_specs --tasks he_060_sum_to_n he_100_make_a_pile --repeats 3
-    python benchmarks/lean_agent_run.py run --config gpt-oss-120b-low --library verina --tasks verina_basic_5 --repeats 5
+    python benchmarks/lean_agent_run.py run --config ornith --dataset humaneval --tasks he_060_sum_to_n he_100_make_a_pile --repeats 3
+    python benchmarks/lean_agent_run.py run --config gpt-oss-120b-low --dataset verina --tasks verina_basic_5 --repeats 5
     python benchmarks/lean_agent_run.py summarize benchmarks/results/lean_agent/<file>.jsonl
     python benchmarks/lean_agent_run.py replay benchmarks/results/lean_agent/<file>.jsonl      # no model, no network
 
@@ -24,8 +24,8 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 OUT = os.path.join(ROOT, "benchmarks", "results", "lean_agent")
-LIBRARIES = {"lean_specs": os.path.join(ROOT, "benchmarks", "datasets", "lean_specs"),
-             "verina": os.path.join(os.path.expanduser("~"), ".formalllm", "verina", "datasets", "verina")}
+from FormalLLM.lean import dataset as datasets
+LIBRARIES = {name: ds.root for name, ds in datasets.REGISTRY.items()}        # kept for older callers
 THRESHOLDS = (0.2, 0.4, 0.5, 0.6, 0.8, 1.0)
 
 
@@ -55,10 +55,10 @@ def run(args):
     from FormalLLM.lean.agent import LeanAgent
     from FormalLLM.lean.session import LeanSession
     from FormalLLM.lean.task import LeanTask
-    library = LIBRARIES[args.library]
-    tasks = args.tasks or sorted(d for d in os.listdir(library) if os.path.isdir(os.path.join(library, d)))
+    ds = datasets.get(args.dataset)
+    tasks = args.tasks or ds.ids()
     os.makedirs(OUT, exist_ok=True)
-    path = os.path.join(OUT, args.out or f"{args.library}_{args.config}.jsonl")
+    path = os.path.join(OUT, args.out or f"{ds.name}_{args.config}.jsonl")
     done = {(r["task"], r["trial"]) for r in jsonl(path)}
     cfg = run_bench.CONFIGS[args.config]
     provider = run_bench.make_provider(cfg, args.temperature, args.timeout)
@@ -68,7 +68,7 @@ def run(args):
     with LeanSession(imports=args.imports) as lean, open(path, "a", encoding="utf8") as handle:
         print(f"run: {len(tasks)} tasks x {args.repeats} trials, {args.config}, writing {path}", flush=True)
         for task_id in tasks:
-            task = LeanTask.from_dir(os.path.join(library, task_id))
+            task = datasets.resolve(task_id).load(task_id)
             for trial in range(args.repeats):
                 if (task_id, trial) in done:
                     continue
@@ -142,8 +142,7 @@ def replay(path):
         for row in rows:
             if row["outcome"] == "NETWORK":
                 continue
-            library = LIBRARIES["verina"] if row["task"].startswith("verina_") else LIBRARIES["lean_specs"]
-            task = LeanTask.from_dir(os.path.join(library, row["task"]))
+            task = datasets.resolve(row["task"]).load(row["task"])
             result = LeanAgent(Stored(row["replies"]), max_calls=len(row["replies"]) + 1).solve(task, lean)
             same = (result.outcome, result.verified) == (row["outcome"], row["verified"])
             mismatches += not same
@@ -158,7 +157,8 @@ def main():
     sub = ap.add_subparsers(dest="command", required=True)
     r = sub.add_parser("run")
     r.add_argument("--config", default="gpt-oss-120b-low")
-    r.add_argument("--library", choices=list(LIBRARIES), default="lean_specs")
+    r.add_argument("--dataset", "--library", dest="dataset", choices=datasets.names(), default="humaneval",
+                   help="verina, humaneval, classic or lean_specs (humaneval + classic); --library is the old name")
     r.add_argument("--tasks", nargs="*")
     r.add_argument("--repeats", type=int, default=3)
     r.add_argument("--budget", type=int, default=30, help="model calls per trial")

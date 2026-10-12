@@ -28,5 +28,6 @@
         ],
         "note": "a maximal run of spaces of length 1 or 2 becomes that many underscores, a longer one a single '-'"
     },
-    "test_file": "./test.json"
+    "test_file": "./test.json",
+    "input_encoding": "lean"
 }
