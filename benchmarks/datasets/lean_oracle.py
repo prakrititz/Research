@@ -378,7 +378,7 @@ ORACLES.update({
 
 
 # --- further batches live in their own modules (they import only derivation_dsl) ---
-for _module in ("lean_oracle_he_a",):
+for _module in ("lean_oracle_he_a", "lean_oracle_he_b"):
     try:
         import importlib
         ORACLES.update(importlib.import_module(f"benchmarks.datasets.{_module}").ORACLES_MORE)

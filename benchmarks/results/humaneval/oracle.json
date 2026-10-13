@@ -1,12 +1,12 @@
 [
  {
-  "id": "he_051_remove_vowels",
-  "laws": 2,
+  "id": "he_118_get_closest_vowel",
+  "laws": 6,
   "accepted": true,
   "certified": true,
-  "tests": 15,
-  "passed": 15,
+  "tests": 16,
+  "passed": 16,
   "failed_obligations": [],
-  "seconds": 11.0
+  "seconds": 7.2
  }
 ]
