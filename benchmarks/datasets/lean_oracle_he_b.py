@@ -252,6 +252,43 @@ _FACT = [
     }
 ]
 
+_CLOSEST = [
+    {
+        "name": "maxmin_abs",
+        "statement": "∀ (x y : ℚ), max x y - min x y = |x - y|",
+        "proof": "by\n  intro x y\n  rcases le_total x y with h | h\n  · rw [max_eq_right h, min_eq_left h, abs_of_nonpos (by linarith)]; ring\n  · rw [max_eq_left h, min_eq_right h, abs_of_nonneg (by linarith)]"
+    },
+    {
+        "name": "closest_yes",
+        "statement": "∀ (numbers : List ℚ) (i j : Nat) (lo hi : ℚ), i < j → j < numbers.length → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < i → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ i ≤ j) → |numbers[i]! - numbers[j]!| < hi - lo → (((min numbers[i]! numbers[j]!) ≤ (max numbers[i]! numbers[j]!) ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ (((min numbers[i]! numbers[j]!) = numbers[a]! ∧ (max numbers[i]! numbers[j]!) = numbers[b]!) ∨ ((min numbers[i]! numbers[j]!) = numbers[b]! ∧ (max numbers[i]! numbers[j]!) = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → (max numbers[i]! numbers[j]!) - (min numbers[i]! numbers[j]!) ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < (i + 1) → (max numbers[i]! numbers[j]!) - (min numbers[i]! numbers[j]!) ≤ |numbers[a]! - numbers[j]!|)) ∧ i + 1 ≤ j)",
+        "proof": "by\n  intro numbers i j lo hi hij hj ⟨⟨hle, hex, hbest, hall⟩, hi'⟩ hc\n  have hm := maxmin_abs numbers[i]! numbers[j]!\n  have hmle : min numbers[i]! numbers[j]! ≤ max numbers[i]! numbers[j]! := le_trans (min_le_left _ _) (le_max_left _ _)\n  refine ⟨⟨hmle, ?_, ?_, ?_⟩, by omega⟩\n  · refine ⟨j, by omega, i, hij, ?_⟩\n    rcases le_total numbers[i]! numbers[j]! with h | h\n    · left; exact ⟨min_eq_left h, max_eq_right h⟩\n    · right; exact ⟨min_eq_right h, max_eq_left h⟩\n  · intro b hb a ha\n    have := hbest b hb a ha\n    linarith\n  · intro a ha\n    by_cases hai : a < i\n    · have := hall a hai\n      linarith\n    · have : a = i := by omega\n      subst this\n      linarith"
+    },
+    {
+        "name": "closest_no",
+        "statement": "∀ (numbers : List ℚ) (i j : Nat) (lo hi : ℚ), i < j → j < numbers.length → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < i → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ i ≤ j) → ¬ |numbers[i]! - numbers[j]!| < hi - lo → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < (i + 1) → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ i + 1 ≤ j)",
+        "proof": "by\n  intro numbers i j lo hi hij hj ⟨⟨hle, hex, hbest, hall⟩, hi'⟩ hc\n  push_neg at hc\n  refine ⟨⟨hle, hex, hbest, ?_⟩, by omega⟩\n  intro a ha\n  by_cases hai : a < i\n  · exact hall a hai\n  · have : a = i := by omega\n    subst this\n    exact hc"
+    },
+    {
+        "name": "closest_inner_init",
+        "statement": "∀ (numbers : List ℚ) (j : Nat) (lo hi : ℚ), ((lo ≤ hi ∧ (∃ b, b < j ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|)) ∧ 2 ≤ j ∧ j ≤ numbers.length) → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < 0 → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ 0 ≤ j)",
+        "proof": "by\n  intro numbers j lo hi ⟨⟨hle, hex, hbest⟩, _, _⟩\n  refine ⟨⟨hle, ?_, hbest, ?_⟩, by omega⟩\n  · obtain ⟨b, hb, a, ha, h⟩ := hex\n    exact ⟨b, by omega, a, ha, h⟩\n  · intro a ha; omega"
+    },
+    {
+        "name": "closest_outer",
+        "statement": "∀ (numbers : List ℚ) (j : Nat) (lo hi : ℚ), j < numbers.length → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < j → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ j ≤ j) → 2 ≤ j → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < (j + 1) → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|)) ∧ 2 ≤ j + 1 ∧ j + 1 ≤ numbers.length)",
+        "proof": "by\n  intro numbers j lo hi hj ⟨⟨hle, hex, hbest, hall⟩, _⟩ h2\n  refine ⟨⟨hle, hex, ?_⟩, by omega, by omega⟩\n  intro b hb a ha\n  by_cases hbj : b < j\n  · exact hbest b hbj a ha\n  · have : b = j := by omega\n    subst this\n    exact hall a ha"
+    },
+    {
+        "name": "closest_init",
+        "statement": "∀ (numbers : List ℚ), numbers.length ≥ 2 → (((min numbers[0]! numbers[1]!) ≤ (max numbers[0]! numbers[1]!) ∧ (∃ b, b < 2 ∧ ∃ a, a < b ∧ (((min numbers[0]! numbers[1]!) = numbers[a]! ∧ (max numbers[0]! numbers[1]!) = numbers[b]!) ∨ ((min numbers[0]! numbers[1]!) = numbers[b]! ∧ (max numbers[0]! numbers[1]!) = numbers[a]!))) ∧ (∀ b, b < 2 → ∀ a, a < b → (max numbers[0]! numbers[1]!) - (min numbers[0]! numbers[1]!) ≤ |numbers[a]! - numbers[b]!|)) ∧ 2 ≤ 2 ∧ 2 ≤ numbers.length)",
+        "proof": "by\n  intro numbers hl\n  have hm := maxmin_abs numbers[0]! numbers[1]!\n  have hmle : min numbers[0]! numbers[1]! ≤ max numbers[0]! numbers[1]! := le_trans (min_le_left _ _) (le_max_left _ _)\n  refine ⟨⟨hmle, ?_, ?_⟩, by omega, by omega⟩\n  · refine ⟨1, by omega, 0, by omega, ?_⟩\n    rcases le_total numbers[0]! numbers[1]! with h | h\n    · left; exact ⟨min_eq_left h, max_eq_right h⟩\n    · right; exact ⟨min_eq_right h, max_eq_left h⟩\n  · intro b hb a ha\n    have : b = 1 := by omega\n    subst this\n    have : a = 0 := by omega\n    subst this\n    linarith"
+    },
+    {
+        "name": "closest_inner_exit",
+        "statement": "∀ (numbers : List ℚ) (i j : Nat) (lo hi : ℚ), ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < i → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ i ≤ j) → ¬ i < j → (lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < j → hi - lo ≤ |numbers[a]! - numbers[j]!|))",
+        "proof": "by\n  intro numbers i j lo hi ⟨⟨hle, hex, hbest, hall⟩, hij⟩ hn\n  have : i = j := by omega\n  subst this\n  exact ⟨hle, hex, hbest, hall⟩"
+    }
+]
 ORACLES_MORE = {
     "he_005_intersperse": with_lemmas(
         loop([["i", "Nat"], ["acc", "List Int"]], ["0", "[]"],
@@ -364,4 +401,13 @@ ORACLES_MORE = {
         loop([["n2", "Nat"], ["d", "Nat"], ["acc", "List Nat"]], ["n", "2", "[]"], '(1 ≤ n2 ∧ 2 ≤ d ∧ (acc).prod * n2 = n ∧ (∀ p ∈ acc, Nat.Prime p ∧ p < d + 1) ∧ (∀ i, i < (acc).length - 1 → (acc)[i]! ≤ (acc)[i + 1]!) ∧ (∀ k, 2 ≤ k → k < d → ¬ k ∣ n2) ∧ (n2 = 1 ∨ d ≤ n2))', "1 < n2", "n2 + n2 - d", "acc",
              cases("n2 % d = 0", term("(n2 / d, d, acc ++ [d])"), term("(n2, d + 1, acc)"))),
         _FACT),
+    "he_020_find_closest_elements": with_lemmas(
+        loop([["j", "Nat"], ["lo", "ℚ"], ["hi", "ℚ"]], ["2", "min numbers[0]! numbers[1]!", "max numbers[0]! numbers[1]!"],
+             '(lo ≤ hi ∧ (∃ b, b < j ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|)) ∧ 2 ≤ j ∧ j ≤ numbers.length', "j < numbers.length", "numbers.length - j", "(lo, hi)",
+             bind("p", "ℚ × ℚ", '(p.1 ≤ p.2 ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((p.1 = numbers[a]! ∧ p.2 = numbers[b]!) ∨ (p.1 = numbers[b]! ∧ p.2 = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → p.2 - p.1 ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < j → p.2 - p.1 ≤ |numbers[a]! - numbers[j]!|))',
+                  loop([["i", "Nat"], ["lo2", "ℚ"], ["hi2", "ℚ"]], ["0", "lo", "hi"], '(lo2 ≤ hi2 ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo2 = numbers[a]! ∧ hi2 = numbers[b]!) ∨ (lo2 = numbers[b]! ∧ hi2 = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi2 - lo2 ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < i → hi2 - lo2 ≤ |numbers[a]! - numbers[j]!|)) ∧ i ≤ j', "i < j", "j - i", "(lo2, hi2)",
+                       cases("|numbers[i]! - numbers[j]!| < hi2 - lo2", term("(i + 1, min numbers[i]! numbers[j]!, max numbers[i]! numbers[j]!)"),
+                             term("(i + 1, lo2, hi2)"))),
+                  term("(j + 1, p.1, p.2)"))),
+        _CLOSEST),
 }
