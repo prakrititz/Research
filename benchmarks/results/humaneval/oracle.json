@@ -1,32 +1,12 @@
 [
  {
-  "id": "he_079_decimal_to_binary",
+  "id": "he_050_decode_shift",
   "laws": 1,
-  "accepted": true,
-  "certified": true,
-  "tests": 12,
-  "passed": 12,
-  "failed_obligations": [],
-  "seconds": 8.0
- },
- {
-  "id": "he_084_solve",
-  "laws": 1,
-  "accepted": true,
-  "certified": true,
-  "tests": 13,
-  "passed": 13,
-  "failed_obligations": [],
-  "seconds": 6.7
- },
- {
-  "id": "he_103_rounded_avg",
-  "laws": 3,
   "accepted": true,
   "certified": true,
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 8.1
+  "seconds": 4.2
  }
 ]
