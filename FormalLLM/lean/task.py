@@ -127,6 +127,9 @@ class LeanTask:
     encoding: str = "lean"
     #: Lean source that a task file of this dataset needs on this Lean version (a renamed constant): put before the file.
     compat: str = ""
+    #: How a result is compared with the expected value in a test: ``"equal"`` (``==``) or ``"perm"`` (the same elements in any
+    #: order: a dictionary has no order, so a specification may accept every order and a test must not insist on one).
+    compare: str = "equal"
 
     # --- names ----------------------------------------------------------------------------------------------------
 
@@ -177,9 +180,10 @@ class LeanTask:
         tests_path = os.path.join(directory, "test.json")
         tests = json.load(open(tests_path, encoding="utf8")) if os.path.exists(tests_path) else []
         encoding = encoding or meta.get("input_encoding") or "lean"
+        compare = (meta.get("metadata") or {}).get("compare", "equal")
         return cls(id=meta["id"], name=name, params=params, ret=meta["signature"]["return_type"],
                    description=description, prelude=cls._prelude(lean, name), tests=tests, directory=directory,
-                   encoding=encoding)
+                   encoding=encoding, compare=compare)
 
     @staticmethod
     def _prelude(lean: str, name: str) -> str:
@@ -205,5 +209,7 @@ class LeanTask:
         for case in self.tests:
             args = self.call_args(case)
             proof = precondition_proof(self.pre_name)
-            commands.append(f"set_option maxHeartbeats 2000000 in\n#eval {same_expr(self.ret, f'({self.name} {args} {proof})', render(case['expected'], self.ret))}")
+            got, want = f"({self.name} {args} {proof})", render(case["expected"], self.ret)
+            check = f"(({got}).isPerm ({want}))" if self.compare == "perm" else same_expr(self.ret, got, want)
+            commands.append(f"set_option maxHeartbeats 2000000 in\n#eval {check}")
         return commands

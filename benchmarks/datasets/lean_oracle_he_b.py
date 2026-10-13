@@ -210,6 +210,48 @@ _NS090 = [
     }
 ]
 
+_HIST = [
+    {
+        "name": "foldl_max_nat",
+        "statement": "∀ (l : List Nat) (m : Nat), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l",
+        "proof": "by\n  intro l\n  induction l with\n  | nil => intro m; simp\n  | cons a t ih =>\n    intro m\n    obtain ⟨h1, h2, h3⟩ := ih (max m a)\n    simp only [List.foldl_cons]\n    refine ⟨?_, ?_, ?_⟩\n    · rcases h1 with h | h\n      · by_cases hm : m ≤ a\n        · right; rw [max_eq_right hm] at h ⊢; rw [h]; simp\n        · left\n          have hmx : max m a = m := max_eq_left (by omega)\n          rw [hmx] at h ⊢; exact h\n      · right; exact List.mem_cons_of_mem a h\n    · exact le_trans (le_max_left m a) h2\n    · intro x hx\n      rcases List.mem_cons.mp hx with rfl | hx'\n      · exact le_trans (le_max_right m x) h2\n      · exact h3 x hx'"
+    },
+    {
+        "name": "hist_ok",
+        "statement": "∀ (ws : List String), ((ws = [] → ((ws.dedup.filter (fun w => ws.count w == (ws.map (fun w => ws.count w)).foldl max 0)).map (fun w => (w, ws.count w))) = []) ∧ (ws ≠ [] → (∀ p ∈ (ws.dedup.filter (fun w => ws.count w == (ws.map (fun w => ws.count w)).foldl max 0)).map (fun w => (w, ws.count w)), p.1 ∈ ws ∧ p.2 = ws.count p.1 ∧ ∀ w ∈ ws, ws.count w ≤ p.2) ∧ (∀ w ∈ ws, (∀ v ∈ ws, ws.count v ≤ ws.count w) → ∃ p ∈ (ws.dedup.filter (fun w => ws.count w == (ws.map (fun w => ws.count w)).foldl max 0)).map (fun w => (w, ws.count w)), p.1 = w) ∧ (((ws.dedup.filter (fun w => ws.count w == (ws.map (fun w => ws.count w)).foldl max 0)).map (fun w => (w, ws.count w))).map Prod.fst).Nodup))",
+        "proof": "by\n  intro ws\n  refine ⟨fun h => by subst h; simp, ?_⟩\n  intro hne\n  obtain ⟨h1, h2, h3⟩ := foldl_max_nat (ws.map (fun w => ws.count w)) 0\n  have hnd : (ws.dedup.filter (fun w => ws.count w == (ws.map (fun w => ws.count w)).foldl max 0)).Nodup :=\n    (List.nodup_dedup ws).filter _\n  refine ⟨?_, ?_, ?_⟩\n  · intro p hp\n    obtain ⟨w, hw, rfl⟩ := List.mem_map.mp hp\n    rw [List.mem_filter] at hw\n    obtain ⟨hwd, hwb⟩ := hw\n    have hwm : w ∈ ws := List.mem_dedup.mp hwd\n    have hbeq : ws.count w = (ws.map (fun w => ws.count w)).foldl max 0 := by simpa using hwb\n    refine ⟨hwm, rfl, ?_⟩\n    intro v hv\n    rw [hbeq]\n    exact h3 _ (List.mem_map.mpr ⟨v, hv, rfl⟩)\n  · intro w hw hmax\n    have hbest : (ws.map (fun w => ws.count w)).foldl max 0 = ws.count w := by\n      apply le_antisymm\n      · rcases h1 with h | h\n        · rw [h]; exact Nat.zero_le _\n        · obtain ⟨v, hv, hveq⟩ := List.mem_map.mp h\n          rw [← hveq]; exact hmax v hv\n      · exact h3 _ (List.mem_map.mpr ⟨w, hw, rfl⟩)\n    refine ⟨(w, ws.count w), List.mem_map.mpr ⟨w, ?_, rfl⟩, rfl⟩\n    rw [List.mem_filter]\n    exact ⟨List.mem_dedup.mpr hw, by simpa [hbest]⟩\n  · rw [List.map_map]\n    have hc : (Prod.fst ∘ fun w => (w, ws.count w)) = fun w => w := rfl\n    rw [hc, List.map_id']\n    exact hnd"
+    }
+]
+
+_ROUND = [
+    {
+        "name": "round_away_ok",
+        "statement": "∀ (q : ℚ), |q - (((if q ≥ 0 then ⌊q + 1 / 2⌋ else -⌊-q + 1 / 2⌋ : Int)) : ℚ)| < 1 / 2 ∨ (|q - (((if q ≥ 0 then ⌊q + 1 / 2⌋ else -⌊-q + 1 / 2⌋ : Int)) : ℚ)| = 1 / 2 ∧ |q| < |(((if q ≥ 0 then ⌊q + 1 / 2⌋ else -⌊-q + 1 / 2⌋ : Int)) : ℚ)|)",
+        "proof": "by\n  intro q\n  by_cases hq : q ≥ 0\n  · rw [if_pos hq]\n    have h1 : ((⌊q + 1 / 2⌋ : Int) : ℚ) ≤ q + 1 / 2 := Int.floor_le _\n    have h2 : q + 1 / 2 < ((⌊q + 1 / 2⌋ : Int) : ℚ) + 1 := Int.lt_floor_add_one _\n    have h3 : (0 : ℚ) ≤ ((⌊q + 1 / 2⌋ : Int) : ℚ) := by\n      have : (0 : Int) ≤ ⌊q + 1 / 2⌋ := Int.floor_nonneg.mpr (by linarith)\n      exact_mod_cast this\n    set r : ℚ := ((⌊q + 1 / 2⌋ : Int) : ℚ) with hr\n    by_cases hlt : q - r > -(1 / 2)\n    · left\n      rw [abs_lt]\n      constructor <;> linarith\n    · right\n      have heq : q - r = -(1 / 2) := by linarith\n      refine ⟨?_, ?_⟩\n      · rw [heq]; norm_num\n      · rw [abs_of_nonneg hq, abs_of_nonneg h3]; linarith\n  · rw [if_neg hq]\n    push_neg at hq\n    have h1 : ((⌊-q + 1 / 2⌋ : Int) : ℚ) ≤ -q + 1 / 2 := Int.floor_le _\n    have h2 : -q + 1 / 2 < ((⌊-q + 1 / 2⌋ : Int) : ℚ) + 1 := Int.lt_floor_add_one _\n    have h3 : (0 : ℚ) ≤ ((⌊-q + 1 / 2⌋ : Int) : ℚ) := by\n      have : (0 : Int) ≤ ⌊-q + 1 / 2⌋ := Int.floor_nonneg.mpr (by linarith)\n      exact_mod_cast this\n    set r : ℚ := ((⌊-q + 1 / 2⌋ : Int) : ℚ) with hr\n    have hcast : (((-⌊-q + 1 / 2⌋ : Int)) : ℚ) = -r := by push_cast; rfl\n    rw [hcast]\n    by_cases hlt : (-q) - r > -(1 / 2)\n    · left\n      rw [abs_lt]\n      constructor <;> linarith\n    · right\n      have heq : (-q) - r = -(1 / 2) := by linarith\n      refine ⟨?_, ?_⟩\n      · rw [show q - -r = -((-q) - r) by ring, abs_neg, heq]; norm_num\n      · rw [abs_of_neg hq, abs_neg, abs_of_nonneg h3]; linarith"
+    }
+]
+
+_MKPAL = [
+    {
+        "name": "mp_exit",
+        "statement": "∀ (s : String) (i : Nat), (i ≤ s.length ∧ ∀ j, j < i → ¬ isPal (s.toList.drop j)) → ¬ (i < s.length ∧ ¬ isPal (s.toList.drop i)) → ∃ i2, i2 ≤ s.length ∧ isPal (s.toList.drop i2) ∧ (∀ j, j < i2 → ¬ isPal (s.toList.drop j)) ∧ (String.mk (s.toList ++ (s.toList.take i).reverse)).toList = s.toList ++ (s.toList.take i2).reverse",
+        "proof": "by\n  intro s i ⟨hi, hj⟩ hg\n  refine ⟨i, hi, ?_, hj, by rw [Refine.string_toList_mk]⟩\n  by_cases h : i < s.length\n  · by_contra hn\n    exact hg ⟨h, hn⟩\n  · have : i = s.length := by omega\n    subst this\n    have h0 : s.toList.drop s.length = [] := by\n      apply List.drop_of_length_le\n      exact le_of_eq rfl\n    rw [h0]\n    rfl"
+    }
+]
+
+_FACT = [
+    {
+        "name": "fact_div",
+        "statement": "∀ (N n d : Nat) (acc : List Nat), (1 ≤ n ∧ 2 ≤ d ∧ (acc).prod * n = N ∧ (∀ p ∈ acc, Nat.Prime p ∧ p < d + 1) ∧ (∀ i, i < (acc).length - 1 → (acc)[i]! ≤ (acc)[i + 1]!) ∧ (∀ k, 2 ≤ k → k < d → ¬ k ∣ n) ∧ (n = 1 ∨ d ≤ n)) → 1 < n → n % d = 0 → ((1 ≤ (n / d) ∧ 2 ≤ d ∧ ((acc ++ [d])).prod * (n / d) = N ∧ (∀ p ∈ (acc ++ [d]), Nat.Prime p ∧ p < d + 1) ∧ (∀ i, i < ((acc ++ [d])).length - 1 → ((acc ++ [d]))[i]! ≤ ((acc ++ [d]))[i + 1]!) ∧ (∀ k, 2 ≤ k → k < d → ¬ k ∣ (n / d)) ∧ ((n / d) = 1 ∨ d ≤ (n / d))) ∧ ((n / d + n / d - d) < (n + n - d)))",
+        "proof": "by\n  intro N n d acc ⟨h1, h2, hprod, hprime, hsort, hno, hle⟩ hn hd\n  have hdd : d ∣ n := Nat.dvd_of_mod_eq_zero hd\n  have hdpos : 0 < d := by omega\n  have hdn : d ≤ n := Nat.le_of_dvd (by omega) hdd\n  have hdprime : Nat.Prime d := by\n    rw [Nat.prime_def_lt]\n    refine ⟨h2, ?_⟩\n    intro m hm hmd\n    by_contra hm1\n    have hm2 : 2 ≤ m := by\n      have : m ≠ 0 := by\n        intro h0; subst h0; simp at hmd; omega\n      omega\n    exact hno m hm2 hm (Nat.dvd_trans hmd hdd)\n  have hq : n / d < n := Nat.div_lt_self (by omega) (by omega)\n  have hqpos : 1 ≤ n / d := by\n    have := Nat.div_pos hdn hdpos\n    omega\n  have hmul : d * (n / d) = n := Nat.mul_div_cancel' hdd\n  refine ⟨⟨hqpos, h2, ?_, ?_, ?_, ?_, ?_⟩, by omega⟩\n  · rw [List.prod_append]\n    simp only [List.prod_cons, List.prod_nil, Nat.mul_one]\n    calc acc.prod * d * (n / d) = acc.prod * (d * (n / d)) := by rw [Nat.mul_assoc]\n      _ = N := by rw [hmul]; exact hprod\n  · intro p hp\n    rcases List.mem_append.mp hp with hp | hp\n    · exact hprime p hp\n    · have : p = d := by simpa using hp\n      subst this\n      exact ⟨hdprime, by omega⟩\n  · intro i hi\n    have hlen : (acc ++ [d]).length = acc.length + 1 := by simp\n    rw [hlen] at hi\n    by_cases hlast : i + 1 < acc.length\n    · rw [getElem!_pos (acc ++ [d]) i (by simp; omega), getElem!_pos (acc ++ [d]) (i + 1) (by simp; omega)]\n      simp only [List.getElem_append_left (by omega : i < acc.length), List.getElem_append_left hlast]\n      have := hsort i (by omega)\n      rwa [getElem!_pos acc i (by omega), getElem!_pos acc (i + 1) hlast] at this\n    · have hi' : i + 1 = acc.length := by omega\n      rw [getElem!_pos (acc ++ [d]) i (by simp; omega), getElem!_pos (acc ++ [d]) (i + 1) (by simp; omega)]\n      have hmem : (acc ++ [d])[i]'(by simp; omega) ∈ acc := by\n        rw [List.getElem_append_left (by omega)]; exact List.getElem_mem _\n      have hlt := (hprime _ hmem).2\n      have hlast' : (acc ++ [d])[i + 1]'(by simp; omega) = d := by\n        rw [List.getElem_append_right (by omega)]; simp [hi']\n      rw [hlast']\n      omega\n  · intro k hk2 hkd hkq\n    exact hno k hk2 hkd (Nat.dvd_trans hkq (Nat.div_dvd_of_dvd hdd))\n  · by_cases hq1 : n / d = 1\n    · left; exact hq1\n    · right\n      obtain ⟨p, hp, hpq⟩ := Nat.exists_prime_and_dvd hq1\n      have hpn : p ∣ n := Nat.dvd_trans hpq (Nat.div_dvd_of_dvd hdd)\n      have hpd : d ≤ p := by\n        by_contra hlt\n        exact hno p hp.two_le (by omega) hpn\n      exact le_trans hpd (Nat.le_of_dvd (by omega) hpq)"
+    },
+    {
+        "name": "fact_nodiv",
+        "statement": "∀ (N n d : Nat) (acc : List Nat), (1 ≤ n ∧ 2 ≤ d ∧ (acc).prod * n = N ∧ (∀ p ∈ acc, Nat.Prime p ∧ p < d + 1) ∧ (∀ i, i < (acc).length - 1 → (acc)[i]! ≤ (acc)[i + 1]!) ∧ (∀ k, 2 ≤ k → k < d → ¬ k ∣ n) ∧ (n = 1 ∨ d ≤ n)) → 1 < n → ¬ n % d = 0 → ((1 ≤ n ∧ 2 ≤ (d + 1) ∧ (acc).prod * n = N ∧ (∀ p ∈ acc, Nat.Prime p ∧ p < (d + 1) + 1) ∧ (∀ i, i < (acc).length - 1 → (acc)[i]! ≤ (acc)[i + 1]!) ∧ (∀ k, 2 ≤ k → k < (d + 1) → ¬ k ∣ n) ∧ (n = 1 ∨ (d + 1) ≤ n)) ∧ ((n + n - (d + 1)) < (n + n - d)))",
+        "proof": "by\n  intro N n d acc ⟨h1, h2, hprod, hprime, hsort, hno, hle⟩ hn hd\n  have hdn : d ≤ n := by omega\n  have hdne : d ≠ n := by\n    intro h; subst h; simp at hd\n  refine ⟨⟨h1, by omega, hprod, ?_, hsort, ?_, ?_⟩, by omega⟩\n  · intro p hp\n    obtain ⟨a, b⟩ := hprime p hp\n    exact ⟨a, by omega⟩\n  · intro k hk2 hkd hkn\n    by_cases hkdd : k = d\n    · subst hkdd; exact hd (Nat.mod_eq_zero_of_dvd hkn)\n    · exact hno k hk2 (by omega) hkn\n  · right; omega"
+    }
+]
+
 ORACLES_MORE = {
     "he_005_intersperse": with_lemmas(
         loop([["i", "Nat"], ["acc", "List Int"]], ["0", "[]"],
@@ -308,4 +350,18 @@ ORACLES_MORE = {
                            term("(i + 1, f || decide (m < lst[i]!), if m < lst[i]! ∧ (f = false ∨ lst[i]! < r) then lst[i]! else r)")),
                       cases("p.1 = true", term("some p.2"), term("none")))),
             _NS090)),
+    "he_111_histogram": with_lemmas(
+        term("(WS.dedup.filter (fun w => WS.count w == (WS.map (fun w => WS.count w)).foldl max 0)).map (fun w => (w, WS.count w))".replace("WS", '((test.splitOn " ").filter (fun w => w != ""))')),
+        _HIST),
+    "he_099_closest_integer": with_lemmas(
+        term("if parseDec value ≥ 0 then ⌊parseDec value + 1 / 2⌋ else -⌊-parseDec value + 1 / 2⌋"), _ROUND),
+    "he_010_make_palindrome": with_lemmas(
+        loop([["i", "Nat"]], ["0"], "i ≤ string.length ∧ ∀ j, j < i → ¬ isPal (string.toList.drop j)",
+             "i < string.length ∧ ¬ isPal (string.toList.drop i)", "string.length - i",
+             "String.mk (string.toList ++ (string.toList.take i).reverse)", term("i + 1")),
+        _MKPAL),
+    "he_025_factorize": with_lemmas(
+        loop([["n2", "Nat"], ["d", "Nat"], ["acc", "List Nat"]], ["n", "2", "[]"], '(1 ≤ n2 ∧ 2 ≤ d ∧ (acc).prod * n2 = n ∧ (∀ p ∈ acc, Nat.Prime p ∧ p < d + 1) ∧ (∀ i, i < (acc).length - 1 → (acc)[i]! ≤ (acc)[i + 1]!) ∧ (∀ k, 2 ≤ k → k < d → ¬ k ∣ n2) ∧ (n2 = 1 ∨ d ≤ n2))', "1 < n2", "n2 + n2 - d", "acc",
+             cases("n2 % d = 0", term("(n2 / d, d, acc ++ [d])"), term("(n2, d + 1, acc)"))),
+        _FACT),
 }

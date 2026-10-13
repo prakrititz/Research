@@ -26,7 +26,8 @@
             "list",
             "declarative"
         ],
-        "note": ""
+        "note": "",
+        "compare": "perm"
     },
     "test_file": "./test.json",
     "input_encoding": "lean"
