@@ -147,6 +147,77 @@ theorem exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : 
   have h : (∃ x ∈ s, P x) ↔ ∃ x ∈ s.toList, P x := by simp only [Array.mem_def]
   rw [h]; exact exists_mem_toList_iff_idx s P
 
+theorem forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) :
+    (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]! := by
+  constructor
+  · intro h k hmk hk
+    have := h (l[k]'hk) (by
+      rw [List.mem_iff_getElem]; exact ⟨k - m, by simp; omega, by simp [List.getElem_drop]; congr 1; omega⟩)
+    rwa [getElem!_pos l k hk]
+  · intro h x hx
+    rw [List.mem_iff_getElem] at hx
+    obtain ⟨j, hj, rfl⟩ := hx
+    simp only [List.length_drop] at hj
+    have := h (m + j) (by omega) (by omega)
+    rw [getElem!_pos l (m + j) (by omega)] at this
+    simpa [List.getElem_drop] using this
+
+theorem exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) :
+    (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]! := by
+  constructor
+  · rintro ⟨x, hx, hp⟩
+    rw [List.mem_iff_getElem] at hx
+    obtain ⟨j, hj, rfl⟩ := hx
+    simp only [List.length_drop] at hj
+    refine ⟨m + j, by omega, by omega, ?_⟩
+    rw [getElem!_pos l (m + j) (by omega)]
+    simpa [List.getElem_drop] using hp
+  · rintro ⟨k, hmk, hk, hp⟩
+    refine ⟨l[k]'hk, ?_, by rwa [getElem!_pos l k hk] at hp⟩
+    rw [List.mem_iff_getElem]; exact ⟨k - m, by simp; omega, by simp [List.getElem_drop]; congr 1; omega⟩
+
+theorem forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) :
+    (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]! := by
+  constructor
+  · intro h k hkm hk
+    have := h (l[k]'hk) (by
+      rw [List.mem_iff_getElem]; exact ⟨k, by simp; omega, by simp⟩)
+    rwa [getElem!_pos l k hk]
+  · intro h x hx
+    rw [List.mem_iff_getElem] at hx
+    obtain ⟨j, hj, rfl⟩ := hx
+    simp only [List.length_take] at hj
+    have := h j (by omega) (by omega)
+    rw [getElem!_pos l j (by omega)] at this
+    simpa [List.getElem_take] using this
+
+theorem arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) :
+    (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true := by
+  have e : (a.take n).toList = a.toList.take n := by simp
+  rw [← Array.all_toList, e, List.all_eq_true, forall_mem_take_iff]
+  constructor
+  · intro h k hk hs; have := h k hk (by simpa using hs); rwa [Refine.toList_getElem_bang a k hs] at this
+  · intro h k hk hs; have hs' : k < a.size := by simpa using hs
+    rw [Refine.toList_getElem_bang a k hs']; exact h k hk hs'
+
+theorem arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) :
+    (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true := by
+  have e : (a.drop n).toList = a.toList.drop n := by simp
+  rw [← Array.all_toList, e, List.all_eq_true, Refine.forall_mem_drop_iff]
+  constructor
+  · intro h k hk hs; have := h k hk (by simpa using hs); rwa [Refine.toList_getElem_bang a k hs] at this
+  · intro h k hk hs; have hs' : k < a.size := by simpa using hs
+    rw [Refine.toList_getElem_bang a k hs']; exact h k hk hs'
+
+theorem sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) :
+    ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]! := by
+  intro i k hik hk
+  rcases Nat.eq_or_lt_of_le hik with rfl | hlt
+  · exact le_refl _
+  · have := List.pairwise_iff_getElem.mp h i k (by simpa using (by omega : i < a.size)) (by simpa using hk) hlt
+    rw [getElem!_pos a i (by omega), getElem!_pos a k hk]
+    simpa using this
+
 end Refine
 '''
 
@@ -163,4 +234,4 @@ SIMP_SET = ", ".join([f"Refine.{name}" for name in (
 NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
          "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ", "take_string_length",
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-         "exists_mem_array_iff_idx")
+         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le")

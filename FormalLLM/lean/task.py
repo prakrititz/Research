@@ -24,14 +24,16 @@ HOLE = "⟪r⟫"                                    # the placeholder for the te
 TOLERANCE = "(1 / 1000000 : ℚ)"
 
 
-def precondition_proof(pre_name: str) -> str:
+def precondition_proof(pre_name: str, witness_search: bool = False) -> str:
     """A proof of the precondition for an ``#eval`` of the function on concrete inputs. ``native_decide`` is a convenience of this
     test harness only (the proof argument is not computed); certificates never use it (the axiom check refuses it)."""
     # each alternative must close the goal (``; done``): ``simp`` that only makes progress would otherwise end the ``first``
     # ``native_decide`` runs the compiled decision procedure: instant, where ``norm_num``/``simp``/``decide`` evaluate a precondition
     # on a nine-element list of rationals symbolically in over a minute
     # ``trivial`` comes after it: it tries ``decide``, which evaluates the precondition by kernel reduction (69 s on nine rationals)
-    return (f"(by first | native_decide | trivial | (norm_num [{pre_name}]; done) | (simp [{pre_name}]; done) | decide | omega)")
+    # ``wit_search`` (the Verina compat prelude) tries small witnesses for an existential precondition, which is not decidable
+    search = f" | (unfold {pre_name}; wit_search)" if witness_search else ""
+    return (f"(by first | native_decide | trivial | (norm_num [{pre_name}]; done) | (simp [{pre_name}]; done) | decide | omega{search})")
 
 
 def same_expr(ret: str, left: str, right: str) -> str:
@@ -208,7 +210,7 @@ class LeanTask:
         commands = []
         for case in self.tests:
             args = self.call_args(case)
-            proof = precondition_proof(self.pre_name)
+            proof = precondition_proof(self.pre_name, witness_search='wit_search' in self.compat)
             got, want = f"({self.name} {args} {proof})", render(case["expected"], self.ret)
             check = f"(({got}).isPerm ({want}))" if self.compare == "perm" else same_expr(self.ret, got, want)
             commands.append(f"set_option maxHeartbeats 2000000 in\n#eval {check}")
