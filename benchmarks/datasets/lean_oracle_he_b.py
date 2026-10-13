@@ -339,6 +339,57 @@ _TRI = [
     }
 ]
 
+_MINPATH = [
+    {
+        "name": "lexmin_facts",
+        "statement": "∀ (L : List (List Nat)) (init : List Nat) (seen : List (List Nat)), (∀ c ∈ seen, ¬ c < init) → (∀ c ∈ seen ++ L, ¬ c < List.foldl (fun b c => if c < b then c else b) init L) ∧ (List.foldl (fun b c => if c < b then c else b) init L = init ∨ List.foldl (fun b c => if c < b then c else b) init L ∈ L)",
+        "proof": "by\n  intro L\n  induction L with\n  | nil => intro init seen h; exact ⟨by simpa using h, Or.inl rfl⟩\n  | cons x t ih =>\n    intro init seen h\n    simp only [List.foldl_cons]\n    by_cases hx : x < init\n    · rw [if_pos hx]\n      have h' : ∀ c ∈ seen ++ [x], ¬ c < x := by\n        intro c hc\n        rcases List.mem_append.mp hc with hc | hc\n        · intro hcx; exact h c hc (List.lt_trans hcx hx)\n        · have : c = x := by simpa using hc\n          subst this; exact List.lt_irrefl c\n      obtain ⟨h1, h2⟩ := ih x (seen ++ [x]) h'\n      refine ⟨?_, ?_⟩\n      · intro c hc\n        apply h1\n        simp only [List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hc ⊢\n        rcases hc with hc | hc | hc\n        · exact Or.inl (Or.inl hc)\n        · exact Or.inl (Or.inr hc)\n        · exact Or.inr hc\n      · rcases h2 with h2 | h2\n        · right; rw [h2]; exact List.mem_cons_self\n        · right; exact List.mem_cons_of_mem _ h2\n    · rw [if_neg hx]\n      have h' : ∀ c ∈ seen ++ [x], ¬ c < init := by\n        intro c hc\n        rcases List.mem_append.mp hc with hc | hc\n        · exact h c hc\n        · have : c = x := by simpa using hc\n          subst this; exact hx\n      obtain ⟨h1, h2⟩ := ih init (seen ++ [x]) h'\n      refine ⟨?_, ?_⟩\n      · intro c hc\n        apply h1\n        simp only [List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hc ⊢\n        rcases hc with hc | hc | hc\n        · exact Or.inl (Or.inl hc)\n        · exact Or.inl (Or.inr hc)\n        · exact Or.inr hc\n      · rcases h2 with h2 | h2\n        · left; exact h2\n        · right; exact List.mem_cons_of_mem _ h2"
+    },
+    {
+        "name": "grid_mem",
+        "statement": "∀ (n i j : Nat), (i, j) ∈ gridCells n ↔ i < n ∧ j < n",
+        "proof": "by\n  intro n i j\n  unfold gridCells\n  rw [List.mem_flatMap]\n  constructor\n  · rintro ⟨a, ha, h⟩\n    rw [List.mem_map] at h\n    obtain ⟨b, hb, he⟩ := h\n    have h1 : a = i := (Prod.mk.inj he).1\n    have h2 : b = j := (Prod.mk.inj he).2\n    rw [List.mem_range] at ha hb\n    subst h1; subst h2\n    exact ⟨ha, hb⟩\n  · rintro ⟨h1, h2⟩\n    exact ⟨i, List.mem_range.mpr h1, List.mem_map.mpr ⟨j, List.mem_range.mpr h2, rfl⟩⟩"
+    },
+    {
+        "name": "steps_ne",
+        "statement": "∀ (n : Nat), 2 ≤ n → ∀ (p : Nat × Nat), p ∈ gridCells n → stepsFrom n p ≠ []",
+        "proof": "by\n  intro n hn p hp\n  obtain ⟨i, j⟩ := p\n  rw [grid_mem] at hp\n  obtain ⟨hi, hj⟩ := hp\n  intro h\n  have hmem : ∀ q, q ∈ gridCells n → ((q.1 = i ∧ (q.2 = j + 1 ∨ q.2 + 1 = j)) ∨ (q.2 = j ∧ (q.1 = i + 1 ∨ q.1 + 1 = i))) →\n      q ∈ stepsFrom n (i, j) := by\n    intro q hq hc\n    unfold stepsFrom\n    rw [List.mem_filter]\n    exact ⟨hq, by simpa using hc⟩\n  by_cases hj1 : j + 1 < n\n  · have := hmem (i, j + 1) ((grid_mem n i (j + 1)).mpr ⟨hi, hj1⟩) (Or.inl ⟨rfl, Or.inl rfl⟩)\n    rw [h] at this; simp at this\n  · have hj0 : 0 < j := by omega\n    have := hmem (i, j - 1) ((grid_mem n i (j - 1)).mpr ⟨hi, by omega⟩) (Or.inl ⟨rfl, Or.inr (by simp; omega)⟩)\n    rw [h] at this; simp at this"
+    },
+    {
+        "name": "walks_ok",
+        "statement": "∀ (n : Nat), 2 ≤ n → ∀ (k : Nat), walksOf n (k + 1) ≠ [] ∧ ∀ w ∈ walksOf n (k + 1), w ≠ [] ∧ w.getLast! ∈ gridCells n",
+        "proof": "by\n  intro n hn k\n  induction k with\n  | zero =>\n    have h00 : ((0, 0) : Nat × Nat) ∈ gridCells n := (grid_mem n 0 0).mpr ⟨by omega, by omega⟩\n    refine ⟨?_, ?_⟩\n    · rw [walksOf]\n      intro h\n      have hm : [((0, 0) : Nat × Nat)] ∈ (gridCells n).map (fun c => [c]) := List.mem_map.mpr ⟨(0, 0), h00, rfl⟩\n      rw [h] at hm\n      simp at hm\n    · intro w hw\n      rw [walksOf, List.mem_map] at hw\n      obtain ⟨c, hc, rfl⟩ := hw\n      exact ⟨by simp, by simpa using hc⟩\n  | succ k ih =>\n    obtain ⟨hne, hall⟩ := ih\n    rw [show k + 1 + 1 = k + 2 from rfl, walksOf]\n    refine ⟨?_, ?_⟩\n    · obtain ⟨w, hw⟩ := List.exists_mem_of_ne_nil _ hne\n      obtain ⟨hwne, hwl⟩ := hall w hw\n      have hs := steps_ne n hn _ hwl\n      obtain ⟨q, hq⟩ := List.exists_mem_of_ne_nil _ hs\n      intro h\n      have : w ++ [q] ∈ (walksOf n (k + 1)).flatMap (fun w => (stepsFrom n w.getLast!).map (fun q => w ++ [q])) :=\n        List.mem_flatMap.mpr ⟨w, hw, List.mem_map.mpr ⟨q, hq, rfl⟩⟩\n      rw [h] at this\n      simp at this\n    · intro w' hw'\n      rw [List.mem_flatMap] at hw'\n      obtain ⟨w, hw, hq⟩ := hw'\n      rw [List.mem_map] at hq\n      obtain ⟨q, hq, rfl⟩ := hq\n      refine ⟨by simp, ?_⟩\n      have : q ∈ gridCells n := by\n        unfold stepsFrom at hq\n        exact (List.mem_filter.mp hq).1\n      simpa using this"
+    },
+    {
+        "name": "min_path_post",
+        "statement": "∀ (grid : List (List Nat)) (k : Nat) (h : minPath_precond grid k), minPath_postcond grid k (((walksOf grid.length k).map (fun w => w.map (cellAt grid))).foldl (fun b c => if c < b then c else b) ((walksOf grid.length k).map (fun w => w.map (cellAt grid))).head!) h",
+        "proof": "by\n  intro grid k h\n  unfold minPath_postcond\n  have hn : 2 ≤ grid.length := h.1\n  have hk : 1 ≤ k := h.2.2.2\n  obtain ⟨k', rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩\n  obtain ⟨hne, _⟩ := walks_ok grid.length hn k'\n  set L := (walksOf grid.length (k' + 1)).map (fun w => w.map (cellAt grid)) with hL\n  have hLne : L ≠ [] := by\n    intro hl\n    rw [hL, List.map_eq_nil_iff] at hl\n    exact hne hl\n  have hhead : L.head! ∈ L := by\n    cases hl : L with\n    | nil => exact absurd hl hLne\n    | cons a t => simp\n  obtain ⟨h1, h2⟩ := lexmin_facts L L.head! [] (by simp)\n  have hmem : List.foldl (fun b c => if c < b then c else b) L.head! L ∈ L := by\n    rcases h2 with h2 | h2\n    · rw [h2]; exact hhead\n    · exact h2\n  refine ⟨?_, ?_⟩\n  · obtain ⟨w, hw, hwe⟩ := List.mem_map.mp hmem\n    exact ⟨w, hw, hwe⟩\n  · intro w hw\n    have := h1 (w.map (cellAt grid)) (by rw [hL]; exact List.mem_map.mpr ⟨w, hw, rfl⟩)\n    exact this"
+    }
+]
+
+_PAREN = [
+    {
+        "name": "flatten_balanced",
+        "statement": "∀ (groups : List (List Char)), (∀ g ∈ groups, isBalanced g) → groups.flatten.count '(' = groups.flatten.count ')'",
+        "proof": "by\n  intro groups\n  induction groups with\n  | nil => intro _; simp\n  | cons g t ih =>\n    intro h\n    have hg := h g (List.mem_cons_self)\n    have ht := ih (fun x hx => h x (List.mem_cons_of_mem _ hx))\n    simp only [List.flatten_cons, List.count_append]\n    rw [ht, hg.2]"
+    },
+    {
+        "name": "step_close",
+        "statement": "∀ (F : List Char) (i : Nat) (cur : List Char) (groups : List (List Char)), isBalanced F → i < F.length → (i ≤ F.length ∧ (groups).flatten ++ (cur) = F.take i ∧ (∀ g ∈ groups, g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ (cur).length → ((cur).take k).count ')' < ((cur).take k).count '(') → (cur ++ [F[i]!]).count '(' = (cur ++ [F[i]!]).count ')' → ((i + 1) ≤ F.length ∧ ((groups ++ [cur ++ [F[i]!]])).flatten ++ ([]) = F.take (i + 1) ∧ (∀ g ∈ (groups ++ [cur ++ [F[i]!]]), g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ ([] : List Char).length → (([] : List Char).take k).count ')' < (([] : List Char).take k).count '(')",
+        "proof": "by\n  intro F i cur groups hF hi ⟨hile, hflat, hgroups, hcur⟩ hcl\n  have hfi : F.take (i + 1) = F.take i ++ [F[i]!] := Refine.take_succ_bang F i hi\n  have hl : (cur ++ [F[i]!]).length = cur.length + 1 := by simp\n  have hcur' : isBalanced (cur ++ [F[i]!]) := by\n    refine ⟨?_, hcl⟩\n    intro k hk\n    by_cases hkl : k ≤ cur.length\n    · by_cases hk0 : k = 0\n      · subst hk0; simp\n      · have := hcur k (by omega) hkl\n        rw [List.take_append_of_le_length hkl]\n        omega\n    · have hk' : k = (cur ++ [F[i]!]).length := by omega\n      subst hk'\n      rw [List.take_length]\n      omega\n  have hminimal : ∀ k, k < (cur ++ [F[i]!]).length → 0 < k → ¬ isBalanced ((cur ++ [F[i]!]).take k) := by\n    intro k hk hk0 hb\n    have hkl : k ≤ cur.length := by omega\n    rw [List.take_append_of_le_length hkl] at hb\n    have h1 := hcur k hk0 hkl\n    have h2 := hb.2\n    omega\n  refine ⟨by omega, ?_, ?_, ?_⟩\n  · rw [hfi, List.flatten_append, ← hflat]\n    simp\n  · intro g hg\n    rcases List.mem_append.mp hg with hg | hg\n    · exact hgroups g hg\n    · have : g = cur ++ [F[i]!] := by simpa using hg\n      subst this\n      exact ⟨by simp, hcur', hminimal⟩\n  · intro k hk hkl\n    have : k ≤ 0 := by simpa using hkl\n    omega"
+    },
+    {
+        "name": "step_open",
+        "statement": "∀ (F : List Char) (i : Nat) (cur : List Char) (groups : List (List Char)), isBalanced F → i < F.length → (i ≤ F.length ∧ (groups).flatten ++ (cur) = F.take i ∧ (∀ g ∈ groups, g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ (cur).length → ((cur).take k).count ')' < ((cur).take k).count '(') → ¬ (cur ++ [F[i]!]).count '(' = (cur ++ [F[i]!]).count ')' → ((i + 1) ≤ F.length ∧ (groups).flatten ++ ((cur ++ [F[i]!])) = F.take (i + 1) ∧ (∀ g ∈ groups, g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ ((cur ++ [F[i]!])).length → (((cur ++ [F[i]!])).take k).count ')' < (((cur ++ [F[i]!])).take k).count '(')",
+        "proof": "by\n  intro F i cur groups hF hi ⟨hile, hflat, hgroups, hcur⟩ hne\n  have hfi : F.take (i + 1) = F.take i ++ [F[i]!] := Refine.take_succ_bang F i hi\n  have hflatbal := flatten_balanced groups (fun g hg => (hgroups g hg).2.1)\n  have hpre : (F.take (i + 1)).count ')' ≤ (F.take (i + 1)).count '(' := hF.1 (i + 1) (by omega)\n  have heq : F.take (i + 1) = groups.flatten ++ cur ++ [F[i]!] := by rw [hfi, ← hflat]\n  rw [heq] at hpre\n  simp only [List.count_append] at hpre hne\n  have hsum : (cur ++ [F[i]!]).count ')' ≤ (cur ++ [F[i]!]).count '(' := by\n    simp only [List.count_append]\n    omega\n  refine ⟨by omega, ?_, hgroups, ?_⟩\n  · rw [hfi, ← hflat, List.append_assoc]\n  · intro k hk hkl\n    by_cases hkc : k ≤ cur.length\n    · have htake : (cur ++ [F[i]!]).take k = cur.take k := List.take_append_of_le_length hkc\n      rw [htake]\n      exact hcur k hk hkc\n    · have hl : (cur ++ [F[i]!]).length = cur.length + 1 := by simp\n      have hk' : k = (cur ++ [F[i]!]).length := by omega\n      subst hk'\n      rw [List.take_length]\n      simp only [List.count_append] at hsum ⊢\n      omega"
+    },
+    {
+        "name": "separate_exit",
+        "statement": "∀ (F : List Char) (cur : List Char) (groups : List (List Char)), isBalanced F → (F.length ≤ F.length ∧ (groups).flatten ++ (cur) = F.take F.length ∧ (∀ g ∈ groups, g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ (cur).length → ((cur).take k).count ')' < ((cur).take k).count '(') → ((groups.map String.mk).map String.toList).flatten = F ∧ ∀ g ∈ groups.map String.mk, g.length > 0 ∧ isBalanced g.toList ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.toList.take k)",
+        "proof": "by\n  intro F cur groups hF ⟨_, hflat, hgroups, hcur⟩\n  have hflatbal := flatten_balanced groups (fun g hg => (hgroups g hg).2.1)\n  have hcurnil : cur = [] := by\n    by_contra hne\n    have hlen : 0 < cur.length := List.length_pos_iff.mpr hne\n    have h1 := hcur cur.length hlen (le_refl _)\n    rw [List.take_length] at h1\n    rw [List.take_length] at hflat\n    have hFtot : F.count '(' = F.count ')' := hF.2\n    rw [← hflat] at hFtot\n    simp only [List.count_append] at hFtot\n    omega\n  subst hcurnil\n  have hF' : groups.flatten = F := by simpa [List.take_length] using hflat\n  refine ⟨?_, ?_⟩\n  · rw [List.map_map]\n    have : (String.toList ∘ String.mk) = fun g => g := by\n      funext g; simp [Function.comp, Refine.string_toList_mk]\n    rw [this, List.map_id']\n    exact hF'\n  · intro g hg\n    obtain ⟨g0, hg0, rfl⟩ := List.mem_map.mp hg\n    obtain ⟨hne, hbal, hmin⟩ := hgroups g0 hg0\n    rw [Refine.string_length_mk, Refine.string_toList_mk]\n    refine ⟨List.length_pos_iff.mpr hne, hbal, hmin⟩"
+    }
+]
+
 ORACLES_MORE = {
     "he_005_intersperse": with_lemmas(
         loop([["i", "Nat"], ["acc", "List Int"]], ["0", "[]"],
@@ -469,4 +520,16 @@ ORACLES_MORE = {
         cases("a + b ≤ c ∨ a + c ≤ b ∨ b + c ≤ a", term("-1"),
               term("(((Nat.sqrt ⌊40000 * area2 a b c⌋₊ + 1) / 2 : Nat) : ℚ) / 100")),
         _TRI),
+    "he_129_min_path": with_lemmas(
+        term("((walksOf grid.length k).map (fun w => w.map (cellAt grid))).foldl (fun b c => if c < b then c else b) "
+             "((walksOf grid.length k).map (fun w => w.map (cellAt grid))).head!"),
+        _MINPATH),
+    "he_001_separate_paren_groups": with_lemmas(
+        loop([["i", "Nat"], ["cur", "List Char"], ["groups", "List (List Char)"]], ["0", "[]", "[]"],
+             "i ≤ (paren_string.toList.filter (fun c => c != ' ')).length ∧ (groups).flatten ++ (cur) = (paren_string.toList.filter (fun c => c != ' ')).take i ∧ (∀ g ∈ groups, g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ (cur).length → ((cur).take k).count ')' < ((cur).take k).count '('",
+             "i < (paren_string.toList.filter (fun c => c != ' ')).length", "(paren_string.toList.filter (fun c => c != ' ')).length - i", "groups.map String.mk",
+             cases("(cur ++ [(paren_string.toList.filter (fun c => c != ' '))[i]!]).count '(' = (cur ++ [(paren_string.toList.filter (fun c => c != ' '))[i]!]).count ')'",
+                   term("(i + 1, ([] : List Char), groups ++ [cur ++ [(paren_string.toList.filter (fun c => c != ' '))[i]!]])"),
+                   term("(i + 1, cur ++ [(paren_string.toList.filter (fun c => c != ' '))[i]!], groups)"))),
+        _PAREN),
 }
