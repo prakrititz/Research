@@ -1,12 +1,12 @@
 [
  {
-  "id": "he_025_factorize",
-  "laws": 4,
+  "id": "he_020_find_closest_elements",
+  "laws": 7,
   "accepted": true,
   "certified": true,
-  "tests": 15,
-  "passed": 15,
+  "tests": 13,
+  "passed": 13,
   "failed_obligations": [],
-  "seconds": 7.2
+  "seconds": 19.0
  }
 ]
