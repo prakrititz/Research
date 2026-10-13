@@ -47,7 +47,11 @@ def make_cascade(extra_simp=()):
               + helpers + "nlinarith | (aesop; done))")
     diagnose = tactic[:-1] + " | sorry)"
     if extra_simp:
-        whole = " | ".join(f"(apply {n}; all_goals first | done | (simp_all; done) | omega | grind)" for n in extra_simp)
+        use = lambda n: f"(apply {n}; all_goals first | done | assumption | (simp_all; done) | omega | grind)"
+        whole = " | ".join(use(n) for n in extra_simp)
+        # a step obligation is ``invariant' ∧ variant decreases``: apply the lemma to the part that is its conclusion
+        both = " | ".join(f"(refine And.intro ?_ ?_ <;> first | {use(n)} | (dsimp only; omega) | omega)" for n in extra_simp)
+        whole = whole + " | " + both
         return f"first | {whole} | ({tactic})", f"first | {whole} | ({diagnose})"
     return tactic, diagnose
 
