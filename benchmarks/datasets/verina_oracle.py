@@ -86,6 +86,16 @@ ORACLES = {
 }
 
 
+# --- further batches (their own modules; they import only derivation_dsl) ---
+for _module in ("verina_oracle_b",):
+    try:
+        import importlib
+        ORACLES.update(importlib.import_module(f"benchmarks.datasets.{_module}").ORACLES_MORE)
+    except ModuleNotFoundError as _error:
+        if _error.name != f"benchmarks.datasets.{_module}":
+            raise
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", nargs="*")

@@ -401,7 +401,8 @@ def run(only=None, imports=None, oracles=None, library=None):
                    "failed_obligations": [], "seconds": 0.0}
             rows.append(row)
             try:
-                task = LeanTask.from_dir(os.path.join(library or LIBRARY, task_id))
+                from FormalLLM.lean.dataset import resolve          # the dataset decides the input encoding and the compat prelude
+                task = resolve(task_id).load(task_id)
                 derivation = Derivation(task, lean)
                 steps = derivation.apply_tree(tree)
             except Exception as error:                      # e.g. the task needs imports this session lacks
