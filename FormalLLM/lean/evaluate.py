@@ -92,6 +92,7 @@ def validate_task(lean, task: LeanTask, reference_mode: str = "equal", permissiv
         row["errors"] = [e[:300] for e in (reply.errors or ["timeout"])[:2]]
         return row
     proof = precondition_proof(task.pre_name, witness_search='wit_search' in task.compat)
+    p = task.proof_arg(proof)
 
     def value(command: str) -> Optional[str]:
         answer = lean.run(HEARTBEATS + command, timeout=120, env=env)
@@ -109,20 +110,20 @@ def validate_task(lean, task: LeanTask, reference_mode: str = "equal", permissiv
         args = task.call_args(case)
         want = render(case["expected"], task.ret)
         if reference_mode == "spec":
-            ran = value(f"#eval decide ({task.post_name} {args} ({task.name} {args} {proof}) {proof})")
+            ran = value(f"#eval decide ({task.post_name} {args} ({task.name} {args}{p}){p})")
         else:
-            ran = value(f"#eval {same_expr(task.ret, f'({task.name} {args} {proof})', want)}")
+            ran = value(f"#eval {same_expr(task.ret, f'({task.name} {args}{p})', want)}")
         row["reference_passes"] += ran == "true"
         if ran != "true":
             fail("reference", args, f"expected {want}" + ("" if ran else " (did not run)"))
-        accepted = value(f"#eval decide ({task.post_name} {args} ({want}) {proof})")
+        accepted = value(f"#eval decide ({task.post_name} {args} ({want}){p})")
         row["accepts_expected"] += accepted == "true"
         row["undecidable"] += accepted is None
         if accepted != "true":
             fail("accept", args, f"expected {want}" + ("" if accepted else " (spec did not run)"))
         for wrong in case.get("unexpected", []):
             row["wrong_total"] += 1
-            shown = value(f"#eval decide ({task.post_name} {args} ({render(wrong, task.ret)}) {proof})")
+            shown = value(f"#eval decide ({task.post_name} {args} ({render(wrong, task.ret)}){p})")
             row["rejects_wrong"] += shown == "false"
             if shown != "false":
                 fail("reject", args, f"wrong {render(wrong, task.ret)}" + ("" if shown else " (spec did not run)"))

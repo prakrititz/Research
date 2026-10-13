@@ -87,7 +87,7 @@ ORACLES = {
 
 
 # --- further batches (their own modules; they import only derivation_dsl) ---
-for _module in ("verina_oracle_b", "verina_oracle_c", "verina_oracle_d", "verina_oracle_e", "verina_oracle_f", "verina_oracle_g", "verina_oracle_h", "verina_oracle_i"):
+for _module in ("verina_oracle_b", "verina_oracle_c", "verina_oracle_d", "verina_oracle_e", "verina_oracle_f", "verina_oracle_g", "verina_oracle_h", "verina_oracle_i", "verina_oracle_j", "verina_oracle_k"):
     try:
         import importlib
         ORACLES.update(importlib.import_module(f"benchmarks.datasets.{_module}").ORACLES_MORE)
