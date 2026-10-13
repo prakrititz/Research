@@ -57,12 +57,11 @@ _MINSUB = [
 ]
 _ANYINT = [
     {
-        "name": "anyint_equiv",
-        "statement": "∀ (x y z : PyVal), ((fun (p : PyVal × PyVal × PyVal) => match p with | (PyVal.int a, PyVal.int b, PyVal.int c) => decide (a = b + c ∨ b = a + c ∨ c = b + a) | _ => false) (x, y, z) = true ↔ (match x, y, z with | PyVal.int a, PyVal.int b, PyVal.int c => a = b + c ∨ b = a + c ∨ c = b + a | _, _, _ => False))",
-        "proof": "by\n  intro x y z\n  cases x <;> cases y <;> cases z <;> simp"
+        "name": "anyint_post",
+        "statement": "∀ (x y z : PyVal) (h : anyInt_precond x y z), anyInt_postcond x y z ((fun (p : PyVal × PyVal × PyVal) => match p with | (PyVal.int a, PyVal.int b, PyVal.int c) => decide (a = b + c ∨ b = a + c ∨ c = b + a) | _ => false) (x, y, z)) h",
+        "proof": "by\n  intro x y z h\n  unfold anyInt_postcond\n  cases x <;> cases y <;> cases z <;> simp"
     }
 ]
-
 _VOWEL_STEP = [
     {
         "name": "vowel_step",
@@ -322,6 +321,24 @@ _SORT2 = [
     }
 ]
 
+_TRI = [
+    {
+        "name": "round_sqrt_ok",
+        "statement": "∀ (A : ℚ), 0 ≤ A → ((((Nat.sqrt ⌊40000 * A⌋₊ + 1) / 2 : Nat) : ℚ) / 100 ≥ 0 ∧ (((((Nat.sqrt ⌊40000 * A⌋₊ + 1) / 2 : Nat) : ℚ) / 100) * 100).den = 1 ∧ ((((Nat.sqrt ⌊40000 * A⌋₊ + 1) / 2 : Nat) : ℚ) / 100 < 1 / 200 ∨ ((((Nat.sqrt ⌊40000 * A⌋₊ + 1) / 2 : Nat) : ℚ) / 100 - 1 / 200) ^ 2 ≤ A) ∧ A ≤ ((((Nat.sqrt ⌊40000 * A⌋₊ + 1) / 2 : Nat) : ℚ) / 100 + 1 / 200) ^ 2)",
+        "proof": "by\n  intro A hA\n  set N := ⌊40000 * A⌋₊ with hN\n  set m := Nat.sqrt N with hm\n  set k := (m + 1) / 2 with hk\n  have h1 : (m : ℚ) ^ 2 ≤ 40000 * A := by\n    have hsq : m * m ≤ N := Nat.sqrt_le N\n    have hfl : (N : ℚ) ≤ 40000 * A := Nat.floor_le (by positivity)\n    have : ((m * m : Nat) : ℚ) ≤ (N : ℚ) := by exact_mod_cast hsq\n    push_cast at this\n    nlinarith\n  have h2 : 40000 * A < ((m : ℚ) + 1) ^ 2 := by\n    have hsq : N < (m + 1) * (m + 1) := Nat.lt_succ_sqrt N\n    have hfl : 40000 * A < (N : ℚ) + 1 := Nat.lt_floor_add_one _\n    have : ((N + 1 : Nat) : ℚ) ≤ (((m + 1) * (m + 1) : Nat) : ℚ) := by exact_mod_cast hsq\n    push_cast at this\n    nlinarith\n  have hk1 : 2 * k ≤ m + 1 := by omega\n  have hk2 : m ≤ 2 * k := by omega\n  have hk1' : (2 * (k : ℚ)) ≤ (m : ℚ) + 1 := by exact_mod_cast hk1\n  have hk2' : (m : ℚ) ≤ 2 * (k : ℚ) := by exact_mod_cast hk2\n  refine ⟨by positivity, ?_, ?_, ?_⟩\n  · have : ((k : ℚ) / 100) * 100 = (k : ℚ) := by ring\n    rw [this]\n    exact Rat.den_natCast k\n  · by_cases hk0 : k = 0\n    · left; rw [hk0]; norm_num\n    · right\n      have hkpos : (1 : ℚ) ≤ k := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hk0\n      have hm1 : 2 * (k : ℚ) - 1 ≤ (m : ℚ) := by linarith\n      have hm0 : 0 ≤ 2 * (k : ℚ) - 1 := by linarith\n      have : (2 * (k : ℚ) - 1) ^ 2 ≤ (m : ℚ) ^ 2 := by nlinarith\n      have : ((k : ℚ) / 100 - 1 / 200) ^ 2 = (2 * (k : ℚ) - 1) ^ 2 / 40000 := by ring\n      rw [this]\n      linarith\n  · have : (m : ℚ) + 1 ≤ 2 * (k : ℚ) + 1 := by linarith\n    have hm0 : 0 ≤ (m : ℚ) + 1 := by positivity\n    have : ((m : ℚ) + 1) ^ 2 ≤ (2 * (k : ℚ) + 1) ^ 2 := by nlinarith\n    have e : ((k : ℚ) / 100 + 1 / 200) ^ 2 = (2 * (k : ℚ) + 1) ^ 2 / 40000 := by ring\n    rw [e]\n    linarith"
+    },
+    {
+        "name": "area2_nonneg",
+        "statement": "∀ (a b c : ℚ), a > 0 → b > 0 → c > 0 → ¬ (a + b ≤ c ∨ a + c ≤ b ∨ b + c ≤ a) → 0 ≤ area2 a b c",
+        "proof": "by\n  intro a b c ha hb hc h\n  push_neg at h\n  obtain ⟨h1, h2, h3⟩ := h\n  unfold area2\n  have hp : 0 < (a + b + c) / 2 := by linarith\n  have e1 : 0 < (a + b + c) / 2 - a := by linarith\n  have e2 : 0 < (a + b + c) / 2 - b := by linarith\n  have e3 : 0 < (a + b + c) / 2 - c := by linarith\n  have := mul_pos (mul_pos (mul_pos hp e1) e2) e3\n  exact le_of_lt this"
+    },
+    {
+        "name": "tri_no",
+        "statement": "∀ (a b c : ℚ), a > 0 → b > 0 → c > 0 → ¬ (a + b ≤ c ∨ a + c ≤ b ∨ b + c ≤ a) → ((a + b ≤ c ∨ a + c ≤ b ∨ b + c ≤ a → ((((Nat.sqrt ⌊40000 * area2 a b c⌋₊ + 1) / 2 : Nat) : ℚ) / 100) = -1) ∧ (¬ (a + b ≤ c ∨ a + c ≤ b ∨ b + c ≤ a) → ((((Nat.sqrt ⌊40000 * area2 a b c⌋₊ + 1) / 2 : Nat) : ℚ) / 100 ≥ 0 ∧ (((((Nat.sqrt ⌊40000 * area2 a b c⌋₊ + 1) / 2 : Nat) : ℚ) / 100) * 100).den = 1 ∧ ((((Nat.sqrt ⌊40000 * area2 a b c⌋₊ + 1) / 2 : Nat) : ℚ) / 100 < 1 / 200 ∨ ((((Nat.sqrt ⌊40000 * area2 a b c⌋₊ + 1) / 2 : Nat) : ℚ) / 100 - 1 / 200) ^ 2 ≤ area2 a b c) ∧ area2 a b c ≤ ((((Nat.sqrt ⌊40000 * area2 a b c⌋₊ + 1) / 2 : Nat) : ℚ) / 100 + 1 / 200) ^ 2)))",
+        "proof": "by\n  intro a b c ha hb hc h\n  refine ⟨fun h' => absurd h' h, fun _ => round_sqrt_ok _ (area2_nonneg a b c ha hb hc h)⟩"
+    }
+]
+
 ORACLES_MORE = {
     "he_005_intersperse": with_lemmas(
         loop([["i", "Nat"], ["acc", "List Int"]], ["0", "[]"],
@@ -448,4 +465,8 @@ ORACLES_MORE = {
         _GETROW),
     "he_033_sort_third": with_lemmas(term('(List.range l.length).map (fun i => if i % 3 = 0 then ((atMod 3 l).mergeSort (fun a b => decide (a ≤ b)))[i / 3]! else l[i]!)'), _SORT3),
     "he_037_sort_even": with_lemmas(term('(List.range l.length).map (fun i => if i % 2 = 0 then ((atMod 2 l).mergeSort (fun a b => decide (a ≤ b)))[i / 2]! else l[i]!)'), _SORT2),
+    "he_071_triangle_area": with_lemmas(
+        cases("a + b ≤ c ∨ a + c ≤ b ∨ b + c ≤ a", term("-1"),
+              term("(((Nat.sqrt ⌊40000 * area2 a b c⌋₊ + 1) / 2 : Nat) : ℚ) / 100")),
+        _TRI),
 }
