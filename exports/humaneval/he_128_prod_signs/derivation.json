@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "if arr = [] then none else some ((arr.map (fun (x : Int) => (x.natAbs : Int))).sum * (arr.map Int.sign).prod)",
+  "children": []
+}

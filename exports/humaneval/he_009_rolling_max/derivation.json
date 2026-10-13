@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "(List.range numbers.length).map (fun i => (numbers.take (i + 1)).foldl max numbers[0]!)",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "foldl_max_facts",
+      "statement": "∀ (l : List Int) (m : Int), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l",
+      "proof": "by\n  intro l\n  induction l with\n  | nil => intro m; simp\n  | cons a t ih =>\n    intro m\n    obtain ⟨h1, h2, h3⟩ := ih (max m a)\n    simp only [List.foldl_cons]\n    refine ⟨?_, ?_, ?_⟩\n    · rcases h1 with h | h\n      · by_cases hm : m ≤ a\n        · right; rw [max_eq_right hm] at h ⊢; rw [h]; simp\n        · left\n          have hmx : max m a = m := max_eq_left (by omega)\n          rw [hmx] at h ⊢; exact h\n      · right; exact List.mem_cons_of_mem a h\n    · exact le_trans (le_max_left m a) h2\n    · intro x hx\n      rcases List.mem_cons.mp hx with rfl | hx'\n      · exact le_trans (le_max_right m x) h2\n      · exact h3 x hx'"
+    },
+    {
+      "name": "rolling_ok",
+      "statement": "∀ (numbers : List Int), ((List.range numbers.length).map (fun i => (numbers.take (i + 1)).foldl max numbers[0]!)).length = numbers.length ∧ ∀ i, i < numbers.length → ((List.range numbers.length).map (fun i => (numbers.take (i + 1)).foldl max numbers[0]!))[i]! ∈ numbers.take (i + 1) ∧ ∀ x ∈ numbers.take (i + 1), x ≤ ((List.range numbers.length).map (fun i => (numbers.take (i + 1)).foldl max numbers[0]!))[i]!",
+      "proof": "by\n  intro numbers\n  refine ⟨by simp, ?_⟩\n  intro i hi\n  have hget : ((List.range numbers.length).map (fun i => (numbers.take (i + 1)).foldl max numbers[0]!))[i]! =\n      (numbers.take (i + 1)).foldl max numbers[0]! := by\n    rw [getElem!_pos _ i (by simpa using hi)]\n    simp\n  rw [hget]\n  obtain ⟨h1, h2, h3⟩ := foldl_max_facts (numbers.take (i + 1)) numbers[0]!\n  refine ⟨?_, h3⟩\n  rcases h1 with h | h\n  · rw [h]\n    have : numbers[0]! ∈ numbers.take (i + 1) := by\n      rw [getElem!_pos numbers 0 (by omega)]\n      exact List.mem_iff_getElem.mpr ⟨0, by simp; omega, by simp⟩\n    exact this\n  · exact h"
+    }
+  ]
+}

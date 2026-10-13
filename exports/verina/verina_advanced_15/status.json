@@ -1,0 +1,21 @@
+{
+  "id": "verina_advanced_15",
+  "dataset": "verina",
+  "family": "advanced",
+  "function": "increasingTriplet",
+  "tests": 7,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 1,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "7/7",
+  "blocked_reason": "",
+  "spec_checks": {
+    "compiles": true,
+    "reference_passes": "7/7",
+    "accepts_expected": "7/7",
+    "rejects_wrong": "7/7"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "he_062_derivative",
+  "dataset": "humaneval",
+  "family": "he_060",
+  "function": "derivative",
+  "tests": 13,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "13/13",
+  "blocked_reason": ""
+}

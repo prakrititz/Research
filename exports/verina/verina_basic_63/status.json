@@ -1,0 +1,21 @@
+{
+  "id": "verina_basic_63",
+  "dataset": "verina",
+  "family": "basic",
+  "function": "has_close_elements",
+  "tests": 5,
+  "has_derivation": false,
+  "kind": "",
+  "laws": 0,
+  "helper_lemmas": 0,
+  "certified": false,
+  "independently_verified": false,
+  "tests_passed": null,
+  "blocked_reason": "the specification is about Float comparisons; same cause as verina_basic_25",
+  "spec_checks": {
+    "compiles": true,
+    "reference_passes": "5/5",
+    "accepts_expected": "5/5",
+    "rejects_wrong": "0/0"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "decide ((numOf x * numOf n) % (denOf x * denOf n) = 0)",
+  "children": []
+}

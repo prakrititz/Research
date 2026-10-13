@@ -1,0 +1,5 @@
+# he_103_rounded_avg
+
+`roundedAvg(n : Nat, m : Nat) : Option String`
+
+Given two positive integers n and m, compute the average of the integers from n through m (including n and m). Round the answer to the nearest integer (half to even, as Python does) and convert that to binary. If n is greater than m, return -1 (here: none).

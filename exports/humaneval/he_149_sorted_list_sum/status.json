@@ -1,0 +1,15 @@
+{
+  "id": "he_149_sorted_list_sum",
+  "dataset": "humaneval",
+  "family": "he_140",
+  "function": "sortedListSum",
+  "tests": 15,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 1,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "15/15",
+  "blocked_reason": ""
+}

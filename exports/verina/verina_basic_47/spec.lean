@@ -1,0 +1,27 @@
+import Mathlib
+namespace Array
+def mkArray {α : Type} (n : Nat) (v : α) : Array α := Array.replicate n v
+end Array
+namespace Std.HashSet
+def empty {α : Type} [BEq α] [Hashable α] : Std.HashSet α := {}
+end Std.HashSet
+syntax "wit_search" : tactic
+macro_rules
+  | `(tactic| wit_search) => `(tactic| first
+      | decide
+      | (refine ⟨?_, ?_⟩ <;> wit_search)
+      | (refine ⟨0, ?_⟩; wit_search) | (refine ⟨1, ?_⟩; wit_search) | (refine ⟨2, ?_⟩; wit_search)
+      | (refine ⟨3, ?_⟩; wit_search) | (refine ⟨4, ?_⟩; wit_search) | (refine ⟨5, ?_⟩; wit_search))
+
+@[reducible, simp]
+def arraySum_precond (a : Array Int) : Prop :=
+  a.size > 0
+
+def sumTo (a : Array Int) (n : Nat) : Int :=
+  if n = 0 then 0
+  else sumTo a (n - 1) + a[n - 1]!
+
+@[reducible, simp]
+def arraySum_postcond (a : Array Int) (result: Int) (h_precond : arraySum_precond (a)) :=
+  result - sumTo a a.size = 0 ∧
+  result ≥ sumTo a a.size

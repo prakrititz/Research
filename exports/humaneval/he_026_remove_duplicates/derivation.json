@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "i ≤ numbers.length ∧ acc = (numbers.take i).filter (fun x => numbers.count x = 1)",
+  "guard": "i < numbers.length",
+  "variant": "numbers.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if numbers.count numbers[i]! = 1 then acc ++ [numbers[i]!] else acc)",
+      "children": []
+    }
+  ]
+}

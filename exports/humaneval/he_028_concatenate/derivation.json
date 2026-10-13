@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "String"
+    ]
+  ],
+  "init": [
+    "0",
+    "\"\""
+  ],
+  "invariant": "i ≤ strings.length ∧ acc = String.join (strings.take i)",
+  "guard": "i < strings.length",
+  "variant": "strings.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, acc ++ strings[i]!)",
+      "children": []
+    }
+  ]
+}

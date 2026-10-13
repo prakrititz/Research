@@ -1,0 +1,15 @@
+{
+  "id": "he_118_get_closest_vowel",
+  "dataset": "humaneval",
+  "family": "he_100",
+  "function": "getClosestVowel",
+  "tests": 16,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 6,
+  "helper_lemmas": 3,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "16/16",
+  "blocked_reason": ""
+}

@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "number - (⌊number⌋ : ℚ)",
+  "children": []
+}

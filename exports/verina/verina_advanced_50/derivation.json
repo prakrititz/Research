@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "((a1.toList ++ a2.toList).mergeSort (fun x y => decide (x ≤ y))).toArray",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "ms50",
+      "statement": "∀ (a1 a2 : Array Nat) (h : mergeSorted_precond a1 a2), mergeSorted_postcond a1 a2 (((a1.toList ++ a2.toList).mergeSort (fun x y => decide (x ≤ y))).toArray) h",
+      "proof": "by intro a1 a2 h\n  unfold mergeSorted_postcond\n  rw [List.toList_toArray]\n  exact ⟨List.pairwise_mergeSort' (· ≤ ·) _, List.isPerm_iff.mpr (List.mergeSort_perm _ _)⟩"
+    }
+  ]
+}

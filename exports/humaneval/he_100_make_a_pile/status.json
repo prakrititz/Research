@@ -1,0 +1,15 @@
+{
+  "id": "he_100_make_a_pile",
+  "dataset": "humaneval",
+  "family": "he_100",
+  "function": "makeAPile",
+  "tests": 13,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "13/13",
+  "blocked_reason": ""
+}

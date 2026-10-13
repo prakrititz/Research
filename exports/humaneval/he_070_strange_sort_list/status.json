@@ -1,0 +1,15 @@
+{
+  "id": "he_070_strange_sort_list",
+  "dataset": "humaneval",
+  "family": "he_060",
+  "function": "strangeSortList",
+  "tests": 16,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 3,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "16/16",
+  "blocked_reason": ""
+}

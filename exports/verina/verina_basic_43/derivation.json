@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0",
+    "0"
+  ],
+  "invariant": "i ≤ n ∧ 15 * acc = i * (2 * i + 1) * (7 + 24 * i^3 - 12 * i^2 - 14 * i)",
+  "guard": "i < n",
+  "variant": "n - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, acc + (2 * i + 1)^4)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "step43",
+      "statement": "∀ (i acc : Nat), 15*acc = i*(2*i+1)*(7+24*i^3-12*i^2-14*i) → 15*(acc + (2*i+1)^4) = (i+1)*(2*(i+1)+1)*(7+24*(i+1)^3-12*(i+1)^2-14*(i+1))",
+      "proof": "by intro i acc h\n  have key : ∀ j : Nat, 12*j^2+14*j ≤ 7+24*j^3 := by\n    intro j; rcases j with _|j\n    · simp\n    · ring_nf; omega\n  have e : ∀ j : Nat, ((7+24*j^3-12*j^2-14*j : Nat) : Int) = 7+24*(j:Int)^3-12*(j:Int)^2-14*(j:Int) := by\n    intro j\n    have := key j\n    have h1 : 12*j^2 ≤ 7+24*j^3 := by omega\n    rw [Nat.cast_sub (by omega), Nat.cast_sub h1]; push_cast; ring\n  have hz : (15:Int)*acc = i*(2*i+1)*(7+24*(i:Int)^3-12*(i:Int)^2-14*(i:Int)) := by\n    have := congrArg (fun x : Nat => (x : Int)) h\n    simp only [Nat.cast_mul, Nat.cast_ofNat, e] at this\n    push_cast at this\n    exact this\n  have goal : ((15*(acc + (2*i+1)^4) : Nat) : Int) = (((i+1)*(2*(i+1)+1)*(7+24*(i+1)^3-12*(i+1)^2-14*(i+1)) : Nat) : Int) := by\n    have e1 := e (i+1)\n    push_cast at e1 ⊢\n    rw [e1]\n    push_cast\n    nlinarith [hz]\n  exact_mod_cast goal"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "f",
+      "Bool"
+    ],
+    [
+      "v",
+      "Nat"
+    ],
+    [
+      "ix",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0",
+    "false",
+    "0",
+    "0"
+  ],
+  "invariant": "i ≤ arr.length ∧ (f = true ↔ ∃ k, k < i ∧ arr[k]! % 2 = 0) ∧ (f = true → ix < i ∧ arr[ix]! = v ∧ v % 2 = 0 ∧ (∀ k, k < i → arr[k]! % 2 = 0 → v ≤ arr[k]!) ∧ ∀ j, j < ix → arr[j]! ≠ v)",
+  "guard": "i < arr.length",
+  "variant": "arr.length - i",
+  "result": "if f = true then [v, ix] else []",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, f || decide (arr[i]! % 2 = 0), if arr[i]! % 2 = 0 ∧ (f = false ∨ arr[i]! < v) then arr[i]! else v, if arr[i]! % 2 = 0 ∧ (f = false ∨ arr[i]! < v) then i else ix)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "pluck_exit",
+      "statement": "∀ (arr : List Nat) (f : Bool) (v ix : Nat), (arr.length ≤ arr.length ∧ (f = true ↔ ∃ k, k < arr.length ∧ arr[k]! % 2 = 0) ∧ (f = true → ix < arr.length ∧ arr[ix]! = v ∧ v % 2 = 0 ∧ (∀ k, k < arr.length → arr[k]! % 2 = 0 → v ≤ arr[k]!) ∧ ∀ j, j < ix → arr[j]! ≠ v)) → (((if f = true then [v, ix] else []) = [] ↔ ∀ x ∈ arr, x % 2 = 1) ∧ ((if f = true then [v, ix] else []) ≠ [] → (if f = true then [v, ix] else []).length = 2 ∧ (if f = true then [v, ix] else [])[1]! < arr.length ∧ arr[(if f = true then [v, ix] else [])[1]!]! = (if f = true then [v, ix] else [])[0]! ∧ (if f = true then [v, ix] else [])[0]! % 2 = 0 ∧ (∀ x ∈ arr, x % 2 = 0 → (if f = true then [v, ix] else [])[0]! ≤ x) ∧ ∀ j, j < (if f = true then [v, ix] else [])[1]! → arr[j]! ≠ (if f = true then [v, ix] else [])[0]!))",
+      "proof": "by\n  intro arr f v ix h\n  obtain ⟨_, hf, hd⟩ := h\n  by_cases hfl : f = true\n  · obtain ⟨hix, hv, hev, hmin, hj⟩ := hd hfl\n    rw [if_pos hfl]\n    refine ⟨⟨fun h => absurd h (by simp), fun h => ?_⟩, fun _ => ⟨by simp, by simpa using hix, by simpa using hv, by simpa using hev, ?_, by simpa using hj⟩⟩\n    · obtain ⟨k, hk, hek⟩ := hf.mp hfl\n      have := h arr[k]! (by rw [getElem!_pos arr k hk]; exact List.getElem_mem hk)\n      omega\n    · intro x hx hxe\n      obtain ⟨k, hk, rfl⟩ := (Refine.mem_iff_idx arr x).mp hx\n      simpa using hmin k hk hxe\n  · rw [if_neg hfl]\n    refine ⟨⟨fun _ => ?_, fun _ => by simp⟩, fun h => absurd rfl h⟩\n    intro x hx\n    obtain ⟨k, hk, rfl⟩ := (Refine.mem_iff_idx arr x).mp hx\n    by_contra hne\n    exact hfl (hf.mpr ⟨k, hk, by omega⟩)"
+    }
+  ]
+}

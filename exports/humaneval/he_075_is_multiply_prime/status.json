@@ -1,0 +1,15 @@
+{
+  "id": "he_075_is_multiply_prime",
+  "dataset": "humaneval",
+  "family": "he_060",
+  "function": "isMultiplyPrime",
+  "tests": 12,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "12/12",
+  "blocked_reason": ""
+}

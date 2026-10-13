@@ -1,0 +1,33 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "s",
+      "Int"
+    ],
+    [
+      "p",
+      "Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "0",
+    "1"
+  ],
+  "invariant": "i ≤ numbers.length ∧ s = (numbers.take i).sum ∧ p = (numbers.take i).prod",
+  "guard": "i < numbers.length",
+  "variant": "numbers.length - i",
+  "result": "(s, p)",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, s + numbers[i]!, p * numbers[i]!)",
+      "children": []
+    }
+  ]
+}

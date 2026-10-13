@@ -1,0 +1,111 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "a",
+      "Nat"
+    ],
+    [
+      "b",
+      "Nat"
+    ],
+    [
+      "found",
+      "Bool"
+    ]
+  ],
+  "init": [
+    "0",
+    "0",
+    "0",
+    "false"
+  ],
+  "invariant": "i ≤ nums.size ∧ (found = true → a < b ∧ b < nums.size ∧ nums[a]! + nums[b]! = target ∧ (∀ i' j', i' < a → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target) ∧ ∀ j', a < j' → j' < b → nums[a]! + nums[j']! ≠ target) ∧ (found = false → ∀ i' j', i' < i → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target)",
+  "guard": "i < nums.size ∧ found = false",
+  "variant": "nums.size - i",
+  "result": "#[a, b]",
+  "children": [
+    {
+      "law": "bind",
+      "var": "jr",
+      "type": "Nat × Bool",
+      "prop": "(jr.2 = true → i < jr.1 ∧ jr.1 < nums.size ∧ nums[i]! + nums[jr.1]! = target ∧ ∀ j', i < j' → j' < jr.1 → nums[i]! + nums[j']! ≠ target) ∧ (jr.2 = false → ∀ j', i < j' → j' < nums.size → nums[i]! + nums[j']! ≠ target)",
+      "children": [
+        {
+          "law": "loop",
+          "state": [
+            [
+              "j",
+              "Nat"
+            ],
+            [
+              "jb",
+              "Nat"
+            ],
+            [
+              "ok",
+              "Bool"
+            ]
+          ],
+          "init": [
+            "i + 1",
+            "0",
+            "false"
+          ],
+          "invariant": "i + 1 ≤ j ∧ j ≤ nums.size ∧ (ok = true → i < jb ∧ jb < nums.size ∧ nums[i]! + nums[jb]! = target ∧ ∀ j', i < j' → j' < jb → nums[i]! + nums[j']! ≠ target) ∧ (ok = false → ∀ j', i < j' → j' < j → nums[i]! + nums[j']! ≠ target)",
+          "guard": "j < nums.size ∧ ok = false",
+          "variant": "nums.size - j",
+          "result": "(jb, ok)",
+          "children": [
+            {
+              "law": "term",
+              "expr": "(j + 1, if nums[i]! + nums[j]! = target then j else jb, decide (nums[i]! + nums[j]! = target) || ok)",
+              "children": []
+            }
+          ]
+        },
+        {
+          "law": "term",
+          "expr": "(i + 1, if jr.2 = true then i else a, if jr.2 = true then jr.1 else b, jr.2 || found)",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "ts_in_init",
+      "statement": "∀ (nums : Array Int) (target : Int) (i : Nat), i < nums.size → i + 1 ≤ (i + 1) ∧ (i + 1) ≤ nums.size ∧ (false = true → i < 0 ∧ 0 < nums.size ∧ nums[i]! + nums[0]! = target ∧ ∀ j', i < j' → j' < 0 → nums[i]! + nums[j']! ≠ target) ∧ (false = false → ∀ j', i < j' → j' < (i + 1) → nums[i]! + nums[j']! ≠ target)",
+      "proof": "by intro nums target i hi\n  exact Refine.ts_inner_init (fun a b => nums[a]! + nums[b]!) target nums.size i hi"
+    },
+    {
+      "name": "ts_in_step",
+      "statement": "∀ (nums : Array Int) (target : Int) (i j jb : Nat) (ok : Bool), (i + 1 ≤ j ∧ j ≤ nums.size ∧ (ok = true → i < jb ∧ jb < nums.size ∧ nums[i]! + nums[jb]! = target ∧ ∀ j', i < j' → j' < jb → nums[i]! + nums[j']! ≠ target) ∧ (ok = false → ∀ j', i < j' → j' < j → nums[i]! + nums[j']! ≠ target)) → (j < nums.size ∧ ok = false) → (i + 1 ≤ (j + 1) ∧ (j + 1) ≤ nums.size ∧ ((decide (nums[i]! + nums[j]! = target) || ok) = true → i < (if nums[i]! + nums[j]! = target then j else jb) ∧ (if nums[i]! + nums[j]! = target then j else jb) < nums.size ∧ nums[i]! + nums[(if nums[i]! + nums[j]! = target then j else jb)]! = target ∧ ∀ j', i < j' → j' < (if nums[i]! + nums[j]! = target then j else jb) → nums[i]! + nums[j']! ≠ target) ∧ ((decide (nums[i]! + nums[j]! = target) || ok) = false → ∀ j', i < j' → j' < (j + 1) → nums[i]! + nums[j']! ≠ target))",
+      "proof": "by intro nums target i j jb ok hinv hg\n  exact Refine.ts_inner_step (fun a b => nums[a]! + nums[b]!) target nums.size i j jb ok hinv hg"
+    },
+    {
+      "name": "ts_in_exit",
+      "statement": "∀ (nums : Array Int) (target : Int) (i j jb : Nat) (ok : Bool), (i + 1 ≤ j ∧ j ≤ nums.size ∧ (ok = true → i < jb ∧ jb < nums.size ∧ nums[i]! + nums[jb]! = target ∧ ∀ j', i < j' → j' < jb → nums[i]! + nums[j']! ≠ target) ∧ (ok = false → ∀ j', i < j' → j' < j → nums[i]! + nums[j']! ≠ target)) → ¬ (j < nums.size ∧ ok = false) → ((jb, ok).2 = true → i < (jb, ok).1 ∧ (jb, ok).1 < nums.size ∧ nums[i]! + nums[(jb, ok).1]! = target ∧ ∀ j', i < j' → j' < (jb, ok).1 → nums[i]! + nums[j']! ≠ target) ∧ ((jb, ok).2 = false → ∀ j', i < j' → j' < nums.size → nums[i]! + nums[j']! ≠ target)",
+      "proof": "by intro nums target i j jb ok hinv hn\n  exact Refine.ts_inner_exit (fun a b => nums[a]! + nums[b]!) target nums.size i j jb ok hinv hn"
+    },
+    {
+      "name": "ts_out_init",
+      "statement": "∀ (nums : Array Int) (target : Int), 0 ≤ nums.size ∧ (false = true → 0 < 0 ∧ 0 < nums.size ∧ nums[0]! + nums[0]! = target ∧ (∀ i' j', i' < 0 → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target) ∧ ∀ j', 0 < j' → j' < 0 → nums[0]! + nums[j']! ≠ target) ∧ (false = false → ∀ i' j', i' < 0 → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target)",
+      "proof": "by intro nums target\n  exact Refine.ts_outer_init (fun a b => nums[a]! + nums[b]!) target nums.size"
+    },
+    {
+      "name": "ts_out_step",
+      "statement": "∀ (nums : Array Int) (target : Int) (i a b : Nat) (found : Bool) (jr : Nat × Bool), (i ≤ nums.size ∧ (found = true → a < b ∧ b < nums.size ∧ nums[a]! + nums[b]! = target ∧ (∀ i' j', i' < a → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target) ∧ ∀ j', a < j' → j' < b → nums[a]! + nums[j']! ≠ target) ∧ (found = false → ∀ i' j', i' < i → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target)) → (i < nums.size ∧ found = false) → ((jr.2 = true → i < jr.1 ∧ jr.1 < nums.size ∧ nums[i]! + nums[jr.1]! = target ∧ ∀ j', i < j' → j' < jr.1 → nums[i]! + nums[j']! ≠ target) ∧ (jr.2 = false → ∀ j', i < j' → j' < nums.size → nums[i]! + nums[j']! ≠ target)) → ((i + 1) ≤ nums.size ∧ ((jr.2 || found) = true → (if jr.2 = true then i else a) < (if jr.2 = true then jr.1 else b) ∧ (if jr.2 = true then jr.1 else b) < nums.size ∧ nums[(if jr.2 = true then i else a)]! + nums[(if jr.2 = true then jr.1 else b)]! = target ∧ (∀ i' j', i' < (if jr.2 = true then i else a) → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target) ∧ ∀ j', (if jr.2 = true then i else a) < j' → j' < (if jr.2 = true then jr.1 else b) → nums[(if jr.2 = true then i else a)]! + nums[j']! ≠ target) ∧ ((jr.2 || found) = false → ∀ i' j', i' < (i + 1) → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target))",
+      "proof": "by intro nums target i a b found jr hinv hg hjr\n  exact Refine.ts_outer_step (fun a b => nums[a]! + nums[b]!) target nums.size i a b found jr hinv hg hjr"
+    },
+    {
+      "name": "exit80",
+      "statement": "∀ (nums : Array Int) (target : Int) (h : twoSum_precond nums target) (i a b : Nat) (found : Bool), (i ≤ nums.size ∧ (found = true → a < b ∧ b < nums.size ∧ nums[a]! + nums[b]! = target ∧ (∀ i' j', i' < a → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target) ∧ ∀ j', a < j' → j' < b → nums[a]! + nums[j']! ≠ target) ∧ (found = false → ∀ i' j', i' < i → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target)) → ¬ (i < nums.size ∧ found = false) → twoSum_postcond nums target #[a, b] h",
+      "proof": "by intro nums target h i a b found hinv hn\n  obtain ⟨hi, hf1, hf2⟩ := hinv\n  unfold twoSum_postcond\n  by_cases hf : found = true\n  · obtain ⟨hab, hb, hs, _, _⟩ := hf1 hf\n    exact ⟨by simp, by simpa using (by omega : a < nums.size), by simpa using hb, by simpa using hab, by simpa using hs⟩\n  · exfalso\n    have hff : found = false := by simpa using hf\n    have hin : i = nums.size := by\n      by_contra hne\n      exact hn ⟨by omega, hff⟩\n    obtain ⟨_, hany, _⟩ := h\n    obtain ⟨i', hi', hj⟩ := List.any_eq_true.mp hany\n    obtain ⟨j', hj', hs⟩ := List.any_eq_true.mp hj\n    have hi'' := List.mem_range.mp hi'\n    have hj'' := List.mem_range.mp hj'\n    have hs' : nums[i']! + nums[j']! = target := by simpa using hs\n    exact hf2 hff j' i' (by omega) hj'' hi'' (by omega)"
+    }
+  ]
+}

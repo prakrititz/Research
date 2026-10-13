@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "((((S.replace \"?\" \".\").replace \"!\" \".\").splitOn \".\").map String.trim).filter (fun t => t.startsWith \"I \") |>.length",
+  "children": []
+}

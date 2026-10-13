@@ -1,0 +1,100 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "k",
+      "Nat"
+    ],
+    [
+      "found",
+      "Bool"
+    ]
+  ],
+  "init": [
+    "0",
+    "false"
+  ],
+  "invariant": "k ≤ l.length ∧ (found = true ↔ ∃ c, c < k ∧ ∃ b, b < c ∧ ∃ a, a < b ∧ l[a]! + l[b]! + l[c]! = 0)",
+  "guard": "k < l.length",
+  "variant": "l.length - k",
+  "result": "found",
+  "children": [
+    {
+      "law": "bind",
+      "var": "hitk",
+      "type": "Bool",
+      "prop": "hitk = true ↔ ∃ b, b < k ∧ ∃ a, a < b ∧ l[a]! + l[b]! + l[k]! = 0",
+      "children": [
+        {
+          "law": "loop",
+          "state": [
+            [
+              "j",
+              "Nat"
+            ],
+            [
+              "fj",
+              "Bool"
+            ]
+          ],
+          "init": [
+            "0",
+            "false"
+          ],
+          "invariant": "j ≤ k ∧ (fj = true ↔ ∃ b, b < j ∧ ∃ a, a < b ∧ l[a]! + l[b]! + l[k]! = 0)",
+          "guard": "j < k",
+          "variant": "k - j",
+          "result": "fj",
+          "children": [
+            {
+              "law": "bind",
+              "var": "hitj",
+              "type": "Bool",
+              "prop": "hitj = true ↔ ∃ a, a < j ∧ l[a]! + l[j]! + l[k]! = 0",
+              "children": [
+                {
+                  "law": "loop",
+                  "state": [
+                    [
+                      "i",
+                      "Nat"
+                    ],
+                    [
+                      "fi",
+                      "Bool"
+                    ]
+                  ],
+                  "init": [
+                    "0",
+                    "false"
+                  ],
+                  "invariant": "i ≤ j ∧ (fi = true ↔ ∃ a, a < i ∧ l[a]! + l[j]! + l[k]! = 0)",
+                  "guard": "i < j",
+                  "variant": "j - i",
+                  "result": "fi",
+                  "children": [
+                    {
+                      "law": "term",
+                      "expr": "(i + 1, fi || decide (l[i]! + l[j]! + l[k]! = 0))",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "law": "term",
+                  "expr": "(j + 1, fj || hitj)",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "law": "term",
+          "expr": "(k + 1, found || hitk)",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

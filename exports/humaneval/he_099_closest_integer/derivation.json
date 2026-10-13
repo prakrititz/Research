@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "if parseDec value ≥ 0 then ⌊parseDec value + 1 / 2⌋ else -⌊-parseDec value + 1 / 2⌋",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "round_away_ok",
+      "statement": "∀ (q : ℚ), |q - (((if q ≥ 0 then ⌊q + 1 / 2⌋ else -⌊-q + 1 / 2⌋ : Int)) : ℚ)| < 1 / 2 ∨ (|q - (((if q ≥ 0 then ⌊q + 1 / 2⌋ else -⌊-q + 1 / 2⌋ : Int)) : ℚ)| = 1 / 2 ∧ |q| < |(((if q ≥ 0 then ⌊q + 1 / 2⌋ else -⌊-q + 1 / 2⌋ : Int)) : ℚ)|)",
+      "proof": "by\n  intro q\n  by_cases hq : q ≥ 0\n  · rw [if_pos hq]\n    have h1 : ((⌊q + 1 / 2⌋ : Int) : ℚ) ≤ q + 1 / 2 := Int.floor_le _\n    have h2 : q + 1 / 2 < ((⌊q + 1 / 2⌋ : Int) : ℚ) + 1 := Int.lt_floor_add_one _\n    have h3 : (0 : ℚ) ≤ ((⌊q + 1 / 2⌋ : Int) : ℚ) := by\n      have : (0 : Int) ≤ ⌊q + 1 / 2⌋ := Int.floor_nonneg.mpr (by linarith)\n      exact_mod_cast this\n    set r : ℚ := ((⌊q + 1 / 2⌋ : Int) : ℚ) with hr\n    by_cases hlt : q - r > -(1 / 2)\n    · left\n      rw [abs_lt]\n      constructor <;> linarith\n    · right\n      have heq : q - r = -(1 / 2) := by linarith\n      refine ⟨?_, ?_⟩\n      · rw [heq]; norm_num\n      · rw [abs_of_nonneg hq, abs_of_nonneg h3]; linarith\n  · rw [if_neg hq]\n    push_neg at hq\n    have h1 : ((⌊-q + 1 / 2⌋ : Int) : ℚ) ≤ -q + 1 / 2 := Int.floor_le _\n    have h2 : -q + 1 / 2 < ((⌊-q + 1 / 2⌋ : Int) : ℚ) + 1 := Int.lt_floor_add_one _\n    have h3 : (0 : ℚ) ≤ ((⌊-q + 1 / 2⌋ : Int) : ℚ) := by\n      have : (0 : Int) ≤ ⌊-q + 1 / 2⌋ := Int.floor_nonneg.mpr (by linarith)\n      exact_mod_cast this\n    set r : ℚ := ((⌊-q + 1 / 2⌋ : Int) : ℚ) with hr\n    have hcast : (((-⌊-q + 1 / 2⌋ : Int)) : ℚ) = -r := by push_cast; rfl\n    rw [hcast]\n    by_cases hlt : (-q) - r > -(1 / 2)\n    · left\n      rw [abs_lt]\n      constructor <;> linarith\n    · right\n      have heq : (-q) - r = -(1 / 2) := by linarith\n      refine ⟨?_, ?_⟩\n      · rw [show q - -r = -((-q) - r) by ring, abs_neg, heq]; norm_num\n      · rw [abs_of_neg hq, abs_neg, abs_of_nonneg h3]; linarith"
+    }
+  ]
+}

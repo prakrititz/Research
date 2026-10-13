@@ -1,0 +1,48 @@
+{
+  "law": "cases",
+  "cond": "nums.length ≤ 1",
+  "children": [
+    {
+      "law": "term",
+      "expr": "0",
+      "children": [],
+      "lemmas": [
+        {
+          "name": "nil53",
+          "statement": "∀ (nums : List Int) (h : minimumRightShifts_precond nums), nums.length ≤ 1 → minimumRightShifts_postcond nums 0 h",
+          "proof": "by intro nums h hn\n  unfold minimumRightShifts_postcond\n  dsimp only\n  rw [if_pos hn]"
+        }
+      ]
+    },
+    {
+      "law": "loop",
+      "state": [
+        [
+          "j",
+          "Nat"
+        ]
+      ],
+      "init": [
+        "0"
+      ],
+      "invariant": "j ≤ nums.length ∧ ∀ k, k < j → ¬ List.Pairwise (· ≤ ·) (nums.rotateRight k)",
+      "guard": "j < nums.length ∧ ¬ List.Pairwise (· ≤ ·) (nums.rotateRight j)",
+      "variant": "nums.length - j",
+      "result": "if j < nums.length then (j : Int) else -1",
+      "children": [
+        {
+          "law": "term",
+          "expr": "j + 1",
+          "children": []
+        }
+      ],
+      "lemmas": [
+        {
+          "name": "exit53",
+          "statement": "∀ (nums : List Int) (h : minimumRightShifts_precond nums) (j : Nat), ¬ nums.length ≤ 1 → (j ≤ nums.length ∧ ∀ k, k < j → ¬ List.Pairwise (· ≤ ·) (nums.rotateRight k)) → ¬ (j < nums.length ∧ ¬ List.Pairwise (· ≤ ·) (nums.rotateRight j)) → minimumRightShifts_postcond nums (if j < nums.length then (j : Int) else -1) h",
+          "proof": "by intro nums h j hn hinv hg\n  obtain ⟨hj, hk⟩ := hinv\n  unfold minimumRightShifts_postcond\n  dsimp only\n  rw [if_neg (by omega)]\n  by_cases hlt : j < nums.length\n  · left\n    have hs : List.Pairwise (· ≤ ·) (nums.rotateRight j) := by\n      by_contra hns\n      exact hg ⟨hlt, hns⟩\n    rw [if_pos hlt]\n    refine ⟨by omega, by omega, by simpa using hs, ?_⟩\n    rw [List.all_eq_true]; intro k hk'\n    have := hk k (by simpa using hk')\n    simpa using this\n  · right\n    have : j = nums.length := by omega\n    subst this\n    rw [if_neg hlt]\n    refine ⟨rfl, ?_⟩\n    rw [List.all_eq_true]; intro k hk'\n    have := hk k (by simpa using hk')\n    simpa using this"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "n",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0"
+  ],
+  "invariant": "n ≤ a.size ∧ ∀ k, k < n → ¬ P a[k]!",
+  "guard": "n < a.size ∧ ¬ P a[n]!",
+  "variant": "a.size - n",
+  "result": "n",
+  "children": [
+    {
+      "law": "term",
+      "expr": "n + 1",
+      "children": []
+    }
+  ]
+}

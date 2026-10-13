@@ -1,0 +1,15 @@
+{
+  "id": "he_110_exchange",
+  "dataset": "humaneval",
+  "family": "he_100",
+  "function": "exchange",
+  "tests": 15,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 3,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "15/15",
+  "blocked_reason": ""
+}

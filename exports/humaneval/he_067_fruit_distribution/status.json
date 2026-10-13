@@ -1,0 +1,15 @@
+{
+  "id": "he_067_fruit_distribution",
+  "dataset": "humaneval",
+  "family": "he_060",
+  "function": "fruitDistribution",
+  "tests": 15,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "15/15",
+  "blocked_reason": ""
+}

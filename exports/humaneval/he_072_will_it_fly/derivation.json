@@ -1,0 +1,41 @@
+{
+  "law": "bind",
+  "var": "pal",
+  "type": "Bool",
+  "prop": "pal = true ↔ ∀ i, i < q.length → q[i]! = q[q.length - 1 - i]!",
+  "children": [
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "ok",
+          "Bool"
+        ]
+      ],
+      "init": [
+        "0",
+        "true"
+      ],
+      "invariant": "i ≤ q.length ∧ (ok = true ↔ ∀ k, k < i → q[k]! = q[q.length - 1 - k]!)",
+      "guard": "i < q.length",
+      "variant": "q.length - i",
+      "result": "ok",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, ok && decide (q[i]! = q[q.length - 1 - i]!))",
+          "children": []
+        }
+      ]
+    },
+    {
+      "law": "term",
+      "expr": "pal && decide (q.sum ≤ w)",
+      "children": []
+    }
+  ]
+}

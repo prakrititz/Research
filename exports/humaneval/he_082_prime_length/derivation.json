@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "decide (Nat.Prime string.length)",
+  "children": []
+}

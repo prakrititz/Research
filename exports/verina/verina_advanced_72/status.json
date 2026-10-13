@@ -1,0 +1,21 @@
+{
+  "id": "verina_advanced_72",
+  "dataset": "verina",
+  "family": "advanced",
+  "function": "singleDigitPrimeFactor",
+  "tests": 7,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 11,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "7/7",
+  "blocked_reason": "",
+  "spec_checks": {
+    "compiles": true,
+    "reference_passes": "7/7",
+    "accepts_expected": "7/7",
+    "rejects_wrong": "21/21"
+  }
+}

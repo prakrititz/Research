@@ -1,0 +1,15 @@
+{
+  "id": "he_143_words_in_sentence",
+  "dataset": "humaneval",
+  "family": "he_140",
+  "function": "wordsInSentence",
+  "tests": 15,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "15/15",
+  "blocked_reason": ""
+}

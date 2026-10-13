@@ -1,0 +1,5 @@
+# he_125_split_words
+
+`splitWords(txt : String) : List String ⊕ Nat`
+
+Given a string of words, return a list of words split on whitespace; if no whitespace exists in the text, split on commas ','; if no commas exist, return the number of lower-case letters with odd order in the alphabet (ord('a') = 0, ord('b') = 1, ... ord('z') = 25).

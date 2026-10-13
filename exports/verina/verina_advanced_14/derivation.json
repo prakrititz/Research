@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "(List.range (n + 1)).any (fun m => decide (n = 4 ^ m))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "pow4_iff",
+      "statement": "∀ (n : Nat), (∃ m : Nat, n = 4 ^ m) ↔ (List.range (n + 1)).any (fun m => decide (n = 4 ^ m)) = true",
+      "proof": "by intro n\n  constructor\n  · rintro ⟨m, hm⟩\n    rw [List.any_eq_true]\n    have hlt : m < 4 ^ m := Nat.lt_pow_self (by omega)\n    refine ⟨m, List.mem_range.mpr (by omega), by simpa using hm⟩\n  · intro h\n    obtain ⟨m, _, hm⟩ := List.any_eq_true.mp h\n    exact ⟨m, by simpa using hm⟩"
+    },
+    {
+      "name": "pow4_ok",
+      "statement": "∀ (n : Nat) (h : ifPowerOfFour_precond n), ifPowerOfFour_postcond n ((List.range (n + 1)).any (fun m => decide (n = 4 ^ m))) h",
+      "proof": "by intro n h\n  unfold ifPowerOfFour_postcond\n  exact (pow4_iff n).symm"
+    }
+  ]
+}

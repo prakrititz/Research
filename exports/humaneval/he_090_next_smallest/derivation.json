@@ -1,0 +1,116 @@
+{
+  "law": "cases",
+  "cond": "lst = []",
+  "children": [
+    {
+      "law": "term",
+      "expr": "none",
+      "children": []
+    },
+    {
+      "law": "bind",
+      "var": "m",
+      "type": "Int",
+      "prop": "(∃ k, k < lst.length ∧ lst[k]! = m) ∧ ∀ k, k < lst.length → m ≤ lst[k]!",
+      "children": [
+        {
+          "law": "loop",
+          "state": [
+            [
+              "i",
+              "Nat"
+            ],
+            [
+              "m",
+              "Int"
+            ]
+          ],
+          "init": [
+            "1",
+            "lst[0]!"
+          ],
+          "invariant": "1 ≤ i ∧ i ≤ lst.length ∧ (∃ k, k < i ∧ lst[k]! = m) ∧ ∀ k, k < i → m ≤ lst[k]!",
+          "guard": "i < lst.length",
+          "variant": "lst.length - i",
+          "result": "m",
+          "children": [
+            {
+              "law": "term",
+              "expr": "(i + 1, min m lst[i]!)",
+              "children": []
+            }
+          ]
+        },
+        {
+          "law": "bind",
+          "var": "p",
+          "type": "Bool × Int",
+          "prop": "(p.1 = true ↔ ∃ k, k < lst.length ∧ m < lst[k]!) ∧ (p.1 = true → (∃ k, k < lst.length ∧ lst[k]! = p.2 ∧ m < p.2) ∧ ∀ k, k < lst.length → m < lst[k]! → p.2 ≤ lst[k]!)",
+          "children": [
+            {
+              "law": "loop",
+              "state": [
+                [
+                  "i",
+                  "Nat"
+                ],
+                [
+                  "f",
+                  "Bool"
+                ],
+                [
+                  "r",
+                  "Int"
+                ]
+              ],
+              "init": [
+                "0",
+                "false",
+                "0"
+              ],
+              "invariant": "i ≤ lst.length ∧ (f = true ↔ ∃ k, k < i ∧ m < lst[k]!) ∧ (f = true → (∃ k, k < i ∧ lst[k]! = r ∧ m < r) ∧ ∀ k, k < i → m < lst[k]! → r ≤ lst[k]!)",
+              "guard": "i < lst.length",
+              "variant": "lst.length - i",
+              "result": "(f, r)",
+              "children": [
+                {
+                  "law": "term",
+                  "expr": "(i + 1, f || decide (m < lst[i]!), if m < lst[i]! ∧ (f = false ∨ lst[i]! < r) then lst[i]! else r)",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "law": "cases",
+              "cond": "p.1 = true",
+              "children": [
+                {
+                  "law": "term",
+                  "expr": "some p.2",
+                  "children": []
+                },
+                {
+                  "law": "term",
+                  "expr": "none",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "lemmas": [
+        {
+          "name": "ns_some",
+          "statement": "∀ (lst : List Int) (m : Int) (p : Bool × Int), ((∃ k, k < lst.length ∧ lst[k]! = m) ∧ ∀ k, k < lst.length → m ≤ lst[k]!) → ((p.1 = true ↔ ∃ k, k < lst.length ∧ m < lst[k]!) ∧ (p.1 = true → (∃ k, k < lst.length ∧ lst[k]! = p.2 ∧ m < p.2) ∧ ∀ k, k < lst.length → m < lst[k]! → p.2 ≤ lst[k]!)) → p.1 = true → (p.2 ∈ lst ∧ (∃ m2 ∈ lst, m2 < p.2) ∧ ∀ x ∈ lst, (∃ m2 ∈ lst, m2 < x) → p.2 ≤ x)",
+          "proof": "by\n  intro lst m p ⟨⟨k0, hk0, hm⟩, hmin⟩ ⟨hiff, hd⟩ hp\n  obtain ⟨⟨k, hk, hkr, hmr⟩, hmax⟩ := hd hp\n  refine ⟨?_, ?_, ?_⟩\n  · rw [← hkr]; rw [getElem!_pos lst k hk]; exact List.getElem_mem hk\n  · refine ⟨m, ?_, hmr⟩\n    rw [← hm, getElem!_pos lst k0 hk0]; exact List.getElem_mem hk0\n  · intro x hx ⟨m2, hm2, hlt⟩\n    obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n    obtain ⟨j2, hj2, rfl⟩ := (Refine.mem_iff_idx lst m2).mp hm2\n    have := hmin j2 hj2\n    exact hmax j hj (by omega)"
+        },
+        {
+          "name": "ns_none",
+          "statement": "∀ (lst : List Int) (m : Int) (p : Bool × Int), ((∃ k, k < lst.length ∧ lst[k]! = m) ∧ ∀ k, k < lst.length → m ≤ lst[k]!) → ((p.1 = true ↔ ∃ k, k < lst.length ∧ m < lst[k]!) ∧ (p.1 = true → (∃ k, k < lst.length ∧ lst[k]! = p.2 ∧ m < p.2) ∧ ∀ k, k < lst.length → m < lst[k]! → p.2 ≤ lst[k]!)) → ¬ p.1 = true → ∀ x ∈ lst, ∀ y ∈ lst, x = y",
+          "proof": "by\n  intro lst m p ⟨⟨k0, hk0, hm⟩, hmin⟩ ⟨hiff, hd⟩ hp x hx y hy\n  obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n  obtain ⟨j2, hj2, rfl⟩ := (Refine.mem_iff_idx lst y).mp hy\n  have h1 : ¬ m < lst[j]! := fun h => hp (hiff.mpr ⟨j, hj, h⟩)\n  have h2 : ¬ m < lst[j2]! := fun h => hp (hiff.mpr ⟨j2, hj2, h⟩)\n  have := hmin j hj\n  have := hmin j2 hj2\n  omega"
+        }
+      ]
+    }
+  ]
+}

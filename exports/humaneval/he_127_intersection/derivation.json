@@ -1,0 +1,16 @@
+{
+  "law": "cases",
+  "cond": "min interval1.2 interval2.2 - max interval1.1 interval2.1 ≥ 2 ∧ Nat.Prime (min interval1.2 interval2.2 - max interval1.1 interval2.1).toNat",
+  "children": [
+    {
+      "law": "term",
+      "expr": "\"YES\"",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "\"NO\"",
+      "children": []
+    }
+  ]
+}

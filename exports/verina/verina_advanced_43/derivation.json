@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "(let sublists := nums.sublists.filter (· ≠ []); let products := sublists.map (List.foldl (· * ·) 1); products.foldl max (products.headD 0))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "ms43",
+      "statement": "∀ (nums : List Int) (h : maxStrength_precond nums), maxStrength_postcond nums (let sublists := nums.sublists.filter (· ≠ []); let products := sublists.map (List.foldl (· * ·) 1); products.foldl max (products.headD 0)) h",
+      "proof": "by intro nums h\n  unfold maxStrength_postcond\n  obtain ⟨x, t, rfl⟩ := List.exists_cons_of_ne_nil h\n  exact Refine.maxlist_int _ (List.ne_nil_of_mem (a := List.foldl (· * ·) 1 [x]) (List.mem_map.mpr ⟨[x], List.mem_filter.mpr ⟨List.mem_sublists.mpr (by simp), by simp⟩, rfl⟩))"
+    }
+  ]
+}

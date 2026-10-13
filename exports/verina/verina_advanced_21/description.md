@@ -1,0 +1,15 @@
+# verina_advanced_21
+
+`isPalindrome(s : String) : Bool`
+
+-----Description-----
+Implement a Lean 4 function that checks if a given string is a palindrome. A string is considered a palindrome
+if it reads the same forward and backward.
+
+-----Input-----
+The input consists of a single string:
+s: A string
+
+-----Output-----
+The output is a boolean:
+Returns true if s is a palindrome, false otherwise.

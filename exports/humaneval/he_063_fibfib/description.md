@@ -1,0 +1,5 @@
+# he_063_fibfib
+
+`fibfib(n : Nat) : Nat`
+
+The FibFib number sequence is defined as: fibfib(0) = 0, fibfib(1) = 0, fibfib(2) = 1, and fibfib(n) = fibfib(n-1) + fibfib(n-2) + fibfib(n-3). Compute the n-th element of the fibfib number sequence efficiently.

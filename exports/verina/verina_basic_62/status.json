@@ -1,0 +1,21 @@
+{
+  "id": "verina_basic_62",
+  "dataset": "verina",
+  "family": "basic",
+  "function": "Find",
+  "tests": 5,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "5/5",
+  "blocked_reason": "",
+  "spec_checks": {
+    "compiles": true,
+    "reference_passes": "5/5",
+    "accepts_expected": "5/5",
+    "rejects_wrong": "14/14"
+  }
+}

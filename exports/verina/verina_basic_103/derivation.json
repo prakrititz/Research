@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "(a.set! 4 (a[4]! + 3)).set! 7 516",
+  "children": []
+}

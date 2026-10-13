@@ -1,0 +1,16 @@
+{
+  "law": "cases",
+  "cond": "text = \"\"",
+  "children": [
+    {
+      "law": "term",
+      "expr": "none",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "some (md5Hex text)",
+      "children": []
+    }
+  ]
+}

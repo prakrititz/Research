@@ -1,0 +1,18 @@
+{
+  "law": "bind",
+  "var": "hasWhite",
+  "type": "Bool",
+  "prop": "hasWhite = txt.toList.any (fun c => c == ' ' || c == '\\n' || c == '\\r' || c == '\\t')",
+  "children": [
+    {
+      "law": "term",
+      "expr": "txt.toList.any (fun c => c == ' ' || c == '\\n' || c == '\\r' || c == '\\t')",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "if hasWhite = true then Sum.inl (splitWhite txt) else if txt.toList.contains ',' then Sum.inl (txt.splitOn \",\") else Sum.inr ((txt.toList.filter (fun c => c.isLower && (c.toNat - 97) % 2 = 1)).length)",
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "(let nums' := nums.zipIdx; nums'.any (fun (x, i) => nums'.any (fun (y, j) => nums'.any (fun (z, k) => decide (i < j ∧ j < k ∧ x < y ∧ y < z)))))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "trip15",
+      "statement": "∀ (nums : List Int) (h : increasingTriplet_precond nums), increasingTriplet_postcond nums (let nums' := nums.zipIdx; nums'.any (fun (x, i) => nums'.any (fun (y, j) => nums'.any (fun (z, k) => decide (i < j ∧ j < k ∧ x < y ∧ y < z))))) h",
+      "proof": "by intro nums h\n  unfold increasingTriplet_postcond\n  intro nums'\n  refine ⟨fun hr => hr, fun hn => ?_⟩\n  have hn' : (nums'.any (fun (x, i) => nums'.any (fun (y, j) => nums'.any (fun (z, k) => decide (i < j ∧ j < k ∧ x < y ∧ y < z))))) ≠ true := hn\n  simp only [ne_eq, List.all_eq_true, List.any_eq_true, decide_eq_true_eq] at hn' ⊢\n  rintro ⟨x, i⟩ hx ⟨y, j⟩ hy ⟨z, k⟩ hz\n  by_contra hc\n  apply hn'\n  exact ⟨(x, i), hx, (y, j), hy, (z, k), hz, by omega⟩"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "verina_basic_22",
+  "dataset": "verina",
+  "family": "basic",
+  "function": "dissimilarElements",
+  "tests": 8,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 2,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "8/8",
+  "blocked_reason": "",
+  "spec_checks": {
+    "compiles": true,
+    "reference_passes": "8/8",
+    "accepts_expected": "8/8",
+    "rejects_wrong": "23/23"
+  }
+}

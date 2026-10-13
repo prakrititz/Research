@@ -1,0 +1,30 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "arr.length - 1"
+  ],
+  "invariant": "i ≤ arr.length - 1 ∧ ∀ m, m < arr.length → i < m → arr[m - 1]! ≤ arr[m]!",
+  "guard": "1 ≤ i ∧ arr[i - 1]! ≤ arr[i]!",
+  "variant": "i",
+  "result": "if i = 0 then (-1 : Int) else (i : Int)",
+  "children": [
+    {
+      "law": "term",
+      "expr": "i - 1",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "canArrange_exit",
+      "statement": "∀ (arr : List Int) (i : Nat), i ≤ arr.length - 1 → (∀ m, m < arr.length → i < m → arr[m - 1]! ≤ arr[m]!) → ¬ (1 ≤ i ∧ arr[i - 1]! ≤ arr[i]!) → (((if i = 0 then (-1 : Int) else (i : Int)) = -1 ∧ ∀ j, j < arr.length → 1 ≤ j → arr[j - 1]! ≤ arr[j]!) ∨ (∃ j, j < arr.length ∧ 1 ≤ j ∧ (if i = 0 then (-1 : Int) else (i : Int)) = (j : Int) ∧ arr[j]! < arr[j - 1]! ∧ ∀ m, m < arr.length → j < m → arr[m - 1]! ≤ arr[m]!))",
+      "proof": "by intro arr i hi hall hg\n  by_cases h0 : i = 0\n  · subst h0\n    left\n    refine ⟨by simp, ?_⟩\n    intro j hj hj1\n    exact hall j hj (by omega)\n  · right\n    have hn : ¬ (arr[i - 1]! ≤ arr[i]!) := fun h => hg ⟨by omega, h⟩\n    refine ⟨i, by omega, by omega, by simp [h0], by omega, hall⟩"
+    }
+  ]
+}

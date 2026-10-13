@@ -1,0 +1,63 @@
+{
+  "law": "bind",
+  "var": "p",
+  "type": "Bool",
+  "prop": "p = true ↔ primeSpec n",
+  "children": [
+    {
+      "law": "cases",
+      "cond": "n < 2",
+      "children": [
+        {
+          "law": "term",
+          "expr": "false",
+          "children": []
+        },
+        {
+          "law": "loop",
+          "state": [
+            [
+              "d",
+              "Nat"
+            ],
+            [
+              "ok",
+              "Bool"
+            ]
+          ],
+          "init": [
+            "2",
+            "true"
+          ],
+          "invariant": "2 ≤ d ∧ d ≤ n ∧ (ok = true ↔ ∀ k, k < d → k ≥ 2 → n % k ≠ 0)",
+          "guard": "d < n",
+          "variant": "n - d",
+          "result": "ok",
+          "children": [
+            {
+              "law": "term",
+              "expr": "(d + 1, ok && decide (n % d ≠ 0))",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "law": "cases",
+      "cond": "p = true",
+      "children": [
+        {
+          "law": "term",
+          "expr": "x",
+          "children": []
+        },
+        {
+          "law": "term",
+          "expr": "y",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "a",
+      "Nat"
+    ],
+    [
+      "b",
+      "Nat"
+    ],
+    [
+      "c",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0",
+    "0",
+    "0",
+    "1"
+  ],
+  "invariant": "i ≤ n ∧ a = fibfibSpec i ∧ b = fibfibSpec (i + 1) ∧ c = fibfibSpec (i + 2)",
+  "guard": "i < n",
+  "variant": "n - i",
+  "result": "a",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, b, c, a + b + c)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "fibfib_step",
+      "statement": "∀ (i : Nat), fibfibSpec (i + 3) = fibfibSpec (i + 2) + fibfibSpec (i + 1) + fibfibSpec i",
+      "proof": "by intro i\n  rw [fibfibSpec]"
+    },
+    {
+      "name": "fibfib_base",
+      "statement": "fibfibSpec 0 = 0 ∧ fibfibSpec 1 = 0 ∧ fibfibSpec 2 = 1",
+      "proof": "by refine ⟨?_, ?_, ?_⟩ <;> rfl"
+    }
+  ]
+}

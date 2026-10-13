@@ -1,0 +1,193 @@
+# verina: 189 tasks
+
+| task | kind | laws | lemmas | certified | verified independently | note |
+|---|---|---|---|---|---|---|
+| [verina_advanced_1](verina_advanced_1/) | restate | 1 | 4 | yes | yes |  |
+| [verina_advanced_10](verina_advanced_10/) | - | - | - | no | no | not closed: needs padicValNat/factorisation lemmas against the task's well-founded removePrimeFactor (plan in Reading Material/27, section 7) |
+| [verina_advanced_11](verina_advanced_11/) | restate | 1 | 2 | yes | yes |  |
+| [verina_advanced_12](verina_advanced_12/) | restate | 1 | 2 | yes | yes |  |
+| [verina_advanced_13](verina_advanced_13/) | restate | 1 | 3 | yes | yes |  |
+| [verina_advanced_14](verina_advanced_14/) | restate | 1 | 2 | yes | yes |  |
+| [verina_advanced_15](verina_advanced_15/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_16](verina_advanced_16/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_17](verina_advanced_17/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_18](verina_advanced_18/) | restate | 1 | - | yes | yes |  |
+| [verina_advanced_19](verina_advanced_19/) | restate | 1 | - | yes | yes |  |
+| [verina_advanced_2](verina_advanced_2/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_20](verina_advanced_20/) | restate | 1 | 2 | yes | yes |  |
+| [verina_advanced_21](verina_advanced_21/) | restate | 1 | - | yes | yes |  |
+| [verina_advanced_22](verina_advanced_22/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_23](verina_advanced_23/) | restate | 1 | 2 | yes | yes |  |
+| [verina_advanced_24](verina_advanced_24/) | restate | 1 | 2 | yes | yes |  |
+| [verina_advanced_25](verina_advanced_25/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_26](verina_advanced_26/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_27](verina_advanced_27/) | restate | 1 | 2 | yes | yes |  |
+| [verina_advanced_28](verina_advanced_28/) | restate | 3 | 2 | yes | yes |  |
+| [verina_advanced_29](verina_advanced_29/) | restate | 3 | 2 | yes | yes |  |
+| [verina_advanced_3](verina_advanced_3/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_30](verina_advanced_30/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_31](verina_advanced_31/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_32](verina_advanced_32/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_33](verina_advanced_33/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_34](verina_advanced_34/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_35](verina_advanced_35/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_36](verina_advanced_36/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_37](verina_advanced_37/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_38](verina_advanced_38/) | restate | 1 | 2 | yes | yes |  |
+| [verina_advanced_39](verina_advanced_39/) | loop | 2 | - | yes | yes |  |
+| [verina_advanced_4](verina_advanced_4/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_40](verina_advanced_40/) | loop | 2 | - | yes | yes |  |
+| [verina_advanced_41](verina_advanced_41/) | restate | 7 | - | yes | yes |  |
+| [verina_advanced_42](verina_advanced_42/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_43](verina_advanced_43/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_44](verina_advanced_44/) | restate | 3 | 2 | yes | yes |  |
+| [verina_advanced_45](verina_advanced_45/) | restate | 3 | 2 | yes | yes |  |
+| [verina_advanced_46](verina_advanced_46/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_47](verina_advanced_47/) | - | - | - | no | no | not closed: needs the sort-and-merge invariant for four conjuncts, including 'no spurious merge' (plan in Reading Material/27, section 7) |
+| [verina_advanced_48](verina_advanced_48/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_49](verina_advanced_49/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_5](verina_advanced_5/) | restate | 1 | 5 | yes | yes |  |
+| [verina_advanced_50](verina_advanced_50/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_51](verina_advanced_51/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_52](verina_advanced_52/) | loop | 2 | 2 | yes | yes |  |
+| [verina_advanced_53](verina_advanced_53/) | loop | 4 | 2 | yes | yes |  |
+| [verina_advanced_54](verina_advanced_54/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_55](verina_advanced_55/) | restate | 1 | 2 | yes | yes |  |
+| [verina_advanced_56](verina_advanced_56/) | restate | 1 | 3 | yes | yes |  |
+| [verina_advanced_57](verina_advanced_57/) | restate | 1 | 2 | yes | yes |  |
+| [verina_advanced_58](verina_advanced_58/) | - | - | - | no | no | not closed: the search loop needs a bound for the n-th ugly number (plan in Reading Material/27, section 7) |
+| [verina_advanced_59](verina_advanced_59/) | restate | 1 | - | yes | yes |  |
+| [verina_advanced_6](verina_advanced_6/) | restate | 1 | - | yes | yes |  |
+| [verina_advanced_60](verina_advanced_60/) | restate | 1 | - | yes | yes |  |
+| [verina_advanced_61](verina_advanced_61/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_62](verina_advanced_62/) | restate | 1 | 2 | yes | yes |  |
+| [verina_advanced_63](verina_advanced_63/) | restate | 1 | - | yes | yes |  |
+| [verina_advanced_64](verina_advanced_64/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_65](verina_advanced_65/) | restate | 1 | - | yes | yes |  |
+| [verina_advanced_66](verina_advanced_66/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_67](verina_advanced_67/) | - | - | - | no | no | not closed: needs decode-after-append lemmas for the run-length stack (plan in Reading Material/27, section 7) |
+| [verina_advanced_68](verina_advanced_68/) | - | - | - | no | no | the specification does not elaborate on Lean 4.34.1 (`c.isDigit` with `c`'s type not yet known) |
+| [verina_advanced_69](verina_advanced_69/) | loop | 2 | - | yes | yes |  |
+| [verina_advanced_7](verina_advanced_7/) | restate | 1 | - | yes | yes |  |
+| [verina_advanced_70](verina_advanced_70/) | restate | 3 | - | yes | yes |  |
+| [verina_advanced_71](verina_advanced_71/) | restate | 1 | 3 | yes | yes |  |
+| [verina_advanced_72](verina_advanced_72/) | restate | 11 | - | yes | yes |  |
+| [verina_advanced_73](verina_advanced_73/) | loop | 2 | 2 | yes | yes |  |
+| [verina_advanced_74](verina_advanced_74/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_75](verina_advanced_75/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_76](verina_advanced_76/) | restate | 1 | 3 | yes | yes |  |
+| [verina_advanced_77](verina_advanced_77/) | restate | 1 | - | yes | yes |  |
+| [verina_advanced_78](verina_advanced_78/) | loop | 5 | 7 | yes | yes |  |
+| [verina_advanced_79](verina_advanced_79/) | loop | 5 | 6 | yes | yes |  |
+| [verina_advanced_8](verina_advanced_8/) | loop | 2 | 2 | yes | yes |  |
+| [verina_advanced_80](verina_advanced_80/) | loop | 5 | 6 | yes | yes |  |
+| [verina_advanced_81](verina_advanced_81/) | restate | 1 | 1 | yes | yes |  |
+| [verina_advanced_9](verina_advanced_9/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_1](verina_basic_1/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_10](verina_basic_10/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_100](verina_basic_100/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_101](verina_basic_101/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_102](verina_basic_102/) | loop | 5 | 6 | yes | yes |  |
+| [verina_basic_103](verina_basic_103/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_104](verina_basic_104/) | restate | 1 | 2 | yes | yes |  |
+| [verina_basic_105](verina_basic_105/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_106](verina_basic_106/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_107](verina_basic_107/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_108](verina_basic_108/) | loop | 4 | 1 | yes | yes |  |
+| [verina_basic_11](verina_basic_11/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_12](verina_basic_12/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_13](verina_basic_13/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_14](verina_basic_14/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_15](verina_basic_15/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_16](verina_basic_16/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_17](verina_basic_17/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_18](verina_basic_18/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_19](verina_basic_19/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_2](verina_basic_2/) | loop | 4 | - | yes | yes |  |
+| [verina_basic_20](verina_basic_20/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_21](verina_basic_21/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_22](verina_basic_22/) | restate | 1 | 2 | yes | yes |  |
+| [verina_basic_23](verina_basic_23/) | - | - | - | no | no | reference code does not compile on Lean 4.34.1 (automatic termination proof of a `let rec` times out) |
+| [verina_basic_24](verina_basic_24/) | loop | 7 | 5 | yes | yes |  |
+| [verina_basic_25](verina_basic_25/) | - | - | - | no | no | the postcondition is a Float equality; Float operations are opaque and only the dataset's own `axiom`s prove `x == x`, which the certificate (three standard axioms) refuses |
+| [verina_basic_26](verina_basic_26/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_27](verina_basic_27/) | restate | 1 | 3 | yes | yes |  |
+| [verina_basic_28](verina_basic_28/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_29](verina_basic_29/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_3](verina_basic_3/) | restate | 1 | 1 | yes | yes |  |
+| [verina_basic_30](verina_basic_30/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_31](verina_basic_31/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_32](verina_basic_32/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_33](verina_basic_33/) | loop | 2 | 2 | yes | yes |  |
+| [verina_basic_34](verina_basic_34/) | loop | 2 | 3 | yes | yes |  |
+| [verina_basic_35](verina_basic_35/) | restate | 1 | 1 | yes | yes |  |
+| [verina_basic_36](verina_basic_36/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_37](verina_basic_37/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_38](verina_basic_38/) | loop | 2 | 2 | yes | yes |  |
+| [verina_basic_39](verina_basic_39/) | restate | 3 | 1 | yes | yes |  |
+| [verina_basic_4](verina_basic_4/) | restate | 1 | 1 | no | yes |  |
+| [verina_basic_40](verina_basic_40/) | loop | 5 | 2 | yes | yes |  |
+| [verina_basic_41](verina_basic_41/) | loop | 2 | 2 | yes | yes |  |
+| [verina_basic_42](verina_basic_42/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_43](verina_basic_43/) | loop | 2 | 1 | yes | yes |  |
+| [verina_basic_44](verina_basic_44/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_45](verina_basic_45/) | restate | 1 | 1 | yes | yes |  |
+| [verina_basic_46](verina_basic_46/) | loop | 2 | 1 | yes | yes |  |
+| [verina_basic_47](verina_basic_47/) | loop | 2 | 2 | yes | yes |  |
+| [verina_basic_48](verina_basic_48/) | loop | 4 | 2 | yes | yes |  |
+| [verina_basic_49](verina_basic_49/) | loop | 6 | - | yes | yes |  |
+| [verina_basic_5](verina_basic_5/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_50](verina_basic_50/) | restate | 3 | - | yes | yes |  |
+| [verina_basic_51](verina_basic_51/) | loop | 2 | 1 | yes | yes |  |
+| [verina_basic_52](verina_basic_52/) | - | - | - | no | no | reference code does not compile on Lean 4.34.1 (same cause as verina_basic_23) |
+| [verina_basic_53](verina_basic_53/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_54](verina_basic_54/) | loop | 5 | 1 | yes | yes |  |
+| [verina_basic_55](verina_basic_55/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_56](verina_basic_56/) | loop | 2 | 3 | yes | yes |  |
+| [verina_basic_57](verina_basic_57/) | - | - | - | no | no | reference code does not compile on Lean 4.34.1 (same cause as verina_basic_23) |
+| [verina_basic_58](verina_basic_58/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_59](verina_basic_59/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_6](verina_basic_6/) | restate | 5 | - | yes | yes |  |
+| [verina_basic_60](verina_basic_60/) | loop | 2 | 1 | yes | yes |  |
+| [verina_basic_61](verina_basic_61/) | - | - | - | no | no | reference code uses String.Iterator.curr/next whose signature changed after Lean 4.18 |
+| [verina_basic_62](verina_basic_62/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_63](verina_basic_63/) | - | - | - | no | no | the specification is about Float comparisons; same cause as verina_basic_25 |
+| [verina_basic_64](verina_basic_64/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_65](verina_basic_65/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_66](verina_basic_66/) | restate | 1 | 1 | yes | yes |  |
+| [verina_basic_67](verina_basic_67/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_68](verina_basic_68/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_69](verina_basic_69/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_7](verina_basic_7/) | loop | 2 | 1 | yes | yes |  |
+| [verina_basic_70](verina_basic_70/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_71](verina_basic_71/) | loop | 2 | 1 | yes | yes |  |
+| [verina_basic_72](verina_basic_72/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_73](verina_basic_73/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_74](verina_basic_74/) | - | - | - | no | no | reference code does not compile on Lean 4.34.1 (same cause as verina_basic_23) |
+| [verina_basic_75](verina_basic_75/) | - | - | - | no | no | reference code does not compile on Lean 4.34.1 (same cause as verina_basic_23) |
+| [verina_basic_76](verina_basic_76/) | restate | 3 | - | yes | yes |  |
+| [verina_basic_77](verina_basic_77/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_78](verina_basic_78/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_79](verina_basic_79/) | - | - | - | no | no | reference code does not compile on Lean 4.34.1 (same cause as verina_basic_23) |
+| [verina_basic_8](verina_basic_8/) | restate | 3 | - | yes | yes |  |
+| [verina_basic_80](verina_basic_80/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_81](verina_basic_81/) | restate | 3 | 1 | yes | yes |  |
+| [verina_basic_82](verina_basic_82/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_83](verina_basic_83/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_84](verina_basic_84/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_85](verina_basic_85/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_86](verina_basic_86/) | - | - | - | no | no | reference code does not compile on Lean 4.34.1 (same cause as verina_basic_23) |
+| [verina_basic_87](verina_basic_87/) | restate | 1 | 1 | yes | yes |  |
+| [verina_basic_88](verina_basic_88/) | loop | 2 | - | yes | yes |  |
+| [verina_basic_89](verina_basic_89/) | loop | 2 | 5 | yes | yes |  |
+| [verina_basic_9](verina_basic_9/) | loop | 5 | - | yes | yes |  |
+| [verina_basic_90](verina_basic_90/) | loop | 5 | 4 | yes | yes |  |
+| [verina_basic_91](verina_basic_91/) | restate | 1 | 1 | yes | yes |  |
+| [verina_basic_92](verina_basic_92/) | restate | 1 | 1 | yes | yes |  |
+| [verina_basic_93](verina_basic_93/) | restate | 1 | 1 | yes | yes |  |
+| [verina_basic_94](verina_basic_94/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_95](verina_basic_95/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_96](verina_basic_96/) | restate | 1 | 1 | yes | yes |  |
+| [verina_basic_97](verina_basic_97/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_98](verina_basic_98/) | restate | 1 | - | yes | yes |  |
+| [verina_basic_99](verina_basic_99/) | restate | 1 | - | yes | yes |  |

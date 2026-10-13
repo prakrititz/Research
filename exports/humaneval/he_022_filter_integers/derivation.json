@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "i ≤ values.length ∧ acc = (values.take i).filterMap (fun v => match v with | PyVal.int n => some n | _ => none)",
+  "guard": "i < values.length",
+  "variant": "values.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, match values[i]? with | some (PyVal.int n) => acc ++ [n] | _ => acc)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "pyval_take_succ",
+      "statement": "∀ (l : List PyVal) (i : Nat), l.take (i + 1) = l.take i ++ l[i]?.toList",
+      "proof": "by intro l i\n  exact List.take_succ"
+    }
+  ]
+}

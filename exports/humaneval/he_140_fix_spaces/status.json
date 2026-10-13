@@ -1,0 +1,15 @@
+{
+  "id": "he_140_fix_spaces",
+  "dataset": "humaneval",
+  "family": "he_140",
+  "function": "fixSpaces",
+  "tests": 13,
+  "has_derivation": true,
+  "kind": "definitional",
+  "laws": 1,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "13/13",
+  "blocked_reason": ""
+}

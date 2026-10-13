@@ -1,0 +1,5 @@
+# he_116_sort_array
+
+`sortArray116(arr : List Int) : List Int`
+
+Sort an array of integers according to the number of ones in their binary representation in ascending order. For a similar number of ones, sort based on decimal value. (The ones are counted in the binary representation of the absolute value, as Python's bin does.)

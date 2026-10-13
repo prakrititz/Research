@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "decide (n % 11 = 0)",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "div11_ok",
+      "statement": "∀ (n : Int), (decide (n % 11 = 0) = true → ∃ k : Int, n = 11 * k) ∧ (¬ decide (n % 11 = 0) = true → ∀ k : Int, ¬ n = 11 * k)",
+      "proof": "by intro n\n  constructor\n  · intro h\n    have : n % 11 = 0 := by simpa using h\n    exact ⟨n / 11, by omega⟩\n  · intro h k hk\n    apply h\n    simp\n    omega"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List String"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "i ≤ strings.length ∧ acc = (strings.take i).filter (fun s => decide (hasSub s substring))",
+  "guard": "i < strings.length",
+  "variant": "strings.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if decide (hasSub strings[i]! substring) then acc ++ [strings[i]!] else acc)",
+      "children": []
+    }
+  ]
+}

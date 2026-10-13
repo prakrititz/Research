@@ -1,0 +1,15 @@
+{
+  "id": "he_086_anti_shuffle",
+  "dataset": "humaneval",
+  "family": "he_080",
+  "function": "antiShuffle",
+  "tests": 14,
+  "has_derivation": false,
+  "kind": "",
+  "laws": 0,
+  "helper_lemmas": 0,
+  "certified": false,
+  "independently_verified": false,
+  "tests_passed": null,
+  "blocked_reason": "its specification is about String.splitOn (same gap as he_015)"
+}

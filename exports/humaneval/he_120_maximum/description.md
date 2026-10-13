@@ -1,0 +1,5 @@
+# he_120_maximum
+
+`maximum(arr : List Int, k : Nat) : List Int`
+
+Given an array arr of integers and a non-negative integer k, return a sorted list of length k with the maximum k numbers in arr.

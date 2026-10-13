@@ -1,0 +1,16 @@
+{
+  "law": "cases",
+  "cond": "s.toList.any Char.isAlpha = true",
+  "children": [
+    {
+      "law": "term",
+      "expr": "String.mk (s.toList.map swapCase)",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "String.mk s.toList.reverse",
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+id,family,tests,has_derivation,kind,laws,helper_lemmas,certified,independently_verified,blocked_reason
+classic_fast_power,classic,8,True,loop,4,2,True,True,
+classic_isqrt,classic,23,True,loop,2,0,True,True,
+classic_reverse,classic,5,True,loop,2,1,True,True,
+classic_sort_list,classic,7,True,restate,1,1,True,True,
+classic_sqrt_approx,classic,7,True,loop,2,1,True,True,

@@ -1,0 +1,69 @@
+{
+  "law": "bind",
+  "var": "last",
+  "type": "Option Nat",
+  "prop": "(last = none ∧ ∀ i, i < word.toList.length → ¬ goodAt word.toList i) ∨ (∃ b, last = some b ∧ b < word.toList.length ∧ goodAt word.toList b ∧ ∀ j, j < word.toList.length → b < j → ¬ goodAt word.toList j)",
+  "children": [
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "b",
+          "Option Nat"
+        ]
+      ],
+      "init": [
+        "0",
+        "none"
+      ],
+      "invariant": "i ≤ word.toList.length ∧ ((b = none ∧ ∀ j, j < i → ¬ goodAt word.toList j) ∨ (∃ c, b = some c ∧ c < i ∧ goodAt word.toList c ∧ ∀ j, j < i → c < j → ¬ goodAt word.toList j))",
+      "guard": "i < word.toList.length",
+      "variant": "word.toList.length - i",
+      "result": "b",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, if goodAt word.toList i then some i else b)",
+          "children": []
+        }
+      ]
+    },
+    {
+      "law": "cases",
+      "cond": "last = none",
+      "children": [
+        {
+          "law": "term",
+          "expr": "\"\"",
+          "children": []
+        },
+        {
+          "law": "term",
+          "expr": "String.singleton word.toList[last.getD 0]!",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "vowel_step",
+      "statement": "∀ (w : List Char) (i : Nat) (b : Option Nat), (i ≤ w.length ∧ ((b = none ∧ ∀ j, j < i → ¬ goodAt w j) ∨ (∃ c, b = some c ∧ c < i ∧ goodAt w c ∧ ∀ j, j < i → c < j → ¬ goodAt w j))) → i < w.length → (i + 1 ≤ w.length ∧ (((if goodAt w i then some i else b) = none ∧ ∀ j, j < i + 1 → ¬ goodAt w j) ∨ (∃ c, (if goodAt w i then some i else b) = some c ∧ c < i + 1 ∧ goodAt w c ∧ ∀ j, j < i + 1 → c < j → ¬ goodAt w j)))",
+      "proof": "by\n  intro w i b h hi\n  obtain ⟨_, hb⟩ := h\n  refine ⟨by omega, ?_⟩\n  by_cases hg : goodAt w i\n  · right\n    refine ⟨i, by rw [if_pos hg], by omega, hg, ?_⟩\n    intro j hj hij; omega\n  · rw [if_neg hg]\n    rcases hb with ⟨rfl, hn⟩ | ⟨c, rfl, hc, hgc, hmax⟩\n    · left\n      refine ⟨rfl, ?_⟩\n      intro j hj\n      by_cases hji : j < i\n      · exact hn j hji\n      · have : j = i := by omega\n        subst this; exact hg\n    · right\n      refine ⟨c, rfl, by omega, hgc, ?_⟩\n      intro j hj hcj\n      by_cases hji : j < i\n      · exact hmax j hji hcj\n      · have : j = i := by omega\n        subst this; exact hg"
+    },
+    {
+      "name": "vowel_none",
+      "statement": "∀ (w : List Char) (last : Option Nat), ((last = none ∧ ∀ i, i < w.length → ¬ goodAt w i) ∨ (∃ b, last = some b ∧ b < w.length ∧ goodAt w b ∧ ∀ j, j < w.length → b < j → ¬ goodAt w j)) → last = none → ((\"\" = \"\" ↔ ∀ i, i < w.length → ¬ goodAt w i) ∧ (\"\" ≠ \"\" → ∃ i, i < w.length ∧ goodAt w i ∧ \"\" = String.singleton w[i]! ∧ ∀ j, j < w.length → i < j → ¬ goodAt w j))",
+      "proof": "by\n  intro w last h hn\n  rcases h with ⟨_, hnone⟩ | ⟨b, hb, _⟩\n  · exact ⟨⟨fun _ => hnone, fun _ => rfl⟩, fun h => absurd rfl h⟩\n  · rw [hn] at hb; exact absurd hb (by simp)"
+    },
+    {
+      "name": "vowel_some",
+      "statement": "∀ (w : List Char) (last : Option Nat), ((last = none ∧ ∀ i, i < w.length → ¬ goodAt w i) ∨ (∃ b, last = some b ∧ b < w.length ∧ goodAt w b ∧ ∀ j, j < w.length → b < j → ¬ goodAt w j)) → ¬ last = none → ((String.singleton w[last.getD 0]! = \"\" ↔ ∀ i, i < w.length → ¬ goodAt w i) ∧ (String.singleton w[last.getD 0]! ≠ \"\" → ∃ i, i < w.length ∧ goodAt w i ∧ String.singleton w[last.getD 0]! = String.singleton w[i]! ∧ ∀ j, j < w.length → i < j → ¬ goodAt w j))",
+      "proof": "by\n  intro w last h hn\n  rcases h with ⟨hnone, _⟩ | ⟨b, rfl, hb, hg, hmax⟩\n  · exact absurd hnone hn\n  · have hne : String.singleton w[b]! ≠ \"\" := by\n      intro h\n      have := congrArg String.length h\n      simp at this\n    exact ⟨⟨fun h => absurd h hne, fun hn => absurd hg (hn b hb)⟩, fun _ => ⟨b, hb, hg, rfl, hmax⟩⟩"
+    }
+  ]
+}

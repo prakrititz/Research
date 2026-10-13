@@ -1,0 +1,30 @@
+{
+  "law": "cases",
+  "cond": "nums = []",
+  "children": [
+    {
+      "law": "term",
+      "expr": "0",
+      "children": [],
+      "lemmas": [
+        {
+          "name": "lc28_nil",
+          "statement": "∀ (nums : List Int) (h : longestConsecutive_precond nums), nums = [] → longestConsecutive_postcond nums (0) h",
+          "proof": "by intro nums h hx\n  unfold longestConsecutive_postcond\n  exact ⟨fun _ => rfl, fun hne => absurd hx hne⟩"
+        }
+      ]
+    },
+    {
+      "law": "term",
+      "expr": "(let sorted_nums := nums.mergeSort; let consec_sublist_lens := List.range nums.length |>.flatMap (fun start => List.range (nums.length - start + 1) |>.map (fun len => sorted_nums.extract start (start + len))) |>.filter isConsecutive |>.map (·.length); consec_sublist_lens.foldl max 0)",
+      "children": [],
+      "lemmas": [
+        {
+          "name": "lc28_ne",
+          "statement": "∀ (nums : List Int) (h : longestConsecutive_precond nums), ¬ nums = [] → longestConsecutive_postcond nums (let sorted_nums := nums.mergeSort; let consec_sublist_lens := List.range nums.length |>.flatMap (fun start => List.range (nums.length - start + 1) |>.map (fun len => sorted_nums.extract start (start + len))) |>.filter isConsecutive |>.map (·.length); consec_sublist_lens.foldl max 0) h",
+          "proof": "by intro nums h hx\n  unfold longestConsecutive_postcond\n  intro sorted_nums consec_sublist_lens\n  have hne : consec_sublist_lens ≠ [] := List.ne_nil_of_mem (a := 0) (List.mem_map.mpr ⟨sorted_nums.extract 0 0, List.mem_filter.mpr ⟨List.mem_flatMap.mpr ⟨0, List.mem_range.mpr (List.length_pos_of_ne_nil hx), List.mem_map.mpr ⟨0, List.mem_range.mpr (by omega), rfl⟩⟩, by simp [isConsecutive]⟩, by simp⟩)\n  exact ⟨fun h0 => absurd h0 hx, fun _ => Refine.maxlist_nat _ hne⟩"
+        }
+      ]
+    }
+  ]
+}

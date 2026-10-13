@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "arr.toList.eraseDups.foldl (· * ·) 1",
+  "children": []
+}

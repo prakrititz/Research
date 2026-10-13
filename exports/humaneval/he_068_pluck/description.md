@@ -1,0 +1,5 @@
+# he_068_pluck
+
+`pluck(arr : List Nat) : List Nat`
+
+Given an array representing a branch of a tree that has non-negative integer nodes, pluck one of the nodes and return it: the node with the smallest even value (the one with the smallest index among equal ones), returned in a list [smallest value, its index]. If there are no even values or the array is empty, return [].

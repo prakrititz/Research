@@ -1,0 +1,18 @@
+{
+  "law": "bind",
+  "var": "s",
+  "type": "List Int",
+  "prop": "s = lst.mergeSort (fun a b => a ≤ b)",
+  "children": [
+    {
+      "law": "term",
+      "expr": "lst.mergeSort (fun a b => a ≤ b)",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "(List.range lst.length).map (fun k => if k % 2 = 0 then s[k / 2]! else s[lst.length - 1 - k / 2]!)",
+      "children": []
+    }
+  ]
+}

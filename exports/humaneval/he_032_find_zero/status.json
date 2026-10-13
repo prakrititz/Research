@@ -1,0 +1,15 @@
+{
+  "id": "he_032_find_zero",
+  "dataset": "humaneval",
+  "family": "he_020",
+  "function": "findZero",
+  "tests": 16,
+  "has_derivation": false,
+  "kind": "",
+  "laws": 0,
+  "helper_lemmas": 0,
+  "certified": false,
+  "independently_verified": false,
+  "tests_passed": null,
+  "blocked_reason": "needs a root bound and a Lipschitz bound for polynomials over the rationals (bisection); not attempted"
+}

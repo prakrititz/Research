@@ -1,0 +1,15 @@
+{
+  "id": "he_107_even_odd_palindrome",
+  "dataset": "humaneval",
+  "family": "he_100",
+  "function": "evenOddPalindrome",
+  "tests": 16,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 2,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "16/16",
+  "blocked_reason": ""
+}

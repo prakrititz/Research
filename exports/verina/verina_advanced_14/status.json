@@ -1,0 +1,21 @@
+{
+  "id": "verina_advanced_14",
+  "dataset": "verina",
+  "family": "advanced",
+  "function": "ifPowerOfFour",
+  "tests": 13,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 2,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "13/13",
+  "blocked_reason": "",
+  "spec_checks": {
+    "compiles": true,
+    "reference_passes": "13/13",
+    "accepts_expected": "0/13",
+    "rejects_wrong": "0/13"
+  }
+}

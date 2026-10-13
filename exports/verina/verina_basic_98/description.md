@@ -1,0 +1,17 @@
+# verina_basic_98
+
+`Triple(x : Int) : Int`
+
+-----Description-----
+This task involves computing three times a given integer. Given an integer, the goal is to produce a value that is exactly three times its value.
+
+-----Input-----
+The input consists of a single integer:
+x: An integer.
+
+-----Output-----
+The output is an integer:
+Returns the product of the input integer and 3.
+
+-----Note-----
+There are no additional preconditions.

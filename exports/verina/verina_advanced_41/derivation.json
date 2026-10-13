@@ -1,0 +1,40 @@
+{
+  "law": "bind",
+  "var": "m",
+  "type": "Int",
+  "prop": "m ≥ a ∧ m ≥ b ∧ (m = a ∨ m = b)",
+  "children": [
+    {
+      "law": "cases",
+      "cond": "a ≥ b",
+      "children": [
+        {
+          "law": "term",
+          "expr": "a",
+          "children": []
+        },
+        {
+          "law": "term",
+          "expr": "b",
+          "children": []
+        }
+      ]
+    },
+    {
+      "law": "cases",
+      "cond": "m ≥ c",
+      "children": [
+        {
+          "law": "term",
+          "expr": "m",
+          "children": []
+        },
+        {
+          "law": "term",
+          "expr": "c",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "(n % 8 == 0) || (List.range (n.natAbs + 1)).any (fun i => n.natAbs / (10 ^ i) % 10 == 8)",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "digit8_iff",
+      "statement": "∀ (absN : Nat), (∃ i : Nat, absN / (10 ^ i) % 10 = 8) ↔ (List.range (absN + 1)).any (fun i => decide (absN / (10 ^ i) % 10 = 8)) = true",
+      "proof": "by intro absN\n  constructor\n  · rintro ⟨i, hi⟩\n    rw [List.any_eq_true]\n    refine ⟨i, List.mem_range.mpr ?_, by simpa using hi⟩\n    by_contra hge\n    have h1 : i < 10 ^ i := Nat.lt_pow_self (by omega)\n    have h2 : absN / 10 ^ i = 0 := Nat.div_eq_of_lt (by omega)\n    rw [h2] at hi; simp at hi\n  · intro h\n    obtain ⟨i, _, hx⟩ := List.any_eq_true.mp h\n    exact ⟨i, by simpa using hx⟩"
+    },
+    {
+      "name": "eight_ok",
+      "statement": "∀ (n : Int) (h : isItEight_precond n), isItEight_postcond n ((n % 8 == 0) || (List.range (n.natAbs + 1)).any (fun i => n.natAbs / (10 ^ i) % 10 == 8)) h",
+      "proof": "by intro n h\n  unfold isItEight_postcond\n  intro absN\n  have hd := digit8_iff absN\n  simp only [beq_iff_eq, Bool.or_eq_true] at hd ⊢\n  simp only [beq_eq_decide] at hd ⊢\n  rw [← hd]"
+    }
+  ]
+}

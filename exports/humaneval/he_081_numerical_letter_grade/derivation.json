@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List String"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "i ≤ grades.length ∧ acc = (List.range i).map (fun k => letterGrade grades[k]!)",
+  "guard": "i < grades.length",
+  "variant": "grades.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, acc ++ [letterGrade grades[i]!])",
+      "children": []
+    }
+  ]
+}

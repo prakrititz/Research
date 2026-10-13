@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List Char"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "i ≤ string.length ∧ acc = (List.range i).map (fun k => flipChar string.toList[k]!)",
+  "guard": "i < string.length",
+  "variant": "string.length - i",
+  "result": "String.mk acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, acc ++ [flipChar string.toList[i]!])",
+      "children": []
+    }
+  ]
+}

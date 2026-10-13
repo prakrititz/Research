@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "(let allSubseq := (a.foldl fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse; let increasingSubseqLens := allSubseq.filter (fun l => List.Pairwise (· < ·) l) |>.map (·.length); increasingSubseqLens.foldl max (increasingSubseqLens.headD 0))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "LongestIncreasingSubsequence_ok",
+      "statement": "∀ (a : Array Int) (h : LongestIncreasingSubsequence_precond a), LongestIncreasingSubsequence_postcond a (let allSubseq := (a.foldl fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse; let increasingSubseqLens := allSubseq.filter (fun l => List.Pairwise (· < ·) l) |>.map (·.length); increasingSubseqLens.foldl max (increasingSubseqLens.headD 0)) h",
+      "proof": "by intro a h\n  unfold LongestIncreasingSubsequence_postcond\n  exact Refine.maxlist_int _ (List.ne_nil_of_mem (a := 0) (List.mem_map.mpr ⟨[], List.mem_filter.mpr ⟨List.mem_map.mpr ⟨[], Refine.allsub_nil_mem_arr a, rfl⟩, by simp⟩, rfl⟩))"
+    }
+  ]
+}

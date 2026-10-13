@@ -1,0 +1,14 @@
+# verina_advanced_15
+
+`increasingTriplet(nums : List Int) : Bool`
+
+-----Description-----
+Given an integer array nums, return true if there exists a triple of indices (i, j, k) such that i < j < k and nums[i] < nums[j] < nums[k]. If no such indices exist, return false.
+
+-----Input-----
+The input consists of a single list:
+nums: A list of integers.
+
+-----Output-----
+The output is a boolean:
+Returns true if there exists a triplet (i, j, k) where i < j < k and nums[i] < nums[j] < nums[k]; otherwise, returns false.

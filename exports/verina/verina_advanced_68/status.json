@@ -1,0 +1,21 @@
+{
+  "id": "verina_advanced_68",
+  "dataset": "verina",
+  "family": "advanced",
+  "function": "runLengthEncoder",
+  "tests": 9,
+  "has_derivation": false,
+  "kind": "",
+  "laws": 0,
+  "helper_lemmas": 0,
+  "certified": false,
+  "independently_verified": false,
+  "tests_passed": null,
+  "blocked_reason": "the specification does not elaborate on Lean 4.34.1 (`c.isDigit` with `c`'s type not yet known)",
+  "spec_checks": {
+    "compiles": false,
+    "reference_passes": "0/9",
+    "accepts_expected": "0/9",
+    "rejects_wrong": "0/0"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "law": "cases",
+  "cond": "(let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (fun subarray => subarray.size % k.toNat = 0 && subarray.size > 0); let subarraySums := divisibleSubarrays.map (fun subarray => subarray.toList.sum); subarraySums.length = 0)",
+  "children": [
+    {
+      "law": "term",
+      "expr": "0",
+      "children": [],
+      "lemmas": [
+        {
+          "name": "sl44_nil",
+          "statement": "∀ (arr : Array Int) (k : Int), (let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (fun subarray => subarray.size % k.toNat = 0 && subarray.size > 0); let subarraySums := divisibleSubarrays.map (fun subarray => subarray.toList.sum); subarraySums.length = 0) → maxSubarraySumDivisibleByK_postcond arr k (0)",
+          "proof": "by intro arr k hx\n  unfold maxSubarraySumDivisibleByK_postcond\n  intro subarrays divisibleSubarrays subarraySums\n  have hx' : subarraySums.length = 0 := hx\n  exact ⟨fun _ => rfl, fun hpos => by omega⟩"
+        }
+      ]
+    },
+    {
+      "law": "term",
+      "expr": "(let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (fun subarray => subarray.size % k.toNat = 0 && subarray.size > 0); let subarraySums := divisibleSubarrays.map (fun subarray => subarray.toList.sum); subarraySums.foldl max (subarraySums.headD 0))",
+      "children": [],
+      "lemmas": [
+        {
+          "name": "sl44_ne",
+          "statement": "∀ (arr : Array Int) (k : Int), ¬ (let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (fun subarray => subarray.size % k.toNat = 0 && subarray.size > 0); let subarraySums := divisibleSubarrays.map (fun subarray => subarray.toList.sum); subarraySums.length = 0) → maxSubarraySumDivisibleByK_postcond arr k (let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (fun subarray => subarray.size % k.toNat = 0 && subarray.size > 0); let subarraySums := divisibleSubarrays.map (fun subarray => subarray.toList.sum); subarraySums.foldl max (subarraySums.headD 0))",
+          "proof": "by intro arr k hx\n  unfold maxSubarraySumDivisibleByK_postcond\n  intro subarrays divisibleSubarrays subarraySums\n  have hx' : ¬ subarraySums.length = 0 := hx\n  have hne : subarraySums ≠ [] := fun e => hx' (by simp [e])\n  obtain ⟨h1, h2⟩ := Refine.maxlist_int subarraySums hne\n  exact ⟨fun h0 => absurd h0 hx', fun _ => ⟨List.contains_iff_mem.mp h1, h2⟩⟩"
+        }
+      ]
+    }
+  ]
+}

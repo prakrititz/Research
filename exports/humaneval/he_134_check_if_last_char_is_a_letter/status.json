@@ -1,0 +1,15 @@
+{
+  "id": "he_134_check_if_last_char_is_a_letter",
+  "dataset": "humaneval",
+  "family": "he_120",
+  "function": "checkIfLastCharIsALetter",
+  "tests": 16,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "16/16",
+  "blocked_reason": ""
+}

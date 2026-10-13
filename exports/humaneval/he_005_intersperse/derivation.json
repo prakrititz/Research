@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "i ≤ numbers.length ∧ acc.length = (if i = 0 then 0 else 2 * i - 1) ∧ (∀ k, k < i → acc[2 * k]! = numbers[k]!) ∧ ∀ k, k + 1 < i → acc[2 * k + 1]! = delimeter",
+  "guard": "i < numbers.length",
+  "variant": "numbers.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if i = 0 then [numbers[0]!] else acc ++ [delimeter, numbers[i]!])",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "append_pair_idx",
+      "statement": "∀ (a : List Int) (d x : Int) (j : Nat), (a ++ [d, x])[j]! = (if j < a.length then a[j]! else if j = a.length then d else if j = a.length + 1 then x else default)",
+      "proof": "by\n  intro a d x j\n  by_cases h : j < a.length\n  · rw [if_pos h]; exact Refine.getElem_bang_append_lt a [d, x] j h\n  · rw [if_neg h]\n    simp only [List.getElem!_eq_getElem?_getD, List.getElem?_append_right (by omega : a.length ≤ j)]\n    by_cases h2 : j = a.length\n    · subst h2; simp\n    · rw [if_neg h2]\n      by_cases h3 : j = a.length + 1\n      · subst h3; simp\n      · rw [if_neg h3]\n        have : j - a.length ≥ 2 := by omega\n        simp [List.getElem?_eq_none (by simp; omega : [d, x].length ≤ j - a.length)]"
+    }
+  ]
+}

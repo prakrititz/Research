@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "l.mergeSort (fun a b => a ≤ b)",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "sort_ok",
+      "statement": "∀ (l : List Int), (∀ i, i < (l.mergeSort (fun a b => decide (a ≤ b))).length - 1 → (l.mergeSort (fun a b => decide (a ≤ b)))[i]! ≤ (l.mergeSort (fun a b => decide (a ≤ b)))[i + 1]!) ∧ (l.mergeSort (fun a b => decide (a ≤ b))).isPerm l = true",
+      "proof": "by intro l\n  have hp : (l.mergeSort (fun a b => decide (a ≤ b))).Perm l := List.mergeSort_perm l _\n  refine ⟨?_, List.isPerm_iff.mpr hp⟩\n  intro i hi\n  have hs : List.Pairwise (fun a b => decide (a ≤ b) = true) (l.mergeSort (fun a b => decide (a ≤ b))) :=\n    List.pairwise_mergeSort (by intro a b c h1 h2; simp at *; omega) (by intro a b; simp; omega) l\n  rw [List.pairwise_iff_getElem] at hs\n  have hi' : i + 1 < (l.mergeSort (fun a b => decide (a ≤ b))).length := by omega\n  have := hs i (i + 1) (by omega) hi' (by omega)\n  rw [getElem!_pos _ i (by omega), getElem!_pos _ (i + 1) hi']\n  simpa using this"
+    }
+  ]
+}

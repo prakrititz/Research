@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "String.mk (encodeGroups (encodeGroups s.toList))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "encode_three",
+      "statement": "∀ (l : List Char), encodeGroups (encodeGroups (encodeGroups l)) = l",
+      "proof": "by intro l\n  induction l using encodeGroups.induct with\n  | case1 a b c rest ih => simp [encodeGroups, ih]\n  | case2 l h => cases l with\n    | nil => simp [encodeGroups]\n    | cons a t => cases t with\n      | nil => simp [encodeGroups]\n      | cons b t2 => cases t2 with\n        | nil => simp [encodeGroups]\n        | cons c rest => exact absurd rfl (h a b c rest)"
+    }
+  ]
+}

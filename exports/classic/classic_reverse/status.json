@@ -1,0 +1,15 @@
+{
+  "id": "classic_reverse",
+  "dataset": "classic",
+  "family": "classic",
+  "function": "reverseList",
+  "tests": 5,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 1,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "5/5",
+  "blocked_reason": ""
+}

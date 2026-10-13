@@ -1,0 +1,21 @@
+{
+  "id": "verina_advanced_58",
+  "dataset": "verina",
+  "family": "advanced",
+  "function": "nthUglyNumber",
+  "tests": 5,
+  "has_derivation": false,
+  "kind": "",
+  "laws": 0,
+  "helper_lemmas": 0,
+  "certified": false,
+  "independently_verified": false,
+  "tests_passed": null,
+  "blocked_reason": "not closed: the search loop needs a bound for the n-th ugly number (plan in Reading Material/27, section 7)",
+  "spec_checks": {
+    "compiles": true,
+    "reference_passes": "5/5",
+    "accepts_expected": "5/5",
+    "rejects_wrong": "11/11"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "Array Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "#[]"
+  ],
+  "invariant": "i ≤ xs.length ∧ acc.size = i ∧ ∀ jj, jj < i → acc[jj]! = xs[jj]!",
+  "guard": "i < xs.length",
+  "variant": "xs.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, acc.push (xs[i]!))",
+      "children": []
+    }
+  ]
+}

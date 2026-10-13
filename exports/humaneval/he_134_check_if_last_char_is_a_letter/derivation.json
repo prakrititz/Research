@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "decide (txt.length ≥ 1 ∧ txt.toList[txt.length - 1]!.isAlpha = true ∧ (txt.length = 1 ∨ txt.toList[txt.length - 2]! = ' '))",
+  "children": []
+}

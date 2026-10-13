@@ -1,0 +1,15 @@
+{
+  "id": "he_151_double_the_difference",
+  "dataset": "humaneval",
+  "family": "he_140",
+  "function": "doubleTheDifference",
+  "tests": 14,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "14/14",
+  "blocked_reason": ""
+}

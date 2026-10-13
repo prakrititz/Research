@@ -1,0 +1,15 @@
+{
+  "id": "he_085_add_even_at_odd",
+  "dataset": "humaneval",
+  "family": "he_080",
+  "function": "addEvenAtOdd",
+  "tests": 12,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "12/12",
+  "blocked_reason": ""
+}

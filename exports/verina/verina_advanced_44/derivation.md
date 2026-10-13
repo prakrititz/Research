@@ -1,0 +1,11 @@
+# Derivation of verina_advanced_44
+
+kind: **restate**
+
+- **cases** on `(let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (fun subarray => subarray.size % k.toNat = 0 && subarray.size > 0); let subarraySums := divisibleSubarrays.map (fun subarray => subarray.toList.sum); subarraySums.length = 0)`
+  - _then_:
+    - **term**: `0`
+      - helper lemma `sl44_nil`: `∀ (arr : Array Int) (k : Int), (let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (fun subarray => subarray.size % k.toNat = 0 && subarray.size > 0); let subarraySums := divisibleSubarrays.map (fun subarray => subarray.toList.sum); subarraySums.length = 0) → maxSubarraySumDivisibleByK_postcond arr k (0)`
+  - _else_:
+    - **term**: `(let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (fun subarray => subarray.size % k.toNat = 0 && subarray.size > 0); let subarraySums := divisibleSubarrays.map (fun subarray => subarray.toList.sum); subarraySums.foldl max (subarraySums.headD 0))`
+      - helper lemma `sl44_ne`: `∀ (arr : Array Int) (k : Int), ¬ (let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (fun subarray => subarray.size % k.toNat = 0 && subarray.size > 0); let subarraySums := divisibleSubarrays.map (fun subarray => subarray.toList.sum); subarraySums.length = 0) → maxSubarraySumDivisibleByK_postcond arr k (let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (fun subarray => subarray.size % k.toNat = 0 && subarray.size > 0); let subarraySums := divisibleSubarrays.map (fun subarray => subarray.toList.sum); subarraySums.foldl max (subarraySums.headD 0))`

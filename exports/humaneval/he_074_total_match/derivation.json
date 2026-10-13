@@ -1,0 +1,16 @@
+{
+  "law": "cases",
+  "cond": "(lst1.map String.length).sum ≤ (lst2.map String.length).sum",
+  "children": [
+    {
+      "law": "term",
+      "expr": "lst1",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "lst2",
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List Char"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "i ≤ text.length ∧ acc = (text.toList.take i).filter (fun c => !(['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains c))",
+  "guard": "i < text.length",
+  "variant": "text.length - i",
+  "result": "String.mk acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains text.toList[i]! then acc else acc ++ [text.toList[i]!])",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "vowel_step",
+      "statement": "∀ (text : String) (i : Nat) (acc : List Char), i < text.length → acc = (text.toList.take i).filter (fun c => !(['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains c)) → (if ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains text.toList[i]! then acc else acc ++ [text.toList[i]!]) = (text.toList.take (i + 1)).filter (fun c => !(['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains c))",
+      "proof": "by intro text i acc hi h\n  subst h\n  have hi' : i < text.toList.length := hi\n  rw [Refine.filter_take_succ_bang _ text.toList i hi']\n  cases hv : ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains text.toList[i]! <;> simp"
+    }
+  ]
+}

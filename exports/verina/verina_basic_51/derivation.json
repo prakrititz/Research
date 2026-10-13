@@ -1,0 +1,30 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0"
+  ],
+  "invariant": "i ≤ a.size ∧ ∀ k, k < i → a[k]! < key",
+  "guard": "i < a.size ∧ a[i]! < key",
+  "variant": "a.size - i",
+  "result": "i",
+  "children": [
+    {
+      "law": "term",
+      "expr": "i + 1",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "exit51",
+      "statement": "∀ (a : Array Int) (key : Int) (i : Nat) (h : BinarySearch_precond a key), (i ≤ a.size ∧ ∀ k, k < i → a[k]! < key) → ¬ (i < a.size ∧ a[i]! < key) → BinarySearch_postcond a key i h",
+      "proof": "by intro a key i h hinv hn\n  obtain ⟨hi, hk⟩ := hinv\n  have hs := Refine.sorted_arr_le a h\n  unfold BinarySearch_postcond\n  refine ⟨hi, ?_, ?_⟩\n  · rw [Refine.arr_all_take_iff]; intro k hk1 _; simpa using hk k hk1\n  · rw [Refine.arr_all_drop_iff]; intro k hk1 hk2\n    have hlt : i < a.size := by omega\n    have h1 : ¬ a[i]! < key := fun hx => hn ⟨hlt, hx⟩\n    have h2 := hs i k hk1 hk2\n    simp only [decide_eq_true_eq]; omega"
+    }
+  ]
+}

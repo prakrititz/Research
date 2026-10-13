@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "decide (count_occurrences a key = 1)",
+  "children": []
+}

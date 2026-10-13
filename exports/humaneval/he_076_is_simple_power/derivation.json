@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "f",
+      "Bool"
+    ]
+  ],
+  "init": [
+    "0",
+    "false"
+  ],
+  "invariant": "i ≤ x.natAbs + 3 ∧ (f = true ↔ ∃ k, k < i ∧ 1 ≤ k ∧ n ^ k = x)",
+  "guard": "i < x.natAbs + 3",
+  "variant": "x.natAbs + 3 - i",
+  "result": "decide (x = 1) || f",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, f || decide (1 ≤ i ∧ n ^ i = x))",
+      "children": []
+    }
+  ]
+}

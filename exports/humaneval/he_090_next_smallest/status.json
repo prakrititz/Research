@@ -1,0 +1,15 @@
+{
+  "id": "he_090_next_smallest",
+  "dataset": "humaneval",
+  "family": "he_080",
+  "function": "nextSmallest",
+  "tests": 14,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 11,
+  "helper_lemmas": 2,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "14/14",
+  "blocked_reason": ""
+}

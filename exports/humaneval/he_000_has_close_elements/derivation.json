@@ -1,0 +1,64 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "j",
+      "Nat"
+    ],
+    [
+      "found",
+      "Bool"
+    ]
+  ],
+  "init": [
+    "0",
+    "false"
+  ],
+  "invariant": "j ≤ numbers.length ∧ (found = true ↔ ∃ b, b < j ∧ ∃ a, a < b ∧ |numbers[a]! - numbers[b]!| < threshold)",
+  "guard": "j < numbers.length",
+  "variant": "numbers.length - j",
+  "result": "found",
+  "children": [
+    {
+      "law": "bind",
+      "var": "hit",
+      "type": "Bool",
+      "prop": "hit = true ↔ ∃ a, a < j ∧ |numbers[a]! - numbers[j]!| < threshold",
+      "children": [
+        {
+          "law": "loop",
+          "state": [
+            [
+              "i",
+              "Nat"
+            ],
+            [
+              "seen",
+              "Bool"
+            ]
+          ],
+          "init": [
+            "0",
+            "false"
+          ],
+          "invariant": "i ≤ j ∧ (seen = true ↔ ∃ a, a < i ∧ |numbers[a]! - numbers[j]!| < threshold)",
+          "guard": "i < j",
+          "variant": "j - i",
+          "result": "seen",
+          "children": [
+            {
+              "law": "term",
+              "expr": "(i + 1, seen || decide (|numbers[i]! - numbers[j]!| < threshold))",
+              "children": []
+            }
+          ]
+        },
+        {
+          "law": "term",
+          "expr": "(j + 1, found || hit)",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

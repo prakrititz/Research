@@ -1,0 +1,15 @@
+{
+  "id": "he_072_will_it_fly",
+  "dataset": "humaneval",
+  "family": "he_060",
+  "function": "willItFly",
+  "tests": 14,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 4,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "14/14",
+  "blocked_reason": ""
+}

@@ -1,0 +1,5 @@
+# he_137_compare_one
+
+`compareOne(a : ℚ ⊕ String, b : ℚ ⊕ String) : Option (ℚ ⊕ String)`
+
+Take integers, floats, or strings representing real numbers (the decimal separator may be '.' or ',') and return the larger variable in its given variable type. Return none if the values are equal.

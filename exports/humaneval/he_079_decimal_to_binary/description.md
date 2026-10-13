@@ -1,0 +1,5 @@
+# he_079_decimal_to_binary
+
+`decimalToBinary(decimal : Nat) : String`
+
+Convert a number in decimal form to binary format. Return a string in which each character is '0' or '1', with an extra couple of characters 'db' at the beginning and at the end of the string.

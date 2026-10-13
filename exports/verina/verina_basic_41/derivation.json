@@ -1,0 +1,40 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "ok",
+      "Bool"
+    ]
+  ],
+  "init": [
+    "0",
+    "true"
+  ],
+  "invariant": "i ≤ a.size ∧ (ok = true ↔ ∀ k, k < i → a[k]! = a[0]!)",
+  "guard": "i < a.size",
+  "variant": "a.size - i",
+  "result": "ok",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, ok && decide (a[i]! = a[0]!))",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "allsame_arr_pairwise",
+      "statement": "∀ (a : Array Int), (∀ k, k < a.size → a[k]! = a[0]!) → List.Pairwise (· = ·) a.toList",
+      "proof": "by intro a h\n  apply List.pairwise_of_forall_mem_list\n  intro x hx y hy\n  obtain ⟨i, hi, rfl⟩ := (Refine.mem_iff_idx a.toList x).mp hx\n  obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx a.toList y).mp hy\n  have hi' : i < a.size := by simpa using hi\n  have hj' : j < a.size := by simpa using hj\n  rw [Refine.toList_getElem_bang a i hi', Refine.toList_getElem_bang a j hj', h i hi', h j hj']"
+    },
+    {
+      "name": "allsame_arr_not",
+      "statement": "∀ (a : Array Int), 0 < a.size → ¬ (∀ k, k < a.size → a[k]! = a[0]!) → a.toList.any (fun x => decide (x ≠ a.toList[0]!)) = true",
+      "proof": "by intro a h0 h\n  push_neg at h\n  obtain ⟨k, hk, hne⟩ := h\n  rw [List.any_eq_true]\n  have h00 : a.toList[0]! = a[0]! := Refine.toList_getElem_bang a 0 h0\n  refine ⟨a[k]!, ?_, ?_⟩\n  · rw [← Refine.toList_getElem_bang a k hk, getElem!_pos a.toList k (by simpa using hk)]; exact List.getElem_mem _\n  · rw [h00]; simpa using hne"
+    }
+  ]
+}

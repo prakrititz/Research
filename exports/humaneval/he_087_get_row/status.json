@@ -1,0 +1,15 @@
+{
+  "id": "he_087_get_row",
+  "dataset": "humaneval",
+  "family": "he_080",
+  "function": "getRow",
+  "tests": 14,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 1,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "14/14",
+  "blocked_reason": ""
+}

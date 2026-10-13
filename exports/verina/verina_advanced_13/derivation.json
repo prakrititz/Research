@@ -1,0 +1,22 @@
+{
+  "law": "term",
+  "expr": "(let sortedChords := chords.map (fun chord => let a := chord[0]!; let b := chord[1]!; if a > b then [b, a] else [a, b]); sortedChords.any (fun x => sortedChords.any (fun y => hasChordIntersection_postcond.hasIntersection x y)))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "has_symm13",
+      "statement": "∀ (x y : List Nat), hasChordIntersection_postcond.hasIntersection x y = hasChordIntersection_postcond.hasIntersection y x",
+      "proof": "by intro x y\n  unfold hasChordIntersection_postcond.hasIntersection\n  exact Bool.or_comm _ _"
+    },
+    {
+      "name": "has_irr13",
+      "statement": "∀ (x : List Nat), hasChordIntersection_postcond.hasIntersection x x = false",
+      "proof": "by intro x\n  unfold hasChordIntersection_postcond.hasIntersection\n  simp"
+    },
+    {
+      "name": "chord13",
+      "statement": "∀ (N : Nat) (chords : List (List Nat)) (h : hasChordIntersection_precond N chords), hasChordIntersection_postcond N chords (let sortedChords := chords.map (fun chord => let a := chord[0]!; let b := chord[1]!; if a > b then [b, a] else [a, b]); sortedChords.any (fun x => sortedChords.any (fun y => hasChordIntersection_postcond.hasIntersection x y))) h",
+      "proof": "by intro N chords h\n  unfold hasChordIntersection_postcond\n  intro sortedChords\n  refine ⟨fun hpw hres => ?_, fun hany => hany⟩\n  have hres' : (sortedChords.any (fun x => sortedChords.any (fun y => hasChordIntersection_postcond.hasIntersection x y))) = true := hres\n  obtain ⟨x, hx, hy'⟩ := List.any_eq_true.mp hres'\n  obtain ⟨y, hy, hxy⟩ := List.any_eq_true.mp hy'\n  by_cases hxe : x = y\n  · subst hxe; rw [has_irr13] at hxy; exact absurd hxy (by simp)\n  · haveI : Std.Symm (fun a b : List Nat => (!hasChordIntersection_postcond.hasIntersection a b) = true) := ⟨fun a b h => by simpa [has_symm13 a b] using h⟩\n    have hpw' := List.Pairwise.forall hpw hx hy hxe\n    simp [hxy] at hpw'"
+    }
+  ]
+}

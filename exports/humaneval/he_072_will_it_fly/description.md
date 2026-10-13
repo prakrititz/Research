@@ -1,0 +1,5 @@
+# he_072_will_it_fly
+
+`willItFly(q : List Int, w : Int) : Bool`
+
+Decide whether the object q will fly: it is balanced (the list is a palindrome) and the sum of its elements is at most the maximum possible weight w.

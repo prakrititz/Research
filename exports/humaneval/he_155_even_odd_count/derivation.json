@@ -1,0 +1,46 @@
+{
+  "law": "bind",
+  "var": "ds",
+  "type": "List Char",
+  "prop": "ds = (toString num.natAbs).toList",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(toString num.natAbs).toList",
+      "children": []
+    },
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "e",
+          "Nat"
+        ],
+        [
+          "o",
+          "Nat"
+        ]
+      ],
+      "init": [
+        "0",
+        "0",
+        "0"
+      ],
+      "invariant": "i ≤ ds.length ∧ e = ((ds.take i).filter (fun c => (c.toNat - 48) % 2 = 0)).length ∧ o = ((ds.take i).filter (fun c => (c.toNat - 48) % 2 = 1)).length",
+      "guard": "i < ds.length",
+      "variant": "ds.length - i",
+      "result": "(e, o)",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, if (ds[i]!.toNat - 48) % 2 = 0 then e + 1 else e, if (ds[i]!.toNat - 48) % 2 = 1 then o + 1 else o)",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

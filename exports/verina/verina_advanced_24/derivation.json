@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "(let allIncreasing := lengthOfLIS_postcond.subsequences nums |>.filter (fun l => lengthOfLIS_postcond.isStrictlyIncreasing l); (((allIncreasing.map List.length).foldl max 0 : Nat) : Int))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "sub_nil24",
+      "statement": "∀ (xs : List Int), [] ∈ lengthOfLIS_postcond.subsequences xs",
+      "proof": "by intro xs\n  induction xs with\n  | nil => simp [lengthOfLIS_postcond.subsequences]\n  | cons a t ih => simp only [lengthOfLIS_postcond.subsequences]; exact List.mem_append.mpr (Or.inl ih)"
+    },
+    {
+      "name": "lis24",
+      "statement": "∀ (nums : List Int) (h : lengthOfLIS_precond nums), lengthOfLIS_postcond nums (let allIncreasing := lengthOfLIS_postcond.subsequences nums |>.filter (fun l => lengthOfLIS_postcond.isStrictlyIncreasing l); (((allIncreasing.map List.length).foldl max 0 : Nat) : Int)) h",
+      "proof": "by intro nums h\n  unfold lengthOfLIS_postcond\n  intro allIncreasing\n  have hnil : [] ∈ allIncreasing := List.mem_filter.mpr ⟨sub_nil24 nums, by simp [lengthOfLIS_postcond.isStrictlyIncreasing]⟩\n  have hs := Refine.maxlen_spec allIncreasing hnil\n  exact ⟨by simpa using hs.1, by simpa using hs.2⟩"
+    }
+  ]
+}

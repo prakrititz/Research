@@ -1,0 +1,5 @@
+# he_123_get_odd_collatz
+
+`getOddCollatz(n : Nat) : List Nat`
+
+Given a positive integer n, return a sorted list that has the odd numbers in the Collatz sequence (if the previous term is even, the next term is half of it; if it is odd, the next term is 3 times it plus 1; the sequence ends at 1). Collatz(1) is [1].

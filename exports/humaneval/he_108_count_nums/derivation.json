@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0",
+    "0"
+  ],
+  "invariant": "i ≤ arr.length ∧ acc = ((arr.take i).filter (fun x => signedDigitSum x > 0)).length",
+  "guard": "i < arr.length",
+  "variant": "arr.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if signedDigitSum arr[i]! > 0 then acc + 1 else acc)",
+      "children": []
+    }
+  ]
+}

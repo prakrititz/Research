@@ -1,0 +1,5 @@
+# he_117_select_words
+
+`selectWords(s : String, n : Nat) : List String`
+
+Given a string s and a natural number n, return a list of all words from the string s that contain exactly n consonants, in the order these words appear in the string. If the string s is empty then return an empty list. The input string contains only letters and spaces.

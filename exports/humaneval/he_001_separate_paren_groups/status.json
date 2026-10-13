@@ -1,0 +1,15 @@
+{
+  "id": "he_001_separate_paren_groups",
+  "dataset": "humaneval",
+  "family": "he_000",
+  "function": "separateParenGroups",
+  "tests": 12,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 4,
+  "helper_lemmas": 4,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "12/12",
+  "blocked_reason": ""
+}

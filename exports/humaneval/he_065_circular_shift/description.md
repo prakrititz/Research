@@ -1,0 +1,5 @@
+# he_065_circular_shift
+
+`circularShift(x : Nat, shift : Nat) : String`
+
+Circular shift the digits of the integer x: shift the digits right by `shift` and return the result as a string. If shift is greater than the number of digits, return the digits reversed.

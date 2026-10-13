@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "m",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "1",
+    "lst[0]!"
+  ],
+  "invariant": "1 ≤ i ∧ i ≤ lst.length ∧ (∃ k, k < i ∧ lst[k]! = m) ∧ ∀ k, k < i → lst[k]! ≤ m",
+  "guard": "i < lst.length",
+  "variant": "lst.length - i",
+  "result": "m",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, max m lst[i]!)",
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "(let subArrays := List.range (sequence.length + 1) |>.flatMap (fun start => List.range (sequence.length - start + 1) |>.map (fun len => sequence.drop start |>.take len)); let subArraySums := subArrays.filter (· ≠ []) |>.map (·.sum); subArraySums.foldl max (subArraySums.headD 0))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "ms75",
+      "statement": "∀ (sequence : List Int) (h : task_code_precond sequence), task_code_postcond sequence (let subArrays := List.range (sequence.length + 1) |>.flatMap (fun start => List.range (sequence.length - start + 1) |>.map (fun len => sequence.drop start |>.take len)); let subArraySums := subArrays.filter (· ≠ []) |>.map (·.sum); subArraySums.foldl max (subArraySums.headD 0)) h",
+      "proof": "by intro sequence h\n  unfold task_code_postcond\n  exact Refine.maxlist_int _ (List.ne_nil_of_mem (a := ((sequence.drop 0).take 1).sum) (List.mem_map.mpr ⟨(sequence.drop 0).take 1, List.mem_filter.mpr ⟨List.mem_flatMap.mpr ⟨0, List.mem_range.mpr (by omega), List.mem_map.mpr ⟨1, List.mem_range.mpr (by omega), rfl⟩⟩, by rcases sequence with _ | ⟨x, t⟩ <;> simp_all⟩, rfl⟩))"
+    }
+  ]
+}

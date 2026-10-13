@@ -1,0 +1,15 @@
+{
+  "id": "he_043_pairs_sum_to_zero",
+  "dataset": "humaneval",
+  "family": "he_040",
+  "function": "pairsSumToZero",
+  "tests": 16,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 5,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "16/16",
+  "blocked_reason": ""
+}

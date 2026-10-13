@@ -1,0 +1,15 @@
+{
+  "id": "he_046_fib4",
+  "dataset": "humaneval",
+  "family": "he_040",
+  "function": "fib4",
+  "tests": 12,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 2,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "12/12",
+  "blocked_reason": ""
+}

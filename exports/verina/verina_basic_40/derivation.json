@@ -1,0 +1,81 @@
+{
+  "law": "bind",
+  "var": "m",
+  "type": "Int",
+  "prop": "(∃ idx, idx < s.size ∧ s[idx]! = m) ∧ ∀ k, k < s.size → m ≤ s[k]!",
+  "children": [
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "m",
+          "Int"
+        ]
+      ],
+      "init": [
+        "1",
+        "s[0]!"
+      ],
+      "invariant": "1 ≤ i ∧ i ≤ s.size ∧ (∃ idx, idx < i ∧ s[idx]! = m) ∧ ∀ k, k < i → m ≤ s[k]!",
+      "guard": "i < s.size",
+      "variant": "s.size - i",
+      "result": "m",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, min m s[i]!)",
+          "children": []
+        }
+      ]
+    },
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "r",
+          "Int"
+        ],
+        [
+          "found",
+          "Bool"
+        ]
+      ],
+      "init": [
+        "0",
+        "0",
+        "false"
+      ],
+      "invariant": "i ≤ s.size ∧ (found = true → (∃ idx, idx < i ∧ s[idx]! = r) ∧ m < r ∧ ∀ k, k < i → m < s[k]! → r ≤ s[k]!) ∧ (found = false → ∀ k, k < i → s[k]! = m)",
+      "guard": "i < s.size",
+      "variant": "s.size - i",
+      "result": "r",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, if m < s[i]! ∧ (found = false ∨ s[i]! < r) then s[i]! else r, if m < s[i]! ∧ (found = false ∨ s[i]! < r) then true else found)",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "exit40",
+      "statement": "∀ (s : Array Int) (m r : Int) (found : Bool) (i : Nat) (h : secondSmallest_precond s), ((∃ idx, idx < s.size ∧ s[idx]! = m) ∧ ∀ k, k < s.size → m ≤ s[k]!) → (i ≤ s.size ∧ (found = true → (∃ idx, idx < i ∧ s[idx]! = r) ∧ m < r ∧ ∀ k, k < i → m < s[k]! → r ≤ s[k]!) ∧ (found = false → ∀ k, k < i → s[k]! = m)) → ¬ i < s.size → secondSmallest_postcond s r h",
+      "proof": "by intro s m r found i h hm hinv hn\n  obtain ⟨⟨idx, hidx, hmi⟩, hmin⟩ := hm\n  obtain ⟨hi, ht, hf⟩ := hinv\n  have hi' : i = s.size := by omega\n  subst hi'\n  have hfound : found = true := by\n    by_contra hne\n    have hf' : found = false := by simpa using hne\n    have hall := hf hf'\n    obtain ⟨_, p, q, _, _, hpq⟩ := h\n    exact hpq (by rw [hall p ‹p < s.size›, hall q ‹q < s.size›])\n  obtain ⟨⟨j, hj, hsj⟩, hmr, hle⟩ := ht hfound\n  unfold secondSmallest_postcond\n  refine ⟨⟨j, hj, hsj⟩, idx, hidx, by omega, ?_⟩\n  intro k hk hne\n  have h1 := hmin k hk\n  have : m < s[k]! := by omega\n  exact hle k hk this"
+    },
+    {
+      "name": "step40",
+      "statement": "∀ (s : Array Int) (m r : Int) (found : Bool) (i : Nat), ((∃ idx, idx < s.size ∧ s[idx]! = m) ∧ ∀ k, k < s.size → m ≤ s[k]!) → i < s.size → (i ≤ s.size ∧ (found = true → (∃ idx, idx < i ∧ s[idx]! = r) ∧ m < r ∧ ∀ k, k < i → m < s[k]! → r ≤ s[k]!) ∧ (found = false → ∀ k, k < i → s[k]! = m)) → (i + 1 ≤ s.size ∧ ((if m < s[i]! ∧ (found = false ∨ s[i]! < r) then true else found) = true → (∃ idx, idx < i + 1 ∧ s[idx]! = (if m < s[i]! ∧ (found = false ∨ s[i]! < r) then s[i]! else r)) ∧ m < (if m < s[i]! ∧ (found = false ∨ s[i]! < r) then s[i]! else r) ∧ ∀ k, k < i + 1 → m < s[k]! → (if m < s[i]! ∧ (found = false ∨ s[i]! < r) then s[i]! else r) ≤ s[k]!) ∧ ((if m < s[i]! ∧ (found = false ∨ s[i]! < r) then true else found) = false → ∀ k, k < i + 1 → s[k]! = m))",
+      "proof": "by intro s m r found i hm hi hinv\n  obtain ⟨hle, ht, hf⟩ := hinv\n  have hmin := hm.2\n  by_cases hc : m < s[i]! ∧ (found = false ∨ s[i]! < r)\n  · rw [if_pos hc, if_pos hc]\n    have hmi := hc.1\n    refine ⟨by omega, fun _ => ⟨⟨i, by omega, rfl⟩, hmi, ?_⟩, fun h => by simp at h⟩\n    intro k hk hmk\n    by_cases hk' : k = i\n    · subst hk'; exact le_refl _\n    · have hkl : k < i := by omega\n      by_cases hfd : found = true\n      · have := (ht hfd).2.2 k hkl hmk\n        rcases hc.2 with h0 | h0\n        · rw [hfd] at h0; simp at h0\n        · omega\n      · have hf0 : found = false := by simpa using hfd\n        have := hf hf0 k hkl; omega\n  · rw [if_neg hc, if_neg hc]\n    refine ⟨by omega, ?_, ?_⟩\n    · intro hfd\n      obtain ⟨⟨idx, hidx, hv⟩, hmr, hle'⟩ := ht hfd\n      refine ⟨⟨idx, by omega, hv⟩, hmr, ?_⟩\n      intro k hk hmk\n      by_cases hk' : k = i\n      · rw [hk'] at hmk ⊢\n        by_contra hcon\n        exact hc ⟨hmk, Or.inr (by omega)⟩\n      · exact hle' k (by omega) hmk\n    · intro hf0 k hk\n      by_cases hk' : k = i\n      · rw [hk']\n        have := hmin i hi\n        by_contra hcon\n        exact hc ⟨by omega, Or.inl hf0⟩\n      · exact hf hf0 k (by omega)"
+    }
+  ]
+}

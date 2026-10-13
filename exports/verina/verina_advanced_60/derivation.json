@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "(nums.filter (fun n => n % 2 == 0), nums.filter (fun n => n % 2 == 1))",
+  "children": []
+}

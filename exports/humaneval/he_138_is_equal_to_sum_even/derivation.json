@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "decide (n ≥ 8 ∧ n % 2 = 0)",
+  "children": []
+}

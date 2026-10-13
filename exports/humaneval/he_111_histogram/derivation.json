@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "(((test.splitOn \" \").filter (fun w => w != \"\")).dedup.filter (fun w => ((test.splitOn \" \").filter (fun w => w != \"\")).count w == (((test.splitOn \" \").filter (fun w => w != \"\")).map (fun w => ((test.splitOn \" \").filter (fun w => w != \"\")).count w)).foldl max 0)).map (fun w => (w, ((test.splitOn \" \").filter (fun w => w != \"\")).count w))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "foldl_max_nat",
+      "statement": "∀ (l : List Nat) (m : Nat), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l",
+      "proof": "by\n  intro l\n  induction l with\n  | nil => intro m; simp\n  | cons a t ih =>\n    intro m\n    obtain ⟨h1, h2, h3⟩ := ih (max m a)\n    simp only [List.foldl_cons]\n    refine ⟨?_, ?_, ?_⟩\n    · rcases h1 with h | h\n      · by_cases hm : m ≤ a\n        · right; rw [max_eq_right hm] at h ⊢; rw [h]; simp\n        · left\n          have hmx : max m a = m := max_eq_left (by omega)\n          rw [hmx] at h ⊢; exact h\n      · right; exact List.mem_cons_of_mem a h\n    · exact le_trans (le_max_left m a) h2\n    · intro x hx\n      rcases List.mem_cons.mp hx with rfl | hx'\n      · exact le_trans (le_max_right m x) h2\n      · exact h3 x hx'"
+    },
+    {
+      "name": "hist_ok",
+      "statement": "∀ (ws : List String), ((ws = [] → ((ws.dedup.filter (fun w => ws.count w == (ws.map (fun w => ws.count w)).foldl max 0)).map (fun w => (w, ws.count w))) = []) ∧ (ws ≠ [] → (∀ p ∈ (ws.dedup.filter (fun w => ws.count w == (ws.map (fun w => ws.count w)).foldl max 0)).map (fun w => (w, ws.count w)), p.1 ∈ ws ∧ p.2 = ws.count p.1 ∧ ∀ w ∈ ws, ws.count w ≤ p.2) ∧ (∀ w ∈ ws, (∀ v ∈ ws, ws.count v ≤ ws.count w) → ∃ p ∈ (ws.dedup.filter (fun w => ws.count w == (ws.map (fun w => ws.count w)).foldl max 0)).map (fun w => (w, ws.count w)), p.1 = w) ∧ (((ws.dedup.filter (fun w => ws.count w == (ws.map (fun w => ws.count w)).foldl max 0)).map (fun w => (w, ws.count w))).map Prod.fst).Nodup))",
+      "proof": "by\n  intro ws\n  refine ⟨fun h => by subst h; simp, ?_⟩\n  intro hne\n  obtain ⟨h1, h2, h3⟩ := foldl_max_nat (ws.map (fun w => ws.count w)) 0\n  have hnd : (ws.dedup.filter (fun w => ws.count w == (ws.map (fun w => ws.count w)).foldl max 0)).Nodup :=\n    (List.nodup_dedup ws).filter _\n  refine ⟨?_, ?_, ?_⟩\n  · intro p hp\n    obtain ⟨w, hw, rfl⟩ := List.mem_map.mp hp\n    rw [List.mem_filter] at hw\n    obtain ⟨hwd, hwb⟩ := hw\n    have hwm : w ∈ ws := List.mem_dedup.mp hwd\n    have hbeq : ws.count w = (ws.map (fun w => ws.count w)).foldl max 0 := by simpa using hwb\n    refine ⟨hwm, rfl, ?_⟩\n    intro v hv\n    rw [hbeq]\n    exact h3 _ (List.mem_map.mpr ⟨v, hv, rfl⟩)\n  · intro w hw hmax\n    have hbest : (ws.map (fun w => ws.count w)).foldl max 0 = ws.count w := by\n      apply le_antisymm\n      · rcases h1 with h | h\n        · rw [h]; exact Nat.zero_le _\n        · obtain ⟨v, hv, hveq⟩ := List.mem_map.mp h\n          rw [← hveq]; exact hmax v hv\n      · exact h3 _ (List.mem_map.mpr ⟨w, hw, rfl⟩)\n    refine ⟨(w, ws.count w), List.mem_map.mpr ⟨w, ?_, rfl⟩, rfl⟩\n    rw [List.mem_filter]\n    exact ⟨List.mem_dedup.mpr hw, by simpa [hbest]⟩\n  · rw [List.map_map]\n    have hc : (Prod.fst ∘ fun w => (w, ws.count w)) = fun w => w := rfl\n    rw [hc, List.map_id']\n    exact hnd"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "law": "bind",
+  "var": "a",
+  "type": "Option Int",
+  "prop": "(a = none ∧ ∀ x ∈ lst, x ≥ 0) ∨ (∃ y ∈ lst, a = some y ∧ y < 0 ∧ ∀ x ∈ lst, x < 0 → x ≤ y)",
+  "children": [
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "m",
+          "Int"
+        ],
+        [
+          "f",
+          "Bool"
+        ]
+      ],
+      "init": [
+        "0",
+        "0",
+        "false"
+      ],
+      "invariant": "i ≤ lst.length ∧ (f = true ↔ ∃ k, k < i ∧ lst[k]! < 0) ∧ (f = true → (∃ k, k < i ∧ lst[k]! = m) ∧ m < 0 ∧ ∀ k, k < i → lst[k]! < 0 → lst[k]! ≤ m)",
+      "guard": "i < lst.length",
+      "variant": "lst.length - i",
+      "result": "if f = true then some m else none",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, if lst[i]! < 0 ∧ (f = false ∨ m < lst[i]!) then lst[i]! else m, f || decide (lst[i]! < 0))",
+          "children": []
+        }
+      ],
+      "lemmas": [
+        {
+          "name": "neg_exit",
+          "statement": "∀ (lst : List Int) (m : Int) (f : Bool), (f = true ↔ ∃ k, k < lst.length ∧ lst[k]! < 0) → (f = true → (∃ k, k < lst.length ∧ lst[k]! = m) ∧ m < 0 ∧ ∀ k, k < lst.length → lst[k]! < 0 → lst[k]! ≤ m) → (((if f = true then some m else none) = none ∧ ∀ x ∈ lst, x ≥ 0) ∨ (∃ y ∈ lst, (if f = true then some m else none) = some y ∧ y < 0 ∧ ∀ x ∈ lst, x < 0 → x ≤ y))",
+          "proof": "by intro lst m f h1 h2\n  by_cases hf : f = true\n  · right\n    obtain ⟨⟨k, hk, hkm⟩, hm, hall⟩ := h2 hf\n    refine ⟨m, ?_, by simp [hf], hm, ?_⟩\n    · rw [← hkm]; exact Refine.getElem_bang_mem lst k hk\n    · intro x hx hx0\n      obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n      exact hall j hj hx0\n  · left\n    refine ⟨by simp [hf], ?_⟩\n    intro x hx\n    obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n    by_contra hneg\n    exact hf (h1.mpr ⟨j, hj, by omega⟩)"
+        }
+      ]
+    },
+    {
+      "law": "bind",
+      "var": "b",
+      "type": "Option Int",
+      "prop": "(b = none ∧ ∀ x ∈ lst, x ≤ 0) ∨ (∃ y ∈ lst, b = some y ∧ 0 < y ∧ ∀ x ∈ lst, 0 < x → y ≤ x)",
+      "children": [
+        {
+          "law": "loop",
+          "state": [
+            [
+              "i",
+              "Nat"
+            ],
+            [
+              "m",
+              "Int"
+            ],
+            [
+              "f",
+              "Bool"
+            ]
+          ],
+          "init": [
+            "0",
+            "0",
+            "false"
+          ],
+          "invariant": "i ≤ lst.length ∧ (f = true ↔ ∃ k, k < i ∧ lst[k]! > 0) ∧ (f = true → (∃ k, k < i ∧ lst[k]! = m) ∧ 0 < m ∧ ∀ k, k < i → lst[k]! > 0 → m ≤ lst[k]!)",
+          "guard": "i < lst.length",
+          "variant": "lst.length - i",
+          "result": "if f = true then some m else none",
+          "children": [
+            {
+              "law": "term",
+              "expr": "(i + 1, if lst[i]! > 0 ∧ (f = false ∨ lst[i]! < m) then lst[i]! else m, f || decide (lst[i]! > 0))",
+              "children": []
+            }
+          ],
+          "lemmas": [
+            {
+              "name": "pos_exit",
+              "statement": "∀ (lst : List Int) (m : Int) (f : Bool), (f = true ↔ ∃ k, k < lst.length ∧ lst[k]! > 0) → (f = true → (∃ k, k < lst.length ∧ lst[k]! = m) ∧ 0 < m ∧ ∀ k, k < lst.length → lst[k]! > 0 → m ≤ lst[k]!) → (((if f = true then some m else none) = none ∧ ∀ x ∈ lst, x ≤ 0) ∨ (∃ y ∈ lst, (if f = true then some m else none) = some y ∧ 0 < y ∧ ∀ x ∈ lst, 0 < x → y ≤ x))",
+              "proof": "by intro lst m f h1 h2\n  by_cases hf : f = true\n  · right\n    obtain ⟨⟨k, hk, hkm⟩, hm, hall⟩ := h2 hf\n    refine ⟨m, ?_, by simp [hf], hm, ?_⟩\n    · rw [← hkm]; exact Refine.getElem_bang_mem lst k hk\n    · intro x hx hx0\n      obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n      exact hall j hj hx0\n  · left\n    refine ⟨by simp [hf], ?_⟩\n    intro x hx\n    obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n    by_contra hpos\n    exact hf (h1.mpr ⟨j, hj, by omega⟩)"
+            }
+          ]
+        },
+        {
+          "law": "term",
+          "expr": "(a, b)",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "law": "cases",
+  "cond": "need ≤ remaining",
+  "children": [
+    {
+      "law": "term",
+      "expr": "[number + need, remaining - need]",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "[number + remaining, 0]",
+      "children": []
+    }
+  ]
+}

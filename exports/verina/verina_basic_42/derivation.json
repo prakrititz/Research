@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "List.length (List.filter isDigit s.toList)",
+  "children": []
+}

@@ -1,0 +1,71 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "best",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0",
+    "(a[0]! - b[0]!).natAbs"
+  ],
+  "invariant": "i ≤ a.size ∧ (∃ ii, ii < a.size ∧ ∃ jj, jj < b.size ∧ best = (a[ii]! - b[jj]!).natAbs) ∧ ∀ k, k < i → ∀ j, j < b.size → best ≤ (a[k]! - b[j]!).natAbs",
+  "guard": "i < a.size",
+  "variant": "a.size - i",
+  "result": "best",
+  "children": [
+    {
+      "law": "bind",
+      "var": "row",
+      "type": "Nat",
+      "prop": "(∃ jj, jj < b.size ∧ row = (a[i]! - b[jj]!).natAbs) ∧ ∀ jj, jj < b.size → row ≤ (a[i]! - b[jj]!).natAbs",
+      "children": [
+        {
+          "law": "loop",
+          "state": [
+            [
+              "j",
+              "Nat"
+            ],
+            [
+              "row",
+              "Nat"
+            ]
+          ],
+          "init": [
+            "1",
+            "(a[i]! - b[0]!).natAbs"
+          ],
+          "invariant": "1 ≤ j ∧ j ≤ b.size ∧ (∃ jj, jj < j ∧ row = (a[i]! - b[jj]!).natAbs) ∧ ∀ jj, jj < j → row ≤ (a[i]! - b[jj]!).natAbs",
+          "guard": "j < b.size",
+          "variant": "b.size - j",
+          "result": "row",
+          "children": [
+            {
+              "law": "term",
+              "expr": "(j + 1, min row (a[i]! - b[j]!).natAbs)",
+              "children": []
+            }
+          ]
+        },
+        {
+          "law": "term",
+          "expr": "(i + 1, min best row)",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "exit54",
+      "statement": "∀ (a b : Array Int) (i best : Nat) (h : CanyonSearch_precond a b), (i ≤ a.size ∧ (∃ ii, ii < a.size ∧ ∃ jj, jj < b.size ∧ best = (a[ii]! - b[jj]!).natAbs) ∧ ∀ k, k < i → ∀ j, j < b.size → best ≤ (a[k]! - b[j]!).natAbs) → ¬ i < a.size → CanyonSearch_postcond a b best h",
+      "proof": "by intro a b i best h hinv hn\n  obtain ⟨hi, ⟨ii, hii, jj, hjj, hb⟩, hall⟩ := hinv\n  have hi' : i = a.size := by omega\n  subst hi'\n  unfold CanyonSearch_postcond\n  constructor\n  · rw [← Array.any_toList, List.any_eq_true]\n    refine ⟨a[ii]!, ?_, ?_⟩\n    · rw [← Refine.toList_getElem_bang a ii hii]; exact Refine.getElem_bang_mem _ _ (by simpa using hii)\n    · rw [← Array.any_toList, List.any_eq_true]\n      refine ⟨b[jj]!, ?_, by simpa using hb⟩\n      rw [← Refine.toList_getElem_bang b jj hjj]; exact Refine.getElem_bang_mem _ _ (by simpa using hjj)\n  · rw [← Array.all_toList, List.all_eq_true, Refine.forall_mem_toList_iff_idx]\n    intro k hk\n    rw [← Array.all_toList, List.all_eq_true, Refine.forall_mem_toList_iff_idx]\n    intro j hj\n    simpa using hall k hk j hj"
+    }
+  ]
+}

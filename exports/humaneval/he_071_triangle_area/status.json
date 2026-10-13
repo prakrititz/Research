@@ -1,0 +1,15 @@
+{
+  "id": "he_071_triangle_area",
+  "dataset": "humaneval",
+  "family": "he_060",
+  "function": "triangleArea71",
+  "tests": 16,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 3,
+  "helper_lemmas": 3,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "16/16",
+  "blocked_reason": ""
+}

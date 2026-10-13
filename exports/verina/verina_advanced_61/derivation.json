@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "((List.range nums.length).map (fun i => (nums.take i).myprod * (nums.drop (i + 1)).myprod))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "prod61",
+      "statement": "∀ (nums : List Int) (h : productExceptSelf_precond nums), productExceptSelf_postcond nums ((List.range nums.length).map (fun i => (nums.take i).myprod * (nums.drop (i + 1)).myprod)) h",
+      "proof": "by intro nums h\n  unfold productExceptSelf_postcond\n  refine ⟨by simp, ?_⟩\n  rw [List.all_eq_true]; intro i hi\n  have hi' := List.mem_range.mp hi\n  simp only [decide_eq_true_eq]\n  rw [getElem!_pos _ i (by simpa using hi')]\n  simp"
+    }
+  ]
+}

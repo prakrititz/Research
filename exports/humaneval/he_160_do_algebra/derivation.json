@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "evalOps operator.length operand operator",
+  "children": []
+}

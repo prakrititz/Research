@@ -1,0 +1,5 @@
+# he_113_odd_count
+
+`oddCount(lst : List String) : List String`
+
+Given a list of strings, where each string consists of only digits, return a list. Each element i of the output is "the number of odd elements in the string i of the input." where all the i's are replaced by the number of odd digits in the i'th string of the input.

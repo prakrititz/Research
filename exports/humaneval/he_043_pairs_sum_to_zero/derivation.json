@@ -1,0 +1,64 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "j",
+      "Nat"
+    ],
+    [
+      "found",
+      "Bool"
+    ]
+  ],
+  "init": [
+    "0",
+    "false"
+  ],
+  "invariant": "j ≤ l.length ∧ (found = true ↔ ∃ b, b < j ∧ ∃ a, a < b ∧ l[a]! + l[b]! = 0)",
+  "guard": "j < l.length",
+  "variant": "l.length - j",
+  "result": "found",
+  "children": [
+    {
+      "law": "bind",
+      "var": "hit",
+      "type": "Bool",
+      "prop": "hit = true ↔ ∃ a, a < j ∧ l[a]! + l[j]! = 0",
+      "children": [
+        {
+          "law": "loop",
+          "state": [
+            [
+              "i",
+              "Nat"
+            ],
+            [
+              "seen",
+              "Bool"
+            ]
+          ],
+          "init": [
+            "0",
+            "false"
+          ],
+          "invariant": "i ≤ j ∧ (seen = true ↔ ∃ a, a < i ∧ l[a]! + l[j]! = 0)",
+          "guard": "i < j",
+          "variant": "j - i",
+          "result": "seen",
+          "children": [
+            {
+              "law": "term",
+              "expr": "(i + 1, seen || decide (l[i]! + l[j]! = 0))",
+              "children": []
+            }
+          ]
+        },
+        {
+          "law": "term",
+          "expr": "(j + 1, found || hit)",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

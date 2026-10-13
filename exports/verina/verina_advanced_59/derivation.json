@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "decide ((s.data.filter (fun c => c.isAlpha || c.isDigit) |>.map Char.toLower) = (s.data.filter (fun c => c.isAlpha || c.isDigit) |>.map Char.toLower).reverse)",
+  "children": []
+}

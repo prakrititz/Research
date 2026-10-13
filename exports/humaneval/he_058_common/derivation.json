@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "((l1.filter (fun x => decide (x ∈ l2))).dedup).mergeSort (fun a b => decide (a ≤ b))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "common_sorted_ok",
+      "statement": "∀ (l1 l2 : List Int), (∀ i, i < (((l1.filter (fun x => decide (x ∈ l2))).dedup).mergeSort (fun a b => decide (a ≤ b))).length - 1 → (((l1.filter (fun x => decide (x ∈ l2))).dedup).mergeSort (fun a b => decide (a ≤ b)))[i]! < (((l1.filter (fun x => decide (x ∈ l2))).dedup).mergeSort (fun a b => decide (a ≤ b)))[i + 1]!) ∧ (∀ x ∈ ((l1.filter (fun x => decide (x ∈ l2))).dedup).mergeSort (fun a b => decide (a ≤ b)), x ∈ l1 ∧ x ∈ l2) ∧ ∀ x ∈ l1, x ∈ l2 → x ∈ ((l1.filter (fun x => decide (x ∈ l2))).dedup).mergeSort (fun a b => decide (a ≤ b))",
+      "proof": "by\n  intro l1 l2\n  have hp : (((l1.filter (fun x => decide (x ∈ l2))).dedup).mergeSort (fun a b => decide (a ≤ b))).Perm (l1.filter (fun x => decide (x ∈ l2))).dedup :=\n    List.mergeSort_perm _ _\n  have hnd : (((l1.filter (fun x => decide (x ∈ l2))).dedup).mergeSort (fun a b => decide (a ≤ b))).Nodup :=\n    hp.nodup_iff.mpr ((List.nodup_dedup _))\n  have hsort : List.Pairwise (fun a b => decide (a ≤ b) = true)\n      (((l1.filter (fun x => decide (x ∈ l2))).dedup).mergeSort (fun a b => decide (a ≤ b))) :=\n    List.pairwise_mergeSort (by intro a b c h1 h2; simp at *; omega) (by intro a b; simp; omega) _\n  refine ⟨?_, ?_, ?_⟩\n  · intro i hi\n    have hi' : i + 1 < (((l1.filter (fun x => decide (x ∈ l2))).dedup).mergeSort (fun a b => decide (a ≤ b))).length := by omega\n    rw [List.Nodup, List.pairwise_iff_getElem] at hnd\n    rw [List.pairwise_iff_getElem] at hsort\n    have h1 := hnd i (i + 1) (by omega) hi' (by omega)\n    have h2 := hsort i (i + 1) (by omega) hi' (by omega)\n    rw [getElem!_pos _ i (by omega), getElem!_pos _ (i + 1) hi']\n    simp at h2\n    omega\n  · intro x hx\n    simpa using hx\n  · intro x hx h2\n    simpa using ⟨hx, h2⟩"
+    }
+  ]
+}

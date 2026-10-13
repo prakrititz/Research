@@ -1,0 +1,48 @@
+{
+  "law": "bind",
+  "var": "r",
+  "type": "Nat",
+  "prop": "r * r ≤ n ∧ n < (r + 1) * (r + 1)",
+  "children": [
+    {
+      "law": "loop",
+      "state": [
+        [
+          "r",
+          "Nat"
+        ]
+      ],
+      "init": [
+        "0"
+      ],
+      "invariant": "r * r ≤ n",
+      "guard": "(r + 1) * (r + 1) ≤ n",
+      "variant": "n - r",
+      "result": "r",
+      "children": [
+        {
+          "law": "term",
+          "expr": "r + 1",
+          "children": []
+        }
+      ]
+    },
+    {
+      "law": "term",
+      "expr": "decide (r * r = n)",
+      "children": [],
+      "lemmas": [
+        {
+          "name": "sq48",
+          "statement": "∀ (n r : Nat), (r * r ≤ n ∧ n < (r + 1) * (r + 1)) → (decide (r * r = n) = true ↔ ∃ i : Nat, i * i = n)",
+          "proof": "by intro n r hr\n  obtain ⟨h1, h2⟩ := hr\n  simp only [decide_eq_true_eq]\n  constructor\n  · intro h; exact ⟨r, h⟩\n  · rintro ⟨i, hi⟩\n    rcases lt_trichotomy i r with hlt | heq | hgt\n    · exfalso; nlinarith\n    · subst heq; exact hi\n    · exfalso; nlinarith"
+        },
+        {
+          "name": "sq48_ok",
+          "statement": "∀ (n r : Nat), (r * r ≤ n ∧ n < (r + 1) * (r + 1)) → isPerfectSquare_postcond n (decide (r * r = n))",
+          "proof": "by intro n r hr\n  unfold isPerfectSquare_postcond\n  exact sq48 n r hr"
+        }
+      ]
+    }
+  ]
+}

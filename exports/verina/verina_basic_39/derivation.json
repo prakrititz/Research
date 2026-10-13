@@ -1,0 +1,23 @@
+{
+  "law": "cases",
+  "cond": "l.length = 0",
+  "children": [
+    {
+      "law": "term",
+      "expr": "l",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "(List.range l.length).map (fun i : Nat => l.getD (Int.toNat ((Int.ofNat i - Int.ofNat n + Int.ofNat l.length) % Int.ofNat l.length)) (l.headD 0))",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "rotate_ok",
+      "statement": "∀ (l : List Int) (n : Nat) (h : rotateRight_precond l n), l.length ≠ 0 → rotateRight_postcond l n ((List.range l.length).map (fun i : Nat => l.getD (Int.toNat ((Int.ofNat i - Int.ofNat n + Int.ofNat l.length) % Int.ofNat l.length)) (l.headD 0))) h",
+      "proof": "by intro l n h hne\n  unfold rotateRight_postcond\n  refine ⟨by simp, ?_⟩\n  intro i hi\n  have hidx : Int.toNat ((Int.ofNat i - Int.ofNat n + Int.ofNat l.length) % Int.ofNat l.length) < l.length := by\n    simp only [Int.ofNat_eq_natCast]\n    have h1 := Int.emod_lt_of_pos ((i : Int) - (n : Int) + (l.length : Int)) (by omega : (0:Int) < (l.length : Int))\n    have h0 := Int.emod_nonneg ((i : Int) - (n : Int) + (l.length : Int)) (by omega : (l.length : Int) ≠ 0)\n    omega\n  simp only [List.getElem?_map, List.getElem?_range hi, Option.map_some]\n  rw [List.getD_eq_getElem _ _ hidx, List.getElem?_eq_getElem hidx]"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "he_034_unique",
+  "dataset": "humaneval",
+  "family": "he_020",
+  "function": "unique",
+  "tests": 9,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 1,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "9/9",
+  "blocked_reason": ""
+}

@@ -1,0 +1,15 @@
+{
+  "id": "he_102_choose_num",
+  "dataset": "humaneval",
+  "family": "he_100",
+  "function": "chooseNum",
+  "tests": 16,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 7,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "16/16",
+  "blocked_reason": ""
+}

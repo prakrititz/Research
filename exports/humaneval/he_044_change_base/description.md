@@ -1,0 +1,5 @@
+# he_044_change_base
+
+`changeBase(x : Nat, base : Nat) : String`
+
+Change the numerical base of the input number x to base; return the string representation after the conversion. The base is less than 10.

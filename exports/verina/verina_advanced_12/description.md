@@ -1,0 +1,14 @@
+# verina_advanced_12
+
+`firstDuplicate(lst : List Int) : Option Int`
+
+-----Description-----
+Write a Lean 4 function that returns the first duplicate integer found in a list. The function should return the value of the first duplicate it encounters, scanning from left to right. If no duplicates exist, return -1.
+
+-----Input-----
+lst: A list of integers.
+
+-----Output-----
+An Option Int:
+- `some x` where x is the first duplicated value encountered when scanning left to right
+- `none` if no duplicates exist in the list

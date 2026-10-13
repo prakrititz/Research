@@ -1,0 +1,23 @@
+{
+  "law": "cases",
+  "cond": "planet1 ∈ solarPlanets ∧ planet2 ∈ solarPlanets",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(solarPlanets.drop (min (solarPlanets.idxOf planet1) (solarPlanets.idxOf planet2) + 1)).take (max (solarPlanets.idxOf planet1) (solarPlanets.idxOf planet2) - min (solarPlanets.idxOf planet1) (solarPlanets.idxOf planet2) - 1)",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "[]",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "planet_witness",
+      "statement": "∀ (p1 p2 : String), p1 ∈ solarPlanets → p2 ∈ solarPlanets → ∃ i, i < 8 ∧ solarPlanets[i]! = p1 ∧ ∃ j, j < 8 ∧ solarPlanets[j]! = p2 ∧ (solarPlanets.drop (min (solarPlanets.idxOf p1) (solarPlanets.idxOf p2) + 1)).take (max (solarPlanets.idxOf p1) (solarPlanets.idxOf p2) - min (solarPlanets.idxOf p1) (solarPlanets.idxOf p2) - 1) = (solarPlanets.drop (min i j + 1)).take (max i j - min i j - 1)",
+      "proof": "by intro p1 p2 h1 h2\n  have e1 : solarPlanets.idxOf p1 < solarPlanets.length := List.idxOf_lt_length_of_mem h1\n  have e2 : solarPlanets.idxOf p2 < solarPlanets.length := List.idxOf_lt_length_of_mem h2\n  have hl : solarPlanets.length = 8 := rfl\n  refine ⟨solarPlanets.idxOf p1, by omega, ?_, solarPlanets.idxOf p2, by omega, ?_, rfl⟩\n  · rw [getElem!_pos solarPlanets _ e1]; exact List.getElem_idxOf e1\n  · rw [getElem!_pos solarPlanets _ e2]; exact List.getElem_idxOf e2"
+    }
+  ]
+}

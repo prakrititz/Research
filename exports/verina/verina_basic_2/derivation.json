@@ -1,0 +1,39 @@
+{
+  "law": "cases",
+  "cond": "s.size = 0",
+  "children": [
+    {
+      "law": "term",
+      "expr": "none",
+      "children": []
+    },
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "m",
+          "Nat"
+        ]
+      ],
+      "init": [
+        "1",
+        "s[0]!"
+      ],
+      "invariant": "1 ≤ i ∧ i ≤ s.size ∧ (∃ j, j < i ∧ s[j]! = m) ∧ ∀ j, j < i → m ≤ s[j]!",
+      "guard": "i < s.size",
+      "variant": "s.size - i",
+      "result": "some m",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, min m s[i]!)",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

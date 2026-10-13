@@ -1,0 +1,5 @@
+# he_152_compare
+
+`compareGuess(game : List Int, guess : List Int) : List Int`
+
+For each match, return how far off the guess was: the absolute difference between the score and the guess at the same position (0 if the guess is right).

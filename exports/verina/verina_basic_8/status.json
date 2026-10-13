@@ -1,0 +1,21 @@
+{
+  "id": "verina_basic_8",
+  "dataset": "verina",
+  "family": "basic",
+  "function": "myMin",
+  "tests": 8,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 3,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "8/8",
+  "blocked_reason": "",
+  "spec_checks": {
+    "compiles": true,
+    "reference_passes": "8/8",
+    "accepts_expected": "8/8",
+    "rejects_wrong": "24/24"
+  }
+}
