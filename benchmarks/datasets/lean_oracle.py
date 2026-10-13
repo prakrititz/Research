@@ -22,26 +22,7 @@ LIBRARY = os.path.join(ROOT, "benchmarks", "datasets", "lean_specs")
 RESULTS = os.path.join(ROOT, "benchmarks", "results", "lean_specs")
 
 
-def loop(state, init, invariant, guard, variant, result, body):
-    return {"law": "loop", "state": state, "init": init, "invariant": invariant, "guard": guard, "variant": variant,
-            "result": result, "children": [body]}
-
-
-def term(expr):
-    return {"law": "term", "expr": expr, "children": []}
-
-
-def cases(cond, yes, no):
-    return {"law": "cases", "cond": cond, "children": [yes, no]}
-
-
-def with_lemmas(tree, lemmas):
-    """The same step, bringing helper lemmas (name, statement, proof) that Lean proves first."""
-    return {**tree, "lemmas": lemmas}
-
-
-def bind(var, type_, prop, first, second):
-    return {"law": "bind", "var": var, "type": type_, "prop": prop, "children": [first, second]}
+from benchmarks.datasets.derivation_dsl import bind, cases, loop, term, with_lemmas  # noqa: E402,F401
 
 
 ORACLES = {
@@ -394,6 +375,16 @@ ORACLES.update({
     "he_163_generate_integers": with_lemmas(
         term("(List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b))"), [_GENERATE_OK]),
 })
+
+
+# --- further batches live in their own modules (they import only derivation_dsl) ---
+for _module in ("lean_oracle_he_a",):
+    try:
+        import importlib
+        ORACLES.update(importlib.import_module(f"benchmarks.datasets.{_module}").ORACLES_MORE)
+    except ModuleNotFoundError as _error:
+        if _error.name != f"benchmarks.datasets.{_module}":
+            raise
 
 
 def run(only=None, imports=None, oracles=None, library=None):
