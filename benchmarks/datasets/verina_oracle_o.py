@@ -1,0 +1,52 @@
+r"""Hand-written derivations for Verina tasks, batch O (advanced: products, unique elements, digit lists, two-sum searches)."""
+from benchmarks.datasets.derivation_dsl import bind, cases, loop, term, with_lemmas
+from benchmarks.datasets.verina_oracle_i import lemma
+
+_E61 = "(List.range nums.length).map (fun i => (nums.take i).myprod * (nums.drop (i + 1)).myprod)"
+_L61 = lemma("prod61", "productExceptSelf", "(nums : List Int)", ["nums"], _E61,
+             "refine ⟨by simp, ?_⟩\n  rw [List.all_eq_true]; intro i hi\n  have hi' := List.mem_range.mp hi\n"
+             "  simp only [decide_eq_true_eq]\n  rw [getElem!_pos _ i (by simpa using hi')]\n  simp")
+
+_FL1 = {
+    "name": "fl_eq",
+    "statement": "∀ (x : Int) (l : List Int), filterlist x l = l.filter (fun y => decide (y = x))",
+    "proof": "by intro x l\n  unfold filterlist\n  induction l with\n  | nil => simp [filterlist.aux]\n"
+             "  | cons y ys ih => simp only [filterlist.aux, List.filter_cons, ih]; split_ifs <;> simp_all"}
+_FLC = {
+    "name": "fl_count",
+    "statement": "∀ (l : List Int) (y : Int), (l.filter (fun z => decide (z = y))).length = l.count y",
+    "proof": "by intro l y\n  rw [List.count_eq_length_filter]\n  rfl"}
+_PAIR1 = {
+    "name": "pair_le_countP",
+    "statement": "∀ (l : List Int) (p : Int → Bool) (x r : Int), x ≠ r → p x = true → p r = true → "
+                 "(l.filter (fun y => decide (y = x))).length + (l.filter (fun y => decide (y = r))).length ≤ l.countP p",
+    "proof": "by intro l p x r hxr hx hr\n  induction l with\n  | nil => simp\n  | cons a t ih =>\n"
+             "    by_cases hax : a = x\n    · subst hax\n      have : ¬ a = r := hxr\n      simp [List.filter_cons, List.countP_cons, this, hx]; omega\n"
+             "    · by_cases har : a = r\n      · subst har\n        simp [List.filter_cons, List.countP_cons, hax, hr]; omega\n"
+             "      · simp [List.filter_cons, List.countP_cons, hax, har]; split_ifs <;> omega"}
+_E1 = "(nums.find? (fun x => decide (nums.count x = 1))).getD 0"
+_L1 = lemma("single1", "FindSingleNumber", "(nums : List Int)", ["nums"], _E1,
+            "obtain ⟨hall, hcnt⟩ := h\n"
+            "  have h1mem : 1 ∈ nums.map (fun x => nums.count x) := List.count_pos_iff.mp (by omega)\n"
+            "  obtain ⟨x0, hx0, hc0⟩ := List.mem_map.mp h1mem\n"
+            "  have hany : nums.any (fun x => decide (nums.count x = 1)) = true := List.any_eq_true.mpr ⟨x0, hx0, by simpa using hc0⟩\n"
+            "  obtain ⟨r, hr, hrmem, hp⟩ := Refine.find_some_of_any nums _ hany\n"
+            "  have hcr : nums.count r = 1 := of_decide_eq_true hp\n"
+            f"  have e : {_E1} = r := by rw [hr]; rfl\n  rw [e]\n"
+            "  have hflen : ∀ y, (filterlist y nums).length = nums.count y := by\n"
+            "    intro y; rw [fl_eq]; exact fl_count nums y\n"
+            "  refine ⟨List.length_pos_of_mem hrmem, by rw [hflen, hcr], ?_⟩\n"
+            "  intro x hx\n  by_cases hxr : x = r\n  · exact Or.inl hxr\n  · right\n    rw [hflen]\n"
+            "    have hx12 := List.all_eq_true.mp hall _ (List.mem_map.mpr ⟨x, hx, rfl⟩)\n"
+            "    simp only [decide_eq_true_eq] at hx12\n    rcases hx12 with h1 | h2\n"
+            "    · exfalso\n      have := pair_le_countP nums (fun y => decide (nums.count y = 1)) x r hxr (by simpa using h1) (by simpa using hcr)\n"
+            "      have hc : (nums.map (fun x => nums.count x)).count 1 = nums.countP (fun y => decide (nums.count y = 1)) := by\n"
+            "        rw [List.count_eq_countP, List.countP_map]; rfl\n"
+            "      have hxl : (nums.filter (fun y => decide (y = x))).length = 1 := by rw [fl_count]; exact h1\n"
+            "      have hrl : (nums.filter (fun y => decide (y = r))).length = 1 := by rw [fl_count]; exact hcr\n"
+            "      omega\n    · exact h2")
+
+ORACLES_MORE = {
+    "verina_advanced_61": with_lemmas(term(f"({_E61})"), [_L61]),
+    "verina_advanced_1": with_lemmas(term(_E1), [_FL1, _FLC, _PAIR1, _L1]),
+}

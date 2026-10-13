@@ -387,6 +387,133 @@ theorem find_majority {α : Type} [DecidableEq α] [Inhabited α] (xs : List α)
   have hp' := of_decide_eq_true hp
   omega
 
+theorem ts_inner_step (S : Nat → Nat → Int) (target : Int) (n i j jb : Nat) (ok : Bool)
+    (hinv : i + 1 ≤ j ∧ j ≤ n ∧ (ok = true → i < jb ∧ jb < n ∧ S i jb = target ∧ ∀ j', i < j' → j' < jb → S i j' ≠ target) ∧
+      (ok = false → ∀ j', i < j' → j' < j → S i j' ≠ target))
+    (hg : j < n ∧ ok = false) :
+    i + 1 ≤ j + 1 ∧ j + 1 ≤ n ∧
+      ((decide (S i j = target) || ok) = true → i < (if S i j = target then j else jb) ∧ (if S i j = target then j else jb) < n ∧
+        S i (if S i j = target then j else jb) = target ∧
+        ∀ j', i < j' → j' < (if S i j = target then j else jb) → S i j' ≠ target) ∧
+      ((decide (S i j = target) || ok) = false → ∀ j', i < j' → j' < j + 1 → S i j' ≠ target) := by
+  obtain ⟨hij, hjn, hok1, hok2⟩ := hinv
+  obtain ⟨hjlt, hokf⟩ := hg
+  subst hokf
+  by_cases hs : S i j = target
+  · simp only [if_pos hs, decide_eq_true hs, Bool.true_or]
+    refine ⟨by omega, by omega, fun _ => ⟨by omega, hjlt, hs, ?_⟩, fun h => by simp at h⟩
+    intro j' h1 h2
+    exact hok2 rfl j' h1 h2
+  · simp only [if_neg hs, decide_eq_false hs, Bool.false_or]
+    refine ⟨by omega, by omega, fun hok => by simp at hok, fun _ => ?_⟩
+    intro j' h1 h2
+    by_cases hje : j' = j
+    · subst hje; exact hs
+    · exact hok2 rfl j' h1 (by omega)
+
+theorem ts_inner_exit (S : Nat → Nat → Int) (target : Int) (n i j jb : Nat) (ok : Bool)
+    (hinv : i + 1 ≤ j ∧ j ≤ n ∧ (ok = true → i < jb ∧ jb < n ∧ S i jb = target ∧ ∀ j', i < j' → j' < jb → S i j' ≠ target) ∧
+      (ok = false → ∀ j', i < j' → j' < j → S i j' ≠ target))
+    (hn : ¬ (j < n ∧ ok = false)) :
+    ((jb, ok).2 = true → i < (jb, ok).1 ∧ (jb, ok).1 < n ∧ S i (jb, ok).1 = target ∧ ∀ j', i < j' → j' < (jb, ok).1 → S i j' ≠ target) ∧
+    ((jb, ok).2 = false → ∀ j', i < j' → j' < n → S i j' ≠ target) := by
+  obtain ⟨hij, hjn, hok1, hok2⟩ := hinv
+  refine ⟨fun h => hok1 h, fun hf => ?_⟩
+  have : j = n := by
+    by_contra hne
+    exact hn ⟨by omega, hf⟩
+  subst this
+  exact hok2 hf
+
+theorem ts_outer_step (S : Nat → Nat → Int) (target : Int) (n i a b : Nat) (found : Bool) (jr : Nat × Bool)
+    (hinv : i ≤ n ∧ (found = true → a < b ∧ b < n ∧ S a b = target ∧
+        (∀ i' j', i' < a → i' < j' → j' < n → S i' j' ≠ target) ∧ ∀ j', a < j' → j' < b → S a j' ≠ target) ∧
+      (found = false → ∀ i' j', i' < i → i' < j' → j' < n → S i' j' ≠ target))
+    (hg : i < n ∧ found = false)
+    (hjr : (jr.2 = true → i < jr.1 ∧ jr.1 < n ∧ S i jr.1 = target ∧ ∀ j', i < j' → j' < jr.1 → S i j' ≠ target) ∧
+      (jr.2 = false → ∀ j', i < j' → j' < n → S i j' ≠ target)) :
+    i + 1 ≤ n ∧ ((jr.2 || found) = true → (if jr.2 = true then i else a) < (if jr.2 = true then jr.1 else b) ∧
+        (if jr.2 = true then jr.1 else b) < n ∧
+        S (if jr.2 = true then i else a) (if jr.2 = true then jr.1 else b) = target ∧
+        (∀ i' j', i' < (if jr.2 = true then i else a) → i' < j' → j' < n → S i' j' ≠ target) ∧
+        ∀ j', (if jr.2 = true then i else a) < j' → j' < (if jr.2 = true then jr.1 else b) →
+          S (if jr.2 = true then i else a) j' ≠ target) ∧
+      ((jr.2 || found) = false → ∀ i' j', i' < i + 1 → i' < j' → j' < n → S i' j' ≠ target) := by
+  obtain ⟨hin, hf1, hf2⟩ := hinv
+  obtain ⟨hlt, hfound⟩ := hg
+  subst hfound
+  obtain ⟨hj1, hj2⟩ := hjr
+  have hall := hf2 rfl
+  cases hb : jr.2 with
+  | true =>
+    have h := hj1 hb
+    simp only [if_true, Bool.true_or]
+    refine ⟨by omega, fun _ => ⟨h.1, h.2.1, h.2.2.1, hall, h.2.2.2⟩, fun h' => by simp at h'⟩
+  | false =>
+    have h := hj2 hb
+    simp only [Bool.false_or, Bool.false_eq_true, if_false]
+    refine ⟨by omega, fun h' => by simp at h', fun _ => ?_⟩
+    intro i' j' hi' hij hjn
+    by_cases hie : i' = i
+    · subst hie; exact h j' hij hjn
+    · exact hall i' j' (by omega) hij hjn
+theorem ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) :
+    i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧
+      ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target) := by
+  refine ⟨le_refl _, by omega, fun h => by simp at h, fun _ j' h1 h2 => by omega⟩
+
+theorem ts_outer_init (S : Nat → Nat → Int) (target : Int) (n : Nat) :
+    0 ≤ n ∧ ((false = true) → 0 < 0 ∧ 0 < n ∧ S 0 0 = target ∧
+        (∀ i' j', i' < 0 → i' < j' → j' < n → S i' j' ≠ target) ∧ ∀ j', 0 < j' → j' < 0 → S 0 j' ≠ target) ∧
+      ((false = false) → ∀ i' j', i' < 0 → i' < j' → j' < n → S i' j' ≠ target) := by
+  refine ⟨Nat.zero_le _, fun h => by simp at h, fun _ i' j' h1 _ _ => by omega⟩
+
+theorem ts_lex_all (l : List Int) (target : Int) (a b : Nat) (hb : b < l.length)
+    (h1 : ∀ i' j', i' < a → i' < j' → j' < l.length → l[i']! + l[j']! ≠ target)
+    (h2 : ∀ j', a < j' → j' < b → l[a]! + l[j']! ≠ target) :
+    ((l.take a).zipIdx.all (fun ⟨x, i'⟩ => (l.drop (i' + 1)).all (fun y => x + y ≠ target))) = true ∧
+    (((l.drop (a + 1)).take (b - a - 1)).all (fun y => l[a]! + y ≠ target)) = true := by
+  constructor
+  · rw [List.all_eq_true]
+    rintro ⟨x, i'⟩ hx
+    have hx' := List.mem_zipIdx_iff_getElem?.mp hx
+    simp only at hx'
+    obtain ⟨hi'a, hxe⟩ : i' < a ∧ l[i']? = some x := by
+      have hlt : i' < (l.take a).length := by
+        by_contra hge
+        rw [List.getElem?_eq_none (by omega)] at hx'; simp at hx'
+      have hl : (l.take a).length = min a l.length := by simp
+      refine ⟨by omega, ?_⟩
+      rw [List.getElem?_take_of_lt (by omega)] at hx'
+      exact hx'
+    simp only [decide_eq_true_eq, List.all_eq_true]
+    intro y hy
+    obtain ⟨k, hk, rfl⟩ := List.getElem_of_mem hy
+    simp only [List.length_drop] at hk
+    have hxv : x = l[i']! := by
+      have : i' < l.length := by omega
+      rw [getElem!_pos l i' this]; rw [List.getElem?_eq_getElem this] at hxe; simpa using hxe.symm
+    have := h1 i' (i' + 1 + k) hi'a (by omega) (by omega)
+    rw [List.getElem_drop]
+    rw [getElem!_pos l (i'+1+k) (by omega)] at this
+    simpa [hxv] using this
+  · rw [List.all_eq_true]
+    intro y hy
+    obtain ⟨k, hk, rfl⟩ := List.getElem_of_mem hy
+    simp only [List.length_take, List.length_drop] at hk
+    have := h2 (a + 1 + k) (by omega) (by omega)
+    rw [getElem!_pos l (a+1+k) (by omega)] at this
+    simp only [List.getElem_take, List.getElem_drop, decide_eq_true_eq]
+    exact this
+
+theorem ts_pairwise_none (l : List Int) (target : Int)
+    (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l := by
+  rw [List.pairwise_iff_getElem]
+  intro i j hi hj hij
+  have := h i j hij hj
+  rw [getElem!_pos l i hi, getElem!_pos l j hj] at this
+  exact this
+
 end Refine
 '''
 
@@ -403,4 +530,4 @@ SIMP_SET = ", ".join([f"Refine.{name}" for name in (
 NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
          "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ", "take_string_length",
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority")
+         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none")
