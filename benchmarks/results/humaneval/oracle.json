@@ -1,22 +1,12 @@
 [
  {
-  "id": "he_033_sort_third",
-  "laws": 1,
+  "id": "he_071_triangle_area",
+  "laws": 3,
   "accepted": true,
   "certified": true,
-  "tests": 15,
-  "passed": 15,
+  "tests": 16,
+  "passed": 16,
   "failed_obligations": [],
-  "seconds": 5.9
- },
- {
-  "id": "he_037_sort_even",
-  "laws": 1,
-  "accepted": true,
-  "certified": true,
-  "tests": 11,
-  "passed": 11,
-  "failed_obligations": [],
-  "seconds": 5.9
+  "seconds": 10.9
  }
 ]
