@@ -32,6 +32,19 @@ _SORT_INT_DESC = {
     "proof": "by\n  intro L\n  have hp : (L.mergeSort (fun a b => decide (a ≥ b))).Perm L := List.mergeSort_perm L _\n  refine ⟨List.isPerm_iff.mpr hp, ?_⟩\n  intro i hi\n  have hs : List.Pairwise (fun a b => decide (a ≥ b) = true) (L.mergeSort (fun a b => decide (a ≥ b))) :=\n    List.pairwise_mergeSort (by intro a b c h1 h2; simp at *; omega) (by intro a b; simp; omega) L\n  rw [List.pairwise_iff_getElem] at hs\n  have hi' : i + 1 < (L.mergeSort (fun a b => decide (a ≥ b))).length := by omega\n  have := hs i (i + 1) (by omega) hi' (by omega)\n  rw [getElem!_pos _ i (by omega), getElem!_pos _ (i + 1) hi']\n  simpa using this"
 }
 
+_PALIN = [
+    {
+        "name": "len_filter_range_succ",
+        "statement": "∀ (p : Nat → Bool) (i : Nat), ((List.range (i + 1)).filter p).length = ((List.range i).filter p).length + (if p i = true then 1 else 0)",
+        "proof": "by\n  intro p i\n  rw [List.range_succ, List.filter_append, List.length_append]\n  by_cases h : p i = true <;> simp [h]"
+    },
+    {
+        "name": "palin_step",
+        "statement": "∀ (n i e o : Nat), i < n + 1 → (i ≤ n + 1 ∧ e = ((List.range i).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 0))).length ∧ o = ((List.range i).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 1))).length) → (i + 1 ≤ n + 1 ∧ (if 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 0 then e + 1 else e) = ((List.range (i + 1)).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 0))).length ∧ (if 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 1 then o + 1 else o) = ((List.range (i + 1)).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 1))).length)",
+        "proof": "by\n  intro n i e o hi ⟨_, he, ho⟩\n  refine ⟨by omega, ?_, ?_⟩\n  · rw [len_filter_range_succ, ← he]\n    simp only [decide_eq_true_eq]\n    split <;> omega\n  · rw [len_filter_range_succ, ← ho]\n    simp only [decide_eq_true_eq]\n    split <;> omega"
+    }
+]
+
 ORACLES_MORE = {
     # he_000: two nested scans, the inner one decides "some earlier element is close to numbers[j]"
     "he_000_has_close_elements": loop(
@@ -307,13 +320,14 @@ ORACLES_MORE = {
         "i ≤ n ∧ acc = (List.range i).map (fun k => if (k + 1) % 2 = 0 then (k + 1).factorial else (k + 1) * (k + 2) / 2)",
         "i < n", "n - i", "acc",
         term("(i + 1, acc ++ [if (i + 1) % 2 = 0 then (i + 1).factorial else (i + 1) * (i + 2) / 2])")),
-    "he_107_even_odd_palindrome": loop(
-        [["i", "Nat"], ["e", "Nat"], ["o", "Nat"]], ["0", "0", "0"],
-        "i ≤ n + 1 ∧ e = ((List.range i).filter (fun j => 1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 0)).length ∧ "
-        "o = ((List.range i).filter (fun j => 1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 1)).length",
-        "i < n + 1", "n + 1 - i", "(e, o)",
-        term("(i + 1, if 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 0 then e + 1 else e, "
-             "if 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 1 then o + 1 else o)")),
+    "he_107_even_odd_palindrome": with_lemmas(
+        loop([["i", "Nat"], ["e", "Nat"], ["o", "Nat"]], ["0", "0", "0"],
+             "i ≤ n + 1 ∧ e = ((List.range i).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 0))).length ∧ "
+             "o = ((List.range i).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 1))).length",
+             "i < n + 1", "n + 1 - i", "(e, o)",
+             term("(i + 1, if 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 0 then e + 1 else e, "
+                  "if 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 1 then o + 1 else o)")),
+        _PALIN),
     "he_108_count_nums": loop(
         [["i", "Nat"], ["acc", "Nat"]], ["0", "0"],
         "i ≤ arr.length ∧ acc = ((arr.take i).filter (fun x => signedDigitSum x > 0)).length", "i < arr.length",

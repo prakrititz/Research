@@ -7,7 +7,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 2.7
+  "seconds": 2.6
  },
  {
   "id": "he_041_car_race_collision",
@@ -17,7 +17,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 2.7
+  "seconds": 2.6
  },
  {
   "id": "he_097_multiply",
@@ -27,7 +27,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 2.8
+  "seconds": 2.7
  },
  {
   "id": "he_138_is_equal_to_sum_even",
@@ -37,7 +37,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 2.8
+  "seconds": 2.6
  },
  {
   "id": "he_157_right_angle_triangle",
@@ -47,7 +47,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 2.8
+  "seconds": 2.7
  },
  {
   "id": "he_060_sum_to_n",
@@ -57,7 +57,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 3.2
+  "seconds": 3.1
  },
  {
   "id": "he_100_make_a_pile",
@@ -67,7 +67,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 3.6
+  "seconds": 3.4
  },
  {
   "id": "he_042_incr_list",
@@ -77,7 +77,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 3.7
+  "seconds": 3.5
  },
  {
   "id": "he_052_below_threshold",
@@ -87,7 +87,7 @@
   "tests": 14,
   "passed": 14,
   "failed_obligations": [],
-  "seconds": 3.6
+  "seconds": 3.4
  },
  {
   "id": "he_057_monotonic",
@@ -97,7 +97,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 4.3
+  "seconds": 4.1
  },
  {
   "id": "he_043_pairs_sum_to_zero",
@@ -107,7 +107,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 4.4
+  "seconds": 4.2
  },
  {
   "id": "he_035_max_element",
@@ -117,7 +117,7 @@
   "tests": 10,
   "passed": 10,
   "failed_obligations": [],
-  "seconds": 4.3
+  "seconds": 4.1
  },
  {
   "id": "he_031_is_prime",
@@ -127,7 +127,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 4.2
+  "seconds": 4.0
  },
  {
   "id": "he_024_largest_divisor",
@@ -137,7 +137,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 3.5
+  "seconds": 3.4
  },
  {
   "id": "he_030_get_positive",
@@ -147,7 +147,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 4.5
+  "seconds": 4.3
  },
  {
   "id": "he_062_derivative",
@@ -157,7 +157,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 7.2
+  "seconds": 6.9
  },
  {
   "id": "he_152_compare",
@@ -177,7 +177,7 @@
   "tests": 14,
   "passed": 14,
   "failed_obligations": [],
-  "seconds": 3.9
+  "seconds": 3.8
  },
  {
   "id": "he_121_solution",
@@ -187,7 +187,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 5.8
+  "seconds": 5.7
  },
  {
   "id": "he_085_add_even_at_odd",
@@ -197,7 +197,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 6.6
+  "seconds": 6.4
  },
  {
   "id": "he_055_fib",
@@ -207,7 +207,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 3.5
+  "seconds": 3.4
  },
  {
   "id": "he_139_special_factorial",
@@ -217,7 +217,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 6.4
+  "seconds": 6.1
  },
  {
   "id": "he_048_is_palindrome",
@@ -227,7 +227,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 3.5
+  "seconds": 3.3
  },
  {
   "id": "he_072_will_it_fly",
@@ -237,7 +237,7 @@
   "tests": 14,
   "passed": 14,
   "failed_obligations": [],
-  "seconds": 3.7
+  "seconds": 3.5
  },
  {
   "id": "he_028_concatenate",
@@ -247,7 +247,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 3.8
+  "seconds": 3.6
  },
  {
   "id": "he_029_filter_by_prefix",
@@ -257,7 +257,7 @@
   "tests": 10,
   "passed": 10,
   "failed_obligations": [],
-  "seconds": 4.2
+  "seconds": 3.9
  },
  {
   "id": "he_066_digit_sum",
@@ -267,7 +267,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 4.4
+  "seconds": 4.2
  },
  {
   "id": "he_098_count_upper",
@@ -277,7 +277,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 5.5
+  "seconds": 5.2
  },
  {
   "id": "he_061_correct_bracketing",
@@ -287,7 +287,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 15.2
+  "seconds": 16.4
  },
  {
   "id": "he_126_is_sorted",
@@ -297,7 +297,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 5.6
+  "seconds": 6.3
  },
  {
   "id": "classic_isqrt",
@@ -307,7 +307,7 @@
   "tests": 23,
   "passed": 23,
   "failed_obligations": [],
-  "seconds": 3.3
+  "seconds": 3.2
  },
  {
   "id": "classic_sqrt_approx",
@@ -317,7 +317,7 @@
   "tests": 7,
   "passed": 7,
   "failed_obligations": [],
-  "seconds": 6.4
+  "seconds": 7.2
  },
  {
   "id": "classic_fast_power",
@@ -327,7 +327,7 @@
   "tests": 8,
   "passed": 8,
   "failed_obligations": [],
-  "seconds": 6.3
+  "seconds": 7.1
  },
  {
   "id": "classic_sort_list",
@@ -337,7 +337,7 @@
   "tests": 7,
   "passed": 7,
   "failed_obligations": [],
-  "seconds": 4.1
+  "seconds": 4.3
  },
  {
   "id": "classic_reverse",
@@ -347,7 +347,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 5.2
+  "seconds": 5.6
  },
  {
   "id": "he_150_x_or_y",
@@ -357,7 +357,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 4.5
+  "seconds": 4.3
  },
  {
   "id": "he_133_sum_squares",
@@ -367,7 +367,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 4.0
+  "seconds": 3.9
  },
  {
   "id": "he_134_check_if_last_char_is_a_letter",
@@ -377,7 +377,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 2.9
+  "seconds": 3.0
  },
  {
   "id": "he_135_can_arrange",
@@ -387,7 +387,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 5.3
+  "seconds": 5.2
  },
  {
   "id": "he_137_compare_one",
@@ -407,7 +407,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 3.4
+  "seconds": 3.8
  },
  {
   "id": "he_142_sum_squares",
@@ -417,7 +417,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 4.4
+  "seconds": 4.7
  },
  {
   "id": "he_144_simplify",
@@ -427,7 +427,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 3.0
+  "seconds": 3.3
  },
  {
   "id": "he_146_special_filter",
@@ -437,7 +437,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 6.6
+  "seconds": 6.4
  },
  {
   "id": "he_151_double_the_difference",
@@ -447,7 +447,7 @@
   "tests": 14,
   "passed": 14,
   "failed_obligations": [],
-  "seconds": 4.1
+  "seconds": 3.9
  },
  {
   "id": "he_153_strongest_extension",
@@ -457,7 +457,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 4.3
+  "seconds": 4.1
  },
  {
   "id": "he_154_cycpattern_check",
@@ -467,7 +467,7 @@
   "tests": 14,
   "passed": 14,
   "failed_obligations": [],
-  "seconds": 3.5
+  "seconds": 3.3
  },
  {
   "id": "he_155_even_odd_count",
@@ -477,7 +477,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 8.0
+  "seconds": 7.7
  },
  {
   "id": "he_158_find_max",
@@ -487,7 +487,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 8.2
+  "seconds": 7.9
  },
  {
   "id": "he_159_eat",
@@ -497,7 +497,7 @@
   "tests": 14,
   "passed": 14,
   "failed_obligations": [],
-  "seconds": 3.4
+  "seconds": 3.3
  },
  {
   "id": "he_161_solve",
@@ -507,7 +507,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 3.0
+  "seconds": 2.8
  },
  {
   "id": "he_162_string_to_md5",
@@ -517,7 +517,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 3.3
+  "seconds": 3.2
  },
  {
   "id": "he_140_fix_spaces",
@@ -537,7 +537,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 3.1
+  "seconds": 3.2
  },
  {
   "id": "he_156_int_to_mini_roman",
@@ -567,7 +567,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 2.9
+  "seconds": 2.8
  },
  {
   "id": "he_145_order_by_points",
@@ -587,7 +587,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 2.9
+  "seconds": 3.1
  },
  {
   "id": "he_148_bf",
@@ -597,7 +597,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 9.0
+  "seconds": 9.8
  },
  {
   "id": "he_149_sorted_list_sum",
@@ -617,7 +617,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 4.8
+  "seconds": 4.6
  },
  {
   "id": "he_000_has_close_elements",
@@ -627,7 +627,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 4.6
+  "seconds": 4.4
  },
  {
   "id": "he_002_truncate_number",
@@ -637,7 +637,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 3.0
+  "seconds": 2.8
  },
  {
   "id": "he_004_mean_absolute_deviation",
@@ -647,7 +647,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 6.2
+  "seconds": 5.9
  },
  {
   "id": "he_007_filter_by_substring",
@@ -657,7 +657,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 5.4
+  "seconds": 5.1
  },
  {
   "id": "he_008_sum_product",
@@ -667,7 +667,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 5.1
+  "seconds": 4.9
  },
  {
   "id": "he_011_string_xor",
@@ -677,7 +677,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 5.4
+  "seconds": 5.1
  },
  {
   "id": "he_012_longest",
@@ -687,7 +687,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 6.0
+  "seconds": 5.6
  },
  {
   "id": "he_014_all_prefixes",
@@ -697,7 +697,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 3.7
+  "seconds": 3.5
  },
  {
   "id": "he_016_count_distinct",
@@ -707,7 +707,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 2.9
+  "seconds": 2.7
  },
  {
   "id": "he_018_how_many_times",
@@ -717,7 +717,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 3.7
+  "seconds": 3.5
  },
  {
   "id": "he_006_parse_nested_parens",
@@ -727,7 +727,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 4.7
+  "seconds": 4.4
  },
  {
   "id": "he_013_gcd",
@@ -737,7 +737,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 3.9
+  "seconds": 3.8
  },
  {
   "id": "he_017_parse_music",
@@ -747,7 +747,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 4.5
+  "seconds": 4.3
  },
  {
   "id": "he_021_rescale_to_unit",
@@ -757,7 +757,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 8.3
+  "seconds": 7.8
  },
  {
   "id": "he_022_filter_integers",
@@ -767,7 +767,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 7.7
+  "seconds": 7.5
  },
  {
   "id": "he_026_remove_duplicates",
@@ -777,7 +777,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 4.4
+  "seconds": 4.3
  },
  {
   "id": "he_027_flip_case",
@@ -787,7 +787,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 4.0
+  "seconds": 3.9
  },
  {
   "id": "he_036_fizz_buzz",
@@ -797,7 +797,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 6.1
+  "seconds": 5.8
  },
  {
   "id": "he_040_triples_sum_to_zero",
@@ -807,7 +807,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 6.0
+  "seconds": 5.8
  },
  {
   "id": "he_034_unique",
@@ -817,7 +817,7 @@
   "tests": 9,
   "passed": 9,
   "failed_obligations": [],
-  "seconds": 4.2
+  "seconds": 4.3
  },
  {
   "id": "he_058_common",
@@ -827,7 +827,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 4.4
+  "seconds": 4.3
  },
  {
   "id": "he_045_triangle_area",
@@ -837,7 +837,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 3.0
+  "seconds": 2.9
  },
  {
   "id": "he_046_fib4",
@@ -847,7 +847,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 5.9
+  "seconds": 5.8
  },
  {
   "id": "he_063_fibfib",
@@ -871,22 +871,13 @@
  },
  {
   "id": "he_051_remove_vowels",
-  "laws": 3,
-  "accepted": false,
-  "certified": false,
-  "tests": 0,
-  "passed": 0,
-  "failed_obligations": [
-   {
-    "kind": "term",
-    "status": "ILL_FORMED",
-    "statement": "(fun (i : Nat) (acc : List Char) => i ≤ text.length ∧ acc = (text.toList.take i).filter (fun c => !(['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains c))) (((i + 1, if v = true then acc else acc ++ [text.toList[i]!]))).1 (((i + 1, if v = true then acc else acc ++ [text.toList[i]!]))).2 ∧ (",
-    "unsolved": [],
-    "message": "(deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_option diagnostics true` command.",
-    "counterexample": null
-   }
-  ],
-  "seconds": 7.0
+  "laws": 2,
+  "accepted": true,
+  "certified": true,
+  "tests": 15,
+  "passed": 15,
+  "failed_obligations": [],
+  "seconds": 11.8
  },
  {
   "id": "he_053_add",
@@ -896,7 +887,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 2.9
+  "seconds": 2.7
  },
  {
   "id": "he_054_same_chars",
@@ -906,7 +897,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 4.6
+  "seconds": 4.3
  },
  {
   "id": "he_056_correct_bracketing",
@@ -916,7 +907,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 19.3
+  "seconds": 15.1
  },
  {
   "id": "he_064_vowels_count",
@@ -926,7 +917,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 6.6
+  "seconds": 6.0
  },
  {
   "id": "he_065_circular_shift",
@@ -936,7 +927,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 3.5
+  "seconds": 2.9
  },
  {
   "id": "he_067_fruit_distribution",
@@ -946,7 +937,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 3.7
+  "seconds": 2.9
  },
  {
   "id": "he_070_strange_sort_list",
@@ -956,7 +947,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 3.2
+  "seconds": 3.0
  },
  {
   "id": "he_073_smallest_change",
@@ -966,7 +957,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 7.3
+  "seconds": 6.6
  },
  {
   "id": "he_074_total_match",
@@ -976,26 +967,17 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 3.0
+  "seconds": 2.9
  },
  {
   "id": "he_075_is_multiply_prime",
-  "laws": 6,
-  "accepted": false,
-  "certified": false,
-  "tests": 0,
-  "passed": 0,
-  "failed_obligations": [
-   {
-    "kind": "term",
-    "status": "ILL_FORMED",
-    "statement": "(fun (q : Nat) (g : Bool) => q ≤ a + 1 ∧ (g = true ↔ ∃ y, y < q ∧ ∃ r, r < a + 1 ∧ p * y * r = a ∧ Nat.Prime p ∧ Nat.Prime y ∧ Nat.Prime r)) (((q + 1, g || hq))).1 (((q + 1, g || hq))).2 ∧ (fun (q : Nat) (g : Bool) => a + 1 - q) (((q + 1, g || hq))).1 (((q + 1, g || hq))).2 < (a + 1 - q)",
-    "unsolved": [],
-    "message": "Tactic `simp` failed with a nested error:\n(deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_option diagnostics true` command.",
-    "counterexample": null
-   }
-  ],
-  "seconds": 7.2
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 12,
+  "passed": 12,
+  "failed_obligations": [],
+  "seconds": 2.9
  },
  {
   "id": "he_076_is_simple_power",
@@ -1005,7 +987,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 3.4
+  "seconds": 3.5
  },
  {
   "id": "he_077_iscube",
@@ -1015,7 +997,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 3.5
+  "seconds": 3.4
  },
  {
   "id": "he_078_hex_key",
@@ -1035,7 +1017,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 3.9
+  "seconds": 3.8
  },
  {
   "id": "he_081_numerical_letter_grade",
@@ -1045,7 +1027,7 @@
   "tests": 14,
   "passed": 14,
   "failed_obligations": [],
-  "seconds": 3.9
+  "seconds": 3.7
  },
  {
   "id": "he_082_prime_length",
@@ -1055,7 +1037,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 2.9
+  "seconds": 2.7
  },
  {
   "id": "he_083_starts_one_ends",
@@ -1065,7 +1047,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 6.3
+  "seconds": 5.5
  },
  {
   "id": "he_089_encrypt",
@@ -1075,7 +1057,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 4.2
+  "seconds": 3.8
  },
  {
   "id": "he_093_encode",
@@ -1085,7 +1067,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 4.1
+  "seconds": 3.8
  },
  {
   "id": "he_091_is_bored",
@@ -1095,7 +1077,7 @@
   "tests": 14,
   "passed": 14,
   "failed_obligations": [],
-  "seconds": 3.3
+  "seconds": 2.8
  },
  {
   "id": "he_095_check_dict_case",
@@ -1105,7 +1087,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 3.1
+  "seconds": 2.9
  },
  {
   "id": "he_096_count_up_to",
@@ -1115,7 +1097,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 6.4
+  "seconds": 6.1
  },
  {
   "id": "he_047_median",
@@ -1125,7 +1107,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 3.3
+  "seconds": 3.1
  },
  {
   "id": "he_101_words_string",
@@ -1135,7 +1117,7 @@
   "tests": 14,
   "passed": 14,
   "failed_obligations": [],
-  "seconds": 2.9
+  "seconds": 2.7
  },
  {
   "id": "he_104_unique_digits",
@@ -1145,7 +1127,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 4.7
+  "seconds": 4.1
  },
  {
   "id": "he_105_by_length",
@@ -1155,7 +1137,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 3.0
+  "seconds": 2.9
  },
  {
   "id": "he_106_f",
@@ -1165,7 +1147,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 4.0
+  "seconds": 3.9
  },
  {
   "id": "he_107_even_odd_palindrome",
@@ -1214,7 +1196,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 3.1
+  "seconds": 3.0
  },
  {
   "id": "he_112_reverse_delete",
@@ -1234,7 +1216,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 3.9
+  "seconds": 3.8
  },
  {
   "id": "he_115_max_fill",
@@ -1244,7 +1226,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 4.2
+  "seconds": 3.9
  },
  {
   "id": "he_117_select_words",
@@ -1254,7 +1236,7 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 2.9
+  "seconds": 2.8
  },
  {
   "id": "he_119_match_parens",
@@ -1264,7 +1246,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 4.0
+  "seconds": 3.2
  },
  {
   "id": "he_120_maximum",
@@ -1274,7 +1256,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 4.6
+  "seconds": 4.1
  },
  {
   "id": "he_122_add_elements",
@@ -1284,7 +1266,7 @@
   "tests": 13,
   "passed": 13,
   "failed_obligations": [],
-  "seconds": 3.2
+  "seconds": 2.9
  },
  {
   "id": "he_123_get_odd_collatz",
@@ -1294,7 +1276,7 @@
   "tests": 12,
   "passed": 12,
   "failed_obligations": [],
-  "seconds": 4.5
+  "seconds": 4.1
  },
  {
   "id": "he_127_intersection",
@@ -1304,7 +1286,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 3.3
+  "seconds": 3.0
  },
  {
   "id": "he_128_prod_signs",
@@ -1314,7 +1296,7 @@
   "tests": 16,
   "passed": 16,
   "failed_obligations": [],
-  "seconds": 2.9
+  "seconds": 2.8
  },
  {
   "id": "he_131_digits",
@@ -1324,6 +1306,346 @@
   "tests": 15,
   "passed": 15,
   "failed_obligations": [],
-  "seconds": 3.0
+  "seconds": 2.9
+ },
+ {
+  "id": "he_124_valid_date",
+  "laws": 3,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 3.1
+ },
+ {
+  "id": "he_125_split_words",
+  "laws": 3,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 2.9
+ },
+ {
+  "id": "he_102_choose_num",
+  "laws": 7,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 3.4
+ },
+ {
+  "id": "he_005_intersperse",
+  "laws": 2,
+  "accepted": true,
+  "certified": true,
+  "tests": 11,
+  "passed": 11,
+  "failed_obligations": [],
+  "seconds": 11.3
+ },
+ {
+  "id": "he_009_rolling_max",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 12,
+  "passed": 12,
+  "failed_obligations": [],
+  "seconds": 4.9
+ },
+ {
+  "id": "he_038_decode_cyclic",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 6.4
+ },
+ {
+  "id": "he_132_is_nested",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 2.9
+ },
+ {
+  "id": "he_116_sort_array",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 15,
+  "passed": 15,
+  "failed_obligations": [],
+  "seconds": 4.3
+ },
+ {
+  "id": "he_088_sort_array",
+  "laws": 3,
+  "accepted": true,
+  "certified": true,
+  "tests": 15,
+  "passed": 15,
+  "failed_obligations": [],
+  "seconds": 12.8
+ },
+ {
+  "id": "he_092_any_int",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 4.8
+ },
+ {
+  "id": "he_130_tri",
+  "laws": 2,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 8.3
+ },
+ {
+  "id": "he_114_min_sub_array_sum",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 5.1
+ },
+ {
+  "id": "he_118_get_closest_vowel",
+  "laws": 6,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 7.5
+ },
+ {
+  "id": "he_068_pluck",
+  "laws": 2,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 7.1
+ },
+ {
+  "id": "he_094_skjkasdkd",
+  "laws": 2,
+  "accepted": true,
+  "certified": true,
+  "tests": 14,
+  "passed": 14,
+  "failed_obligations": [],
+  "seconds": 5.0
+ },
+ {
+  "id": "he_059_largest_prime_factor",
+  "laws": 2,
+  "accepted": true,
+  "certified": true,
+  "tests": 13,
+  "passed": 13,
+  "failed_obligations": [],
+  "seconds": 5.4
+ },
+ {
+  "id": "he_069_search",
+  "laws": 2,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 5.5
+ },
+ {
+  "id": "he_079_decimal_to_binary",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 12,
+  "passed": 12,
+  "failed_obligations": [],
+  "seconds": 8.4
+ },
+ {
+  "id": "he_084_solve",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 13,
+  "passed": 13,
+  "failed_obligations": [],
+  "seconds": 6.6
+ },
+ {
+  "id": "he_103_rounded_avg",
+  "laws": 3,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 8.0
+ },
+ {
+  "id": "he_044_change_base",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 7.7
+ },
+ {
+  "id": "he_050_decode_shift",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 4.3
+ },
+ {
+  "id": "he_090_next_smallest",
+  "laws": 11,
+  "accepted": true,
+  "certified": true,
+  "tests": 14,
+  "passed": 14,
+  "failed_obligations": [],
+  "seconds": 9.7
+ },
+ {
+  "id": "he_111_histogram",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 15,
+  "passed": 15,
+  "failed_obligations": [],
+  "seconds": 4.9
+ },
+ {
+  "id": "he_099_closest_integer",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 13,
+  "passed": 13,
+  "failed_obligations": [],
+  "seconds": 6.3
+ },
+ {
+  "id": "he_010_make_palindrome",
+  "laws": 2,
+  "accepted": true,
+  "certified": true,
+  "tests": 13,
+  "passed": 13,
+  "failed_obligations": [],
+  "seconds": 4.3
+ },
+ {
+  "id": "he_025_factorize",
+  "laws": 4,
+  "accepted": true,
+  "certified": true,
+  "tests": 15,
+  "passed": 15,
+  "failed_obligations": [],
+  "seconds": 7.3
+ },
+ {
+  "id": "he_020_find_closest_elements",
+  "laws": 7,
+  "accepted": true,
+  "certified": true,
+  "tests": 13,
+  "passed": 13,
+  "failed_obligations": [],
+  "seconds": 20.4
+ },
+ {
+  "id": "he_087_get_row",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 14,
+  "passed": 14,
+  "failed_obligations": [],
+  "seconds": 4.9
+ },
+ {
+  "id": "he_033_sort_third",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 15,
+  "passed": 15,
+  "failed_obligations": [],
+  "seconds": 6.3
+ },
+ {
+  "id": "he_037_sort_even",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 11,
+  "passed": 11,
+  "failed_obligations": [],
+  "seconds": 6.3
+ },
+ {
+  "id": "he_071_triangle_area",
+  "laws": 3,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 11.6
+ },
+ {
+  "id": "he_129_min_path",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 16,
+  "passed": 16,
+  "failed_obligations": [],
+  "seconds": 10.3
+ },
+ {
+  "id": "he_001_separate_paren_groups",
+  "laws": 4,
+  "accepted": true,
+  "certified": true,
+  "tests": 12,
+  "passed": 12,
+  "failed_obligations": [],
+  "seconds": 10.9
  }
 ]

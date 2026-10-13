@@ -7,7 +7,7 @@
   "tests": 11,
   "passed": 11,
   "failed_obligations": [],
-  "seconds": 2.4
+  "seconds": 2.8
  },
  {
   "id": "verina_basic_5",
@@ -17,7 +17,7 @@
   "tests": 7,
   "passed": 7,
   "failed_obligations": [],
-  "seconds": 2.3
+  "seconds": 2.7
  },
  {
   "id": "verina_basic_11",
@@ -27,7 +27,7 @@
   "tests": 8,
   "passed": 8,
   "failed_obligations": [],
-  "seconds": 2.4
+  "seconds": 2.8
  },
  {
   "id": "verina_basic_12",
@@ -37,7 +37,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 2.3
+  "seconds": 2.7
  },
  {
   "id": "verina_basic_26",
@@ -47,7 +47,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 2.3
+  "seconds": 2.8
  },
  {
   "id": "verina_basic_50",
@@ -57,7 +57,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 2.4
+  "seconds": 3.0
  },
  {
   "id": "verina_basic_55",
@@ -67,7 +67,7 @@
   "tests": 2,
   "passed": 2,
   "failed_obligations": [],
-  "seconds": 2.2
+  "seconds": 2.7
  },
  {
   "id": "verina_basic_100",
@@ -77,7 +77,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 2.3
+  "seconds": 2.8
  },
  {
   "id": "verina_basic_107",
@@ -87,7 +87,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 2.3
+  "seconds": 2.7
  },
  {
   "id": "verina_basic_53",
@@ -97,7 +97,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 2.7
+  "seconds": 3.1
  },
  {
   "id": "verina_basic_13",
@@ -107,7 +107,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 2.9
+  "seconds": 3.4
  },
  {
   "id": "verina_basic_19",
@@ -117,7 +117,7 @@
   "tests": 7,
   "passed": 7,
   "failed_obligations": [],
-  "seconds": 3.1
+  "seconds": 3.8
  },
  {
   "id": "verina_basic_10",
@@ -127,7 +127,7 @@
   "tests": 7,
   "passed": 7,
   "failed_obligations": [],
-  "seconds": 2.8
+  "seconds": 3.4
  },
  {
   "id": "verina_basic_105",
@@ -137,7 +137,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 2.9
+  "seconds": 3.5
  },
  {
   "id": "verina_basic_106",
@@ -147,7 +147,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 3.0
+  "seconds": 3.5
  },
  {
   "id": "verina_basic_30",
@@ -157,7 +157,7 @@
   "tests": 3,
   "passed": 3,
   "failed_obligations": [],
-  "seconds": 3.1
+  "seconds": 3.6
  },
  {
   "id": "verina_basic_47",
@@ -167,7 +167,7 @@
   "tests": 4,
   "passed": 4,
   "failed_obligations": [],
-  "seconds": 4.7
+  "seconds": 5.4
  },
  {
   "id": "verina_basic_44",
@@ -177,7 +177,7 @@
   "tests": 7,
   "passed": 7,
   "failed_obligations": [],
-  "seconds": 3.9
+  "seconds": 4.3
  },
  {
   "id": "verina_advanced_41",
@@ -187,7 +187,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 2.8
+  "seconds": 3.2
  },
  {
   "id": "verina_advanced_39",
@@ -197,7 +197,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 3.4
+  "seconds": 3.8
  },
  {
   "id": "verina_advanced_40",
@@ -207,7 +207,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 3.4
+  "seconds": 3.9
  },
  {
   "id": "verina_advanced_16",
@@ -217,7 +217,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 3.1
+  "seconds": 3.7
  },
  {
   "id": "verina_advanced_17",
@@ -227,7 +227,7 @@
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 3.1
+  "seconds": 3.7
  },
  {
   "id": "verina_basic_4",
@@ -248,7 +248,7 @@
     "counterexample": null
    }
   ],
-  "seconds": 1.3
+  "seconds": 1.2
  },
  {
   "id": "verina_basic_2",
@@ -258,6 +258,6 @@
   "tests": 8,
   "passed": 8,
   "failed_obligations": [],
-  "seconds": 3.4
+  "seconds": 3.9
  }
 ]
