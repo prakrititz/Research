@@ -1,32 +1,32 @@
 [
  {
-  "id": "verina_advanced_45",
-  "laws": 3,
+  "id": "verina_advanced_20",
+  "laws": 1,
   "accepted": true,
   "certified": true,
-  "tests": 5,
-  "passed": 5,
+  "tests": 10,
+  "passed": 10,
   "failed_obligations": [],
-  "seconds": 6.5
+  "seconds": 20.2
  },
  {
-  "id": "verina_advanced_75",
+  "id": "verina_advanced_22",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 6,
+  "passed": 6,
+  "failed_obligations": [],
+  "seconds": 6.4
+ },
+ {
+  "id": "verina_advanced_74",
   "laws": 1,
   "accepted": true,
   "certified": true,
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 5.5
- },
- {
-  "id": "verina_advanced_43",
-  "laws": 1,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 5.4
+  "seconds": 6.0
  }
 ]

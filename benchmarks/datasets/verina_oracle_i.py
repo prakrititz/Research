@@ -17,11 +17,15 @@ def lis_lets(var: str) -> str:
             "let increasingSubseqLens := allSubseq.filter (fun l => List.Pairwise (· < ·) l) |>.map (·.length); ")
 
 
-def lemma(name, fn, binders, args, expr, proof_tail, hyp=None):
-    """``∀ binders (h : fn_precond args), [hyp →] fn_postcond args (expr) h`` proved by ``intro; unfold; <tail>``."""
+def lemma(name, fn, binders, args, expr, proof_tail, hyp=None, no_precond=False):
+    """``∀ binders (h : fn_precond args), [hyp →] fn_postcond args (expr) h`` proved by ``intro; unfold; <tail>``
+    (``no_precond``: the three Verina tasks whose postcondition takes no ``h_precond``)."""
     intro = " ".join(args)
     cond = f"{hyp} → " if hyp else ""
     hx = " hx" if hyp else ""
+    if no_precond:
+        return {"name": name, "statement": f"∀ {binders}, {cond}{fn}_postcond {intro} ({expr})",
+                "proof": f"by intro {intro}{hx}\n  unfold {fn}_postcond\n  {proof_tail}"}
     return {"name": name,
             "statement": f"∀ {binders} (h : {fn}_precond {intro}), {cond}{fn}_postcond {intro} ({expr}) h",
             "proof": f"by intro {intro} h{hx}\n  unfold {fn}_postcond\n  {proof_tail}"}

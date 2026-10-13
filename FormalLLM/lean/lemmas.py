@@ -344,6 +344,49 @@ theorem maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) :
     have := List.all_eq_true.mp h2 x.length (List.mem_map.mpr ⟨x, hx, rfl⟩)
     simpa using this
 
+theorem filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) :
+    (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length := by
+  induction l with
+  | nil => simp
+  | cons x t ih =>
+    by_cases hxa : x = a
+    · have hxb : ¬ x = b := fun h => hab (hxa.symm.trans h)
+      simp [List.filter_cons, hxa, hxb, hab, Ne.symm hab]; omega
+    · by_cases hxb : x = b
+      · simp [List.filter_cons, hxa, hxb, hab, Ne.symm hab]; omega
+      · simp [List.filter_cons, hxa, hxb, hab, Ne.symm hab]; omega
+
+theorem count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) :
+    l.count a + l.count b ≤ l.length := by
+  induction l with
+  | nil => simp
+  | cons x t ih =>
+    by_cases hxa : x = a
+    · have hxb : ¬ x = b := fun h => hab (hxa.symm.trans h)
+      simp [List.count_cons, hxa, hxb, hab, Ne.symm hab]; omega
+    · by_cases hxb : x = b
+      · simp [List.count_cons, hxa, hxb, hab, Ne.symm hab]; omega
+      · simp [List.count_cons, hxa, hxb, hab, Ne.symm hab]; omega
+
+theorem find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) :
+    ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true := by
+  obtain ⟨x, hx, hp⟩ := List.any_eq_true.mp h
+  have hs : (l.find? p).isSome = true := List.find?_isSome.mpr ⟨x, hx, hp⟩
+  obtain ⟨r, hr⟩ := Option.isSome_iff_exists.mp hs
+  exact ⟨r, hr, List.mem_of_find?_eq_some hr, List.find?_some hr⟩
+
+theorem find_majority {α : Type} [DecidableEq α] [Inhabited α] (xs : List α)
+    (h : xs.any (fun x => decide (xs.count x > xs.length / 2)) = true) :
+    ∃ r, (xs.find? (fun x => decide (xs.count x > xs.length / 2))).getD default = r ∧ xs.count r > xs.length / 2 ∧
+      ∀ x ∈ xs, x ≠ r → xs.count x ≤ xs.length / 2 := by
+  obtain ⟨r, hr, hmem, hp⟩ := find_some_of_any xs _ h
+  refine ⟨r, by rw [hr]; rfl, of_decide_eq_true hp, ?_⟩
+  intro x hx hne
+  by_contra hgt
+  have h1 := count_pair_le xs x r hne
+  have hp' := of_decide_eq_true hp
+  omega
+
 end Refine
 '''
 
@@ -360,4 +403,4 @@ SIMP_SET = ", ".join([f"Refine.{name}" for name in (
 NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
          "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ", "take_string_length",
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec")
+         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority")

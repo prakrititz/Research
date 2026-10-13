@@ -196,7 +196,7 @@ class Derivation:
         self.counterexamples, self.timeout = counterexamples, timeout
         self._next = 0
         root = Goal(self._fresh(), tuple((n, t) for n, t in task.params),
-                    (("h_precond", f"{task.pre_name} {task.args}"),), task.ret, task.root_post)
+                    (("h_precond", f"{task.pre_name} {task.args}"),) if task.precond_arg else (), task.ret, task.root_post)
         self.nodes: Dict[int, Node] = {root.id: Node(root)}
         self.root = self.nodes[root.id]
         self._memo: Dict[str, Verdict] = {}
