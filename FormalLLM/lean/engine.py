@@ -447,7 +447,8 @@ class Derivation:
         if run_tests and certificate.compiles:
             tests = self.task.test_commands()
             certificate.tests = len(tests)
-            ran = self.lean.run(source + "\n" + "\n".join(tests), timeout=max(self.timeout, 240.0))
+            prefix = self.task.compat + "\n" if self.task.compat else ""     # the dataset's prelude (e.g. the witness search)
+            ran = self.lean.run(prefix + source + "\n" + "\n".join(tests), timeout=max(self.timeout, 240.0))
             certificate.passed = sum(1 for info in ran.infos if info.strip() == "true")
         certificate.seconds = round(time.time() - started, 2)
         return certificate
