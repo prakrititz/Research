@@ -81,6 +81,87 @@ _VOWEL_STEP = [
     }
 ]
 
+_PLUCK = [
+    {
+        "name": "pluck_exit",
+        "statement": "∀ (arr : List Nat) (f : Bool) (v ix : Nat), (arr.length ≤ arr.length ∧ (f = true ↔ ∃ k, k < arr.length ∧ arr[k]! % 2 = 0) ∧ (f = true → ix < arr.length ∧ arr[ix]! = v ∧ v % 2 = 0 ∧ (∀ k, k < arr.length → arr[k]! % 2 = 0 → v ≤ arr[k]!) ∧ ∀ j, j < ix → arr[j]! ≠ v)) → (((if f = true then [v, ix] else []) = [] ↔ ∀ x ∈ arr, x % 2 = 1) ∧ ((if f = true then [v, ix] else []) ≠ [] → (if f = true then [v, ix] else []).length = 2 ∧ (if f = true then [v, ix] else [])[1]! < arr.length ∧ arr[(if f = true then [v, ix] else [])[1]!]! = (if f = true then [v, ix] else [])[0]! ∧ (if f = true then [v, ix] else [])[0]! % 2 = 0 ∧ (∀ x ∈ arr, x % 2 = 0 → (if f = true then [v, ix] else [])[0]! ≤ x) ∧ ∀ j, j < (if f = true then [v, ix] else [])[1]! → arr[j]! ≠ (if f = true then [v, ix] else [])[0]!))",
+        "proof": "by\n  intro arr f v ix h\n  obtain ⟨_, hf, hd⟩ := h\n  by_cases hfl : f = true\n  · obtain ⟨hix, hv, hev, hmin, hj⟩ := hd hfl\n    rw [if_pos hfl]\n    refine ⟨⟨fun h => absurd h (by simp), fun h => ?_⟩, fun _ => ⟨by simp, by simpa using hix, by simpa using hv, by simpa using hev, ?_, by simpa using hj⟩⟩\n    · obtain ⟨k, hk, hek⟩ := hf.mp hfl\n      have := h arr[k]! (by rw [getElem!_pos arr k hk]; exact List.getElem_mem hk)\n      omega\n    · intro x hx hxe\n      obtain ⟨k, hk, rfl⟩ := (Refine.mem_iff_idx arr x).mp hx\n      simpa using hmin k hk hxe\n  · rw [if_neg hfl]\n    refine ⟨⟨fun _ => ?_, fun _ => by simp⟩, fun h => absurd rfl h⟩\n    intro x hx\n    obtain ⟨k, hk, rfl⟩ := (Refine.mem_iff_idx arr x).mp hx\n    by_contra hne\n    exact hfl (hf.mpr ⟨k, hk, by omega⟩)"
+    }
+]
+_SKJ = [
+    {
+        "name": "skj_exit",
+        "statement": "∀ (lst : List Nat) (best : Nat), (∃ x ∈ lst, Nat.Prime x) → (lst.length ≤ lst.length ∧ (best = 0 ∨ ∃ k, k < lst.length ∧ lst[k]! = best ∧ Nat.Prime best) ∧ ∀ k, k < lst.length → Nat.Prime lst[k]! → lst[k]! ≤ best) → ∃ p ∈ lst, Nat.Prime p ∧ (∀ x ∈ lst, Nat.Prime x → x ≤ p) ∧ ((toString best).toList.map (fun c => c.toNat - '0'.toNat)).sum = ((toString p).toList.map (fun c => c.toNat - '0'.toNat)).sum",
+        "proof": "by\n  intro lst best hex h\n  obtain ⟨_, hb, hmax⟩ := h\n  obtain ⟨x, hx, hxp⟩ := hex\n  obtain ⟨k, hk, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n  have hle := hmax k hk hxp\n  have h2 : 2 ≤ lst[k]! := hxp.two_le\n  rcases hb with h0 | ⟨j, hj, hjb, hbp⟩\n  · omega\n  · refine ⟨best, ?_, hbp, ?_, rfl⟩\n    · rw [← hjb]; rw [getElem!_pos lst j hj]; exact List.getElem_mem hj\n    · intro y hy hyp\n      obtain ⟨m, hm, rfl⟩ := (Refine.mem_iff_idx lst y).mp hy\n      exact hmax m hm hyp"
+    }
+]
+_LPF = [
+    {
+        "name": "lpf_exit",
+        "statement": "∀ (n q : Nat), n > 1 → (1 ≤ q ∧ q ≤ n ∧ ∀ r, r < n + 1 → q < r → Nat.Prime r → r ∣ n → False) → ¬ (1 < q ∧ ¬ (Nat.Prime q ∧ n % q = 0)) → (Nat.Prime q ∧ q ∣ n ∧ ∀ q2, q2 < n + 1 → Nat.Prime q2 → q2 ∣ n → q2 ≤ q)",
+        "proof": "by\n  intro n q hn h hg\n  obtain ⟨p, hp, hpd⟩ := Nat.exists_prime_and_dvd (show n ≠ 1 by omega)\n  have hpn : p ≤ n := Nat.le_of_dvd (by omega) hpd\n  by_cases h1 : 1 < q\n  · have hpq : Nat.Prime q ∧ n % q = 0 := by\n      by_contra hc\n      exact hg ⟨h1, hc⟩\n    refine ⟨hpq.1, Nat.dvd_of_mod_eq_zero hpq.2, ?_⟩\n    intro r hr hrp hrd\n    by_contra hlt\n    exact h.2.2 r hr (by omega) hrp hrd\n  · exfalso\n    exact h.2.2 p (by omega) (by have := hp.two_le; omega) hp hpd"
+    },
+    {
+        "name": "lpf_step",
+        "statement": "∀ (n q : Nat), (1 ≤ q ∧ q ≤ n ∧ ∀ r, r < n + 1 → q < r → Nat.Prime r → r ∣ n → False) → (1 < q ∧ ¬ (Nat.Prime q ∧ n % q = 0)) → (1 ≤ q - 1 ∧ q - 1 ≤ n ∧ ∀ r, r < n + 1 → q - 1 < r → Nat.Prime r → r ∣ n → False)",
+        "proof": "by\n  intro n q h hg\n  refine ⟨by omega, by omega, ?_⟩\n  intro r hr hqr hrp hrd\n  by_cases hrq : r = q\n  · subst hrq\n    exact hg.2 ⟨hrp, Nat.mod_eq_zero_of_dvd hrd⟩\n  · exact h.2.2 r hr (by omega) hrp hrd"
+    }
+]
+_SEARCH = [
+    {
+        "name": "search_exit",
+        "statement": "∀ (lst : List Nat) (best : Int), (lst.length ≤ lst.length ∧ ((best = -1 ∧ ∀ k, k < lst.length → lst.count lst[k]! < lst[k]!) ∨ (best > 0 ∧ best.toNat ∈ lst ∧ lst.count best.toNat ≥ best.toNat ∧ ∀ k, k < lst.length → lst.count lst[k]! ≥ lst[k]! → lst[k]! ≤ best.toNat))) → ((best = -1 ∧ ∀ x ∈ lst, lst.count x < x) ∨ (best > 0 ∧ best.toNat ∈ lst ∧ lst.count best.toNat ≥ best.toNat ∧ ∀ x ∈ lst, lst.count x ≥ x → x ≤ best.toNat))",
+        "proof": "by\n  intro lst best h\n  obtain ⟨_, h⟩ := h\n  rcases h with ⟨hb, hall⟩ | ⟨hb, hm, hc, hmax⟩\n  · left\n    refine ⟨hb, ?_⟩\n    intro x hx\n    obtain ⟨k, hk, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n    exact hall k hk\n  · right\n    refine ⟨hb, hm, hc, ?_⟩\n    intro x hx hxc\n    obtain ⟨k, hk, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n    exact hmax k hk hxc"
+    }
+]
+
+_BIN079 = [
+    {
+        "name": "toDigits2_binary",
+        "statement": "∀ (v : Nat), isBinary (Nat.toDigits 2 v) v",
+        "proof": "by\n  intro v\n  induction v using Nat.strong_induction_on with\n  | _ v ih =>\n    by_cases h0 : v = 0\n    · subst h0\n      simp [isBinary, Nat.toDigits, Nat.toDigitsCore]\n    · by_cases h1 : v / 2 = 0\n      · have hv : v = 1 := by omega\n        subst hv\n        simp [isBinary, Nat.toDigits, Nat.toDigitsCore]\n      · have hlt : v / 2 < v := by omega\n        have ihv := ih (v / 2) hlt\n        have hsplit : Nat.toDigits 2 v = Nat.toDigits 2 (v / 2) ++ Nat.toDigits 2 (v % 2) := by\n          rw [Nat.toDigits_append_toDigits (by norm_num) (by omega) (by omega)]\n          congr 1; omega\n        have hbit : Nat.toDigits 2 (v % 2) = [if v % 2 = 1 then '1' else '0'] := by\n          rcases Nat.mod_two_eq_zero_or_one v with h | h <;> simp [h, Nat.toDigits, Nat.toDigitsCore]\n        rw [hsplit, hbit]\n        obtain ⟨ha, hf, _, hh⟩ := ihv\n        refine ⟨?_, ?_, ?_, ?_⟩\n        · simp only [List.all_append, Bool.and_eq_true] \n          refine ⟨ha, ?_⟩\n          split <;> simp\n        · rw [List.foldl_append, hf]\n          simp only [List.foldl_cons, List.foldl_nil]\n          split <;> simp_all <;> omega\n        · intro hz; omega\n        · intro _\n          have hh' := hh (by omega)\n          cases hA : Nat.toDigits 2 (v / 2) with\n          | nil => rw [hA] at hh'; simp at hh'\n          | cons a t => rw [hA] at hh'; simpa using hh'"
+    },
+    {
+        "name": "toDigits2_ne_nil",
+        "statement": "∀ (v : Nat), Nat.toDigits 2 v ≠ []",
+        "proof": "by\n  intro v h\n  obtain ⟨_, _, h0, hh⟩ := toDigits2_binary v\n  by_cases hv : v = 0\n  · have := h0 hv; rw [h] at this; simp at this\n  · have := hh (by omega); rw [h] at this; simp at this"
+    },
+    {
+        "name": "db_ok",
+        "statement": "∀ (v : Nat), ((String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.length ≥ 5 ∧ (String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.take 2 = ['d', 'b'] ∧ (String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.drop ((String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.length - 2) = ['d', 'b'] ∧ isBinary (((String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.drop 2).take ((String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.length - 4)) v)",
+        "proof": "by\n  intro v\n  rw [Refine.string_toList_mk]\n  have hne := toDigits2_ne_nil v\n  have hlen : 0 < (Nat.toDigits 2 v).length := List.length_pos_iff.mpr hne\n  have hb := toDigits2_binary v\n  refine ⟨by simp <;> omega, by simp, ?_, ?_⟩\n  · have : (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b']).length - 2 = 2 + (Nat.toDigits 2 v).length := by simp <;> omega\n    rw [this]\n    have h := List.drop_left (l₁ := ['d', 'b'] ++ Nat.toDigits 2 v) (l₂ := ['d', 'b'])\n    have hl : (['d', 'b'] ++ Nat.toDigits 2 v).length = 2 + (Nat.toDigits 2 v).length := by simp <;> omega\n    rw [hl] at h\n    exact h\n  · have h1 : (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b']).length - 4 = (Nat.toDigits 2 v).length := by simp <;> omega\n    rw [h1]\n    simpa using hb"
+    }
+]
+_BIN084 = [
+    {
+        "name": "toDigits2_binary",
+        "statement": "∀ (v : Nat), isBinary (Nat.toDigits 2 v) v",
+        "proof": "by\n  intro v\n  induction v using Nat.strong_induction_on with\n  | _ v ih =>\n    by_cases h0 : v = 0\n    · subst h0\n      simp [isBinary, Nat.toDigits, Nat.toDigitsCore]\n    · by_cases h1 : v / 2 = 0\n      · have hv : v = 1 := by omega\n        subst hv\n        simp [isBinary, Nat.toDigits, Nat.toDigitsCore]\n      · have hlt : v / 2 < v := by omega\n        have ihv := ih (v / 2) hlt\n        have hsplit : Nat.toDigits 2 v = Nat.toDigits 2 (v / 2) ++ Nat.toDigits 2 (v % 2) := by\n          rw [Nat.toDigits_append_toDigits (by norm_num) (by omega) (by omega)]\n          congr 1; omega\n        have hbit : Nat.toDigits 2 (v % 2) = [if v % 2 = 1 then '1' else '0'] := by\n          rcases Nat.mod_two_eq_zero_or_one v with h | h <;> simp [h, Nat.toDigits, Nat.toDigitsCore]\n        rw [hsplit, hbit]\n        obtain ⟨ha, hf, _, hh⟩ := ihv\n        refine ⟨?_, ?_, ?_, ?_⟩\n        · simp only [List.all_append, Bool.and_eq_true] \n          refine ⟨ha, ?_⟩\n          split <;> simp\n        · rw [List.foldl_append, hf]\n          simp only [List.foldl_cons, List.foldl_nil]\n          split <;> simp_all <;> omega\n        · intro hz; omega\n        · intro _\n          have hh' := hh (by omega)\n          cases hA : Nat.toDigits 2 (v / 2) with\n          | nil => rw [hA] at hh'; simp at hh'\n          | cons a t => rw [hA] at hh'; simpa using hh'"
+    },
+    {
+        "name": "binary_string_ok",
+        "statement": "∀ (s : Nat), isBinary (String.mk (Nat.toDigits 2 s)).toList s",
+        "proof": "by\n  intro s\n  rw [Refine.string_toList_mk]\n  exact toDigits2_binary s"
+    }
+]
+_BIN103 = [
+    {
+        "name": "toDigits2_binary",
+        "statement": "∀ (v : Nat), isBinary (Nat.toDigits 2 v) v",
+        "proof": "by\n  intro v\n  induction v using Nat.strong_induction_on with\n  | _ v ih =>\n    by_cases h0 : v = 0\n    · subst h0\n      simp [isBinary, Nat.toDigits, Nat.toDigitsCore]\n    · by_cases h1 : v / 2 = 0\n      · have hv : v = 1 := by omega\n        subst hv\n        simp [isBinary, Nat.toDigits, Nat.toDigitsCore]\n      · have hlt : v / 2 < v := by omega\n        have ihv := ih (v / 2) hlt\n        have hsplit : Nat.toDigits 2 v = Nat.toDigits 2 (v / 2) ++ Nat.toDigits 2 (v % 2) := by\n          rw [Nat.toDigits_append_toDigits (by norm_num) (by omega) (by omega)]\n          congr 1; omega\n        have hbit : Nat.toDigits 2 (v % 2) = [if v % 2 = 1 then '1' else '0'] := by\n          rcases Nat.mod_two_eq_zero_or_one v with h | h <;> simp [h, Nat.toDigits, Nat.toDigitsCore]\n        rw [hsplit, hbit]\n        obtain ⟨ha, hf, _, hh⟩ := ihv\n        refine ⟨?_, ?_, ?_, ?_⟩\n        · simp only [List.all_append, Bool.and_eq_true] \n          refine ⟨ha, ?_⟩\n          split <;> simp\n        · rw [List.foldl_append, hf]\n          simp only [List.foldl_cons, List.foldl_nil]\n          split <;> simp_all <;> omega\n        · intro hz; omega\n        · intro _\n          have hh' := hh (by omega)\n          cases hA : Nat.toDigits 2 (v / 2) with\n          | nil => rw [hA] at hh'; simp at hh'\n          | cons a t => rw [hA] at hh'; simpa using hh'"
+    },
+    {
+        "name": "toDigits2_ne_nil",
+        "statement": "∀ (v : Nat), Nat.toDigits 2 v ≠ []",
+        "proof": "by\n  intro v h\n  obtain ⟨_, _, h0, hh⟩ := toDigits2_binary v\n  by_cases hv : v = 0\n  · have := h0 hv; rw [h] at this; simp at this\n  · have := hh (by omega); rw [h] at this; simp at this"
+    },
+    {
+        "name": "ob_ok",
+        "statement": "∀ (w : Nat), ((String.mk (['0', 'b'] ++ Nat.toDigits 2 w)).length ≥ 3 ∧ (String.mk (['0', 'b'] ++ Nat.toDigits 2 w)).toList.take 2 = ['0', 'b'] ∧ isBinary ((String.mk (['0', 'b'] ++ Nat.toDigits 2 w)).toList.drop 2) w)",
+        "proof": "by\n  intro w\n  have hlen : 0 < (Nat.toDigits 2 w).length := List.length_pos_iff.mpr (toDigits2_ne_nil w)\n  rw [Refine.string_length_mk, Refine.string_toList_mk]\n  refine ⟨by simp <;> omega, by simp, ?_⟩\n  simpa using toDigits2_binary w"
+    }
+]
+
 ORACLES_MORE = {
     "he_005_intersperse": with_lemmas(
         loop([["i", "Nat"], ["acc", "List Int"]], ["0", "[]"],
@@ -129,4 +210,33 @@ ORACLES_MORE = {
                   term("(i + 1, if goodAt word.toList i then some i else b)")),
              cases("last = none", term('""'), term("String.singleton word.toList[last.getD 0]!"))),
         _VOWEL_STEP),
+
+    "he_068_pluck": with_lemmas(
+        loop([["i", "Nat"], ["f", "Bool"], ["v", "Nat"], ["ix", "Nat"]], ["0", "false", "0", "0"],
+             "i ≤ arr.length ∧ (f = true ↔ ∃ k, k < i ∧ arr[k]! % 2 = 0) ∧ "
+             "(f = true → ix < i ∧ arr[ix]! = v ∧ v % 2 = 0 ∧ (∀ k, k < i → arr[k]! % 2 = 0 → v ≤ arr[k]!) ∧ ∀ j, j < ix → arr[j]! ≠ v)",
+             "i < arr.length", "arr.length - i", "if f = true then [v, ix] else []",
+             term("(i + 1, f || decide (arr[i]! % 2 = 0), if arr[i]! % 2 = 0 ∧ (f = false ∨ arr[i]! < v) then arr[i]! else v, "
+                  "if arr[i]! % 2 = 0 ∧ (f = false ∨ arr[i]! < v) then i else ix)")), _PLUCK),
+    "he_094_skjkasdkd": with_lemmas(
+        loop([["i", "Nat"], ["best", "Nat"]], ["0", "0"],
+             "i ≤ lst.length ∧ (best = 0 ∨ ∃ k, k < i ∧ lst[k]! = best ∧ Nat.Prime best) ∧ ∀ k, k < i → Nat.Prime lst[k]! → lst[k]! ≤ best",
+             "i < lst.length", "lst.length - i", "((toString best).toList.map (fun c => c.toNat - '0'.toNat)).sum",
+             term("(i + 1, if Nat.Prime lst[i]! ∧ best < lst[i]! then lst[i]! else best)")), _SKJ),
+    "he_059_largest_prime_factor": with_lemmas(
+        loop([["q", "Nat"]], ["n"], "1 ≤ q ∧ q ≤ n ∧ ∀ r, r < n + 1 → q < r → Nat.Prime r → r ∣ n → False",
+             "1 < q ∧ ¬ (Nat.Prime q ∧ n % q = 0)", "q", "q", term("q - 1")), _LPF),
+    "he_069_search": with_lemmas(
+        loop([["i", "Nat"], ["best", "Int"]], ["0", "-1"],
+             "i ≤ lst.length ∧ ((best = -1 ∧ ∀ k, k < i → lst.count lst[k]! < lst[k]!) ∨ (best > 0 ∧ best.toNat ∈ lst ∧ "
+             "lst.count best.toNat ≥ best.toNat ∧ ∀ k, k < i → lst.count lst[k]! ≥ lst[k]! → lst[k]! ≤ best.toNat))",
+             "i < lst.length", "lst.length - i", "best",
+             term("(i + 1, if lst.count lst[i]! ≥ lst[i]! ∧ (best = -1 ∨ best < (lst[i]! : Int)) then (lst[i]! : Int) else best)")),
+        _SEARCH),
+
+    "he_079_decimal_to_binary": with_lemmas(term("String.mk (['d', 'b'] ++ Nat.toDigits 2 decimal ++ ['d', 'b'])"), _BIN079),
+    "he_084_solve": with_lemmas(
+        term("String.mk (Nat.toDigits 2 (((toString N).toList.map (fun c => c.toNat - '0'.toNat)).sum))"), _BIN084),
+    "he_103_rounded_avg": with_lemmas(
+        cases("n > m", term("none"), term("some (String.mk (['0', 'b'] ++ Nat.toDigits 2 (roundedHalfEven (n + m))))")), _BIN103),
 }
