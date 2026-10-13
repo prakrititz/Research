@@ -218,6 +218,132 @@ theorem sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) :
     rw [getElem!_pos a i (by omega), getElem!_pos a k hk]
     simpa using this
 
+theorem foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α),
+    (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l := by
+  induction l with
+  | nil => intro m; simp
+  | cons a t ih =>
+    intro m
+    obtain ⟨h1, h2, h3⟩ := ih (max m a)
+    simp only [List.foldl_cons]
+    refine ⟨?_, ?_, ?_⟩
+    · rcases h1 with h | h
+      · by_cases hm : m ≤ a
+        · right; rw [max_eq_right hm] at h ⊢; rw [h]; simp
+        · left
+          have hmx : max m a = m := max_eq_left (le_of_lt (not_le.mp hm))
+          rw [hmx] at h ⊢; exact h
+      · right; exact List.mem_cons_of_mem a h
+    · exact le_trans (le_max_left m a) h2
+    · intro x hx
+      rcases List.mem_cons.mp hx with rfl | hx'
+      · exact le_trans (le_max_right m x) h2
+      · exact h3 x hx'
+
+theorem maxlist_nat (L : List Nat) (hne : L ≠ []) :
+    L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true := by
+  obtain ⟨h1, h2, h3⟩ := foldl_max_facts L 0
+  constructor
+  · rw [List.contains_iff_mem]
+    rcases h1 with h | h
+    · obtain ⟨x, hx⟩ := List.exists_mem_of_ne_nil L hne
+      have hx0 : x = 0 := by have := h3 x hx; omega
+      rw [h, ← hx0]; exact hx
+    · exact h
+  · rw [List.all_eq_true]; intro x hx; simpa using h3 x hx
+
+theorem maxlist_int (L : List Int) (hne : L ≠ []) :
+    L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true := by
+  obtain ⟨h1, h2, h3⟩ := foldl_max_facts L (L.headD 0)
+  have hhead : L.headD 0 ∈ L := by
+    cases L with
+    | nil => exact absurd rfl hne
+    | cons a t => simp
+  constructor
+  · rw [List.contains_iff_mem]
+    rcases h1 with h | h
+    · rw [h]; exact hhead
+    · exact h
+  · rw [List.all_eq_true]; intro x hx; simpa using h3 x hx
+
+theorem allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc →
+    [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc := by
+  induction xs with
+  | nil => intro acc h; simpa using h
+  | cons a t ih => intro acc h; exact ih _ (List.mem_append.mpr (Or.inl h))
+
+theorem allsub_nil_mem_arr {α : Type} (xs : Array α) :
+    [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]) := by
+  rw [← Array.foldl_toList]
+  exact allsub_nil_mem xs.toList [[]] (by simp)
+
+theorem allsub_rev_nil_mem {α : Type} (xs : List α) :
+    [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse) :=
+  List.mem_map.mpr ⟨[], allsub_nil_mem xs [[]] (by simp), rfl⟩
+
+theorem longest_facts {α : Type} (L : List (List α)) : ∀ (b : List α),
+    (L.foldl (fun best l => if best.length < l.length then l else best) b = b ∨
+      L.foldl (fun best l => if best.length < l.length then l else best) b ∈ L) ∧
+    b.length ≤ (L.foldl (fun best l => if best.length < l.length then l else best) b).length ∧
+    ∀ x ∈ L, x.length ≤ (L.foldl (fun best l => if best.length < l.length then l else best) b).length := by
+  induction L with
+  | nil => intro b; simp
+  | cons a t ih =>
+    intro b
+    simp only [List.foldl_cons]
+    by_cases hlt : b.length < a.length
+    · rw [if_pos hlt]
+      obtain ⟨h1, h2, h3⟩ := ih a
+      refine ⟨?_, by omega, ?_⟩
+      · rcases h1 with h | h
+        · right; rw [h]; exact List.mem_cons_self
+        · right; exact List.mem_cons_of_mem a h
+      · intro x hx
+        rcases List.mem_cons.mp hx with rfl | hx'
+        · exact h2
+        · exact h3 x hx'
+    · rw [if_neg hlt]
+      obtain ⟨h1, h2, h3⟩ := ih b
+      refine ⟨?_, h2, ?_⟩
+      · rcases h1 with h | h
+        · left; exact h
+        · right; exact List.mem_cons_of_mem a h
+      · intro x hx
+        rcases List.mem_cons.mp hx with rfl | hx'
+        · have := h2; omega
+        · exact h3 x hx'
+
+theorem longest_spec {α : Type} [BEq α] [LawfulBEq α] (L : List (List α)) (hn : [] ∈ L) :
+    L.contains (L.foldl (fun best l => if best.length < l.length then l else best) []) = true ∧
+    L.all (fun l => decide (l.length ≤ (L.foldl (fun best l => if best.length < l.length then l else best) []).length)) = true := by
+  obtain ⟨h1, h2, h3⟩ := longest_facts L []
+  constructor
+  · rw [List.contains_iff_mem]
+    rcases h1 with h | h
+    · rw [h]; exact hn
+    · exact h
+  · rw [List.all_eq_true]; intro x hx; simpa using h3 x hx
+
+theorem maxlist_int_any (L : List Int) (hne : L ≠ []) :
+    L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true := by
+  obtain ⟨h1, h2⟩ := maxlist_int L hne
+  refine ⟨?_, h2⟩
+  rw [List.contains_iff_mem] at h1
+  exact List.any_eq_true.mpr ⟨_, h1, by simp⟩
+
+theorem maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) :
+    L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧
+    L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true := by
+  have hne : L.map List.length ≠ [] := List.ne_nil_of_mem (a := 0) (List.mem_map.mpr ⟨[], hn, rfl⟩)
+  obtain ⟨h1, h2⟩ := maxlist_nat (L.map List.length) hne
+  rw [List.contains_iff_mem, List.mem_map] at h1
+  obtain ⟨a, ha, hlen⟩ := h1
+  constructor
+  · exact List.any_eq_true.mpr ⟨a, ha, by simpa using hlen⟩
+  · rw [List.all_eq_true]; intro x hx
+    have := List.all_eq_true.mp h2 x.length (List.mem_map.mpr ⟨x, hx, rfl⟩)
+    simpa using this
+
 end Refine
 '''
 
@@ -234,4 +360,4 @@ SIMP_SET = ", ".join([f"Refine.{name}" for name in (
 NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
          "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ", "take_string_length",
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le")
+         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec")
