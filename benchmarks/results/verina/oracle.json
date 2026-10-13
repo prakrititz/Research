@@ -1,263 +1,42 @@
 [
  {
-  "id": "verina_basic_1",
-  "laws": 1,
-  "accepted": true,
-  "certified": true,
-  "tests": 11,
-  "passed": 11,
-  "failed_obligations": [],
-  "seconds": 2.8
- },
- {
-  "id": "verina_basic_5",
-  "laws": 1,
-  "accepted": true,
-  "certified": true,
-  "tests": 7,
-  "passed": 7,
-  "failed_obligations": [],
-  "seconds": 2.7
- },
- {
-  "id": "verina_basic_11",
-  "laws": 1,
-  "accepted": true,
-  "certified": true,
-  "tests": 8,
-  "passed": 8,
-  "failed_obligations": [],
-  "seconds": 2.8
- },
- {
-  "id": "verina_basic_12",
+  "id": "verina_basic_91",
   "laws": 1,
   "accepted": true,
   "certified": true,
   "tests": 5,
   "passed": 5,
-  "failed_obligations": [],
-  "seconds": 2.7
- },
- {
-  "id": "verina_basic_26",
-  "laws": 1,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 2.8
- },
- {
-  "id": "verina_basic_50",
-  "laws": 3,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 3.0
- },
- {
-  "id": "verina_basic_55",
-  "laws": 1,
-  "accepted": true,
-  "certified": true,
-  "tests": 2,
-  "passed": 2,
-  "failed_obligations": [],
-  "seconds": 2.7
- },
- {
-  "id": "verina_basic_100",
-  "laws": 1,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 2.8
- },
- {
-  "id": "verina_basic_107",
-  "laws": 1,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 2.7
- },
- {
-  "id": "verina_basic_53",
-  "laws": 2,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 3.1
- },
- {
-  "id": "verina_basic_13",
-  "laws": 2,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 3.4
- },
- {
-  "id": "verina_basic_19",
-  "laws": 2,
-  "accepted": true,
-  "certified": true,
-  "tests": 7,
-  "passed": 7,
-  "failed_obligations": [],
-  "seconds": 3.8
- },
- {
-  "id": "verina_basic_10",
-  "laws": 2,
-  "accepted": true,
-  "certified": true,
-  "tests": 7,
-  "passed": 7,
-  "failed_obligations": [],
-  "seconds": 3.4
- },
- {
-  "id": "verina_basic_105",
-  "laws": 2,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 3.5
- },
- {
-  "id": "verina_basic_106",
-  "laws": 2,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 3.5
- },
- {
-  "id": "verina_basic_30",
-  "laws": 2,
-  "accepted": true,
-  "certified": true,
-  "tests": 3,
-  "passed": 3,
   "failed_obligations": [],
   "seconds": 3.6
  },
  {
-  "id": "verina_basic_47",
-  "laws": 2,
-  "accepted": true,
-  "certified": true,
-  "tests": 4,
-  "passed": 4,
-  "failed_obligations": [],
-  "seconds": 5.4
- },
- {
-  "id": "verina_basic_44",
-  "laws": 2,
-  "accepted": true,
-  "certified": true,
-  "tests": 7,
-  "passed": 7,
-  "failed_obligations": [],
-  "seconds": 4.3
- },
- {
-  "id": "verina_advanced_41",
-  "laws": 7,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 3.2
- },
- {
-  "id": "verina_advanced_39",
-  "laws": 2,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 3.8
- },
- {
-  "id": "verina_advanced_40",
-  "laws": 2,
-  "accepted": true,
-  "certified": true,
-  "tests": 5,
-  "passed": 5,
-  "failed_obligations": [],
-  "seconds": 3.9
- },
- {
-  "id": "verina_advanced_16",
+  "id": "verina_basic_92",
   "laws": 1,
   "accepted": true,
   "certified": true,
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 3.7
+  "seconds": 3.6
  },
  {
-  "id": "verina_advanced_17",
+  "id": "verina_basic_93",
   "laws": 1,
   "accepted": true,
   "certified": true,
   "tests": 5,
   "passed": 5,
   "failed_obligations": [],
-  "seconds": 3.7
+  "seconds": 3.6
  },
  {
-  "id": "verina_basic_4",
-  "laws": 0,
-  "accepted": false,
-  "certified": false,
-  "tests": 0,
-  "passed": 0,
-  "failed_obligations": [
-   {
-    "kind": "term",
-    "status": "UNPROVED",
-    "statement": "kthElement_postcond arr k (arr[k - 1]!) h_precond",
-    "unsolved": [
-     "arr : Array ℤ\nk : ℕ\nh_precond : kthElement_precond arr k\n⊢ kthElement_postcond arr k arr[k - 1]! h_precond = true"
-    ],
-    "message": "no tactic of the cascade closes this",
-    "counterexample": null
-   }
-  ],
-  "seconds": 1.2
- },
- {
-  "id": "verina_basic_2",
-  "laws": 4,
+  "id": "verina_basic_96",
+  "laws": 1,
   "accepted": true,
   "certified": true,
-  "tests": 8,
-  "passed": 8,
+  "tests": 5,
+  "passed": 5,
   "failed_obligations": [],
-  "seconds": 3.9
+  "seconds": 3.6
  }
 ]

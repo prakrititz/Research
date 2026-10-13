@@ -181,7 +181,11 @@ def cmd_oracles(ds, args):
         print(f"no hand-written derivations for {ds.name}")
         return 2
     imports = "full" if args.imports.strip() == FULL_IMPORTS else "default"
-    rows = lean_oracle.run(args.only, imports, oracles=table, library=ds.root)
+    only = args.only
+    if args.module:                       # only the derivations of one batch module (its ORACLES_MORE)
+        import importlib
+        only = list(importlib.import_module(f"benchmarks.datasets.{args.module}").ORACLES_MORE)
+    rows = lean_oracle.run(only, imports, oracles=table, library=ds.root)
     with open(ds.result_path("oracle.json"), "w", encoding="utf8") as handle:
         json.dump(rows, handle, indent=1, ensure_ascii=False)
     print(f"\n{sum(r['certified'] for r in rows)} of {len(rows)} {ds.name} derivations certified "
@@ -226,6 +230,7 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--imports", default="import Mathlib")
     ap.add_argument("--redo", action="store_true")
+    ap.add_argument("--module", default="", help="oracles: only the derivations of this batch module (benchmarks/datasets/<name>.py)")
     ap.add_argument("--no-proof", action="store_true", help="compile: replace each task's proof by sorry first")
     args = ap.parse_args()
     from FormalLLM.lean.dataset import get
