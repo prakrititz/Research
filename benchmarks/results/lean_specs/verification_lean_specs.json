@@ -16,7 +16,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 14.4,
+  "seconds": 22.1,
   "verified": true
  },
  {
@@ -37,7 +37,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 23,
-  "seconds": 14.1,
+  "seconds": 21.8,
   "verified": true
  },
  {
@@ -58,7 +58,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 16.3,
+  "seconds": 4.6,
   "verified": true
  },
  {
@@ -79,7 +79,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 15.8,
+  "seconds": 4.4,
   "verified": true
  },
  {
@@ -100,7 +100,70 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 21.0,
+  "seconds": 5.1,
+  "verified": true
+ },
+ {
+  "id": "he_000_has_close_elements",
+  "laws": 5,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_000_has_close_elements.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_001_separate_paren_groups",
+  "laws": 4,
+  "helpers": 4,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_001_separate_paren_groups.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 5.6,
+  "verified": true
+ },
+ {
+  "id": "he_002_truncate_number",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_002_truncate_number.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 4.4,
   "verified": true
  },
  {
@@ -121,7 +184,363 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 14,
-  "seconds": 20.4,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_004_mean_absolute_deviation",
+  "laws": 5,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_004_mean_absolute_deviation.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 5.1,
+  "verified": true
+ },
+ {
+  "id": "he_005_intersperse",
+  "laws": 2,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_005_intersperse.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 6.9,
+  "verified": true
+ },
+ {
+  "id": "he_006_parse_nested_parens",
+  "laws": 4,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_006_parse_nested_parens.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 4.9,
+  "verified": true
+ },
+ {
+  "id": "he_007_filter_by_substring",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_007_filter_by_substring.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 5.7,
+  "verified": true
+ },
+ {
+  "id": "he_008_sum_product",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_008_sum_product.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 5.5,
+  "verified": true
+ },
+ {
+  "id": "he_009_rolling_max",
+  "laws": 1,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_009_rolling_max.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 5.0,
+  "verified": true
+ },
+ {
+  "id": "he_010_make_palindrome",
+  "laws": 2,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_010_make_palindrome.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.8,
+  "verified": true
+ },
+ {
+  "id": "he_011_string_xor",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_011_string_xor.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 5.6,
+  "verified": true
+ },
+ {
+  "id": "he_012_longest",
+  "laws": 6,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_012_longest.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 5.0,
+  "verified": true
+ },
+ {
+  "id": "he_013_gcd",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_013_gcd.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_014_all_prefixes",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_014_all_prefixes.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_016_count_distinct",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_016_count_distinct.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_017_parse_music",
+  "laws": 4,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_017_parse_music.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_018_how_many_times",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_018_how_many_times.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_020_find_closest_elements",
+  "laws": 7,
+  "helpers": 7,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_020_find_closest_elements.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 7.4,
+  "verified": true
+ },
+ {
+  "id": "he_021_rescale_to_unit",
+  "laws": 8,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_021_rescale_to_unit.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 5.7,
+  "verified": true
+ },
+ {
+  "id": "he_022_filter_integers",
+  "laws": 2,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_022_filter_integers.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 5.2,
   "verified": true
  },
  {
@@ -142,7 +561,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 11,
-  "seconds": 14.4,
+  "seconds": 4.3,
   "verified": true
  },
  {
@@ -163,7 +582,70 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 13,
-  "seconds": 14.1,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_025_factorize",
+  "laws": 4,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_025_factorize.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.8,
+  "verified": true
+ },
+ {
+  "id": "he_026_remove_duplicates",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_026_remove_duplicates.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_027_flip_case",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_027_flip_case.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 4.5,
   "verified": true
  },
  {
@@ -184,7 +666,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 11,
-  "seconds": 12.9,
+  "seconds": 4.5,
   "verified": true
  },
  {
@@ -205,7 +687,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 10,
-  "seconds": 12.9,
+  "seconds": 4.5,
   "verified": true
  },
  {
@@ -226,7 +708,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 12,
-  "seconds": 13.4,
+  "seconds": 4.7,
   "verified": true
  },
  {
@@ -247,7 +729,49 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 13.2,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_033_sort_third",
+  "laws": 1,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_033_sort_third.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_034_unique",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 9,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_034_unique.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 9,
+  "seconds": 4.5,
   "verified": true
  },
  {
@@ -268,7 +792,91 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 10,
-  "seconds": 22.4,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_036_fizz_buzz",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_036_fizz_buzz.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 5.3,
+  "verified": true
+ },
+ {
+  "id": "he_037_sort_even",
+  "laws": 1,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_037_sort_even.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_038_decode_cyclic",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_038_decode_cyclic.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 5.1,
+  "verified": true
+ },
+ {
+  "id": "he_040_triples_sum_to_zero",
+  "laws": 8,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_040_triples_sum_to_zero.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.9,
   "verified": true
  },
  {
@@ -288,7 +896,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 13,
-  "seconds": 21.9,
+  "seconds": 4.3,
   "verified": true
  },
  {
@@ -309,7 +917,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 11,
-  "seconds": 33.3,
+  "seconds": 4.5,
   "verified": true
  },
  {
@@ -330,7 +938,91 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 33.1,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_044_change_base",
+  "laws": 1,
+  "helpers": 5,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_044_change_base.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_045_triangle_area",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_045_triangle_area.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_046_fib4",
+  "laws": 2,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_046_fib4.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_047_median",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_047_median.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.4,
   "verified": true
  },
  {
@@ -351,7 +1043,70 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 15,
-  "seconds": 28.8,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_049_modp",
+  "laws": 2,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_049_modp.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_050_decode_shift",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_050_decode_shift.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_051_remove_vowels",
+  "laws": 2,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_051_remove_vowels.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 6.7,
   "verified": true
  },
  {
@@ -372,7 +1127,48 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 14,
-  "seconds": 28.8,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_053_add",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_053_add.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_054_same_chars",
+  "laws": 7,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_054_same_chars.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.7,
   "verified": true
  },
  {
@@ -392,7 +1188,28 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 13,
-  "seconds": 41.5,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_056_correct_bracketing",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_056_correct_bracketing.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 8.3,
   "verified": true
  },
  {
@@ -413,7 +1230,49 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 41.7,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_058_common",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_058_common.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 4.8,
+  "verified": true
+ },
+ {
+  "id": "he_059_largest_prime_factor",
+  "laws": 2,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_059_largest_prime_factor.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.8,
   "verified": true
  },
  {
@@ -434,7 +1293,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 13,
-  "seconds": 27.8,
+  "seconds": 4.7,
   "verified": true
  },
  {
@@ -455,7 +1314,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 32.0,
+  "seconds": 8.2,
   "verified": true
  },
  {
@@ -476,7 +1335,70 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 13,
-  "seconds": 32.3,
+  "seconds": 5.4,
+  "verified": true
+ },
+ {
+  "id": "he_063_fibfib",
+  "laws": 2,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_063_fibfib.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_064_vowels_count",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_064_vowels_count.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 5.3,
+  "verified": true
+ },
+ {
+  "id": "he_065_circular_shift",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_065_circular_shift.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.3,
   "verified": true
  },
  {
@@ -497,7 +1419,112 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 26.8,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_067_fruit_distribution",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_067_fruit_distribution.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_068_pluck",
+  "laws": 2,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_068_pluck.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 5.0,
+  "verified": true
+ },
+ {
+  "id": "he_069_search",
+  "laws": 2,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_069_search.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.8,
+  "verified": true
+ },
+ {
+  "id": "he_070_strange_sort_list",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_070_strange_sort_list.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_071_triangle_area",
+  "laws": 3,
+  "helpers": 3,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_071_triangle_area.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 5.3,
   "verified": true
  },
  {
@@ -518,7 +1545,259 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 14,
-  "seconds": 34.7,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_073_smallest_change",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_073_smallest_change.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 5.5,
+  "verified": true
+ },
+ {
+  "id": "he_074_total_match",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_074_total_match.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.3,
+  "verified": true
+ },
+ {
+  "id": "he_075_is_multiply_prime",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_075_is_multiply_prime.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_076_is_simple_power",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_076_is_simple_power.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_077_iscube",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_077_iscube.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_078_hex_key",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 14,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_078_hex_key.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 14,
+  "seconds": 5.0,
+  "verified": true
+ },
+ {
+  "id": "he_079_decimal_to_binary",
+  "laws": 1,
+  "helpers": 3,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_079_decimal_to_binary.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_080_is_happy",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_080_is_happy.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_081_numerical_letter_grade",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 14,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_081_numerical_letter_grade.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 14,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_082_prime_length",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_082_prime_length.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.3,
+  "verified": true
+ },
+ {
+  "id": "he_083_starts_one_ends",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_083_starts_one_ends.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 5.2,
+  "verified": true
+ },
+ {
+  "id": "he_084_solve",
+  "laws": 1,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_084_solve.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.7,
   "verified": true
  },
  {
@@ -539,7 +1818,215 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 12,
-  "seconds": 34.6,
+  "seconds": 5.6,
+  "verified": true
+ },
+ {
+  "id": "he_087_get_row",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 14,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_087_get_row.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 14,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_088_sort_array",
+  "laws": 3,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_088_sort_array.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 7.0,
+  "verified": true
+ },
+ {
+  "id": "he_089_encrypt",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_089_encrypt.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_090_next_smallest",
+  "laws": 11,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 14,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_090_next_smallest.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 14,
+  "seconds": 5.4,
+  "verified": true
+ },
+ {
+  "id": "he_091_is_bored",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 14,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_091_is_bored.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 14,
+  "seconds": 4.3,
+  "verified": true
+ },
+ {
+  "id": "he_092_any_int",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_092_any_int.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_093_encode",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_093_encode.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_094_skjkasdkd",
+  "laws": 2,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 14,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_094_skjkasdkd.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 14,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_095_check_dict_case",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_095_check_dict_case.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_096_count_up_to",
+  "laws": 2,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_096_count_up_to.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 5.1,
   "verified": true
  },
  {
@@ -559,7 +2046,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 34.5,
+  "seconds": 4.3,
   "verified": true
  },
  {
@@ -580,7 +2067,28 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 15,
-  "seconds": 34.2,
+  "seconds": 5.6,
+  "verified": true
+ },
+ {
+  "id": "he_099_closest_integer",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_099_closest_integer.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 5.4,
   "verified": true
  },
  {
@@ -601,7 +2109,427 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 13,
-  "seconds": 45.3,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_101_words_string",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 14,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_101_words_string.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 14,
+  "seconds": 4.3,
+  "verified": true
+ },
+ {
+  "id": "he_102_choose_num",
+  "laws": 7,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_102_choose_num.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_103_rounded_avg",
+  "laws": 3,
+  "helpers": 3,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_103_rounded_avg.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.8,
+  "verified": true
+ },
+ {
+  "id": "he_104_unique_digits",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_104_unique_digits.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_105_by_length",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_105_by_length.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_106_f",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_106_f.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 4.9,
+  "verified": true
+ },
+ {
+  "id": "he_107_even_odd_palindrome",
+  "laws": 2,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_107_even_odd_palindrome.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_108_count_nums",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_108_count_nums.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 5.2,
+  "verified": true
+ },
+ {
+  "id": "he_109_move_one_ball",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_109_move_one_ball.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_110_exchange",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_110_exchange.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_111_histogram",
+  "laws": 1,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_111_histogram.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_112_reverse_delete",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_112_reverse_delete.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_113_odd_count",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 11,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_113_odd_count.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 11,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_114_min_sub_array_sum",
+  "laws": 1,
+  "helpers": 2,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_114_min_sub_array_sum.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_115_max_fill",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_115_max_fill.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_116_sort_array",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_116_sort_array.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.6,
+  "verified": true
+ },
+ {
+  "id": "he_117_select_words",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_117_select_words.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_118_get_closest_vowel",
+  "laws": 6,
+  "helpers": 3,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_118_get_closest_vowel.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.9,
+  "verified": true
+ },
+ {
+  "id": "he_119_match_parens",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_119_match_parens.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_120_maximum",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_120_maximum.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.8,
   "verified": true
  },
  {
@@ -622,7 +2550,90 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 15,
-  "seconds": 45.3,
+  "seconds": 5.5,
+  "verified": true
+ },
+ {
+  "id": "he_122_add_elements",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 13,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_122_add_elements.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 13,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_123_get_odd_collatz",
+  "laws": 1,
+  "helpers": 1,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 12,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_123_get_odd_collatz.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 12,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_124_valid_date",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_124_valid_date.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.5,
+  "verified": true
+ },
+ {
+  "id": "he_125_split_words",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_125_split_words.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.4,
   "verified": true
  },
  {
@@ -643,7 +2654,133 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 37.7,
+  "seconds": 5.1,
+  "verified": true
+ },
+ {
+  "id": "he_127_intersection",
+  "laws": 3,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_127_intersection.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_128_prod_signs",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_128_prod_signs.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.7,
+  "verified": true
+ },
+ {
+  "id": "he_129_min_path",
+  "laws": 1,
+  "helpers": 5,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_129_min_path.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 6.5,
+  "verified": true
+ },
+ {
+  "id": "he_130_tri",
+  "laws": 2,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_130_tri.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 5.6,
+  "verified": true
+ },
+ {
+  "id": "he_131_digits",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 15,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_131_digits.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 15,
+  "seconds": 4.4,
+  "verified": true
+ },
+ {
+  "id": "he_132_is_nested",
+  "laws": 1,
+  "helpers": 0,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 16,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/lean_specs/verified/he_132_is_nested.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 16,
+  "seconds": 4.5,
   "verified": true
  },
  {
@@ -664,7 +2801,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 36.5,
+  "seconds": 4.6,
   "verified": true
  },
  {
@@ -685,7 +2822,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 27.4,
+  "seconds": 4.4,
   "verified": true
  },
  {
@@ -706,7 +2843,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 13,
-  "seconds": 27.2,
+  "seconds": 4.7,
   "verified": true
  },
  {
@@ -727,7 +2864,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 22.7,
+  "seconds": 5.8,
   "verified": true
  },
  {
@@ -748,7 +2885,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 12,
-  "seconds": 21.0,
+  "seconds": 4.4,
   "verified": true
  },
  {
@@ -769,7 +2906,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 21.4,
+  "seconds": 4.4,
   "verified": true
  },
  {
@@ -790,7 +2927,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 12,
-  "seconds": 21.2,
+  "seconds": 5.4,
   "verified": true
  },
  {
@@ -811,7 +2948,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 13,
-  "seconds": 17.8,
+  "seconds": 4.3,
   "verified": true
  },
  {
@@ -832,7 +2969,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 16.8,
+  "seconds": 4.4,
   "verified": true
  },
  {
@@ -853,7 +2990,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 16.6,
+  "seconds": 4.7,
   "verified": true
  },
  {
@@ -874,7 +3011,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 15,
-  "seconds": 16.0,
+  "seconds": 4.3,
   "verified": true
  },
  {
@@ -895,7 +3032,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 13.8,
+  "seconds": 4.5,
   "verified": true
  },
  {
@@ -916,7 +3053,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 13,
-  "seconds": 13.5,
+  "seconds": 4.5,
   "verified": true
  },
  {
@@ -937,7 +3074,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 15,
-  "seconds": 17.5,
+  "seconds": 5.5,
   "verified": true
  },
  {
@@ -957,7 +3094,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 11,
-  "seconds": 16.4,
+  "seconds": 4.4,
   "verified": true
  },
  {
@@ -978,7 +3115,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 15,
-  "seconds": 21.3,
+  "seconds": 6.3,
   "verified": true
  },
  {
@@ -999,7 +3136,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 15,
-  "seconds": 18.7,
+  "seconds": 4.7,
   "verified": true
  },
  {
@@ -1020,7 +3157,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 15,
-  "seconds": 18.2,
+  "seconds": 4.6,
   "verified": true
  },
  {
@@ -1041,7 +3178,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 14,
-  "seconds": 16.6,
+  "seconds": 4.6,
   "verified": true
  },
  {
@@ -1062,7 +3199,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 12,
-  "seconds": 17.5,
+  "seconds": 4.6,
   "verified": true
  },
  {
@@ -1083,7 +3220,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 12,
-  "seconds": 17.4,
+  "seconds": 4.6,
   "verified": true
  },
  {
@@ -1104,7 +3241,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 14,
-  "seconds": 19.2,
+  "seconds": 4.5,
   "verified": true
  },
  {
@@ -1125,7 +3262,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 20.4,
+  "seconds": 5.7,
   "verified": true
  },
  {
@@ -1146,7 +3283,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 19.6,
+  "seconds": 4.3,
   "verified": true
  },
  {
@@ -1167,7 +3304,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 18.3,
+  "seconds": 4.3,
   "verified": true
  },
  {
@@ -1188,7 +3325,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 20.1,
+  "seconds": 5.8,
   "verified": true
  },
  {
@@ -1209,7 +3346,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 14,
-  "seconds": 18.7,
+  "seconds": 4.4,
   "verified": true
  },
  {
@@ -1229,7 +3366,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 11,
-  "seconds": 18.1,
+  "seconds": 4.5,
   "verified": true
  },
  {
@@ -1250,7 +3387,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 16,
-  "seconds": 16.5,
+  "seconds": 4.4,
   "verified": true
  },
  {
@@ -1271,7 +3408,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 12,
-  "seconds": 38.1,
+  "seconds": 4.5,
   "verified": true
  },
  {
@@ -1292,7 +3429,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 12,
-  "seconds": 38.1,
+  "seconds": 4.4,
   "verified": true
  }
 ]
