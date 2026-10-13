@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "(List.filter (fun x => x < n ∧ (sumOfDigits x) % d = 0) (List.range n)).length",
+  "children": []
+}

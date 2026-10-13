@@ -1,0 +1,41 @@
+{
+  "law": "bind",
+  "var": "groups",
+  "type": "List String",
+  "prop": "groups = (paren_string.splitOn \" \").filter (fun g => g != \"\")",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(paren_string.splitOn \" \").filter (fun g => g != \"\")",
+      "children": []
+    },
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "acc",
+          "List Nat"
+        ]
+      ],
+      "init": [
+        "0",
+        "[]"
+      ],
+      "invariant": "i ≤ groups.length ∧ acc = (groups.take i).map (fun g => maxDepth g.toList)",
+      "guard": "i < groups.length",
+      "variant": "groups.length - i",
+      "result": "acc",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, acc ++ [maxDepth groups[i]!.toList])",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

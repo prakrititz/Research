@@ -1,0 +1,22 @@
+{
+  "law": "term",
+  "expr": "(xs.filter (fun x => decide (x ≠ 0)) ++ xs.filter (fun x => decide (x = 0)))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "isSub_append",
+      "statement": "∀ (F Z : List Int), isSubsequence F (F ++ Z) = true",
+      "proof": "by intro F Z\n  induction F with\n  | nil => simp [isSubsequence]\n  | cons a t ih => simp [isSubsequence, ih]"
+    },
+    {
+      "name": "countVal_eq",
+      "statement": "∀ (v : Int) (l : List Int), countVal v l = l.count v",
+      "proof": "by intro v l\n  induction l with\n  | nil => simp [countVal]\n  | cons a t ih => simp only [countVal, ih, List.count_cons]; split_ifs <;> simp_all"
+    },
+    {
+      "name": "move56",
+      "statement": "∀ (xs : List Int) (h : moveZeroes_precond xs), moveZeroes_postcond xs (xs.filter (fun x => decide (x ≠ 0)) ++ xs.filter (fun x => decide (x = 0))) h",
+      "proof": "by intro xs h\n  unfold moveZeroes_postcond\n  have hperm : (xs.filter (fun x => decide (x ≠ 0)) ++ xs.filter (fun x => decide (x = 0))).Perm xs := by\n    have := List.filter_append_perm (fun x : Int => decide (x ≠ 0)) xs\n    simpa using this\n  refine ⟨isSub_append _ _, ?_, ?_, ?_⟩\n  · rw [List.all_eq_true]; intro x hx\n    rw [List.dropWhile_append] at hx\n    split_ifs at hx with hemp\n    · have := List.dropWhile_subset _ hx\n      simpa using (List.mem_filter.mp this).2\n    · exfalso; apply hemp\n      have : List.dropWhile (fun x => decide (x ≠ 0)) (xs.filter (fun x => decide (x ≠ 0))) = [] :=\n        List.dropWhile_eq_nil_iff.mpr (fun y hy => (List.mem_filter.mp hy).2)\n      simp [this]\n  · rw [countVal_eq, countVal_eq]; exact (hperm.count_eq 0).symm\n  · exact hperm.length_eq.symm"
+    }
+  ]
+}

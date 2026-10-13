@@ -1,0 +1,15 @@
+{
+  "id": "he_011_string_xor",
+  "dataset": "humaneval",
+  "family": "he_000",
+  "function": "stringXor",
+  "tests": 11,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "11/11",
+  "blocked_reason": ""
+}

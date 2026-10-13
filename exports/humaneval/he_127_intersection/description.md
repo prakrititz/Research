@@ -1,0 +1,5 @@
+# he_127_intersection
+
+`intersection(interval1 : Int × Int, interval2 : Int × Int) : String`
+
+You are given two closed intervals, each a pair of integers (start, end) with start <= end. Determine whether the length of the intersection of these two intervals is a prime number. If it is, return "YES", otherwise "NO". If the two intervals don't intersect, return "NO".

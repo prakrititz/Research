@@ -1,0 +1,30 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0"
+  ],
+  "invariant": "i ≤ string.length ∧ ∀ j, j < i → ¬ isPal (string.toList.drop j)",
+  "guard": "i < string.length ∧ ¬ isPal (string.toList.drop i)",
+  "variant": "string.length - i",
+  "result": "String.mk (string.toList ++ (string.toList.take i).reverse)",
+  "children": [
+    {
+      "law": "term",
+      "expr": "i + 1",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "mp_exit",
+      "statement": "∀ (s : String) (i : Nat), (i ≤ s.length ∧ ∀ j, j < i → ¬ isPal (s.toList.drop j)) → ¬ (i < s.length ∧ ¬ isPal (s.toList.drop i)) → ∃ i2, i2 ≤ s.length ∧ isPal (s.toList.drop i2) ∧ (∀ j, j < i2 → ¬ isPal (s.toList.drop j)) ∧ (String.mk (s.toList ++ (s.toList.take i).reverse)).toList = s.toList ++ (s.toList.take i2).reverse",
+      "proof": "by\n  intro s i ⟨hi, hj⟩ hg\n  refine ⟨i, hi, ?_, hj, by rw [Refine.string_toList_mk]⟩\n  by_cases h : i < s.length\n  · by_contra hn\n    exact hg ⟨h, hn⟩\n  · have : i = s.length := by omega\n    subst this\n    have h0 : s.toList.drop s.length = [] := by\n      apply List.drop_of_length_le\n      exact le_of_eq rfl\n    rw [h0]\n    rfl"
+    }
+  ]
+}

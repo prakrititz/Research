@@ -1,0 +1,59 @@
+{
+  "law": "cases",
+  "cond": "strings = []",
+  "children": [
+    {
+      "law": "term",
+      "expr": "none",
+      "children": []
+    },
+    {
+      "law": "bind",
+      "var": "b",
+      "type": "Nat",
+      "prop": "b < strings.length ∧ (∀ j, j < strings.length → strings[j]!.length ≤ strings[b]!.length) ∧ ∀ j, j < b → strings[j]!.length < strings[b]!.length",
+      "children": [
+        {
+          "law": "loop",
+          "state": [
+            [
+              "k",
+              "Nat"
+            ],
+            [
+              "b",
+              "Nat"
+            ]
+          ],
+          "init": [
+            "1",
+            "0"
+          ],
+          "invariant": "1 ≤ k ∧ k ≤ strings.length ∧ b < k ∧ (∀ j, j < k → strings[j]!.length ≤ strings[b]!.length) ∧ ∀ j, j < b → strings[j]!.length < strings[b]!.length",
+          "guard": "k < strings.length",
+          "variant": "strings.length - k",
+          "result": "b",
+          "children": [
+            {
+              "law": "term",
+              "expr": "(k + 1, if strings[k]!.length > strings[b]!.length then k else b)",
+              "children": []
+            }
+          ]
+        },
+        {
+          "law": "term",
+          "expr": "some strings[b]!",
+          "children": []
+        }
+      ],
+      "lemmas": [
+        {
+          "name": "longest_exit",
+          "statement": "∀ (strings : List String) (b : Nat), (b < strings.length ∧ (∀ j, j < strings.length → strings[j]!.length ≤ strings[b]!.length) ∧ ∀ j, j < b → strings[j]!.length < strings[b]!.length) → ∃ i, i < strings.length ∧ strings[i]! = strings[b]! ∧ (∀ t ∈ strings, t.length ≤ strings[b]!.length) ∧ ∀ j, j < i → strings[j]!.length < strings[b]!.length",
+          "proof": "by intro strings b h\n  obtain ⟨hb, h1, h2⟩ := h\n  refine ⟨b, hb, rfl, ?_, h2⟩\n  intro t ht\n  obtain ⟨k, hk, rfl⟩ := (Refine.mem_iff_idx strings t).mp ht\n  exact h1 k hk"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "he_155_even_odd_count",
+  "dataset": "humaneval",
+  "family": "he_140",
+  "function": "evenOddCount",
+  "tests": 16,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 4,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "16/16",
+  "blocked_reason": ""
+}

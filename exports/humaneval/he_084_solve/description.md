@@ -1,0 +1,5 @@
+# he_084_solve
+
+`solve84(N : Nat) : String`
+
+Given a positive integer N, return the total sum of its digits in binary, as a string.

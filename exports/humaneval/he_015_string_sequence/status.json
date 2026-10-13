@@ -1,0 +1,15 @@
+{
+  "id": "he_015_string_sequence",
+  "dataset": "humaneval",
+  "family": "he_000",
+  "function": "stringSequence",
+  "tests": 11,
+  "has_derivation": false,
+  "kind": "",
+  "laws": 0,
+  "helper_lemmas": 0,
+  "certified": false,
+  "independently_verified": false,
+  "tests_passed": null,
+  "blocked_reason": "its specification is about String.splitOn, and Lean 4.34 has no lemma relating the legacy String.splitOn to list operations (the proof would need a theory of splitOnAux)"
+}

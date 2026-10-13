@@ -1,0 +1,23 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "n",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0"
+  ],
+  "invariant": "n ≤ xs.length ∧ ∀ i, i < n → xs[i]! < target",
+  "guard": "n < xs.length ∧ xs[n]! < target",
+  "variant": "xs.length - n",
+  "result": "n",
+  "children": [
+    {
+      "law": "term",
+      "expr": "n + 1",
+      "children": []
+    }
+  ]
+}

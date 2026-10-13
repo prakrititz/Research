@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "ok",
+      "Bool"
+    ]
+  ],
+  "init": [
+    "0",
+    "true"
+  ],
+  "invariant": "i ≤ text.length ∧ (ok = true ↔ ∀ k, k < i → text.toList[k]! = text.toList[text.length - 1 - k]!)",
+  "guard": "i < text.length",
+  "variant": "text.length - i",
+  "result": "ok",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, ok && decide (text.toList[i]! = text.toList[text.length - 1 - i]!))",
+      "children": []
+    }
+  ]
+}

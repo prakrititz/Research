@@ -1,0 +1,16 @@
+{
+  "law": "cases",
+  "cond": "isBalanced (lst[0]!.toList ++ lst[1]!.toList) ∨ isBalanced (lst[1]!.toList ++ lst[0]!.toList)",
+  "children": [
+    {
+      "law": "term",
+      "expr": "\"Yes\"",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "\"No\"",
+      "children": []
+    }
+  ]
+}

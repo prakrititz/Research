@@ -1,0 +1,55 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "i ≤ s.length ∧ (∀ x, x ∈ acc ↔ x ∈ s.take i) ∧ acc.Nodup ∧ List.Pairwise (fun a b => s.idxOf a < s.idxOf b) acc",
+  "guard": "i < s.length",
+  "variant": "s.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, (if acc.contains s[i]! then acc else acc ++ [s[i]!]))",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "idxOf_le_of_getElem",
+      "statement": "∀ (s : List Int) (k : Nat) (a : Int), s[k]? = some a → s.idxOf a ≤ k",
+      "proof": "by intro s k a h\n  induction s generalizing k with\n  | nil => simp at h\n  | cons x t ih =>\n    rcases k with _ | k\n    · simp at h; subst h; simp\n    · simp at h\n      by_cases hxa : x = a\n      · subst hxa; simp\n      · have := ih k h\n        simp [List.idxOf_cons, hxa]; omega"
+    },
+    {
+      "name": "idxOf_take_lt",
+      "statement": "∀ (s : List Int) (i : Nat) (a : Int), a ∈ s.take i → s.idxOf a < i",
+      "proof": "by intro s i a h\n  obtain ⟨k, hk, hka⟩ := List.getElem_of_mem h\n  have hk' : k < i := by simp at hk; omega\n  have hks : k < s.length := by simp at hk; omega\n  have : s[k]? = some a := by\n    rw [List.getElem?_eq_getElem hks]; simp at hka; simp [hka]\n  have := idxOf_le_of_getElem s k a this\n  omega"
+    },
+    {
+      "name": "idxOf_ge_of_not_mem_take",
+      "statement": "∀ (s : List Int) (i : Nat) (x : Int), s[i]? = some x → x ∉ s.take i → i ≤ s.idxOf x",
+      "proof": "by intro s i x hx h\n  have hmem : x ∈ s := List.mem_iff_getElem?.mpr ⟨i, hx⟩\n  by_contra hlt\n  have hlt' : s.idxOf x < i := by omega\n  have h1 : s.idxOf x < s.length := List.idxOf_lt_length_of_mem hmem\n  apply h\n  have := List.getElem_idxOf h1\n  rw [← this]\n  exact List.mem_iff_getElem.mpr ⟨s.idxOf x, by simp; omega, by simp⟩"
+    },
+    {
+      "name": "step89",
+      "statement": "∀ (s : List Int) (i : Nat) (acc : List Int), (i ≤ s.length ∧ (∀ x, x ∈ acc ↔ x ∈ s.take i) ∧ acc.Nodup ∧ List.Pairwise (fun a b => s.idxOf a < s.idxOf b) acc) → i < s.length → (i + 1 ≤ s.length ∧ (∀ x, x ∈ (if acc.contains s[i]! then acc else acc ++ [s[i]!]) ↔ x ∈ s.take (i + 1)) ∧ ((if acc.contains s[i]! then acc else acc ++ [s[i]!])).Nodup ∧ List.Pairwise (fun a b => s.idxOf a < s.idxOf b) (if acc.contains s[i]! then acc else acc ++ [s[i]!]))",
+      "proof": "by intro s i acc hinv hg\n  obtain ⟨_, hmem, hnd, hpw⟩ := hinv\n  have htake : s.take (i + 1) = s.take i ++ [s[i]!] := Refine.take_succ_bang s i hg\n  have hsi : s[i]? = some s[i]! := by rw [getElem!_pos s i hg]; exact List.getElem?_eq_getElem hg\n  by_cases hc : acc.contains s[i]! = true\n  · rw [if_pos hc]\n    have hin : s[i]! ∈ acc := List.contains_iff_mem.mp hc\n    have hin' := (hmem _).mp hin\n    refine ⟨by omega, fun x => ?_, hnd, hpw⟩\n    rw [hmem x, htake]\n    constructor\n    · intro h; exact List.mem_append.mpr (Or.inl h)\n    · intro h\n      rcases List.mem_append.mp h with h | h\n      · exact h\n      · rw [List.mem_singleton] at h; rw [h]; exact hin'\n  · rw [if_neg hc]\n    have hnin : s[i]! ∉ acc := fun h => hc (List.contains_iff_mem.mpr h)\n    refine ⟨by omega, fun x => ?_, ?_, ?_⟩\n    · rw [List.mem_append, hmem x, htake, List.mem_append]\n    · refine List.nodup_append.mpr ⟨hnd, List.nodup_singleton _, ?_⟩\n      intro a ha b hb\n      rw [List.mem_singleton] at hb; subst hb\n      intro hab; exact hnin (hab ▸ ha)\n    · rw [List.pairwise_append]\n      refine ⟨hpw, List.pairwise_singleton _ _, ?_⟩\n      intro a ha b hb\n      rw [List.mem_singleton] at hb; subst hb\n      have h1 := idxOf_take_lt s i a ((hmem a).mp ha)\n      have hnt : s[i]! ∉ s.take i := fun h => hnin ((hmem _).mpr h)\n      have h2 := idxOf_ge_of_not_mem_take s i _ hsi hnt\n      omega"
+    },
+    {
+      "name": "exit89",
+      "statement": "∀ (s : List Int) (h : SetToSeq_precond s) (i : Nat) (acc : List Int), (i ≤ s.length ∧ (∀ x, x ∈ acc ↔ x ∈ s.take i) ∧ acc.Nodup ∧ List.Pairwise (fun a b => s.idxOf a < s.idxOf b) acc) → ¬ i < s.length → SetToSeq_postcond s acc h",
+      "proof": "by intro s h i acc hinv hn\n  obtain ⟨hi, hmem, hnd, hpw⟩ := hinv\n  have hi' : i = s.length := by omega\n  subst hi'\n  have ht : s.take s.length = s := List.take_of_length_le (le_refl _)\n  rw [ht] at hmem\n  unfold SetToSeq_postcond\n  refine ⟨?_, ?_, ?_, ?_⟩\n  · rw [List.all_eq_true]; intro a ha; simpa using (hmem a).mp ha\n  · rw [List.all_eq_true]; intro a ha; simpa using (hmem a).mpr ha\n  · rw [List.all_eq_true]; intro a ha; simpa using List.count_eq_one_of_mem hnd ha\n  · refine hpw.imp ?_\n    intro a b hab _\n    exact hab"
+    }
+  ]
+}

@@ -87,7 +87,7 @@ ORACLES = {
 
 
 # --- further batches (their own modules; they import only derivation_dsl) ---
-for _module in ("verina_oracle_b", "verina_oracle_c", "verina_oracle_d", "verina_oracle_e", "verina_oracle_f", "verina_oracle_g", "verina_oracle_h", "verina_oracle_i", "verina_oracle_j", "verina_oracle_k", "verina_oracle_l", "verina_oracle_m", "verina_oracle_n", "verina_oracle_o", "verina_oracle_p", "verina_oracle_q", "verina_oracle_r", "verina_oracle_s", "verina_oracle_t", "verina_oracle_u", "verina_oracle_v", "verina_oracle_w", "verina_oracle_x", "verina_oracle_y", "verina_oracle_z", "verina_oracle_aa", "verina_oracle_ab"):
+for _module in ("verina_oracle_b", "verina_oracle_c", "verina_oracle_d", "verina_oracle_e", "verina_oracle_f", "verina_oracle_g", "verina_oracle_h", "verina_oracle_i", "verina_oracle_j", "verina_oracle_k", "verina_oracle_l", "verina_oracle_m", "verina_oracle_n", "verina_oracle_o", "verina_oracle_p", "verina_oracle_q", "verina_oracle_r", "verina_oracle_s", "verina_oracle_t", "verina_oracle_u", "verina_oracle_v", "verina_oracle_w", "verina_oracle_x", "verina_oracle_y", "verina_oracle_z", "verina_oracle_aa", "verina_oracle_ab", "verina_oracle_ac"):
     try:
         import importlib
         ORACLES.update(importlib.import_module(f"benchmarks.datasets.{_module}").ORACLES_MORE)

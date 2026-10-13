@@ -1,0 +1,14 @@
+# verina_basic_2
+
+`findSmallest(s : Array Nat) : Option Nat`
+
+-----Description----- 
+This task requires writing a Lean 4 method that finds the smallest number in an array of integers.
+
+-----Input-----
+The input consists of:
+s: An array of integers.
+
+-----Output-----
+The output is an option integer:
+Returns the smallest number found in the input array or none if the array is empty.

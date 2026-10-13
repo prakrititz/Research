@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "((a.natAbs % 10 : Nat) : Int) * ((b.natAbs % 10 : Nat) : Int)",
+  "children": []
+}

@@ -1,0 +1,38 @@
+{
+  "law": "cases",
+  "cond": "y < x",
+  "children": [
+    {
+      "law": "term",
+      "expr": "-1",
+      "children": []
+    },
+    {
+      "law": "cases",
+      "cond": "y % 2 = 0",
+      "children": [
+        {
+          "law": "term",
+          "expr": "y",
+          "children": []
+        },
+        {
+          "law": "cases",
+          "cond": "x ≤ y - 1",
+          "children": [
+            {
+              "law": "term",
+              "expr": "y - 1",
+              "children": []
+            },
+            {
+              "law": "term",
+              "expr": "-1",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

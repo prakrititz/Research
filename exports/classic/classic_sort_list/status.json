@@ -1,0 +1,15 @@
+{
+  "id": "classic_sort_list",
+  "dataset": "classic",
+  "family": "classic",
+  "function": "sortList",
+  "tests": 7,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 1,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "7/7",
+  "blocked_reason": ""
+}

@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "n - ((s.splitOn \" \")[0]!).toNat! - ((s.splitOn \" \")[3]!).toNat!",
+  "children": []
+}

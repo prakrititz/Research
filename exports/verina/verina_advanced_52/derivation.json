@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "r",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0"
+  ],
+  "invariant": "r ≤ nums.length ∧ ∀ r', r' < r → ¬ (((List.range k).map (· + 1)).all (fun n => List.elem n ((nums.reverse).take r')) = true)",
+  "guard": "r < nums.length ∧ ¬ (((List.range k).map (· + 1)).all (fun n => List.elem n ((nums.reverse).take r)) = true)",
+  "variant": "nums.length - r",
+  "result": "r",
+  "children": [
+    {
+      "law": "term",
+      "expr": "r + 1",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "exit52",
+      "statement": "∀ (nums : List Nat) (k : Nat) (h : minOperations_precond nums k) (r : Nat), (r ≤ nums.length ∧ ∀ r', r' < r → ¬ (((List.range k).map (· + 1)).all (fun n => List.elem n ((nums.reverse).take r')) = true)) → ¬ (r < nums.length ∧ ¬ (((List.range k).map (· + 1)).all (fun n => List.elem n ((nums.reverse).take r)) = true)) → minOperations_postcond nums k r h",
+      "proof": "by intro nums k h r hinv hg\n  obtain ⟨hr, hmin⟩ := hinv\n  have hcov : (((List.range k).map (· + 1)).all (fun n => List.elem n ((nums.reverse).take r)) = true) := by\n    by_cases hlt : r < nums.length\n    · by_contra hn; exact hg ⟨hlt, hn⟩\n    · have hrl : r = nums.length := by omega\n      subst hrl\n      rw [List.all_eq_true]; intro n hn\n      have hm : n ∈ nums := by have := List.all_eq_true.mp h n hn; simpa using this\n      rw [List.take_of_length_le (by simp)]; simpa using hm\n  unfold minOperations_postcond\n  dsimp only\n  refine ⟨hcov, ?_⟩\n  by_cases hpos : r > 0\n  · rw [if_pos hpos]; exact hmin (r - 1) (by omega)\n  · rw [if_neg hpos]\n    have hr0 : r = 0 := by omega\n    subst hr0\n    by_contra hk0\n    have hk : k ≠ 0 := by simpa using hk0\n    have h1 := List.all_eq_true.mp hcov 1 (List.mem_map.mpr ⟨0, List.mem_range.mpr (by omega), rfl⟩)\n    simp at h1"
+    },
+    {
+      "name": "step52",
+      "statement": "∀ (nums : List Nat) (k : Nat) (r : Nat), (r ≤ nums.length ∧ ∀ r', r' < r → ¬ (((List.range k).map (· + 1)).all (fun n => List.elem n ((nums.reverse).take r')) = true)) → (r < nums.length ∧ ¬ (((List.range k).map (· + 1)).all (fun n => List.elem n ((nums.reverse).take r)) = true)) → (r + 1 ≤ nums.length ∧ ∀ r', r' < r + 1 → ¬ (((List.range k).map (· + 1)).all (fun n => List.elem n ((nums.reverse).take r')) = true))",
+      "proof": "by intro nums k r hinv hg\n  obtain ⟨hr, hmin⟩ := hinv\n  obtain ⟨hlt, hn⟩ := hg\n  refine ⟨by omega, fun r' hr' => ?_⟩\n  by_cases he : r' = r\n  · subst he; exact hn\n  · exact hmin r' (by omega)"
+    }
+  ]
+}

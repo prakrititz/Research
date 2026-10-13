@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "(List.range (n.toNat + 1)).any (fun x => decide (_root_.pow 2 x = n ∧ n > 0))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "pow2_iff",
+      "statement": "∀ (n : Int), (∃ x : Nat, _root_.pow 2 x = n ∧ n > 0) ↔ (List.range (n.toNat + 1)).any (fun x => decide (_root_.pow 2 x = n ∧ n > 0)) = true",
+      "proof": "by intro n\n  have hp : ∀ x : Nat, _root_.pow 2 x = (2 : Int) ^ x := by\n    intro x\n    induction x with\n    | zero => simp [_root_.pow]\n    | succ k ih => simp [_root_.pow, ih, pow_succ]; ring\n  constructor\n  · rintro ⟨x, hx, hn⟩\n    rw [List.any_eq_true]\n    refine ⟨x, List.mem_range.mpr ?_, by simpa using ⟨hx, hn⟩⟩\n    have h1 : x < 2 ^ x := Nat.lt_pow_self (by omega)\n    rw [hp] at hx\n    have h2 : ((2 ^ x : Nat) : Int) = n := by rw [← hx]; push_cast; ring\n    omega\n  · intro h\n    obtain ⟨x, _, hx⟩ := List.any_eq_true.mp h\n    exact ⟨x, by simpa using hx⟩"
+    },
+    {
+      "name": "pow2_ok",
+      "statement": "∀ (n : Int) (h : isPowerOfTwo_precond n), isPowerOfTwo_postcond n ((List.range (n.toNat + 1)).any (fun x => decide (_root_.pow 2 x = n ∧ n > 0))) h",
+      "proof": "by intro n h\n  unfold isPowerOfTwo_postcond\n  split_ifs with hb\n  · exact (pow2_iff n).mpr hb\n  · intro hex; exact hb ((pow2_iff n).mp hex)"
+    }
+  ]
+}

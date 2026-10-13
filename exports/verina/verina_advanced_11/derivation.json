@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "(lst.find? (fun x => decide ((lst.filter (fun y => y = x)).length > lst.length / 2))).getD (-1)",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "maj11",
+      "statement": "∀ (lst : List Int) (h : findMajorityElement_precond lst) (res : Int), (((∀ x, x ∈ lst → (lst.filter (fun y => y = x)).length ≤ lst.length / 2) ∧ res = -1) ∨ (lst.filter (fun y => y = res)).length > lst.length / 2) → findMajorityElement_postcond lst res h",
+      "proof": "by intro lst h res hc\n  unfold findMajorityElement_postcond\n  dsimp only\n  rcases hc with ⟨hall, hres⟩ | hmaj\n  · exact ⟨fun _ => Or.inl (List.all_eq_true.mpr fun x hx => by simpa using hall x hx), fun hne => absurd hres hne⟩\n  · have hmaj' : (lst.filter (fun y => y = res)).length > lst.length / 2 ∧ lst.all (fun x => decide ((lst.filter (fun y => y = x)).length ≤ lst.length / 2 ∨ x = res)) = true := by\n      refine ⟨hmaj, List.all_eq_true.mpr fun x hx => ?_⟩\n      by_cases hxr : x = res\n      · simp [hxr]\n      · have := Refine.filter_pair_le lst x res hxr\n        simp only [decide_eq_true_eq]; left; omega\n    exact ⟨fun _ => Or.inr hmaj', fun _ => hmaj'⟩"
+    },
+    {
+      "name": "find11",
+      "statement": "∀ (lst : List Int) (h : findMajorityElement_precond lst), findMajorityElement_postcond lst ((lst.find? (fun x => decide ((lst.filter (fun y => y = x)).length > lst.length / 2))).getD (-1)) h",
+      "proof": "by intro lst h\n  apply maj11 lst h\n  cases hf : lst.find? (fun x => decide ((lst.filter (fun y => y = x)).length > lst.length / 2)) with\n  | none =>\n    left\n    refine ⟨?_, rfl⟩\n    intro x hx\n    have := List.find?_eq_none.mp hf x hx\n    simpa using this\n  | some r =>\n    right\n    simp only [Option.getD_some]\n    have hp := List.find?_some hf\n    simp only [decide_eq_true_eq] at hp\n    exact hp"
+    }
+  ]
+}

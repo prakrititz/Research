@@ -1,0 +1,10 @@
+# Derivation of he_130_tri
+
+kind: **loop**
+
+- **loop** over state (i : Nat, acc : List Nat), start (0, [])
+  - invariant: `i ≤ n + 1 ∧ acc.length = i ∧ (0 < i → acc[0]! = 1) ∧ (1 < i → acc[1]! = 3) ∧ ∀ k, k < i → 2 ≤ k → acc[k]! = (if k % 2 = 0 then 1 + k / 2 else acc[k - 1]! + acc[k - 2]! + (1 + (k + 1) / 2))`
+  - guard: `i < n + 1`
+  - variant: `n + 1 - i`
+  - result: `acc`
+  - **term**: `(i + 1, acc ++ [if i = 0 then 1 else if i = 1 then 3 else if i % 2 = 0 then 1 + i / 2 else acc[i - 1]! + acc[i - 2]! + (1 + (i + 1) / 2)])`

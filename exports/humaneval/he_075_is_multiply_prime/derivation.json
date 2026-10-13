@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "decide (∃ p, p < a + 1 ∧ ∃ q, q < a + 1 ∧ ∃ r, r < a + 1 ∧ p * q * r = a ∧ Nat.Prime p ∧ Nat.Prime q ∧ Nat.Prime r)",
+  "children": []
+}

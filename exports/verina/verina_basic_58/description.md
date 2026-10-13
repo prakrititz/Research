@@ -1,0 +1,16 @@
+# verina_basic_58
+
+`double_array_elements(s : Array Int) : Array Int`
+
+-----Description-----  
+This task involves transforming an array of integers by doubling each element.
+
+-----Input-----  
+The input consists of:  
+• s: An array of integers.
+
+-----Output-----  
+The output is an array of integers where for each valid index i, the element at position i is equal to twice the corresponding element in the input array.
+
+-----Note-----  
+The implementation makes use of a recursive helper function to update the array in place. It is assumed that the input array is valid and that the doubling operation does not lead to any overflow issues.

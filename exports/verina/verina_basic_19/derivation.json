@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "ok",
+      "Bool"
+    ]
+  ],
+  "init": [
+    "0",
+    "true"
+  ],
+  "invariant": "i ≤ a.size - 1 ∧ (ok = true ↔ ∀ k, k < i → a[k]! ≤ a[k + 1]!)",
+  "guard": "i < a.size - 1",
+  "variant": "a.size - 1 - i",
+  "result": "ok",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, ok && decide (a[i]! ≤ a[i + 1]!))",
+      "children": []
+    }
+  ]
+}

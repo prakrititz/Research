@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "s.toList.any (fun c => c == 'z' || c == 'Z')",
+  "children": []
+}

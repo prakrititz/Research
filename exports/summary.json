@@ -1,0 +1,36 @@
+{
+  "humaneval": {
+    "tasks": 164,
+    "with_derivation": 159,
+    "certified": 159,
+    "independently_verified": 159,
+    "kinds": {
+      "loop": 87,
+      "restate": 69,
+      "definitional": 3
+    },
+    "blocked_listed": 5
+  },
+  "classic": {
+    "tasks": 5,
+    "with_derivation": 5,
+    "certified": 5,
+    "independently_verified": 5,
+    "kinds": {
+      "loop": 4,
+      "restate": 1
+    },
+    "blocked_listed": 0
+  },
+  "verina": {
+    "tasks": 189,
+    "with_derivation": 174,
+    "certified": 173,
+    "independently_verified": 174,
+    "kinds": {
+      "restate": 111,
+      "loop": 63
+    },
+    "blocked_listed": 15
+  }
+}

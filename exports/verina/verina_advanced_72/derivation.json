@@ -1,0 +1,60 @@
+{
+  "law": "cases",
+  "cond": "n = 0",
+  "children": [
+    {
+      "law": "term",
+      "expr": "0",
+      "children": []
+    },
+    {
+      "law": "cases",
+      "cond": "n % 2 = 0",
+      "children": [
+        {
+          "law": "term",
+          "expr": "2",
+          "children": []
+        },
+        {
+          "law": "cases",
+          "cond": "n % 3 = 0",
+          "children": [
+            {
+              "law": "term",
+              "expr": "3",
+              "children": []
+            },
+            {
+              "law": "cases",
+              "cond": "n % 5 = 0",
+              "children": [
+                {
+                  "law": "term",
+                  "expr": "5",
+                  "children": []
+                },
+                {
+                  "law": "cases",
+                  "cond": "n % 7 = 0",
+                  "children": [
+                    {
+                      "law": "term",
+                      "expr": "7",
+                      "children": []
+                    },
+                    {
+                      "law": "term",
+                      "expr": "0",
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

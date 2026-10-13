@@ -1,0 +1,47 @@
+{
+  "law": "bind",
+  "var": "p",
+  "type": "Nat",
+  "prop": "p ≤ a.size ∧ (∀ j, j < p → ¬ isOdd a[j]! = true) ∧ (p < a.size → isOdd a[p]! = true)",
+  "children": [
+    {
+      "law": "loop",
+      "state": [
+        [
+          "n",
+          "Nat"
+        ]
+      ],
+      "init": [
+        "0"
+      ],
+      "invariant": "n ≤ a.size ∧ ∀ j, j < n → ¬ isOdd a[j]! = true",
+      "guard": "n < a.size ∧ ¬ isOdd a[n]! = true",
+      "variant": "a.size - n",
+      "result": "n",
+      "children": [
+        {
+          "law": "term",
+          "expr": "n + 1",
+          "children": []
+        }
+      ]
+    },
+    {
+      "law": "cases",
+      "cond": "p < a.size",
+      "children": [
+        {
+          "law": "term",
+          "expr": "some p",
+          "children": []
+        },
+        {
+          "law": "term",
+          "expr": "none",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

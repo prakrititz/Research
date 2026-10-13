@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "['a', 'e', 'i', 'o', 'u'].all (fun v => (normalize_str s).contains v)",
+  "children": []
+}

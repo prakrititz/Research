@@ -1,0 +1,10 @@
+# Derivation of verina_basic_16
+
+kind: **loop**
+
+- **loop** over state (i : Nat, acc : List Char), start (0, [])
+  - invariant: `i ≤ s.length ∧ acc = (List.range i).map (fun j => (if s.toList[j]! = oldChar then newChar else s.toList[j]!))`
+  - guard: `i < s.length`
+  - variant: `s.length - i`
+  - result: `String.mk acc`
+  - **term**: `(i + 1, acc ++ [(if s.toList[i]! = oldChar then newChar else s.toList[i]!)])`

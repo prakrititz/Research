@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "(if heights.length < 3 then 0 else rain_postcond.sum_water heights (fun i => max 0 (min (rain_postcond.ml heights i 0 0) (rain_postcond.mr heights i 0) - heights[i]!)) 0 0)",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "nonneg_sw",
+      "statement": "∀ (heights : List Int) (w : Nat → Int), (∀ i, 0 ≤ w i) → ∀ (n i : Nat) (acc : Int), heights.length - i ≤ n → 0 ≤ acc → 0 ≤ rain_postcond.sum_water heights w i acc",
+      "proof": "by intro heights w hw n\n  induction n with\n  | zero =>\n    intro i acc hn hacc\n    rw [rain_postcond.sum_water]\n    split_ifs with h\n    · exact hacc\n    · omega\n  | succ n ih =>\n    intro i acc hn hacc\n    rw [rain_postcond.sum_water]\n    split_ifs with h\n    · exact hacc\n    · exact ih (i + 1) _ (by omega) (by have := hw i; omega)"
+    },
+    {
+      "name": "rain62",
+      "statement": "∀ (heights : List Int) (h : rain_precond heights), rain_postcond heights (if heights.length < 3 then 0 else rain_postcond.sum_water heights (fun i => max 0 (min (rain_postcond.ml heights i 0 0) (rain_postcond.mr heights i 0) - heights[i]!)) 0 0) h",
+      "proof": "by intro heights h\n  unfold rain_postcond\n  by_cases hl : heights.length < 3\n  · rw [if_pos hl]; refine ⟨le_refl _, ?_⟩; rw [if_pos hl]\n  · rw [if_neg hl]\n    refine ⟨nonneg_sw heights _ (fun i => le_max_left _ _) heights.length 0 0 (by omega) (le_refl _), ?_⟩\n    rw [if_neg hl]"
+    }
+  ]
+}

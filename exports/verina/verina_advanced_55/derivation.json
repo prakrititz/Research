@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "((xs.find? (fun x => decide (xs.countP (fun y => y = x) = (xs.map (fun x => xs.countP (fun y => y = x))).foldl max 0))).getD 0)",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "most55_a",
+      "statement": "∀ (xs : List Int) (h : mostFrequent_precond xs) (r : Int), r ∈ xs → (∀ x, x ∈ xs → xs.countP (fun y => y = x) ≤ xs.countP (fun y => y = r)) → xs.find? (fun x => decide (xs.countP (fun y => y = x) = xs.countP (fun y => y = r))) = some r → mostFrequent_postcond xs r h",
+      "proof": "by intro xs h r hmem hall hfirst\n  unfold mostFrequent_postcond\n  dsimp only\n  refine ⟨hmem, List.all_eq_true.mpr fun x hx => by simpa using hall x hx, ?_⟩\n  rw [List.head?_filter]; exact hfirst"
+    },
+    {
+      "name": "most55",
+      "statement": "∀ (xs : List Int) (h : mostFrequent_precond xs), mostFrequent_postcond xs ((xs.find? (fun x => decide (xs.countP (fun y => y = x) = (xs.map (fun x => xs.countP (fun y => y = x))).foldl max 0))).getD 0) h",
+      "proof": "by intro xs h\n  have hne : xs.map (fun x => xs.countP (fun y => y = x)) ≠ [] := by simpa using h\n  obtain ⟨h1, h2⟩ := Refine.maxlist_nat _ hne\n  rw [List.contains_iff_mem, List.mem_map] at h1\n  obtain ⟨x0, hx0, hcx0⟩ := h1\n  have hany : xs.any (fun x => decide ((xs.countP (fun y => y = x)) = (xs.map (fun x => xs.countP (fun y => y = x))).foldl max 0)) = true :=\n    List.any_eq_true.mpr ⟨x0, hx0, by simpa using hcx0⟩\n  obtain ⟨r, hr, hmem, hp⟩ := Refine.find_some_of_any xs _ hany\n  have hcr := of_decide_eq_true hp\n  have e : (xs.find? (fun x => decide (xs.countP (fun y => y = x) = (xs.map (fun x => xs.countP (fun y => y = x))).foldl max 0))).getD 0 = r := by rw [hr]; rfl\n  rw [e]\n  refine most55_a xs h r hmem ?_ ?_\n  · intro x hx\n    have := List.all_eq_true.mp h2 _ (List.mem_map.mpr ⟨x, hx, rfl⟩)\n    rw [hcr]; simpa using this\n  · rw [hcr]; exact hr"
+    }
+  ]
+}

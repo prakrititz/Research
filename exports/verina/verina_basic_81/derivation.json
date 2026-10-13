@@ -1,0 +1,23 @@
+{
+  "law": "cases",
+  "cond": "y = 0",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(Int.ofNat x, 0)",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "(Int.ofNat (x % y), Int.ofNat (x / y))",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "divmod_ok",
+      "statement": "∀ (x y : Nat), y ≠ 0 → (Int.ofNat (x / y) * Int.ofNat y + Int.ofNat (x % y) = Int.ofNat x ∧ (0 ≤ Int.ofNat (x % y) ∧ Int.ofNat (x % y) < Int.ofNat y) ∧ 0 ≤ Int.ofNat (x / y))",
+      "proof": "by intro x y hy\n  have h1 : x / y * y + x % y = x := Nat.div_add_mod' x y\n  have h2 : x % y < y := Nat.mod_lt x (Nat.pos_of_ne_zero hy)\n  refine ⟨?_, ⟨Int.ofNat_nonneg _, Int.ofNat_lt.mpr h2⟩, Int.ofNat_nonneg _⟩\n  have h3 : (((x / y * y + x % y : Nat)) : Int) = (x : Int) := congrArg (fun n : Nat => (n : Int)) h1\n  simpa [Int.ofNat_eq_natCast, Int.natCast_add, Int.natCast_mul] using h3"
+    }
+  ]
+}

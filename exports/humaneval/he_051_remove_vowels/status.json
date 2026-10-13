@@ -1,0 +1,15 @@
+{
+  "id": "he_051_remove_vowels",
+  "dataset": "humaneval",
+  "family": "he_040",
+  "function": "removeVowels",
+  "tests": 15,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 1,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "15/15",
+  "blocked_reason": ""
+}

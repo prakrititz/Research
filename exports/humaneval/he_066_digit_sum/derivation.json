@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0",
+    "0"
+  ],
+  "invariant": "i ≤ s.length ∧ acc = (((s.toList.take i).filter Char.isUpper).map Char.toNat).sum",
+  "guard": "i < s.length",
+  "variant": "s.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if s.toList[i]!.isUpper then acc + s.toList[i]!.toNat else acc)",
+      "children": []
+    }
+  ]
+}

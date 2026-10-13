@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "arr[k - 1]!",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "kth4",
+      "statement": "∀ (arr : Array Int) (k : Nat) (h : kthElement_precond arr k), kthElement_postcond arr k (arr[k - 1]!) h",
+      "proof": "by intro arr k h\n  unfold kthElement_postcond\n  rw [← Array.any_toList, List.any_eq_true]\n  obtain ⟨hk1, hk2⟩ := h\n  refine ⟨arr[k - 1]!, ?_, by simp⟩\n  rw [← Refine.toList_getElem_bang arr (k - 1) (by omega)]\n  exact Refine.getElem_bang_mem arr.toList (k - 1) (by simpa using (by omega : k - 1 < arr.size))"
+    }
+  ]
+}

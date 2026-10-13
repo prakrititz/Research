@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "if digits.isEmpty then [] else if digits.toList.any (λ c => ¬(c ∈ ['2','3','4','5','6','7','8','9'])) then [] else digits.toList.map digitToLetters |>.foldl (λ acc ls => acc.flatMap (λ s => ls.map (λ c => s ++ String.singleton c)) ) [\"\"]",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "lc26",
+      "statement": "∀ (digits : String) (h : letterCombinations_precond digits), letterCombinations_postcond digits (if digits.isEmpty then [] else if digits.toList.any (λ c => ¬(c ∈ ['2','3','4','5','6','7','8','9'])) then [] else digits.toList.map digitToLetters |>.foldl (λ acc ls => acc.flatMap (λ s => ls.map (λ c => s ++ String.singleton c)) ) [\"\"]) h",
+      "proof": "by intro digits h\n  unfold letterCombinations_postcond\n  split_ifs <;> simp_all"
+    }
+  ]
+}

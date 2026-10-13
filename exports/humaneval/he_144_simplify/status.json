@@ -1,0 +1,15 @@
+{
+  "id": "he_144_simplify",
+  "dataset": "humaneval",
+  "family": "he_140",
+  "function": "simplify",
+  "tests": 16,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "16/16",
+  "blocked_reason": ""
+}

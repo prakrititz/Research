@@ -1,0 +1,30 @@
+{
+  "law": "cases",
+  "cond": "nums = []",
+  "children": [
+    {
+      "law": "term",
+      "expr": "0",
+      "children": [],
+      "lemmas": [
+        {
+          "name": "lg29_nil",
+          "statement": "∀ (nums : List Nat) (k : Nat) (h : longestGoodSubarray_precond nums k), nums = [] → longestGoodSubarray_postcond nums k (0) h",
+          "proof": "by intro nums k h hx\n  unfold longestGoodSubarray_postcond\n  exact Or.inl ⟨hx, rfl⟩"
+        }
+      ]
+    },
+    {
+      "law": "term",
+      "expr": "(let subArrays := List.range (nums.length + 1) |>.flatMap (fun start => List.range (nums.length - start + 1) |>.map (fun len => nums.drop start |>.take len)); let subArrayFreqs := subArrays.map (fun arr => arr.map (fun x => arr.count x)); let validSubArrays := subArrayFreqs.filter (fun arr => arr.all (fun x => x ≤ k)); (validSubArrays.map (·.length)).foldl max 0)",
+      "children": [],
+      "lemmas": [
+        {
+          "name": "lg29_ne",
+          "statement": "∀ (nums : List Nat) (k : Nat) (h : longestGoodSubarray_precond nums k), ¬ nums = [] → longestGoodSubarray_postcond nums k (let subArrays := List.range (nums.length + 1) |>.flatMap (fun start => List.range (nums.length - start + 1) |>.map (fun len => nums.drop start |>.take len)); let subArrayFreqs := subArrays.map (fun arr => arr.map (fun x => arr.count x)); let validSubArrays := subArrayFreqs.filter (fun arr => arr.all (fun x => x ≤ k)); (validSubArrays.map (·.length)).foldl max 0) h",
+          "proof": "by intro nums k h hx\n  unfold longestGoodSubarray_postcond\n  intro subArrays subArrayFreqs validSubArrays\n  have hnil : [] ∈ validSubArrays := List.mem_filter.mpr ⟨List.mem_map.mpr ⟨(nums.drop 0).take 0, List.mem_flatMap.mpr ⟨0, List.mem_range.mpr (by omega), List.mem_map.mpr ⟨0, List.mem_range.mpr (by omega), rfl⟩⟩, by simp⟩, by simp⟩\n  exact Or.inr ⟨hx, Refine.maxlen_spec validSubArrays hnil⟩"
+        }
+      ]
+    }
+  ]
+}

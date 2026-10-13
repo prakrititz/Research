@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "decide (x % 2 = 0)",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "even_ok",
+      "statement": "∀ (x : Int), (decide (x % 2 = 0) = true ↔ ∃ k : Int, x = 2 * k)",
+      "proof": "by intro x\n  constructor\n  · intro h\n    have : x % 2 = 0 := by simpa using h\n    exact ⟨x / 2, by omega⟩\n  · rintro ⟨k, rfl⟩\n    simp <;> omega"
+    }
+  ]
+}

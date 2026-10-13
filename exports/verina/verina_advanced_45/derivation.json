@@ -1,0 +1,30 @@
+{
+  "law": "cases",
+  "cond": "xs = []",
+  "children": [
+    {
+      "law": "term",
+      "expr": "0",
+      "children": [],
+      "lemmas": [
+        {
+          "name": "ms45_nil",
+          "statement": "∀ (xs : List Int) (h : maxSubarraySum_precond xs), xs = [] → maxSubarraySum_postcond xs (0) h",
+          "proof": "by intro xs h hx\n  unfold maxSubarraySum_postcond\n  subst hx; simp"
+        }
+      ]
+    },
+    {
+      "law": "term",
+      "expr": "(let subarray_sums := List.range (xs.length + 1) |>.flatMap (fun start => List.range' 1 (xs.length - start) |>.map (fun len => ((xs.drop start).take len).sum)); subarray_sums.foldl max (subarray_sums.headD 0))",
+      "children": [],
+      "lemmas": [
+        {
+          "name": "ms45_ne",
+          "statement": "∀ (xs : List Int) (h : maxSubarraySum_precond xs), xs ≠ [] → maxSubarraySum_postcond xs (let subarray_sums := List.range (xs.length + 1) |>.flatMap (fun start => List.range' 1 (xs.length - start) |>.map (fun len => ((xs.drop start).take len).sum)); subarray_sums.foldl max (subarray_sums.headD 0)) h",
+          "proof": "by intro xs h hx\n  unfold maxSubarraySum_postcond\n  obtain ⟨x, t, rfl⟩ := List.exists_cons_of_ne_nil hx\n  exact Refine.maxlist_int_any _ (List.ne_nil_of_mem (a := ((([x] ++ t).drop 0).take 1).sum) (List.mem_flatMap.mpr ⟨0, List.mem_range.mpr (by simp), List.mem_map.mpr ⟨1, by simp [List.mem_range'_1], rfl⟩⟩))"
+        }
+      ]
+    }
+  ]
+}

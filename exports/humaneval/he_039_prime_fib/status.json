@@ -1,0 +1,15 @@
+{
+  "id": "he_039_prime_fib",
+  "dataset": "humaneval",
+  "family": "he_020",
+  "function": "primeFib",
+  "tests": 11,
+  "has_derivation": false,
+  "kind": "",
+  "laws": 0,
+  "helper_lemmas": 0,
+  "certified": false,
+  "independently_verified": false,
+  "tests_passed": null,
+  "blocked_reason": "the specification is unsatisfiable for n > 14 (it asks for a Fibonacci index below 300) and the primality of Fibonacci numbers of 28 digits cannot be decided by the kernel; the precondition would need n <= 14"
+}

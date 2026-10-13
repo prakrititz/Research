@@ -1,0 +1,15 @@
+{
+  "id": "he_041_car_race_collision",
+  "dataset": "humaneval",
+  "family": "he_040",
+  "function": "carRaceCollision",
+  "tests": 13,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "13/13",
+  "blocked_reason": ""
+}

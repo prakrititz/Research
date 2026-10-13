@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0",
+    "1 % p"
+  ],
+  "invariant": "i ≤ n ∧ acc = 2 ^ i % p",
+  "guard": "i < n",
+  "variant": "n - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, acc * 2 % p)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "pow_mod_step",
+      "statement": "∀ (i p : Nat), 2 ^ (i + 1) % p = 2 ^ i % p * 2 % p",
+      "proof": "by intro i p\n  rw [Nat.pow_succ, Nat.mod_mul_mod]"
+    }
+  ]
+}

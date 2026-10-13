@@ -1,0 +1,15 @@
+{
+  "id": "he_004_mean_absolute_deviation",
+  "dataset": "humaneval",
+  "family": "he_000",
+  "function": "meanAbsoluteDeviation",
+  "tests": 11,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 5,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "11/11",
+  "blocked_reason": ""
+}

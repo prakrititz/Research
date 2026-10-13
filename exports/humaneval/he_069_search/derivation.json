@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "best",
+      "Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "-1"
+  ],
+  "invariant": "i ≤ lst.length ∧ ((best = -1 ∧ ∀ k, k < i → lst.count lst[k]! < lst[k]!) ∨ (best > 0 ∧ best.toNat ∈ lst ∧ lst.count best.toNat ≥ best.toNat ∧ ∀ k, k < i → lst.count lst[k]! ≥ lst[k]! → lst[k]! ≤ best.toNat))",
+  "guard": "i < lst.length",
+  "variant": "lst.length - i",
+  "result": "best",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if lst.count lst[i]! ≥ lst[i]! ∧ (best = -1 ∨ best < (lst[i]! : Int)) then (lst[i]! : Int) else best)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "search_exit",
+      "statement": "∀ (lst : List Nat) (best : Int), (lst.length ≤ lst.length ∧ ((best = -1 ∧ ∀ k, k < lst.length → lst.count lst[k]! < lst[k]!) ∨ (best > 0 ∧ best.toNat ∈ lst ∧ lst.count best.toNat ≥ best.toNat ∧ ∀ k, k < lst.length → lst.count lst[k]! ≥ lst[k]! → lst[k]! ≤ best.toNat))) → ((best = -1 ∧ ∀ x ∈ lst, lst.count x < x) ∨ (best > 0 ∧ best.toNat ∈ lst ∧ lst.count best.toNat ≥ best.toNat ∧ ∀ x ∈ lst, lst.count x ≥ x → x ≤ best.toNat))",
+      "proof": "by\n  intro lst best h\n  obtain ⟨_, h⟩ := h\n  rcases h with ⟨hb, hall⟩ | ⟨hb, hm, hc, hmax⟩\n  · left\n    refine ⟨hb, ?_⟩\n    intro x hx\n    obtain ⟨k, hk, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n    exact hall k hk\n  · right\n    refine ⟨hb, hm, hc, ?_⟩\n    intro x hx hxc\n    obtain ⟨k, hk, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n    exact hmax k hk hxc"
+    }
+  ]
+}

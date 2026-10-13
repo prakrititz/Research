@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "((arr.take k).filter (fun x => x.natAbs < 100)).sum",
+  "children": []
+}

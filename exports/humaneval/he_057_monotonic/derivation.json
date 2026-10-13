@@ -1,0 +1,77 @@
+{
+  "law": "bind",
+  "var": "up",
+  "type": "Bool",
+  "prop": "up = true ↔ ∀ i, i < l.length - 1 → l[i]! ≤ l[i + 1]!",
+  "children": [
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "ok",
+          "Bool"
+        ]
+      ],
+      "init": [
+        "0",
+        "true"
+      ],
+      "invariant": "i ≤ l.length - 1 ∧ (ok = true ↔ ∀ k, k < i → l[k]! ≤ l[k + 1]!)",
+      "guard": "i < l.length - 1",
+      "variant": "l.length - 1 - i",
+      "result": "ok",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, ok && decide (l[i]! ≤ l[i + 1]!))",
+          "children": []
+        }
+      ]
+    },
+    {
+      "law": "bind",
+      "var": "down",
+      "type": "Bool",
+      "prop": "down = true ↔ ∀ i, i < l.length - 1 → l[i]! ≥ l[i + 1]!",
+      "children": [
+        {
+          "law": "loop",
+          "state": [
+            [
+              "i",
+              "Nat"
+            ],
+            [
+              "ok",
+              "Bool"
+            ]
+          ],
+          "init": [
+            "0",
+            "true"
+          ],
+          "invariant": "i ≤ l.length - 1 ∧ (ok = true ↔ ∀ k, k < i → l[k]! ≥ l[k + 1]!)",
+          "guard": "i < l.length - 1",
+          "variant": "l.length - 1 - i",
+          "result": "ok",
+          "children": [
+            {
+              "law": "term",
+              "expr": "(i + 1, ok && decide (l[i]! ≥ l[i + 1]!))",
+              "children": []
+            }
+          ]
+        },
+        {
+          "law": "term",
+          "expr": "up || down",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

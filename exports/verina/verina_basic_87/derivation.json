@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "(a.toList.mergeSort (fun x y => decide (x ≤ y))).toArray",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "sort_array_ok",
+      "statement": "∀ (l : List Int), List.Pairwise (· ≤ ·) ((l.mergeSort (fun x y => decide (x ≤ y))).toArray.toList) ∧ List.isPerm l ((l.mergeSort (fun x y => decide (x ≤ y))).toArray.toList) = true",
+      "proof": "by intro l\n  have hp : (l.mergeSort (fun x y => decide (x ≤ y))).Perm l := List.mergeSort_perm l _\n  have hs : List.Pairwise (fun a b => decide (a ≤ b) = true) (l.mergeSort (fun x y => decide (x ≤ y))) :=\n    List.pairwise_mergeSort (by intro a b c h1 h2; simp at *; omega) (by intro a b; simp; omega) l\n  refine ⟨?_, ?_⟩\n  · simpa using hs\n  · simpa using List.isPerm_iff.mpr hp.symm"
+    }
+  ]
+}

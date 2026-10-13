@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "v",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0"
+  ],
+  "invariant": "∀ k, k < v → k ∈ l",
+  "guard": "v ∈ l",
+  "variant": "l.foldl max 0 + 1 - v",
+  "result": "v",
+  "children": [
+    {
+      "law": "term",
+      "expr": "v + 1",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "foldl_max_nat",
+      "statement": "∀ (l : List Nat) (m : Nat), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l",
+      "proof": "by intro l\n  induction l with\n  | nil => intro m; simp\n  | cons a t ih =>\n    intro m\n    obtain ⟨h1, h2, h3⟩ := ih (max m a)\n    simp only [List.foldl_cons]\n    refine ⟨?_, ?_, ?_⟩\n    · rcases h1 with h | h\n      · by_cases hm : m ≤ a\n        · right; rw [max_eq_right hm] at h ⊢; rw [h]; simp\n        · left\n          have hmx : max m a = m := max_eq_left (by omega)\n          rw [hmx] at h ⊢; exact h\n      · right; exact List.mem_cons_of_mem a h\n    · exact le_trans (le_max_left m a) h2\n    · intro x hx\n      rcases List.mem_cons.mp hx with rfl | hx'\n      · exact le_trans (le_max_right m x) h2\n      · exact h3 x hx'"
+    },
+    {
+      "name": "mem_le_max",
+      "statement": "∀ (s : List Nat) (v : Nat), v ∈ s → v ≤ s.foldl max 0",
+      "proof": "by intro s v h\n  obtain ⟨_, _, h3⟩ := foldl_max_nat s 0\n  exact h3 v h"
+    }
+  ]
+}

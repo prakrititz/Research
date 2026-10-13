@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "best",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0",
+    "0"
+  ],
+  "invariant": "i ≤ lst.length ∧ (best = 0 ∨ ∃ k, k < i ∧ lst[k]! = best ∧ Nat.Prime best) ∧ ∀ k, k < i → Nat.Prime lst[k]! → lst[k]! ≤ best",
+  "guard": "i < lst.length",
+  "variant": "lst.length - i",
+  "result": "((toString best).toList.map (fun c => c.toNat - '0'.toNat)).sum",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if Nat.Prime lst[i]! ∧ best < lst[i]! then lst[i]! else best)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "skj_exit",
+      "statement": "∀ (lst : List Nat) (best : Nat), (∃ x ∈ lst, Nat.Prime x) → (lst.length ≤ lst.length ∧ (best = 0 ∨ ∃ k, k < lst.length ∧ lst[k]! = best ∧ Nat.Prime best) ∧ ∀ k, k < lst.length → Nat.Prime lst[k]! → lst[k]! ≤ best) → ∃ p ∈ lst, Nat.Prime p ∧ (∀ x ∈ lst, Nat.Prime x → x ≤ p) ∧ ((toString best).toList.map (fun c => c.toNat - '0'.toNat)).sum = ((toString p).toList.map (fun c => c.toNat - '0'.toNat)).sum",
+      "proof": "by\n  intro lst best hex h\n  obtain ⟨_, hb, hmax⟩ := h\n  obtain ⟨x, hx, hxp⟩ := hex\n  obtain ⟨k, hk, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n  have hle := hmax k hk hxp\n  have h2 : 2 ≤ lst[k]! := hxp.two_le\n  rcases hb with h0 | ⟨j, hj, hjb, hbp⟩\n  · omega\n  · refine ⟨best, ?_, hbp, ?_, rfl⟩\n    · rw [← hjb]; rw [getElem!_pos lst j hj]; exact List.getElem_mem hj\n    · intro y hy hyp\n      obtain ⟨m, hm, rfl⟩ := (Refine.mem_iff_idx lst y).mp hy\n      exact hmax m hm hyp"
+    }
+  ]
+}

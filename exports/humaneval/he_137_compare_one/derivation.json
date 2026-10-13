@@ -1,0 +1,27 @@
+{
+  "law": "cases",
+  "cond": "valQ a = valQ b",
+  "children": [
+    {
+      "law": "term",
+      "expr": "none",
+      "children": []
+    },
+    {
+      "law": "cases",
+      "cond": "valQ b < valQ a",
+      "children": [
+        {
+          "law": "term",
+          "expr": "some a",
+          "children": []
+        },
+        {
+          "law": "term",
+          "expr": "some b",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

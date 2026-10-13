@@ -1,0 +1,22 @@
+{
+  "law": "term",
+  "expr": "String.mk (['d', 'b'] ++ Nat.toDigits 2 decimal ++ ['d', 'b'])",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "toDigits2_binary",
+      "statement": "∀ (v : Nat), isBinary (Nat.toDigits 2 v) v",
+      "proof": "by\n  intro v\n  induction v using Nat.strong_induction_on with\n  | _ v ih =>\n    by_cases h0 : v = 0\n    · subst h0\n      simp [isBinary, Nat.toDigits, Nat.toDigitsCore]\n    · by_cases h1 : v / 2 = 0\n      · have hv : v = 1 := by omega\n        subst hv\n        simp [isBinary, Nat.toDigits, Nat.toDigitsCore]\n      · have hlt : v / 2 < v := by omega\n        have ihv := ih (v / 2) hlt\n        have hsplit : Nat.toDigits 2 v = Nat.toDigits 2 (v / 2) ++ Nat.toDigits 2 (v % 2) := by\n          rw [Nat.toDigits_append_toDigits (by norm_num) (by omega) (by omega)]\n          congr 1; omega\n        have hbit : Nat.toDigits 2 (v % 2) = [if v % 2 = 1 then '1' else '0'] := by\n          rcases Nat.mod_two_eq_zero_or_one v with h | h <;> simp [h, Nat.toDigits, Nat.toDigitsCore]\n        rw [hsplit, hbit]\n        obtain ⟨ha, hf, _, hh⟩ := ihv\n        refine ⟨?_, ?_, ?_, ?_⟩\n        · simp only [List.all_append, Bool.and_eq_true] \n          refine ⟨ha, ?_⟩\n          split <;> simp\n        · rw [List.foldl_append, hf]\n          simp only [List.foldl_cons, List.foldl_nil]\n          split <;> simp_all <;> omega\n        · intro hz; omega\n        · intro _\n          have hh' := hh (by omega)\n          cases hA : Nat.toDigits 2 (v / 2) with\n          | nil => rw [hA] at hh'; simp at hh'\n          | cons a t => rw [hA] at hh'; simpa using hh'"
+    },
+    {
+      "name": "toDigits2_ne_nil",
+      "statement": "∀ (v : Nat), Nat.toDigits 2 v ≠ []",
+      "proof": "by\n  intro v h\n  obtain ⟨_, _, h0, hh⟩ := toDigits2_binary v\n  by_cases hv : v = 0\n  · have := h0 hv; rw [h] at this; simp at this\n  · have := hh (by omega); rw [h] at this; simp at this"
+    },
+    {
+      "name": "db_ok",
+      "statement": "∀ (v : Nat), ((String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.length ≥ 5 ∧ (String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.take 2 = ['d', 'b'] ∧ (String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.drop ((String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.length - 2) = ['d', 'b'] ∧ isBinary (((String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.drop 2).take ((String.mk (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b'])).toList.length - 4)) v)",
+      "proof": "by\n  intro v\n  rw [Refine.string_toList_mk]\n  have hne := toDigits2_ne_nil v\n  have hlen : 0 < (Nat.toDigits 2 v).length := List.length_pos_iff.mpr hne\n  have hb := toDigits2_binary v\n  refine ⟨by simp <;> omega, by simp, ?_, ?_⟩\n  · have : (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b']).length - 2 = 2 + (Nat.toDigits 2 v).length := by simp <;> omega\n    rw [this]\n    have h := List.drop_left (l₁ := ['d', 'b'] ++ Nat.toDigits 2 v) (l₂ := ['d', 'b'])\n    have hl : (['d', 'b'] ++ Nat.toDigits 2 v).length = 2 + (Nat.toDigits 2 v).length := by simp <;> omega\n    rw [hl] at h\n    exact h\n  · have h1 : (['d', 'b'] ++ Nat.toDigits 2 v ++ ['d', 'b']).length - 4 = (Nat.toDigits 2 v).length := by simp <;> omega\n    rw [h1]\n    simpa using hb"
+    }
+  ]
+}

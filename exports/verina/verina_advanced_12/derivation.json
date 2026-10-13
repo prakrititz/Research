@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "(match lst.filter (fun y => decide (lst.count y > 1)) with | [] => none | b :: t => some ((b :: t).foldl (fun best y => if secondOccIdx lst y < secondOccIdx lst best then y else best) b))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "argmin_facts",
+      "statement": "∀ {α : Type} (f : α → Nat) (L : List α) (b : α), (L.foldl (fun best y => if f y < f best then y else best) b = b ∨ L.foldl (fun best y => if f y < f best then y else best) b ∈ L) ∧ f (L.foldl (fun best y => if f y < f best then y else best) b) ≤ f b ∧ ∀ y ∈ L, f (L.foldl (fun best y => if f y < f best then y else best) b) ≤ f y",
+      "proof": "by\n  intro α f L\n  induction L with\n  | nil => intro b; simp\n  | cons a t ih =>\n    intro b\n    simp only [List.foldl_cons]\n    by_cases hlt : f a < f b\n    · rw [if_pos hlt]\n      obtain ⟨h1, h2, h3⟩ := ih a\n      refine ⟨?_, by omega, ?_⟩\n      · rcases h1 with h | h\n        · right; rw [h]; exact List.mem_cons_self\n        · right; exact List.mem_cons_of_mem a h\n      · intro x hx\n        rcases List.mem_cons.mp hx with rfl | hx'\n        · exact h2\n        · exact h3 x hx'\n    · rw [if_neg hlt]\n      obtain ⟨h1, h2, h3⟩ := ih b\n      refine ⟨?_, h2, ?_⟩\n      · rcases h1 with h | h\n        · left; exact h\n        · right; exact List.mem_cons_of_mem a h\n      · intro x hx\n        rcases List.mem_cons.mp hx with rfl | hx'\n        · omega\n        · exact h3 x hx'\n"
+    },
+    {
+      "name": "first12",
+      "statement": "∀ (lst : List Int) (h : firstDuplicate_precond lst), firstDuplicate_postcond lst (match lst.filter (fun y => decide (lst.count y > 1)) with | [] => none | b :: t => some ((b :: t).foldl (fun best y => if secondOccIdx lst y < secondOccIdx lst best then y else best) b)) h",
+      "proof": "by\n  intro lst h\n  unfold firstDuplicate_postcond\n  cases hL : lst.filter (fun y => decide (lst.count y > 1)) with\n  | nil =>\n    show List.Nodup lst\n    rw [List.nodup_iff_count_le_one]\n    intro a\n    by_contra hgt\n    have hmem : a ∈ lst.filter (fun y => decide (lst.count y > 1)) :=\n      List.mem_filter.mpr ⟨List.count_pos_iff.mp (by omega), by simpa using (by omega : lst.count a > 1)⟩\n    rw [hL] at hmem\n    simp at hmem\n  | cons b t =>\n    show lst.count ((b :: t).foldl (fun best y => if secondOccIdx lst y < secondOccIdx lst best then y else best) b) > 1 ∧ _\n    obtain ⟨h1, h2, h3⟩ := argmin_facts (secondOccIdx lst) (b :: t) b\n    have hmem : (b :: t).foldl (fun best y => if secondOccIdx lst y < secondOccIdx lst best then y else best) b ∈ b :: t := by\n      rcases h1 with h | h\n      · rw [h]; exact List.mem_cons_self\n      · exact h\n    generalize (b :: t).foldl (fun best y => if secondOccIdx lst y < secondOccIdx lst best then y else best) b = r at h1 h2 h3 hmem ⊢\n    have hfm : r ∈ lst.filter (fun y => decide (lst.count y > 1)) := by rw [hL]; exact hmem\n    refine ⟨of_decide_eq_true (List.mem_filter.mp hfm).2, ?_⟩\n    rw [List.all_eq_true]\n    intro y hy\n    simp only [decide_eq_true_eq]\n    by_cases hy1 : lst.count y = 1\n    · exact Or.inl hy1\n    · right\n      have hpos : 0 < lst.count y := List.count_pos_iff.mpr hy\n      have hym : y ∈ b :: t := by\n        rw [← hL]\n        exact List.mem_filter.mpr ⟨hy, by simpa using (by omega : lst.count y > 1)⟩\n      exact h3 y hym\n"
+    }
+  ]
+}

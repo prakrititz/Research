@@ -1,0 +1,5 @@
+# he_002_truncate_number
+
+`truncateNumber(number : ℚ) : ℚ`
+
+Given a positive floating point number, it can be decomposed into an integer part (the largest integer smaller than the number) and decimals (the leftover part, always smaller than 1). Return the decimal part of the number.

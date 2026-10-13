@@ -1,0 +1,18 @@
+{
+  "law": "bind",
+  "var": "d",
+  "type": "List Char",
+  "prop": "d = (toString x).toList",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(toString x).toList",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "String.mk (if shift > d.length then d.reverse else d.drop (d.length - shift % d.length) ++ d.take (d.length - shift % d.length))",
+      "children": []
+    }
+  ]
+}

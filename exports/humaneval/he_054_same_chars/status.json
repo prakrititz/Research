@@ -1,0 +1,15 @@
+{
+  "id": "he_054_same_chars",
+  "dataset": "humaneval",
+  "family": "he_040",
+  "function": "sameChars",
+  "tests": 15,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 7,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "15/15",
+  "blocked_reason": ""
+}

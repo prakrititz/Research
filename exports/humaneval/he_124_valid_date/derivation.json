@@ -1,0 +1,18 @@
+{
+  "law": "bind",
+  "var": "l",
+  "type": "List Char",
+  "prop": "l = date.toList",
+  "children": [
+    {
+      "law": "term",
+      "expr": "date.toList",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "decide (l.length = 10 ∧ l[2]! = '-' ∧ l[5]! = '-' ∧ (l.take 2).all Char.isDigit = true ∧ ((l.drop 3).take 2).all Char.isDigit = true ∧ (l.drop 6).all Char.isDigit = true ∧ 1 ≤ natOf (l.take 2) ∧ natOf (l.take 2) ≤ 12 ∧ 1 ≤ natOf ((l.drop 3).take 2) ∧ natOf ((l.drop 3).take 2) ≤ daysIn (natOf (l.take 2)))",
+      "children": []
+    }
+  ]
+}

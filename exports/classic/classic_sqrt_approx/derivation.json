@@ -1,0 +1,30 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "k",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0"
+  ],
+  "invariant": "((k : ℚ) * e) * ((k : ℚ) * e) ≤ N",
+  "guard": "(((k : ℚ) + 1) * e) * (((k : ℚ) + 1) * e) ≤ N",
+  "variant": "⌊(N + 1) / e⌋₊ + 1 - k",
+  "result": "(k : ℚ) * e",
+  "children": [
+    {
+      "law": "term",
+      "expr": "k + 1",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "floor_bound",
+      "statement": "∀ (N e : ℚ) (k : ℕ), 0 ≤ N → 0 < e → ((k + 1 : ℚ) * e) * ((k + 1 : ℚ) * e) ≤ N → ⌊(N + 1) / e⌋₊ + 1 - (k + 1) < ⌊(N + 1) / e⌋₊ + 1 - k",
+      "proof": "by intro N e k hN he h\n  have h1 : ((k + 1 : ℚ) * e) ≤ N + 1 := by\n    by_cases hle : ((k + 1 : ℚ) * e) ≤ 1\n    · linarith\n    · push_neg at hle; nlinarith\n  have h2 : ((k + 1 : ℕ) : ℚ) ≤ (N + 1) / e := by\n    rw [le_div_iff₀ he]; push_cast; exact h1\n  have h3 : k + 1 ≤ ⌊(N + 1) / e⌋₊ := Nat.le_floor h2\n  omega"
+    }
+  ]
+}

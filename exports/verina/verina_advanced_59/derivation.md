@@ -1,0 +1,5 @@
+# Derivation of verina_advanced_59
+
+kind: **restate**
+
+- **term**: `decide ((s.data.filter (fun c => c.isAlpha || c.isDigit) |>.map Char.toLower) = (s.data.filter (fun c => c.isAlpha || c.isDigit) |>.map Char.toLower).reverse)`

@@ -1,0 +1,64 @@
+{
+  "law": "bind",
+  "var": "m",
+  "type": "ℚ",
+  "prop": "m = numbers.sum / (numbers.length : ℚ)",
+  "children": [
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "s",
+          "ℚ"
+        ]
+      ],
+      "init": [
+        "0",
+        "0"
+      ],
+      "invariant": "i ≤ numbers.length ∧ s = (numbers.take i).sum",
+      "guard": "i < numbers.length",
+      "variant": "numbers.length - i",
+      "result": "s / (numbers.length : ℚ)",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, s + numbers[i]!)",
+          "children": []
+        }
+      ]
+    },
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "d",
+          "ℚ"
+        ]
+      ],
+      "init": [
+        "0",
+        "0"
+      ],
+      "invariant": "i ≤ numbers.length ∧ d = ((numbers.take i).map (fun x => |x - m|)).sum",
+      "guard": "i < numbers.length",
+      "variant": "numbers.length - i",
+      "result": "d / (numbers.length : ℚ)",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, d + |numbers[i]! - m|)",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

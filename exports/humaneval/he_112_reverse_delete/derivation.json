@@ -1,0 +1,18 @@
+{
+  "law": "bind",
+  "var": "t",
+  "type": "List Char",
+  "prop": "t = s.toList.filter (fun ch => !(c.toList.contains ch))",
+  "children": [
+    {
+      "law": "term",
+      "expr": "s.toList.filter (fun ch => !(c.toList.contains ch))",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "(String.mk t, decide (t = t.reverse))",
+      "children": []
+    }
+  ]
+}

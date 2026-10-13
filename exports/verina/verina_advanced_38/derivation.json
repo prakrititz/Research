@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "((List.range intervals.length).map (fun (i : Nat) => let remaining := List.eraseIdx intervals i; let sorted := List.mergeSort remaining (fun (a b : Nat × Nat) => a.1 ≤ b.1); let merged := sorted.foldl (fun acc curr => match acc with | [] => [curr] | (s, e) :: rest => if curr.1 ≤ e then (s, max e curr.2) :: rest else curr :: acc) []; merged.reverse.foldl (fun acc (s, e) => acc + (e - s)) 0)).foldl max 0",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "argmax_spec",
+      "statement": "∀ (n : Nat) (f : Nat → Nat), 0 < n → ∃ i, i < n ∧ f i = ((List.range n).map f).foldl max 0 ∧ ∀ j, j < n → f j ≤ ((List.range n).map f).foldl max 0",
+      "proof": "by intro n f hn\n  have hne : (List.range n).map f ≠ [] := List.ne_nil_of_mem (a := f 0) (List.mem_map.mpr ⟨0, List.mem_range.mpr hn, rfl⟩)\n  obtain ⟨h1, h2⟩ := Refine.maxlist_nat _ hne\n  rw [List.contains_iff_mem, List.mem_map] at h1\n  obtain ⟨i, hi, hfi⟩ := h1\n  refine ⟨i, List.mem_range.mp hi, hfi, ?_⟩\n  intro j hj\n  have := List.all_eq_true.mp h2 (f j) (List.mem_map.mpr ⟨j, List.mem_range.mpr hj, rfl⟩)\n  simpa using this"
+    },
+    {
+      "name": "mc38",
+      "statement": "∀ (intervals : List (Prod Nat Nat)) (h : maxCoverageAfterRemovingOne_precond intervals), maxCoverageAfterRemovingOne_postcond intervals (((List.range intervals.length).map (fun (i : Nat) => let remaining := List.eraseIdx intervals i; let sorted := List.mergeSort remaining (fun (a b : Nat × Nat) => a.1 ≤ b.1); let merged := sorted.foldl (fun acc curr => match acc with | [] => [curr] | (s, e) :: rest => if curr.1 ≤ e then (s, max e curr.2) :: rest else curr :: acc) []; merged.reverse.foldl (fun acc (s, e) => acc + (e - s)) 0)).foldl max 0) h",
+      "proof": "by intro intervals h\n  unfold maxCoverageAfterRemovingOne_postcond\n  obtain ⟨i, hi, he, hall⟩ := argmax_spec intervals.length (fun (i : Nat) => let remaining := List.eraseIdx intervals i; let sorted := List.mergeSort remaining (fun (a b : Nat × Nat) => a.1 ≤ b.1); let merged := sorted.foldl (fun acc curr => match acc with | [] => [curr] | (s, e) :: rest => if curr.1 ≤ e then (s, max e curr.2) :: rest else curr :: acc) []; merged.reverse.foldl (fun acc (s, e) => acc + (e - s)) 0) h\n  exact ⟨i, hi, he.symm, fun j hj => le_of_le_of_eq (hall j hj) he.symm⟩"
+    }
+  ]
+}

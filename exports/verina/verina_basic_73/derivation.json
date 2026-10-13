@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "ok",
+      "Bool"
+    ]
+  ],
+  "init": [
+    "0",
+    "true"
+  ],
+  "invariant": "i ≤ s.toList.length ∧ (ok = true ↔ ∀ k, k < i → (s.toList[k]! = p.toList[k]! ∨ p.toList[k]! = '?'))",
+  "guard": "i < s.toList.length",
+  "variant": "s.toList.length - i",
+  "result": "ok",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, ok && decide (s.toList[i]! = p.toList[i]! ∨ p.toList[i]! = '?'))",
+      "children": []
+    }
+  ]
+}

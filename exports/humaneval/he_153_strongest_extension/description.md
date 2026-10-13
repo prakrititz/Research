@@ -1,0 +1,5 @@
+# he_153_strongest_extension
+
+`strongestExtension(class_name : String, extensions : List String) : String`
+
+Given the name of a class and a list of extensions, find the strongest extension and return ClassName.StrongestExtensionName. The strength of an extension is CAP - SM, where CAP is the number of uppercase letters in its name and SM the number of lowercase letters. If several extensions have the same strength, choose the one that comes first in the list.

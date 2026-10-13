@@ -1,0 +1,16 @@
+{
+  "law": "cases",
+  "cond": "(lst1.filter (fun x => x % 2 = 1)).length ≤ (lst2.filter (fun x => x % 2 = 0)).length",
+  "children": [
+    {
+      "law": "term",
+      "expr": "\"YES\"",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "\"NO\"",
+      "children": []
+    }
+  ]
+}

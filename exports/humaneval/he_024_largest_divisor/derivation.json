@@ -1,0 +1,23 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "d",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "n - 1"
+  ],
+  "invariant": "1 ≤ d ∧ d < n ∧ ∀ k, k < n → d < k → n % k ≠ 0",
+  "guard": "n % d ≠ 0",
+  "variant": "d",
+  "result": "d",
+  "children": [
+    {
+      "law": "term",
+      "expr": "d - 1",
+      "children": []
+    }
+  ]
+}

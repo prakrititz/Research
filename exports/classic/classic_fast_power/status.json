@@ -1,0 +1,15 @@
+{
+  "id": "classic_fast_power",
+  "dataset": "classic",
+  "family": "classic",
+  "function": "fastPower",
+  "tests": 8,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 4,
+  "helper_lemmas": 2,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "8/8",
+  "blocked_reason": ""
+}

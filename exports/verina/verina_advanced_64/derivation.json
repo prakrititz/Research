@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "lst.filter (fun x => decide (x ≠ target))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "rm64",
+      "statement": "∀ (lst : List Nat) (target : Nat) (h : removeElement_precond lst target), removeElement_postcond lst target (lst.filter (fun x => decide (x ≠ target))) h",
+      "proof": "by intro lst target h\n  unfold removeElement_postcond\n  dsimp only\n  refine ⟨?_, rfl⟩\n  rw [List.all_eq_true]\n  rintro ⟨x, i⟩ hx\n  have := (List.mem_zipIdx_iff_getElem?.mp hx)\n  simp only at this\n  rw [this]\n  simp"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "Array Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "#[]"
+  ],
+  "invariant": "i ≤ arr.size ∧ acc.toList = (arr.toList.take i).filter isEven",
+  "guard": "i < arr.size",
+  "variant": "arr.size - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if isEven arr[i]! then acc.push arr[i]! else acc)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "exit60",
+      "statement": "∀ (arr acc : Array Int) (i : Nat) (h : FindEvenNumbers_precond arr), (i ≤ arr.size ∧ acc.toList = (arr.toList.take i).filter isEven) → ¬ i < arr.size → FindEvenNumbers_postcond arr acc h",
+      "proof": "by intro arr acc i h hinv hn\n  obtain ⟨hi, hacc⟩ := hinv\n  have hi' : i = arr.size := by omega\n  subst hi'\n  have ht : arr.toList.take arr.size = arr.toList := List.take_of_length_le (by simp)\n  rw [ht] at hacc\n  unfold FindEvenNumbers_postcond\n  refine ⟨?_, ?_, ?_⟩\n  · rw [← Array.all_toList, hacc, List.all_eq_true]\n    intro x hx; exact (List.mem_filter.mp hx).2\n  · rw [hacc]; exact List.filter_sublist\n  · rw [← Array.length_toList, hacc, List.countP_eq_length_filter]"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "cur",
+      "List Char"
+    ],
+    [
+      "groups",
+      "List (List Char)"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]",
+    "[]"
+  ],
+  "invariant": "i ≤ (paren_string.toList.filter (fun c => c != ' ')).length ∧ (groups).flatten ++ (cur) = (paren_string.toList.filter (fun c => c != ' ')).take i ∧ (∀ g ∈ groups, g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ (cur).length → ((cur).take k).count ')' < ((cur).take k).count '('",
+  "guard": "i < (paren_string.toList.filter (fun c => c != ' ')).length",
+  "variant": "(paren_string.toList.filter (fun c => c != ' ')).length - i",
+  "result": "groups.map String.mk",
+  "children": [
+    {
+      "law": "cases",
+      "cond": "(cur ++ [(paren_string.toList.filter (fun c => c != ' '))[i]!]).count '(' = (cur ++ [(paren_string.toList.filter (fun c => c != ' '))[i]!]).count ')'",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, ([] : List Char), groups ++ [cur ++ [(paren_string.toList.filter (fun c => c != ' '))[i]!]])",
+          "children": []
+        },
+        {
+          "law": "term",
+          "expr": "(i + 1, cur ++ [(paren_string.toList.filter (fun c => c != ' '))[i]!], groups)",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "flatten_balanced",
+      "statement": "∀ (groups : List (List Char)), (∀ g ∈ groups, isBalanced g) → groups.flatten.count '(' = groups.flatten.count ')'",
+      "proof": "by\n  intro groups\n  induction groups with\n  | nil => intro _; simp\n  | cons g t ih =>\n    intro h\n    have hg := h g (List.mem_cons_self)\n    have ht := ih (fun x hx => h x (List.mem_cons_of_mem _ hx))\n    simp only [List.flatten_cons, List.count_append]\n    rw [ht, hg.2]"
+    },
+    {
+      "name": "step_close",
+      "statement": "∀ (F : List Char) (i : Nat) (cur : List Char) (groups : List (List Char)), isBalanced F → i < F.length → (i ≤ F.length ∧ (groups).flatten ++ (cur) = F.take i ∧ (∀ g ∈ groups, g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ (cur).length → ((cur).take k).count ')' < ((cur).take k).count '(') → (cur ++ [F[i]!]).count '(' = (cur ++ [F[i]!]).count ')' → ((i + 1) ≤ F.length ∧ ((groups ++ [cur ++ [F[i]!]])).flatten ++ ([]) = F.take (i + 1) ∧ (∀ g ∈ (groups ++ [cur ++ [F[i]!]]), g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ ([] : List Char).length → (([] : List Char).take k).count ')' < (([] : List Char).take k).count '(')",
+      "proof": "by\n  intro F i cur groups hF hi ⟨hile, hflat, hgroups, hcur⟩ hcl\n  have hfi : F.take (i + 1) = F.take i ++ [F[i]!] := Refine.take_succ_bang F i hi\n  have hl : (cur ++ [F[i]!]).length = cur.length + 1 := by simp\n  have hcur' : isBalanced (cur ++ [F[i]!]) := by\n    refine ⟨?_, hcl⟩\n    intro k hk\n    by_cases hkl : k ≤ cur.length\n    · by_cases hk0 : k = 0\n      · subst hk0; simp\n      · have := hcur k (by omega) hkl\n        rw [List.take_append_of_le_length hkl]\n        omega\n    · have hk' : k = (cur ++ [F[i]!]).length := by omega\n      subst hk'\n      rw [List.take_length]\n      omega\n  have hminimal : ∀ k, k < (cur ++ [F[i]!]).length → 0 < k → ¬ isBalanced ((cur ++ [F[i]!]).take k) := by\n    intro k hk hk0 hb\n    have hkl : k ≤ cur.length := by omega\n    rw [List.take_append_of_le_length hkl] at hb\n    have h1 := hcur k hk0 hkl\n    have h2 := hb.2\n    omega\n  refine ⟨by omega, ?_, ?_, ?_⟩\n  · rw [hfi, List.flatten_append, ← hflat]\n    simp\n  · intro g hg\n    rcases List.mem_append.mp hg with hg | hg\n    · exact hgroups g hg\n    · have : g = cur ++ [F[i]!] := by simpa using hg\n      subst this\n      exact ⟨by simp, hcur', hminimal⟩\n  · intro k hk hkl\n    have : k ≤ 0 := by simpa using hkl\n    omega"
+    },
+    {
+      "name": "step_open",
+      "statement": "∀ (F : List Char) (i : Nat) (cur : List Char) (groups : List (List Char)), isBalanced F → i < F.length → (i ≤ F.length ∧ (groups).flatten ++ (cur) = F.take i ∧ (∀ g ∈ groups, g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ (cur).length → ((cur).take k).count ')' < ((cur).take k).count '(') → ¬ (cur ++ [F[i]!]).count '(' = (cur ++ [F[i]!]).count ')' → ((i + 1) ≤ F.length ∧ (groups).flatten ++ ((cur ++ [F[i]!])) = F.take (i + 1) ∧ (∀ g ∈ groups, g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ ((cur ++ [F[i]!])).length → (((cur ++ [F[i]!])).take k).count ')' < (((cur ++ [F[i]!])).take k).count '(')",
+      "proof": "by\n  intro F i cur groups hF hi ⟨hile, hflat, hgroups, hcur⟩ hne\n  have hfi : F.take (i + 1) = F.take i ++ [F[i]!] := Refine.take_succ_bang F i hi\n  have hflatbal := flatten_balanced groups (fun g hg => (hgroups g hg).2.1)\n  have hpre : (F.take (i + 1)).count ')' ≤ (F.take (i + 1)).count '(' := hF.1 (i + 1) (by omega)\n  have heq : F.take (i + 1) = groups.flatten ++ cur ++ [F[i]!] := by rw [hfi, ← hflat]\n  rw [heq] at hpre\n  simp only [List.count_append] at hpre hne\n  have hsum : (cur ++ [F[i]!]).count ')' ≤ (cur ++ [F[i]!]).count '(' := by\n    simp only [List.count_append]\n    omega\n  refine ⟨by omega, ?_, hgroups, ?_⟩\n  · rw [hfi, ← hflat, List.append_assoc]\n  · intro k hk hkl\n    by_cases hkc : k ≤ cur.length\n    · have htake : (cur ++ [F[i]!]).take k = cur.take k := List.take_append_of_le_length hkc\n      rw [htake]\n      exact hcur k hk hkc\n    · have hl : (cur ++ [F[i]!]).length = cur.length + 1 := by simp\n      have hk' : k = (cur ++ [F[i]!]).length := by omega\n      subst hk'\n      rw [List.take_length]\n      simp only [List.count_append] at hsum ⊢\n      omega"
+    },
+    {
+      "name": "separate_exit",
+      "statement": "∀ (F : List Char) (cur : List Char) (groups : List (List Char)), isBalanced F → (F.length ≤ F.length ∧ (groups).flatten ++ (cur) = F.take F.length ∧ (∀ g ∈ groups, g ≠ [] ∧ isBalanced g ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.take k)) ∧ ∀ k, 0 < k → k ≤ (cur).length → ((cur).take k).count ')' < ((cur).take k).count '(') → ((groups.map String.mk).map String.toList).flatten = F ∧ ∀ g ∈ groups.map String.mk, g.length > 0 ∧ isBalanced g.toList ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.toList.take k)",
+      "proof": "by\n  intro F cur groups hF ⟨_, hflat, hgroups, hcur⟩\n  have hflatbal := flatten_balanced groups (fun g hg => (hgroups g hg).2.1)\n  have hcurnil : cur = [] := by\n    by_contra hne\n    have hlen : 0 < cur.length := List.length_pos_iff.mpr hne\n    have h1 := hcur cur.length hlen (le_refl _)\n    rw [List.take_length] at h1\n    rw [List.take_length] at hflat\n    have hFtot : F.count '(' = F.count ')' := hF.2\n    rw [← hflat] at hFtot\n    simp only [List.count_append] at hFtot\n    omega\n  subst hcurnil\n  have hF' : groups.flatten = F := by simpa [List.take_length] using hflat\n  refine ⟨?_, ?_⟩\n  · rw [List.map_map]\n    have : (String.toList ∘ String.mk) = fun g => g := by\n      funext g; simp [Function.comp, Refine.string_toList_mk]\n    rw [this, List.map_id']\n    exact hF'\n  · intro g hg\n    obtain ⟨g0, hg0, rfl⟩ := List.mem_map.mp hg\n    obtain ⟨hne, hbal, hmin⟩ := hgroups g0 hg0\n    rw [Refine.string_length_mk, Refine.string_toList_mk]\n    refine ⟨List.length_pos_iff.mpr hne, hbal, hmin⟩"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+# Derivation of he_153_strongest_extension
+
+kind: **loop**
+
+- **loop** over state (k : Nat, b : Nat), start (1, 0)
+  - invariant: `1 ≤ k ∧ k ≤ extensions.length ∧ b < k ∧ (∀ j, j < k → strength extensions[j]! ≤ strength extensions[b]!) ∧ ∀ j, j < b → strength extensions[j]! < strength extensions[b]!`
+  - guard: `k < extensions.length`
+  - variant: `extensions.length - k`
+  - result: `class_name ++ "." ++ extensions[b]!`
+  - **term**: `(k + 1, if strength extensions[b]! < strength extensions[k]! then k else b)`

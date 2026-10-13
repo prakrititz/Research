@@ -1,0 +1,5 @@
+# he_003_below_zero
+
+`belowZero(operations : List Int) : Bool`
+
+A bank account starts with balance zero. Given the list of deposit (positive) and withdrawal (negative) operations, decide whether the balance falls below zero at some point.

@@ -1,0 +1,15 @@
+{
+  "id": "he_029_filter_by_prefix",
+  "dataset": "humaneval",
+  "family": "he_020",
+  "function": "filterByPrefix",
+  "tests": 10,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "10/10",
+  "blocked_reason": ""
+}

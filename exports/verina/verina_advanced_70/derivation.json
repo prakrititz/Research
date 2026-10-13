@@ -1,0 +1,16 @@
+{
+  "law": "cases",
+  "cond": "nums.idxOf 1 > nums.idxOf (Int.ofNat nums.length)",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(nums.idxOf 1 : Int) + (nums.length : Int) - 2 - (nums.idxOf (Int.ofNat nums.length) : Int)",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "(nums.idxOf 1 : Int) + (nums.length : Int) - 1 - (nums.idxOf (Int.ofNat nums.length) : Int)",
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "(nums.find? (fun x => decide (nums.count x > nums.length / 2))).getD 0",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "maj35",
+      "statement": "∀ (nums : List Int) (h : majorityElement_precond nums), majorityElement_postcond nums ((nums.find? (fun x => decide (nums.count x > nums.length / 2))).getD 0) h",
+      "proof": "by intro nums h\n  unfold majorityElement_postcond\n  obtain ⟨r, hr, hc, hu⟩ := Refine.find_majority nums h.2\n  rw [show (nums.find? (fun x => decide (nums.count x > nums.length / 2))).getD 0 = r from hr]\n  exact ⟨hc, hu⟩"
+    }
+  ]
+}

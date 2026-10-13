@@ -1,0 +1,48 @@
+{
+  "law": "bind",
+  "var": "s",
+  "type": "Array Int",
+  "prop": "s.size = operations.length + 1 ∧ s[0]! = 0 ∧ ∀ i, i < operations.length → s[i+1]! = s[i]! + operations[i]!",
+  "children": [
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "acc",
+          "Array Int"
+        ]
+      ],
+      "init": [
+        "0",
+        "#[0]"
+      ],
+      "invariant": "i ≤ operations.length ∧ acc.size = i + 1 ∧ acc[0]! = 0 ∧ ∀ j, j < i → acc[j+1]! = acc[j]! + operations[j]!",
+      "guard": "i < operations.length",
+      "variant": "operations.length - i",
+      "result": "acc",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, acc.push (acc[i]! + operations[i]!))",
+          "children": []
+        }
+      ]
+    },
+    {
+      "law": "term",
+      "expr": "(s, (List.range operations.length).any (fun i => decide (s[i+1]! < 0)))",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "exit108",
+      "statement": "∀ (ops : List Int) (s : Array Int) (h : below_zero_precond ops), (s.size = ops.length + 1 ∧ s[0]! = 0 ∧ ∀ i, i < ops.length → s[i+1]! = s[i]! + ops[i]!) → below_zero_postcond ops (s, (List.range ops.length).any (fun i => decide (s[i+1]! < 0))) h",
+      "proof": "by intro ops s h hp\n  obtain ⟨hs, h0, hstep⟩ := hp\n  unfold below_zero_postcond\n  dsimp only\n  refine ⟨hs, ?_, ?_, ?_, ?_⟩\n  · have : 0 < s.size := by omega\n    rw [getElem?_pos s 0 this]; simp [← getElem!_pos s 0 this, h0]\n  · rw [List.all_eq_true]\n    intro i hi\n    have hi' : i < ops.length := by simp at hi; omega\n    have hlt : i + 1 < s.size := by omega\n    simp only [decide_eq_true_eq]\n    rw [getElem?_pos s (i+1) hlt, ← getElem!_pos s (i+1) hlt, hstep i hi']\n  · intro hany\n    exact hany\n  · intro hnone\n    rw [← Array.all_toList, List.all_eq_true]\n    simp only [decide_eq_true_eq]\n    rw [Refine.forall_mem_toList_iff_idx]\n    intro k hk\n    rcases k with _ | k\n    · rw [h0]\n    · have hn := List.any_eq_false.mp hnone k (List.mem_range.mpr (by omega))\n      simp only [decide_eq_true_eq] at hn\n      omega"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "String.mk (s.toList.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "decode_shift_string",
+      "statement": "∀ (s : String), s.toList.all (fun c => c.isLower) = true → ((String.mk (s.toList.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)))).toList.all (fun c => c.isLower) = true ∧ (String.mk (s.toList.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)))).toList.map shiftChar = s.toList)",
+      "proof": "by\n  have shift_roundtrip : ∀ (c : Char), c.isLower = true →\n      (Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)).isLower = true ∧\n      shiftChar (Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)) = c := by\n    intro c h\n    have ha : ('a' : Char).val.toNat = 97 := by decide\n    have hz : ('z' : Char).val.toNat = 122 := by decide\n    have hl : 97 ≤ c.toNat ∧ c.toNat ≤ 122 := by\n      unfold Char.isLower at h\n      simp only [Bool.and_eq_true, decide_eq_true_eq, ge_iff_le] at h\n      obtain ⟨h1, h2⟩ := h\n      rw [UInt32.le_iff_toNat_le] at h1 h2\n      rw [ha] at h1\n      rw [hz] at h2\n      exact ⟨h1, h2⟩\n    have hcn : c = Char.ofNat c.toNat := (Char.ofNat_toNat c).symm\n    generalize c.toNat = n at hl hcn ⊢\n    subst hcn\n    obtain ⟨h1, h2⟩ := hl\n    interval_cases n <;> decide\n  have decode_shift_ok : ∀ (l : List Char), l.all (fun c => c.isLower) = true →\n      ((l.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97))).all (fun c => c.isLower) = true ∧\n        (l.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97))).map shiftChar = l) := by\n    intro l\n    induction l with\n    | nil => intro _; simp\n    | cons a t ih =>\n      intro h\n      simp only [List.all_cons, Bool.and_eq_true] at h\n      obtain ⟨ha, ht⟩ := h\n      obtain ⟨h1, h2⟩ := shift_roundtrip a ha\n      obtain ⟨ih1, ih2⟩ := ih ht\n      simp only [List.map_cons, List.all_cons, Bool.and_eq_true]\n      refine ⟨⟨h1, ih1⟩, ?_⟩\n      rw [h2, ih2]\n  intro s h\n  rw [Refine.string_toList_mk]\n  exact decode_shift_ok s.toList h"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "law": "term",
+  "expr": "((walksOf grid.length k).map (fun w => w.map (cellAt grid))).foldl (fun b c => if c < b then c else b) ((walksOf grid.length k).map (fun w => w.map (cellAt grid))).head!",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "lexmin_facts",
+      "statement": "∀ (L : List (List Nat)) (init : List Nat) (seen : List (List Nat)), (∀ c ∈ seen, ¬ c < init) → (∀ c ∈ seen ++ L, ¬ c < List.foldl (fun b c => if c < b then c else b) init L) ∧ (List.foldl (fun b c => if c < b then c else b) init L = init ∨ List.foldl (fun b c => if c < b then c else b) init L ∈ L)",
+      "proof": "by\n  intro L\n  induction L with\n  | nil => intro init seen h; exact ⟨by simpa using h, Or.inl rfl⟩\n  | cons x t ih =>\n    intro init seen h\n    simp only [List.foldl_cons]\n    by_cases hx : x < init\n    · rw [if_pos hx]\n      have h' : ∀ c ∈ seen ++ [x], ¬ c < x := by\n        intro c hc\n        rcases List.mem_append.mp hc with hc | hc\n        · intro hcx; exact h c hc (List.lt_trans hcx hx)\n        · have : c = x := by simpa using hc\n          subst this; exact List.lt_irrefl c\n      obtain ⟨h1, h2⟩ := ih x (seen ++ [x]) h'\n      refine ⟨?_, ?_⟩\n      · intro c hc\n        apply h1\n        simp only [List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hc ⊢\n        rcases hc with hc | hc | hc\n        · exact Or.inl (Or.inl hc)\n        · exact Or.inl (Or.inr hc)\n        · exact Or.inr hc\n      · rcases h2 with h2 | h2\n        · right; rw [h2]; exact List.mem_cons_self\n        · right; exact List.mem_cons_of_mem _ h2\n    · rw [if_neg hx]\n      have h' : ∀ c ∈ seen ++ [x], ¬ c < init := by\n        intro c hc\n        rcases List.mem_append.mp hc with hc | hc\n        · exact h c hc\n        · have : c = x := by simpa using hc\n          subst this; exact hx\n      obtain ⟨h1, h2⟩ := ih init (seen ++ [x]) h'\n      refine ⟨?_, ?_⟩\n      · intro c hc\n        apply h1\n        simp only [List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hc ⊢\n        rcases hc with hc | hc | hc\n        · exact Or.inl (Or.inl hc)\n        · exact Or.inl (Or.inr hc)\n        · exact Or.inr hc\n      · rcases h2 with h2 | h2\n        · left; exact h2\n        · right; exact List.mem_cons_of_mem _ h2"
+    },
+    {
+      "name": "grid_mem",
+      "statement": "∀ (n i j : Nat), (i, j) ∈ gridCells n ↔ i < n ∧ j < n",
+      "proof": "by\n  intro n i j\n  unfold gridCells\n  rw [List.mem_flatMap]\n  constructor\n  · rintro ⟨a, ha, h⟩\n    rw [List.mem_map] at h\n    obtain ⟨b, hb, he⟩ := h\n    have h1 : a = i := (Prod.mk.inj he).1\n    have h2 : b = j := (Prod.mk.inj he).2\n    rw [List.mem_range] at ha hb\n    subst h1; subst h2\n    exact ⟨ha, hb⟩\n  · rintro ⟨h1, h2⟩\n    exact ⟨i, List.mem_range.mpr h1, List.mem_map.mpr ⟨j, List.mem_range.mpr h2, rfl⟩⟩"
+    },
+    {
+      "name": "steps_ne",
+      "statement": "∀ (n : Nat), 2 ≤ n → ∀ (p : Nat × Nat), p ∈ gridCells n → stepsFrom n p ≠ []",
+      "proof": "by\n  intro n hn p hp\n  obtain ⟨i, j⟩ := p\n  rw [grid_mem] at hp\n  obtain ⟨hi, hj⟩ := hp\n  intro h\n  have hmem : ∀ q, q ∈ gridCells n → ((q.1 = i ∧ (q.2 = j + 1 ∨ q.2 + 1 = j)) ∨ (q.2 = j ∧ (q.1 = i + 1 ∨ q.1 + 1 = i))) →\n      q ∈ stepsFrom n (i, j) := by\n    intro q hq hc\n    unfold stepsFrom\n    rw [List.mem_filter]\n    exact ⟨hq, by simpa using hc⟩\n  by_cases hj1 : j + 1 < n\n  · have := hmem (i, j + 1) ((grid_mem n i (j + 1)).mpr ⟨hi, hj1⟩) (Or.inl ⟨rfl, Or.inl rfl⟩)\n    rw [h] at this; simp at this\n  · have hj0 : 0 < j := by omega\n    have := hmem (i, j - 1) ((grid_mem n i (j - 1)).mpr ⟨hi, by omega⟩) (Or.inl ⟨rfl, Or.inr (by simp; omega)⟩)\n    rw [h] at this; simp at this"
+    },
+    {
+      "name": "walks_ok",
+      "statement": "∀ (n : Nat), 2 ≤ n → ∀ (k : Nat), walksOf n (k + 1) ≠ [] ∧ ∀ w ∈ walksOf n (k + 1), w ≠ [] ∧ w.getLast! ∈ gridCells n",
+      "proof": "by\n  intro n hn k\n  induction k with\n  | zero =>\n    have h00 : ((0, 0) : Nat × Nat) ∈ gridCells n := (grid_mem n 0 0).mpr ⟨by omega, by omega⟩\n    refine ⟨?_, ?_⟩\n    · rw [walksOf]\n      intro h\n      have hm : [((0, 0) : Nat × Nat)] ∈ (gridCells n).map (fun c => [c]) := List.mem_map.mpr ⟨(0, 0), h00, rfl⟩\n      rw [h] at hm\n      simp at hm\n    · intro w hw\n      rw [walksOf, List.mem_map] at hw\n      obtain ⟨c, hc, rfl⟩ := hw\n      exact ⟨by simp, by simpa using hc⟩\n  | succ k ih =>\n    obtain ⟨hne, hall⟩ := ih\n    rw [show k + 1 + 1 = k + 2 from rfl, walksOf]\n    refine ⟨?_, ?_⟩\n    · obtain ⟨w, hw⟩ := List.exists_mem_of_ne_nil _ hne\n      obtain ⟨hwne, hwl⟩ := hall w hw\n      have hs := steps_ne n hn _ hwl\n      obtain ⟨q, hq⟩ := List.exists_mem_of_ne_nil _ hs\n      intro h\n      have : w ++ [q] ∈ (walksOf n (k + 1)).flatMap (fun w => (stepsFrom n w.getLast!).map (fun q => w ++ [q])) :=\n        List.mem_flatMap.mpr ⟨w, hw, List.mem_map.mpr ⟨q, hq, rfl⟩⟩\n      rw [h] at this\n      simp at this\n    · intro w' hw'\n      rw [List.mem_flatMap] at hw'\n      obtain ⟨w, hw, hq⟩ := hw'\n      rw [List.mem_map] at hq\n      obtain ⟨q, hq, rfl⟩ := hq\n      refine ⟨by simp, ?_⟩\n      have : q ∈ gridCells n := by\n        unfold stepsFrom at hq\n        exact (List.mem_filter.mp hq).1\n      simpa using this"
+    },
+    {
+      "name": "min_path_post",
+      "statement": "∀ (grid : List (List Nat)) (k : Nat) (h : minPath_precond grid k), minPath_postcond grid k (((walksOf grid.length k).map (fun w => w.map (cellAt grid))).foldl (fun b c => if c < b then c else b) ((walksOf grid.length k).map (fun w => w.map (cellAt grid))).head!) h",
+      "proof": "by\n  intro grid k h\n  unfold minPath_postcond\n  have hn : 2 ≤ grid.length := h.1\n  have hk : 1 ≤ k := h.2.2.2\n  obtain ⟨k', rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩\n  obtain ⟨hne, _⟩ := walks_ok grid.length hn k'\n  set L := (walksOf grid.length (k' + 1)).map (fun w => w.map (cellAt grid)) with hL\n  have hLne : L ≠ [] := by\n    intro hl\n    rw [hL, List.map_eq_nil_iff] at hl\n    exact hne hl\n  have hhead : L.head! ∈ L := by\n    cases hl : L with\n    | nil => exact absurd hl hLne\n    | cons a t => simp\n  obtain ⟨h1, h2⟩ := lexmin_facts L L.head! [] (by simp)\n  have hmem : List.foldl (fun b c => if c < b then c else b) L.head! L ∈ L := by\n    rcases h2 with h2 | h2\n    · rw [h2]; exact hhead\n    · exact h2\n  refine ⟨?_, ?_⟩\n  · obtain ⟨w, hw, hwe⟩ := List.mem_map.mp hmem\n    exact ⟨w, hw, hwe⟩\n  · intro w hw\n    have := h1 (w.map (cellAt grid)) (by rw [hL]; exact List.mem_map.mpr ⟨w, hw, rfl⟩)\n    exact this"
+    }
+  ]
+}

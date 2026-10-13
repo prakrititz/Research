@@ -1,0 +1,21 @@
+{
+  "id": "verina_basic_25",
+  "dataset": "verina",
+  "family": "basic",
+  "function": "sumAndAverage",
+  "tests": 4,
+  "has_derivation": false,
+  "kind": "",
+  "laws": 0,
+  "helper_lemmas": 0,
+  "certified": false,
+  "independently_verified": false,
+  "tests_passed": null,
+  "blocked_reason": "the postcondition is a Float equality; Float operations are opaque and only the dataset's own `axiom`s prove `x == x`, which the certificate (three standard axioms) refuses",
+  "spec_checks": {
+    "compiles": true,
+    "reference_passes": "4/4",
+    "accepts_expected": "4/4",
+    "rejects_wrong": "8/8"
+  }
+}

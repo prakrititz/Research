@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "List.foldl min nums[0]! ((List.range (nums.length + 1)).flatMap (fun j => (List.range j).map (fun i => ((nums.drop i).take (j - i)).sum)))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "foldl_min_facts",
+      "statement": "∀ (l : List Int) (m : Int), (List.foldl min m l = m ∨ List.foldl min m l ∈ l) ∧ List.foldl min m l ≤ m ∧ ∀ x ∈ l, List.foldl min m l ≤ x",
+      "proof": "by\n  intro l\n  induction l with\n  | nil => intro m; simp\n  | cons a t ih =>\n    intro m\n    obtain ⟨h1, h2, h3⟩ := ih (min m a)\n    simp only [List.foldl_cons]\n    refine ⟨?_, ?_, ?_⟩\n    · rcases h1 with h | h\n      · by_cases hm : a ≤ m\n        · right; rw [min_eq_right hm] at h ⊢; rw [h]; simp\n        · left\n          have hmx : min m a = m := min_eq_left (by omega)\n          rw [hmx] at h ⊢; exact h\n      · right; exact List.mem_cons_of_mem a h\n    · exact le_trans h2 (min_le_left m a)\n    · intro x hx\n      rcases List.mem_cons.mp hx with rfl | hx'\n      · exact le_trans h2 (min_le_right m x)\n      · exact h3 x hx'"
+    },
+    {
+      "name": "minsub_ok",
+      "statement": "∀ (nums : List Int), nums ≠ [] → (∃ j, j ≤ nums.length ∧ ∃ i, i < j ∧ ((nums.drop i).take (j - i)).sum = List.foldl min nums[0]! ((List.range (nums.length + 1)).flatMap (fun j => (List.range j).map (fun i => ((nums.drop i).take (j - i)).sum)))) ∧ ∀ j, j ≤ nums.length → ∀ i, i < j → List.foldl min nums[0]! ((List.range (nums.length + 1)).flatMap (fun j => (List.range j).map (fun i => ((nums.drop i).take (j - i)).sum))) ≤ ((nums.drop i).take (j - i)).sum",
+      "proof": "by\n  intro nums hne\n  obtain ⟨h1, h2, h3⟩ := foldl_min_facts ((List.range (nums.length + 1)).flatMap (fun j => (List.range j).map (fun i => ((nums.drop i).take (j - i)).sum))) nums[0]!\n  refine ⟨?_, ?_⟩\n  · rcases h1 with h | h\n    · have hlen : 0 < nums.length := List.length_pos_iff.mpr hne\n      refine ⟨1, by omega, 0, by omega, ?_⟩\n      rw [h]\n      cases nums with\n      | nil => exact absurd rfl hne\n      | cons a t => simp\n    · rw [List.mem_flatMap] at h\n      obtain ⟨j, hj, hi⟩ := h\n      rw [List.mem_map] at hi\n      obtain ⟨i, hi', hs⟩ := hi\n      rw [List.mem_range] at hj hi'\n      exact ⟨j, by omega, i, hi', hs⟩\n  · intro j hj i hi\n    apply h3\n    rw [List.mem_flatMap]\n    exact ⟨j, List.mem_range.mpr (by omega), List.mem_map.mpr ⟨i, List.mem_range.mpr hi, rfl⟩⟩"
+    }
+  ]
+}

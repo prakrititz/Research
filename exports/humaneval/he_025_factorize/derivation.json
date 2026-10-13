@@ -1,0 +1,56 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "n2",
+      "Nat"
+    ],
+    [
+      "d",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List Nat"
+    ]
+  ],
+  "init": [
+    "n",
+    "2",
+    "[]"
+  ],
+  "invariant": "(1 ≤ n2 ∧ 2 ≤ d ∧ (acc).prod * n2 = n ∧ (∀ p ∈ acc, Nat.Prime p ∧ p < d + 1) ∧ (∀ i, i < (acc).length - 1 → (acc)[i]! ≤ (acc)[i + 1]!) ∧ (∀ k, 2 ≤ k → k < d → ¬ k ∣ n2) ∧ (n2 = 1 ∨ d ≤ n2))",
+  "guard": "1 < n2",
+  "variant": "n2 + n2 - d",
+  "result": "acc",
+  "children": [
+    {
+      "law": "cases",
+      "cond": "n2 % d = 0",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(n2 / d, d, acc ++ [d])",
+          "children": []
+        },
+        {
+          "law": "term",
+          "expr": "(n2, d + 1, acc)",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "fact_div",
+      "statement": "∀ (N n d : Nat) (acc : List Nat), (1 ≤ n ∧ 2 ≤ d ∧ (acc).prod * n = N ∧ (∀ p ∈ acc, Nat.Prime p ∧ p < d + 1) ∧ (∀ i, i < (acc).length - 1 → (acc)[i]! ≤ (acc)[i + 1]!) ∧ (∀ k, 2 ≤ k → k < d → ¬ k ∣ n) ∧ (n = 1 ∨ d ≤ n)) → 1 < n → n % d = 0 → ((1 ≤ (n / d) ∧ 2 ≤ d ∧ ((acc ++ [d])).prod * (n / d) = N ∧ (∀ p ∈ (acc ++ [d]), Nat.Prime p ∧ p < d + 1) ∧ (∀ i, i < ((acc ++ [d])).length - 1 → ((acc ++ [d]))[i]! ≤ ((acc ++ [d]))[i + 1]!) ∧ (∀ k, 2 ≤ k → k < d → ¬ k ∣ (n / d)) ∧ ((n / d) = 1 ∨ d ≤ (n / d))) ∧ ((n / d + n / d - d) < (n + n - d)))",
+      "proof": "by\n  intro N n d acc ⟨h1, h2, hprod, hprime, hsort, hno, hle⟩ hn hd\n  have hdd : d ∣ n := Nat.dvd_of_mod_eq_zero hd\n  have hdpos : 0 < d := by omega\n  have hdn : d ≤ n := Nat.le_of_dvd (by omega) hdd\n  have hdprime : Nat.Prime d := by\n    rw [Nat.prime_def_lt]\n    refine ⟨h2, ?_⟩\n    intro m hm hmd\n    by_contra hm1\n    have hm2 : 2 ≤ m := by\n      have : m ≠ 0 := by\n        intro h0; subst h0; simp at hmd; omega\n      omega\n    exact hno m hm2 hm (Nat.dvd_trans hmd hdd)\n  have hq : n / d < n := Nat.div_lt_self (by omega) (by omega)\n  have hqpos : 1 ≤ n / d := by\n    have := Nat.div_pos hdn hdpos\n    omega\n  have hmul : d * (n / d) = n := Nat.mul_div_cancel' hdd\n  refine ⟨⟨hqpos, h2, ?_, ?_, ?_, ?_, ?_⟩, by omega⟩\n  · rw [List.prod_append]\n    simp only [List.prod_cons, List.prod_nil, Nat.mul_one]\n    calc acc.prod * d * (n / d) = acc.prod * (d * (n / d)) := by rw [Nat.mul_assoc]\n      _ = N := by rw [hmul]; exact hprod\n  · intro p hp\n    rcases List.mem_append.mp hp with hp | hp\n    · exact hprime p hp\n    · have : p = d := by simpa using hp\n      subst this\n      exact ⟨hdprime, by omega⟩\n  · intro i hi\n    have hlen : (acc ++ [d]).length = acc.length + 1 := by simp\n    rw [hlen] at hi\n    by_cases hlast : i + 1 < acc.length\n    · rw [getElem!_pos (acc ++ [d]) i (by simp; omega), getElem!_pos (acc ++ [d]) (i + 1) (by simp; omega)]\n      simp only [List.getElem_append_left (by omega : i < acc.length), List.getElem_append_left hlast]\n      have := hsort i (by omega)\n      rwa [getElem!_pos acc i (by omega), getElem!_pos acc (i + 1) hlast] at this\n    · have hi' : i + 1 = acc.length := by omega\n      rw [getElem!_pos (acc ++ [d]) i (by simp; omega), getElem!_pos (acc ++ [d]) (i + 1) (by simp; omega)]\n      have hmem : (acc ++ [d])[i]'(by simp; omega) ∈ acc := by\n        rw [List.getElem_append_left (by omega)]; exact List.getElem_mem _\n      have hlt := (hprime _ hmem).2\n      have hlast' : (acc ++ [d])[i + 1]'(by simp; omega) = d := by\n        rw [List.getElem_append_right (by omega)]; simp [hi']\n      rw [hlast']\n      omega\n  · intro k hk2 hkd hkq\n    exact hno k hk2 hkd (Nat.dvd_trans hkq (Nat.div_dvd_of_dvd hdd))\n  · by_cases hq1 : n / d = 1\n    · left; exact hq1\n    · right\n      obtain ⟨p, hp, hpq⟩ := Nat.exists_prime_and_dvd hq1\n      have hpn : p ∣ n := Nat.dvd_trans hpq (Nat.div_dvd_of_dvd hdd)\n      have hpd : d ≤ p := by\n        by_contra hlt\n        exact hno p hp.two_le (by omega) hpn\n      exact le_trans hpd (Nat.le_of_dvd (by omega) hpq)"
+    },
+    {
+      "name": "fact_nodiv",
+      "statement": "∀ (N n d : Nat) (acc : List Nat), (1 ≤ n ∧ 2 ≤ d ∧ (acc).prod * n = N ∧ (∀ p ∈ acc, Nat.Prime p ∧ p < d + 1) ∧ (∀ i, i < (acc).length - 1 → (acc)[i]! ≤ (acc)[i + 1]!) ∧ (∀ k, 2 ≤ k → k < d → ¬ k ∣ n) ∧ (n = 1 ∨ d ≤ n)) → 1 < n → ¬ n % d = 0 → ((1 ≤ n ∧ 2 ≤ (d + 1) ∧ (acc).prod * n = N ∧ (∀ p ∈ acc, Nat.Prime p ∧ p < (d + 1) + 1) ∧ (∀ i, i < (acc).length - 1 → (acc)[i]! ≤ (acc)[i + 1]!) ∧ (∀ k, 2 ≤ k → k < (d + 1) → ¬ k ∣ n) ∧ (n = 1 ∨ (d + 1) ≤ n)) ∧ ((n + n - (d + 1)) < (n + n - d)))",
+      "proof": "by\n  intro N n d acc ⟨h1, h2, hprod, hprime, hsort, hno, hle⟩ hn hd\n  have hdn : d ≤ n := by omega\n  have hdne : d ≠ n := by\n    intro h; subst h; simp at hd\n  refine ⟨⟨h1, by omega, hprod, ?_, hsort, ?_, ?_⟩, by omega⟩\n  · intro p hp\n    obtain ⟨a, b⟩ := hprime p hp\n    exact ⟨a, by omega⟩\n  · intro k hk2 hkd hkn\n    by_cases hkdd : k = d\n    · subst hkdd; exact hd (Nat.mod_eq_zero_of_dvd hkn)\n    · exact hno k hk2 (by omega) hkn\n  · right; omega"
+    }
+  ]
+}

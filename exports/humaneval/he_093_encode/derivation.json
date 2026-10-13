@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List Char"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "i ≤ message.length ∧ acc = (List.range i).map (fun k => encChar message.toList[k]!)",
+  "guard": "i < message.length",
+  "variant": "message.length - i",
+  "result": "String.mk acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, acc ++ [encChar message.toList[i]!])",
+      "children": []
+    }
+  ]
+}

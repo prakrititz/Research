@@ -1,0 +1,5 @@
+# he_145_order_by_points
+
+`orderByPoints(nums : List Int) : List Int`
+
+Sort the given list of integers in ascending order according to the sum of their digits (the first digit of a negative number counts as negative). If several items have the same sum of digits, order them by their index in the original list.

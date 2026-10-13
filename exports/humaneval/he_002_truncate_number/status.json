@@ -1,0 +1,15 @@
+{
+  "id": "he_002_truncate_number",
+  "dataset": "humaneval",
+  "family": "he_000",
+  "function": "truncateNumber",
+  "tests": 11,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "11/11",
+  "blocked_reason": ""
+}

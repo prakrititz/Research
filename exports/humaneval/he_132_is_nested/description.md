@@ -1,0 +1,5 @@
+# he_132_is_nested
+
+`isNested(string : String) : Bool`
+
+Create a function that takes a string which contains only square brackets. The function should return true if and only if there is a valid group of brackets (a balanced run of brackets that is not split into smaller balanced runs) in which at least one bracket is nested.

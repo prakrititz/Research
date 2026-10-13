@@ -1,0 +1,15 @@
+{
+  "id": "he_123_get_odd_collatz",
+  "dataset": "humaneval",
+  "family": "he_120",
+  "function": "getOddCollatz",
+  "tests": 12,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 1,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "12/12",
+  "blocked_reason": ""
+}

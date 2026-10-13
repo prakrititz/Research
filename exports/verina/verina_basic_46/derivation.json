@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "pos",
+      "Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "-1"
+  ],
+  "invariant": "i ≤ arr.size ∧ (pos = -1 ∨ (0 ≤ pos ∧ pos.toNat < i ∧ arr[pos.toNat]! = elem)) ∧ (pos = -1 → ∀ k, k < i → arr[k]! ≠ elem) ∧ (0 ≤ pos → ∀ k, pos.toNat < k → k < i → arr[k]! ≠ elem)",
+  "guard": "i < arr.size",
+  "variant": "arr.size - i",
+  "result": "pos",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if arr[i]! = elem then (i : Int) else pos)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "exit46",
+      "statement": "∀ (arr : Array Int) (elem : Int) (i : Nat) (pos : Int) (h : lastPosition_precond arr elem), (i ≤ arr.size ∧ (pos = -1 ∨ (0 ≤ pos ∧ pos.toNat < i ∧ arr[pos.toNat]! = elem)) ∧ (pos = -1 → ∀ k, k < i → arr[k]! ≠ elem) ∧ (0 ≤ pos → ∀ k, pos.toNat < k → k < i → arr[k]! ≠ elem)) → ¬ i < arr.size → lastPosition_postcond arr elem pos h",
+      "proof": "by intro arr elem i pos h hinv hn\n  obtain ⟨hi, hp, h1, h2⟩ := hinv\n  have hi' : i = arr.size := by omega\n  subst hi'\n  unfold lastPosition_postcond\n  refine ⟨?_, ?_, ?_⟩\n  · rcases hp with hp | hp\n    · left; exact hp\n    · right; omega\n  · intro hge\n    rcases hp with hp | ⟨_, hb, he⟩\n    · omega\n    · refine ⟨hb, he, ?_⟩\n      simp only [List.all_eq_true, decide_eq_true_eq]\n      rw [Refine.forall_mem_drop_iff]\n      intro k hk1 hk2\n      have hk2' : k < arr.size := by simpa using hk2\n      rw [Refine.toList_getElem_bang arr k hk2']\n      exact h2 (by omega) k (by omega) hk2'\n  · intro hneg\n    simp only [List.all_eq_true, decide_eq_true_eq]\n    rw [Refine.forall_mem_toList_iff_idx]\n    intro k hk\n    exact h1 hneg k hk"
+    }
+  ]
+}

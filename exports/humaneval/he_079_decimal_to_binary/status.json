@@ -1,0 +1,15 @@
+{
+  "id": "he_079_decimal_to_binary",
+  "dataset": "humaneval",
+  "family": "he_060",
+  "function": "decimalToBinary",
+  "tests": 12,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 3,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "12/12",
+  "blocked_reason": ""
+}

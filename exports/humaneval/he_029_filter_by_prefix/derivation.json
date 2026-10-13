@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List String"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "i ≤ strings.length ∧ acc = (strings.take i).filter (fun s => s.startsWith prefix_)",
+  "guard": "i < strings.length",
+  "variant": "strings.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if strings[i]!.startsWith prefix_ then acc ++ [strings[i]!] else acc)",
+      "children": []
+    }
+  ]
+}

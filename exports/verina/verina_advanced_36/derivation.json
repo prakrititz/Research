@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "(xs.find? (fun x => decide (xs.count x > xs.length / 2))).getD 0",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "maj36",
+      "statement": "∀ (xs : List Nat) (h : majorityElement_precond xs), majorityElement_postcond xs ((xs.find? (fun x => decide (xs.count x > xs.length / 2))).getD 0) h",
+      "proof": "by intro xs h\n  unfold majorityElement_postcond\n  obtain ⟨r, hr, hc, _⟩ := Refine.find_majority xs h.2\n  have hr' : (xs.find? (fun x => decide (xs.count x > xs.length / 2))).getD 0 = r := hr\n  show xs.count ((xs.find? (fun x => decide (xs.count x > xs.length / 2))).getD 0) > xs.length / 2\n  rw [hr']; exact hc"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "s",
+      "Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "0"
+  ],
+  "invariant": "i ≤ lst.length ∧ s = (((List.range i).filter (fun j => j % 2 = 1 ∧ lst[j]! % 2 = 0)).map (fun j => lst[j]!)).sum",
+  "guard": "i < lst.length",
+  "variant": "lst.length - i",
+  "result": "s",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if i % 2 = 1 ∧ lst[i]! % 2 = 0 then s + lst[i]! else s)",
+      "children": []
+    }
+  ]
+}

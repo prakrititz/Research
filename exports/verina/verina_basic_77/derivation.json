@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "arr.set! index1 ((arr[index1]!).set! index2 val)",
+  "children": []
+}

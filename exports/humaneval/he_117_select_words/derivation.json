@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "(s.splitOn \" \").filter (fun w => w != \"\" && (w.toList.filter (fun ch => !(['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains ch))).length == n)",
+  "children": []
+}

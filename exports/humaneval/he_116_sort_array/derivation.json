@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "arr.mergeSort (fun a b => decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b)))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "sort116_ok",
+      "statement": "∀ (L : List Int), (L.mergeSort (fun a b => decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b)))).isPerm L = true ∧ ∀ i, i < (L.mergeSort (fun a b => decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b)))).length - 1 → (ones (L.mergeSort (fun a b => decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b))))[i]! < ones (L.mergeSort (fun a b => decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b))))[i + 1]! ∨ (ones (L.mergeSort (fun a b => decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b))))[i]! = ones (L.mergeSort (fun a b => decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b))))[i + 1]! ∧ (L.mergeSort (fun a b => decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b))))[i]! ≤ (L.mergeSort (fun a b => decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b))))[i + 1]!))",
+      "proof": "by\n  intro L\n  have htrans : ∀ (a b c : Int), (decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b))) = true →\n      (decide (ones b < ones c) || (ones b == ones c && decide (b ≤ c))) = true →\n      (decide (ones a < ones c) || (ones a == ones c && decide (a ≤ c))) = true := by\n    intro a b c h1 h2\n    simp only [Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true, beq_iff_eq] at *\n    omega\n  have htotal : ∀ (a b : Int), ((decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b))) ||\n      (decide (ones b < ones a) || (ones b == ones a && decide (b ≤ a)))) = true := by\n    intro a b\n    simp only [Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true, beq_iff_eq]\n    omega\n  have hp : (L.mergeSort (fun a b => decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b)))).Perm L :=\n    List.mergeSort_perm L _\n  have hs := List.pairwise_mergeSort htrans htotal L\n  refine ⟨List.isPerm_iff.mpr hp, ?_⟩\n  intro i hi\n  rw [List.pairwise_iff_getElem] at hs\n  have hi' : i + 1 < (L.mergeSort (fun a b => decide (ones a < ones b) || (ones a == ones b && decide (a ≤ b)))).length := by omega\n  have := hs i (i + 1) (by omega) hi' (by omega)\n  rw [getElem!_pos _ i (by omega), getElem!_pos _ (i + 1) hi']\n  simpa only [Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true, beq_iff_eq] using this"
+    }
+  ]
+}

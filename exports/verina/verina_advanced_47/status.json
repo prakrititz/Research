@@ -1,0 +1,21 @@
+{
+  "id": "verina_advanced_47",
+  "dataset": "verina",
+  "family": "advanced",
+  "function": "mergeIntervals",
+  "tests": 7,
+  "has_derivation": false,
+  "kind": "",
+  "laws": 0,
+  "helper_lemmas": 0,
+  "certified": false,
+  "independently_verified": false,
+  "tests_passed": null,
+  "blocked_reason": "not closed: needs the sort-and-merge invariant for four conjuncts, including 'no spurious merge' (plan in Reading Material/27, section 7)",
+  "spec_checks": {
+    "compiles": true,
+    "reference_passes": "7/7",
+    "accepts_expected": "7/7",
+    "rejects_wrong": "8/8"
+  }
+}

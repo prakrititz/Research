@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "(Y, X)",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "swapsimultaneous_ok",
+      "statement": "∀ (X Y : Int) (h : SwapSimultaneous_precond X Y), SwapSimultaneous_postcond X Y (Y, X) h",
+      "proof": "by intro X Y h\n  unfold SwapSimultaneous_postcond\n  refine ⟨rfl, rfl, fun hne => ⟨fun h2 => hne h2.symm, fun h2 => hne h2⟩⟩"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "Array Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "#[]"
+  ],
+  "invariant": "i ≤ arr.size ∧ acc.toList = (arr.toList.take i).filter isEven",
+  "guard": "i < arr.size",
+  "variant": "arr.size - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if isEven arr[i]! then acc.push arr[i]! else acc)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "idxOf_filter_mono",
+      "statement": "∀ (p : Int → Bool) (l : List Int) (x y : Int), p x = true → p y = true → l.idxOf x ≤ l.idxOf y → (l.filter p).idxOf x ≤ (l.filter p).idxOf y",
+      "proof": "by intro p l\n  induction l with\n  | nil => intro x y _ _ _; simp\n  | cons a t ih =>\n    intro x y hx hy h\n    by_cases hax : a = x\n    · subst hax\n      by_cases hpa : p a = true\n      · simp [List.filter_cons, hpa]\n      · exact absurd hx hpa\n    · by_cases hay : a = y\n      · subst hay\n        have : (a :: t).idxOf a = 0 := List.idxOf_cons_self\n        have h2 : (a :: t).idxOf x = (t.idxOf x) + 1 := by simp [List.idxOf_cons, hax]\n        omega\n      · have h1 : (a :: t).idxOf x = t.idxOf x + 1 := by simp [List.idxOf_cons, hax]\n        have h2 : (a :: t).idxOf y = t.idxOf y + 1 := by simp [List.idxOf_cons, hay]\n        have := ih x y hx hy (by omega)\n        by_cases hpa : p a = true\n        · simp [List.filter_cons, hpa, List.idxOf_cons, hax, hay]; omega\n        · have hpa' : p a = false := by simpa using hpa\n          simp [List.filter_cons, hpa']; exact this"
+    },
+    {
+      "name": "fen_exit",
+      "statement": "∀ (arr result : Array Int) (h : findEvenNumbers_precond arr), result.toList = arr.toList.filter isEven → findEvenNumbers_postcond arr result h",
+      "proof": "by intro arr result h hr\n  unfold findEvenNumbers_postcond\n  refine ⟨?_, ?_, ?_⟩\n  · rw [← Array.all_toList, List.all_eq_true]\n    intro x hx\n    rw [hr] at hx\n    have he := (List.mem_filter.mp hx)\n    simp only [decide_eq_true_eq]\n    refine ⟨by simpa using he.2, he.1, ?_⟩\n    rw [hr, List.count_filter]; simp [he.2]\n  · rw [← Array.all_toList, List.all_eq_true]\n    intro x hx\n    simp only [decide_eq_true_eq]\n    intro hev\n    rw [hr]; exact List.mem_filter.mpr ⟨hx, hev⟩\n  · rw [← Array.all_toList, List.all_eq_true]\n    intro x hx\n    rw [← Array.all_toList, List.all_eq_true]\n    intro y hy\n    simp only [decide_eq_true_eq]\n    intro hx' hy' hle\n    rw [hr]\n    exact idxOf_filter_mono isEven arr.toList x y hx' hy' hle"
+    },
+    {
+      "name": "exit34",
+      "statement": "∀ (arr acc : Array Int) (i : Nat) (h : findEvenNumbers_precond arr), (i ≤ arr.size ∧ acc.toList = (arr.toList.take i).filter isEven) → ¬ i < arr.size → findEvenNumbers_postcond arr acc h",
+      "proof": "by intro arr acc i h hinv hn\n  obtain ⟨hi, hacc⟩ := hinv\n  have hi' : i = arr.size := by omega\n  subst hi'\n  have ht : arr.toList.take arr.size = arr.toList := List.take_of_length_le (by simp)\n  rw [ht] at hacc\n  exact fen_exit arr acc h hacc"
+    }
+  ]
+}

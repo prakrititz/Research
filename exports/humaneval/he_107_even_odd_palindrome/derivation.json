@@ -1,0 +1,45 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "e",
+      "Nat"
+    ],
+    [
+      "o",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0",
+    "0",
+    "0"
+  ],
+  "invariant": "i ≤ n + 1 ∧ e = ((List.range i).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 0))).length ∧ o = ((List.range i).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 1))).length",
+  "guard": "i < n + 1",
+  "variant": "n + 1 - i",
+  "result": "(e, o)",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, if 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 0 then e + 1 else e, if 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 1 then o + 1 else o)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "len_filter_range_succ",
+      "statement": "∀ (p : Nat → Bool) (i : Nat), ((List.range (i + 1)).filter p).length = ((List.range i).filter p).length + (if p i = true then 1 else 0)",
+      "proof": "by\n  intro p i\n  rw [List.range_succ, List.filter_append, List.length_append]\n  by_cases h : p i = true <;> simp [h]"
+    },
+    {
+      "name": "palin_step",
+      "statement": "∀ (n i e o : Nat), i < n + 1 → (i ≤ n + 1 ∧ e = ((List.range i).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 0))).length ∧ o = ((List.range i).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 1))).length) → (i + 1 ≤ n + 1 ∧ (if 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 0 then e + 1 else e) = ((List.range (i + 1)).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 0))).length ∧ (if 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 1 then o + 1 else o) = ((List.range (i + 1)).filter (fun j => decide (1 ≤ j ∧ isPal (toString j).toList ∧ j % 2 = 1))).length)",
+      "proof": "by\n  intro n i e o hi ⟨_, he, ho⟩\n  refine ⟨by omega, ?_, ?_⟩\n  · rw [len_filter_range_succ, ← he]\n    simp only [decide_eq_true_eq]\n    split <;> omega\n  · rw [len_filter_range_succ, ← ho]\n    simp only [decide_eq_true_eq]\n    split <;> omega"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "0"
+  ],
+  "invariant": "i ≤ lst.length ∧ acc = ((lst.take i).map (fun x => (⌈x⌉ : Int) * (⌈x⌉ : Int))).sum",
+  "guard": "i < lst.length",
+  "variant": "lst.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, acc + (⌈lst[i]!⌉ : Int) * (⌈lst[i]!⌉ : Int))",
+      "children": []
+    }
+  ]
+}

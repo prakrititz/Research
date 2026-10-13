@@ -1,0 +1,15 @@
+{
+  "id": "he_022_filter_integers",
+  "dataset": "humaneval",
+  "family": "he_020",
+  "function": "filterIntegers",
+  "tests": 11,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 2,
+  "helper_lemmas": 1,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "11/11",
+  "blocked_reason": ""
+}

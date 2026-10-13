@@ -1,0 +1,15 @@
+{
+  "id": "he_000_has_close_elements",
+  "dataset": "humaneval",
+  "family": "he_000",
+  "function": "hasCloseElements",
+  "tests": 15,
+  "has_derivation": true,
+  "kind": "loop",
+  "laws": 5,
+  "helper_lemmas": 0,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "15/15",
+  "blocked_reason": ""
+}

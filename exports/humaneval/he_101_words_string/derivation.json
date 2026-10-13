@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "((s.map (fun c => if c == ',' then ' ' else c)).splitOn \" \").filter (fun w => w != \"\")",
+  "children": []
+}

@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "6 * size * size",
+  "children": []
+}

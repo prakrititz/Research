@@ -1,0 +1,5 @@
+# he_151_double_the_difference
+
+`doubleTheDifference(lst : List (Int ⊕ ℚ)) : Int`
+
+Given a list of numbers (some integers, some floats), return the sum of squares of the numbers in the list that are odd. Ignore numbers that are negative or not integers (a float is not an integer even if its value is whole). An empty list gives 0.

@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "i ≤ l.length ∧ acc = (l.take i).reverse",
+  "guard": "i < l.length",
+  "variant": "l.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, l[i]! :: acc)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "rev_getBang",
+      "statement": "∀ (l : List Int) (i : Nat), i < l.length → l.reverse[i]! = l[l.length - 1 - i]!",
+      "proof": "by intro l i h\n  rw [getElem!_pos l.reverse i (by simpa using h), getElem!_pos l (l.length - 1 - i) (by omega)]\n  simp [List.getElem_reverse]"
+    }
+  ]
+}

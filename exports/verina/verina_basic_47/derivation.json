@@ -1,0 +1,40 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "0"
+  ],
+  "invariant": "i ≤ a.size ∧ acc = sumTo a i",
+  "guard": "i < a.size",
+  "variant": "a.size - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, acc + a[i]!)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "sumTo_zero",
+      "statement": "∀ (a : Array Int), sumTo a 0 = 0",
+      "proof": "by intro a; rw [sumTo]; simp"
+    },
+    {
+      "name": "sumTo_succ",
+      "statement": "∀ (a : Array Int) (i : Nat), sumTo a (i + 1) = sumTo a i + a[i]!",
+      "proof": "by intro a i; rw [sumTo]; simp"
+    }
+  ]
+}

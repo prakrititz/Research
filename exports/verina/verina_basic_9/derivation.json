@@ -1,0 +1,64 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "f",
+      "Bool"
+    ]
+  ],
+  "init": [
+    "0",
+    "false"
+  ],
+  "invariant": "i ≤ a.size ∧ (f = true ↔ ∃ k, k < i ∧ ∃ j, j < b.size ∧ a[k]! = b[j]!)",
+  "guard": "i < a.size",
+  "variant": "a.size - i",
+  "result": "f",
+  "children": [
+    {
+      "law": "bind",
+      "var": "hit",
+      "type": "Bool",
+      "prop": "hit = true ↔ ∃ j, j < b.size ∧ a[i]! = b[j]!",
+      "children": [
+        {
+          "law": "loop",
+          "state": [
+            [
+              "j",
+              "Nat"
+            ],
+            [
+              "g",
+              "Bool"
+            ]
+          ],
+          "init": [
+            "0",
+            "false"
+          ],
+          "invariant": "j ≤ b.size ∧ (g = true ↔ ∃ m, m < j ∧ a[i]! = b[m]!)",
+          "guard": "j < b.size",
+          "variant": "b.size - j",
+          "result": "g",
+          "children": [
+            {
+              "law": "term",
+              "expr": "(j + 1, g || decide (a[i]! = b[j]!))",
+              "children": []
+            }
+          ]
+        },
+        {
+          "law": "term",
+          "expr": "(i + 1, f || hit)",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

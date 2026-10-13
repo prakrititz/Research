@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "(let subArraySums := List.range (numbers.length + 1) |>.flatMap (fun start => List.range (numbers.length - start + 1) |>.map (fun len => numbers.drop start |>.take len |>.sum)); subArraySums.foldl max (subArraySums.headD 0))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "maxSubarraySum_ok",
+      "statement": "∀ (numbers : List Int) (h : maxSubarraySum_precond numbers), maxSubarraySum_postcond numbers (let subArraySums := List.range (numbers.length + 1) |>.flatMap (fun start => List.range (numbers.length - start + 1) |>.map (fun len => numbers.drop start |>.take len |>.sum)); subArraySums.foldl max (subArraySums.headD 0)) h",
+      "proof": "by intro numbers h\n  unfold maxSubarraySum_postcond\n  exact Refine.maxlist_int _ (List.ne_nil_of_mem (a := 0) (List.mem_flatMap.mpr ⟨0, List.mem_range.mpr (by omega), List.mem_map.mpr ⟨0, List.mem_range.mpr (by omega), by simp⟩⟩))"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "idx",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0"
+  ],
+  "invariant": "idx ≤ min str1.length str2.length ∧ str1.take idx = str2.take idx",
+  "guard": "idx < min str1.length str2.length ∧ str1[idx]! = str2[idx]!",
+  "variant": "min str1.length str2.length - idx",
+  "result": "str1.take idx",
+  "children": [
+    {
+      "law": "term",
+      "expr": "idx + 1",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "step71",
+      "statement": "∀ (l1 l2 : List Char) (idx : Nat), (idx ≤ min l1.length l2.length ∧ l1.take idx = l2.take idx) → (idx < min l1.length l2.length ∧ l1[idx]! = l2[idx]!) → (idx + 1 ≤ min l1.length l2.length ∧ l1.take (idx + 1) = l2.take (idx + 1))",
+      "proof": "by intro l1 l2 idx ⟨_, h⟩ ⟨hl, he⟩\n  have h1 : idx < l1.length := by omega\n  have h2 : idx < l2.length := by omega\n  refine ⟨by omega, ?_⟩\n  rw [Refine.take_succ_bang l1 idx h1, Refine.take_succ_bang l2 idx h2, h, he]"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "acc",
+      "List Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "[]"
+  ],
+  "invariant": "acc.length = i ∧ i ≤ l.length ∧ ∀ k, k < i → acc[k]! = l[k]! + 1",
+  "guard": "i < l.length",
+  "variant": "l.length - i",
+  "result": "acc",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, acc ++ [l[i]! + 1])",
+      "children": []
+    }
+  ]
+}

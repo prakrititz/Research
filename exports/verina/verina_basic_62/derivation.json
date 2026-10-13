@@ -1,0 +1,23 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "n",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0"
+  ],
+  "invariant": "n ≤ a.size ∧ ∀ i, i < n → a[i]! ≠ key",
+  "guard": "n < a.size ∧ a[n]! ≠ key",
+  "variant": "a.size - n",
+  "result": "if n < a.size then (n : Int) else -1",
+  "children": [
+    {
+      "law": "term",
+      "expr": "n + 1",
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "Nat.gcd a b",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "gcd_ok",
+      "statement": "∀ (a b : Nat), a > 0 → b > 0 → (Nat.gcd a b > 0 ∧ a % Nat.gcd a b = 0 ∧ b % Nat.gcd a b = 0 ∧ ∀ d, d < a + b + 1 → d > 0 → a % d = 0 → b % d = 0 → d ≤ Nat.gcd a b)",
+      "proof": "by intro a b ha hb\n  have hp : Nat.gcd a b > 0 := Nat.gcd_pos_of_pos_left b ha\n  refine ⟨hp, Nat.mod_eq_zero_of_dvd (Nat.gcd_dvd_left a b), Nat.mod_eq_zero_of_dvd (Nat.gcd_dvd_right a b), ?_⟩\n  intro d _ hd h1 h2\n  exact Nat.le_of_dvd hp (Nat.dvd_gcd (Nat.dvd_of_mod_eq_zero h1) (Nat.dvd_of_mod_eq_zero h2))"
+    }
+  ]
+}

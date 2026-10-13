@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "a.set! j 60",
+  "children": []
+}

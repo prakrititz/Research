@@ -1,0 +1,17 @@
+{
+  "law": "term",
+  "expr": "String.mk (Nat.toDigits 2 (((toString N).toList.map (fun c => c.toNat - '0'.toNat)).sum))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "toDigits2_binary",
+      "statement": "∀ (v : Nat), isBinary (Nat.toDigits 2 v) v",
+      "proof": "by\n  intro v\n  induction v using Nat.strong_induction_on with\n  | _ v ih =>\n    by_cases h0 : v = 0\n    · subst h0\n      simp [isBinary, Nat.toDigits, Nat.toDigitsCore]\n    · by_cases h1 : v / 2 = 0\n      · have hv : v = 1 := by omega\n        subst hv\n        simp [isBinary, Nat.toDigits, Nat.toDigitsCore]\n      · have hlt : v / 2 < v := by omega\n        have ihv := ih (v / 2) hlt\n        have hsplit : Nat.toDigits 2 v = Nat.toDigits 2 (v / 2) ++ Nat.toDigits 2 (v % 2) := by\n          rw [Nat.toDigits_append_toDigits (by norm_num) (by omega) (by omega)]\n          congr 1; omega\n        have hbit : Nat.toDigits 2 (v % 2) = [if v % 2 = 1 then '1' else '0'] := by\n          rcases Nat.mod_two_eq_zero_or_one v with h | h <;> simp [h, Nat.toDigits, Nat.toDigitsCore]\n        rw [hsplit, hbit]\n        obtain ⟨ha, hf, _, hh⟩ := ihv\n        refine ⟨?_, ?_, ?_, ?_⟩\n        · simp only [List.all_append, Bool.and_eq_true] \n          refine ⟨ha, ?_⟩\n          split <;> simp\n        · rw [List.foldl_append, hf]\n          simp only [List.foldl_cons, List.foldl_nil]\n          split <;> simp_all <;> omega\n        · intro hz; omega\n        · intro _\n          have hh' := hh (by omega)\n          cases hA : Nat.toDigits 2 (v / 2) with\n          | nil => rw [hA] at hh'; simp at hh'\n          | cons a t => rw [hA] at hh'; simpa using hh'"
+    },
+    {
+      "name": "binary_string_ok",
+      "statement": "∀ (s : Nat), isBinary (String.mk (Nat.toDigits 2 s)).toList s",
+      "proof": "by\n  intro s\n  rw [Refine.string_toList_mk]\n  exact toDigits2_binary s"
+    }
+  ]
+}

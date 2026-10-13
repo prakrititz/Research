@@ -1,0 +1,15 @@
+{
+  "id": "he_013_gcd",
+  "dataset": "humaneval",
+  "family": "he_000",
+  "function": "greatestCommonDivisor",
+  "tests": 12,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 1,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "12/12",
+  "blocked_reason": ""
+}

@@ -1,0 +1,16 @@
+{
+  "law": "cases",
+  "cond": "x < y",
+  "children": [
+    {
+      "law": "term",
+      "expr": "x",
+      "children": []
+    },
+    {
+      "law": "term",
+      "expr": "y",
+      "children": []
+    }
+  ]
+}

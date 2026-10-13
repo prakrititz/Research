@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "s",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0"
+  ],
+  "invariant": "s ≤ gas.length ∧ ∀ k, k < s → ¬ ((List.range gas.length).all (fun i => decide ((List.range (i + 1)).foldl (fun t j => t + gas[(k + j) % gas.length]! - cost[(k + j) % gas.length]!) 0 ≥ 0)) = true)",
+  "guard": "s < gas.length ∧ ¬ ((List.range gas.length).all (fun i => decide ((List.range (i + 1)).foldl (fun t j => t + gas[(s + j) % gas.length]! - cost[(s + j) % gas.length]!) 0 ≥ 0)) = true)",
+  "variant": "gas.length - s",
+  "result": "if s < gas.length then (s : Int) else -1",
+  "children": [
+    {
+      "law": "term",
+      "expr": "s + 1",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "exit8",
+      "statement": "∀ (gas cost : List Int) (h : canCompleteCircuit_precond gas cost) (s : Nat), (s ≤ gas.length ∧ ∀ k, k < s → ¬ ((List.range gas.length).all (fun i => decide ((List.range (i + 1)).foldl (fun t j => t + gas[(k + j) % gas.length]! - cost[(k + j) % gas.length]!) 0 ≥ 0)) = true)) → ¬ (s < gas.length ∧ ¬ ((List.range gas.length).all (fun i => decide ((List.range (i + 1)).foldl (fun t j => t + gas[(s + j) % gas.length]! - cost[(s + j) % gas.length]!) 0 ≥ 0)) = true)) → canCompleteCircuit_postcond gas cost (if s < gas.length then (s : Int) else -1) h",
+      "proof": "by intro gas cost h s hinv hg\n  obtain ⟨hs, hk⟩ := hinv\n  unfold canCompleteCircuit_postcond\n  intro valid\n  have hv : ∀ k, valid k = ((List.range gas.length).all (fun i => decide ((List.range (i + 1)).foldl (fun t j => t + gas[(k + j) % gas.length]! - cost[(k + j) % gas.length]!) 0 ≥ 0))) := fun k => rfl\n  by_cases hlt : s < gas.length\n  · have hvs : valid s = true := by\n      rw [hv]; by_contra hn; exact hg ⟨hlt, hn⟩\n    rw [if_pos hlt]\n    refine ⟨by omega, fun hneg => by omega, fun _ => ⟨by simpa using hlt, by simpa using hvs, ?_⟩⟩\n    rw [List.all_eq_true]; intro k hk'\n    have hk2 := hk k (by simpa using List.mem_range.mp hk')\n    simp only [Int.toNat_natCast] at hk'\n    have := hk k (List.mem_range.mp hk')\n    simpa [hv] using this\n  · have hsl : s = gas.length := by omega\n    subst hsl\n    rw [if_neg hlt]\n    refine ⟨by omega, fun _ => ?_, fun hge => by omega⟩\n    rw [List.all_eq_true]; intro k hk'\n    have := hk k (List.mem_range.mp hk')\n    simpa [hv] using this"
+    },
+    {
+      "name": "step8",
+      "statement": "∀ (gas cost : List Int) (s : Nat), (s ≤ gas.length ∧ ∀ k, k < s → ¬ ((List.range gas.length).all (fun i => decide ((List.range (i + 1)).foldl (fun t j => t + gas[(k + j) % gas.length]! - cost[(k + j) % gas.length]!) 0 ≥ 0)) = true)) → (s < gas.length ∧ ¬ ((List.range gas.length).all (fun i => decide ((List.range (i + 1)).foldl (fun t j => t + gas[(s + j) % gas.length]! - cost[(s + j) % gas.length]!) 0 ≥ 0)) = true)) → (s + 1 ≤ gas.length ∧ ∀ k, k < s + 1 → ¬ ((List.range gas.length).all (fun i => decide ((List.range (i + 1)).foldl (fun t j => t + gas[(k + j) % gas.length]! - cost[(k + j) % gas.length]!) 0 ≥ 0)) = true))",
+      "proof": "by intro gas cost s hinv hg\n  obtain ⟨hs, hk⟩ := hinv\n  obtain ⟨hlt, hn⟩ := hg\n  refine ⟨by omega, fun k hk' => ?_⟩\n  by_cases he : k = s\n  · subst he; exact hn\n  · exact hk k (by omega)"
+    }
+  ]
+}

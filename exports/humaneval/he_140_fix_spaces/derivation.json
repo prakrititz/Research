@@ -1,0 +1,5 @@
+{
+  "law": "term",
+  "expr": "String.mk (fixSpec text.length text.toList)",
+  "children": []
+}

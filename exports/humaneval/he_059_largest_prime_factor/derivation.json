@@ -1,0 +1,35 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "q",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "n"
+  ],
+  "invariant": "1 ≤ q ∧ q ≤ n ∧ ∀ r, r < n + 1 → q < r → Nat.Prime r → r ∣ n → False",
+  "guard": "1 < q ∧ ¬ (Nat.Prime q ∧ n % q = 0)",
+  "variant": "q",
+  "result": "q",
+  "children": [
+    {
+      "law": "term",
+      "expr": "q - 1",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "lpf_exit",
+      "statement": "∀ (n q : Nat), n > 1 → (1 ≤ q ∧ q ≤ n ∧ ∀ r, r < n + 1 → q < r → Nat.Prime r → r ∣ n → False) → ¬ (1 < q ∧ ¬ (Nat.Prime q ∧ n % q = 0)) → (Nat.Prime q ∧ q ∣ n ∧ ∀ q2, q2 < n + 1 → Nat.Prime q2 → q2 ∣ n → q2 ≤ q)",
+      "proof": "by\n  intro n q hn h hg\n  obtain ⟨p, hp, hpd⟩ := Nat.exists_prime_and_dvd (show n ≠ 1 by omega)\n  have hpn : p ≤ n := Nat.le_of_dvd (by omega) hpd\n  by_cases h1 : 1 < q\n  · have hpq : Nat.Prime q ∧ n % q = 0 := by\n      by_contra hc\n      exact hg ⟨h1, hc⟩\n    refine ⟨hpq.1, Nat.dvd_of_mod_eq_zero hpq.2, ?_⟩\n    intro r hr hrp hrd\n    by_contra hlt\n    exact h.2.2 r hr (by omega) hrp hrd\n  · exfalso\n    exact h.2.2 p (by omega) (by have := hp.two_le; omega) hp hpd"
+    },
+    {
+      "name": "lpf_step",
+      "statement": "∀ (n q : Nat), (1 ≤ q ∧ q ≤ n ∧ ∀ r, r < n + 1 → q < r → Nat.Prime r → r ∣ n → False) → (1 < q ∧ ¬ (Nat.Prime q ∧ n % q = 0)) → (1 ≤ q - 1 ∧ q - 1 ≤ n ∧ ∀ r, r < n + 1 → q - 1 < r → Nat.Prime r → r ∣ n → False)",
+      "proof": "by\n  intro n q h hg\n  refine ⟨by omega, by omega, ?_⟩\n  intro r hr hqr hrp hrd\n  by_cases hrq : r = q\n  · subst hrq\n    exact hg.2 ⟨hrp, Nat.mod_eq_zero_of_dvd hrd⟩\n  · exact h.2.2 r hr (by omega) hrp hrd"
+    }
+  ]
+}

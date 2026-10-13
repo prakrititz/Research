@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "(List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "generate_ok",
+      "statement": "∀ (a b : Nat), (∀ i, i < ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b))).length - 1 → ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b)))[i]! < ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b)))[i + 1]!) ∧ (∀ d ∈ ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b))), d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b ∧ d < 10) ∧ ∀ d, d < 10 → d % 2 = 0 → min a b ≤ d → d ≤ max a b → d ∈ ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b)))",
+      "proof": "by intro a b\n  have hs : List.Pairwise (· < ·) ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b))) :=\n    (List.pairwise_lt_range).filter _\n  refine ⟨?_, ?_, ?_⟩\n  · intro i hi\n    rw [List.pairwise_iff_getElem] at hs\n    have hi' : i + 1 < ((List.range 10).filter (fun d => decide (d % 2 = 0 ∧ min a b ≤ d ∧ d ≤ max a b))).length := by omega\n    have := hs i (i + 1) (by omega) hi' (by omega)\n    rw [getElem!_pos _ i (by omega), getElem!_pos _ (i + 1) hi']\n    exact this\n  · intro d hd\n    simp at hd\n    omega\n  · intro d hd h2 h3 h4\n    simp\n    omega"
+    }
+  ]
+}

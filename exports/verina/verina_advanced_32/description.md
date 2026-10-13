@@ -1,0 +1,12 @@
+# verina_advanced_32
+
+`longestIncreasingSubsequence(numbers : List Int) : Nat`
+
+-----Description----- 
+This test implements a function in Lean 4 that finds the length of the longest increasing subsequence in a list of integers. A subsequence is a sequence that can be derived from another sequence by deleting some or no elements without changing the order of the remaining elements. An increasing subsequence is one in which the elements are in strictly increasing order.
+
+-----Input-----
+numbers: A list of integers.
+
+-----Output-----
+A natural number representing the length of the longest increasing subsequence in the input list. If the list is empty, the function returns 0.

@@ -1,0 +1,5 @@
+# he_001_separate_paren_groups
+
+`separateParenGroups(paren_string : String) : List String`
+
+The input is a string of several groups of balanced parentheses, possibly separated by spaces. Separate the groups into strings (each group is balanced and not nested within another) and return the list of them; ignore the spaces.

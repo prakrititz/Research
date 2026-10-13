@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "(Y, X)",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "swap_ok",
+      "statement": "∀ (X Y : Int) (h : Swap_precond X Y), Swap_postcond X Y (Y, X) h",
+      "proof": "by intro X Y h\n  unfold Swap_postcond\n  refine ⟨rfl, rfl, fun hne => ⟨fun h2 => hne h2.symm, fun h2 => hne h2⟩⟩"
+    }
+  ]
+}

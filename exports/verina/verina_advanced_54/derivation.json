@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "((List.range (nums.length + 1)).find? (fun x => decide (x ∉ nums))).getD 0",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "missing54",
+      "statement": "∀ (nums : List Nat) (h : missingNumber_precond nums), missingNumber_postcond nums (((List.range (nums.length + 1)).find? (fun x => decide (x ∉ nums))).getD 0) h",
+      "proof": "by intro nums h\n  obtain ⟨hall, hnd⟩ := h\n  have hsub : nums ⊆ List.range (nums.length + 1) := fun x hx => List.mem_range.mpr (by\n    have := List.all_eq_true.mp hall x hx; simp at this; omega)\n  have hex : ∃ x ∈ List.range (nums.length + 1), x ∉ nums := by\n    by_contra hno\n    push_neg at hno\n    have hsub2 : List.range (nums.length + 1) ⊆ nums := fun x hx => hno x hx\n    have := (List.nodup_range.subperm hsub2).length_le\n    simp at this\n  have hany : (List.range (nums.length + 1)).any (fun x => decide (x ∉ nums)) = true :=\n    List.any_eq_true.mpr (by obtain ⟨x, hx, hn⟩ := hex; exact ⟨x, hx, by simpa using hn⟩)\n  obtain ⟨r, hr, hmem, hp⟩ := Refine.find_some_of_any _ _ hany\n  have hrn : r ∉ nums := by simpa using hp\n  unfold missingNumber_postcond\n  dsimp only\n  rw [hr, Option.getD_some]\n  refine ⟨hmem, hrn, ?_⟩\n  intro x hx hxr\n  by_contra hxn\n  have hsub3 : nums ⊆ ((List.range (nums.length + 1)).erase x).erase r := by\n    intro y hy\n    have hyr : y ≠ r := fun e => hrn (e ▸ hy)\n    have hyx : y ≠ x := fun e => hxn (e ▸ hy)\n    rw [List.mem_erase_of_ne hyr, List.mem_erase_of_ne hyx]; exact hsub hy\n  have hl := (hnd.subperm hsub3).length_le\n  have hrmem : r ∈ (List.range (nums.length + 1)).erase x := (List.mem_erase_of_ne (Ne.symm hxr)).mpr hmem\n  rw [List.length_erase_of_mem hrmem, List.length_erase_of_mem hx] at hl\n  simp at hl\n  have hxlt := List.mem_range.mp hx\n  have hrlt := List.mem_range.mp hmem\n  omega"
+    }
+  ]
+}

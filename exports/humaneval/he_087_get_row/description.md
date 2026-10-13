@@ -1,0 +1,5 @@
+# he_087_get_row
+
+`getRow(lst : List (List Int), x : Int) : List (Nat × Nat)`
+
+Given a 2-dimensional list of rows of different lengths and an integer x, find the integers x in the list and return the list of coordinates (row, column), starting with 0, sorted by rows in ascending order and, within a row, by columns in descending order.

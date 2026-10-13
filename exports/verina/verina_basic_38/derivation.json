@@ -1,0 +1,40 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "ok",
+      "Bool"
+    ]
+  ],
+  "init": [
+    "0",
+    "true"
+  ],
+  "invariant": "i ≤ s.toList.length ∧ (ok = true ↔ ∀ k, k < i → s.toList[k]! = s.toList[0]!)",
+  "guard": "i < s.toList.length",
+  "variant": "s.toList.length - i",
+  "result": "ok",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, ok && decide (s.toList[i]! = s.toList[0]!))",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "allsame_pairwise",
+      "statement": "∀ (l : List Char), (∀ k, k < l.length → l[k]! = l[0]!) → List.Pairwise (· = ·) l",
+      "proof": "by intro l h\n  apply List.pairwise_of_forall_mem_list\n  intro a ha b hb\n  obtain ⟨i, hi, rfl⟩ := (Refine.mem_iff_idx l a).mp ha\n  obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx l b).mp hb\n  rw [h i hi, h j hj]"
+    },
+    {
+      "name": "allsame_not",
+      "statement": "∀ (l : List Char), ¬ (∀ k, k < l.length → l[k]! = l[0]!) → l ≠ [] ∧ l.any (fun x => decide (x ≠ l[0]!)) = true",
+      "proof": "by intro l h\n  push_neg at h\n  obtain ⟨k, hk, hne⟩ := h\n  refine ⟨?_, ?_⟩\n  · intro h0; subst h0; simp at hk\n  · rw [List.any_eq_true]\n    refine ⟨l[k]!, ?_, by simpa using hne⟩\n    rw [getElem!_pos l k hk]; exact List.getElem_mem hk"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "verina_basic_52",
+  "dataset": "verina",
+  "family": "basic",
+  "function": "BubbleSort",
+  "tests": 5,
+  "has_derivation": false,
+  "kind": "",
+  "laws": 0,
+  "helper_lemmas": 0,
+  "certified": false,
+  "independently_verified": false,
+  "tests_passed": null,
+  "blocked_reason": "reference code does not compile on Lean 4.34.1 (same cause as verina_basic_23)",
+  "spec_checks": {
+    "compiles": false,
+    "reference_passes": "0/5",
+    "accepts_expected": "0/5",
+    "rejects_wrong": "0/0"
+  }
+}

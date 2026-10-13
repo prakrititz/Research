@@ -1,0 +1,21 @@
+{
+  "id": "verina_advanced_64",
+  "dataset": "verina",
+  "family": "advanced",
+  "function": "removeElement",
+  "tests": 5,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 1,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "5/5",
+  "blocked_reason": "",
+  "spec_checks": {
+    "compiles": true,
+    "reference_passes": "5/5",
+    "accepts_expected": "5/5",
+    "rejects_wrong": "15/15"
+  }
+}

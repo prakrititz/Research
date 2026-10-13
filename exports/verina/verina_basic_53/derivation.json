@@ -1,0 +1,28 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "s",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0",
+    "0"
+  ],
+  "invariant": "s * 2 = i * (i + 1) ∧ i ≤ N",
+  "guard": "i < N",
+  "variant": "N - i",
+  "result": "s",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, s + (i + 1))",
+      "children": []
+    }
+  ]
+}

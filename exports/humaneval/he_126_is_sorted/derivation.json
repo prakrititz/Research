@@ -1,0 +1,77 @@
+{
+  "law": "bind",
+  "var": "a",
+  "type": "Bool",
+  "prop": "a = true ↔ ∀ i, i < lst.length - 1 → lst[i]! ≤ lst[i + 1]!",
+  "children": [
+    {
+      "law": "loop",
+      "state": [
+        [
+          "i",
+          "Nat"
+        ],
+        [
+          "ok",
+          "Bool"
+        ]
+      ],
+      "init": [
+        "0",
+        "true"
+      ],
+      "invariant": "i ≤ lst.length - 1 ∧ (ok = true ↔ ∀ k, k < i → lst[k]! ≤ lst[k + 1]!)",
+      "guard": "i < lst.length - 1",
+      "variant": "lst.length - 1 - i",
+      "result": "ok",
+      "children": [
+        {
+          "law": "term",
+          "expr": "(i + 1, ok && decide (lst[i]! ≤ lst[i + 1]!))",
+          "children": []
+        }
+      ]
+    },
+    {
+      "law": "bind",
+      "var": "b",
+      "type": "Bool",
+      "prop": "b = true ↔ ∀ x ∈ lst, lst.count x ≤ 2",
+      "children": [
+        {
+          "law": "loop",
+          "state": [
+            [
+              "i",
+              "Nat"
+            ],
+            [
+              "ok",
+              "Bool"
+            ]
+          ],
+          "init": [
+            "0",
+            "true"
+          ],
+          "invariant": "i ≤ lst.length ∧ (ok = true ↔ ∀ k, k < i → lst.count lst[k]! ≤ 2)",
+          "guard": "i < lst.length",
+          "variant": "lst.length - i",
+          "result": "ok",
+          "children": [
+            {
+              "law": "term",
+              "expr": "(i + 1, ok && decide (lst.count lst[i]! ≤ 2))",
+              "children": []
+            }
+          ]
+        },
+        {
+          "law": "term",
+          "expr": "a && b",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

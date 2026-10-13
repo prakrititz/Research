@@ -1,0 +1,33 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "a",
+      "Nat"
+    ],
+    [
+      "b",
+      "Nat"
+    ]
+  ],
+  "init": [
+    "0",
+    "0",
+    "1"
+  ],
+  "invariant": "i ≤ n ∧ a = fibSpec i ∧ b = fibSpec (i + 1)",
+  "guard": "i < n",
+  "variant": "n - i",
+  "result": "a",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, b, a + b)",
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "l.mergeSort (fun a b => a ≤ b)",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "sorted_perm",
+      "statement": "∀ (l : List Int), List.Pairwise (· ≤ ·) (l.mergeSort (fun a b => decide (a ≤ b))) ∧ List.isPerm l (l.mergeSort (fun a b => decide (a ≤ b))) = true",
+      "proof": "by intro l\n  exact ⟨List.pairwise_mergeSort' (· ≤ ·) l, List.isPerm_iff.mpr (List.mergeSort_perm l _).symm⟩"
+    }
+  ]
+}

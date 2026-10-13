@@ -1,0 +1,12 @@
+{
+  "law": "term",
+  "expr": "Array.mk (arr.toList.filter (· ≠ 0) ++ arr.toList.filter (· = 0))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "moveZeroes_ok",
+      "statement": "∀ (arr : Array Int) (h : MoveZeroesToEnd_precond arr), MoveZeroesToEnd_postcond arr (Array.mk (arr.toList.filter (· ≠ 0) ++ arr.toList.filter (· = 0))) h",
+      "proof": "by intro arr h\n  unfold MoveZeroesToEnd_postcond\n  have hF : (0 : Int) ∉ arr.toList.filter (· ≠ 0) := by simp\n  have hZ : (arr.toList.filter (· = 0)).idxOf 0 = 0 := by\n    rcases hz : arr.toList.filter (· = 0) with _ | ⟨x, t⟩\n    · rw [hz]; simp\n    · have : x = 0 := by\n        have : x ∈ arr.toList.filter (· = 0) := by rw [hz]; simp\n        simpa using (List.mem_filter.mp this).2\n      rw [hz, this]; simp\n  have hi : (arr.toList.filter (· ≠ 0) ++ arr.toList.filter (· = 0)).idxOf 0 = (arr.toList.filter (· ≠ 0)).length := by\n    rw [List.idxOf_append_of_notMem hF, hZ]; simp\n  dsimp only\n  rw [hi]\n  refine ⟨?_, ?_, ?_⟩\n  · rw [List.isPerm_iff]\n    have := List.filter_append_perm (fun x : Int => decide (x ≠ 0)) arr.toList\n    simpa using this\n  · exact List.take_left' rfl\n  · exact List.drop_left' rfl"
+    }
+  ]
+}

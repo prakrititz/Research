@@ -1,0 +1,15 @@
+{
+  "id": "he_114_min_sub_array_sum",
+  "dataset": "humaneval",
+  "family": "he_100",
+  "function": "minSubArraySum",
+  "tests": 16,
+  "has_derivation": true,
+  "kind": "restate",
+  "laws": 1,
+  "helper_lemmas": 2,
+  "certified": true,
+  "independently_verified": true,
+  "tests_passed": "16/16",
+  "blocked_reason": ""
+}

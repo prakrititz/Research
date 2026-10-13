@@ -1,0 +1,5 @@
+# he_128_prod_signs
+
+`prodSigns(arr : List Int) : Option Int`
+
+Given an array arr of integers, return the sum of the magnitudes of the integers multiplied by the product of all the signs of each number in the array, represented by 1, -1 or 0. Return none for an empty array.

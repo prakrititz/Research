@@ -37,6 +37,33 @@ def test_every_oracle_belongs_to_its_dataset_and_to_an_existing_task():
         assert table and set(table) <= set(ds.ids()), name
 
 
+def test_derivations_cover_almost_every_task():
+    """The coverage reached on 2026-10-14: every HumanEval/Verina task has a derivation except those listed as blocked."""
+    he = datasets.get("humaneval")
+    assert len(he.oracles()) >= 159 and len(datasets.get("classic").oracles()) == 5
+    verina = datasets.get("verina")
+    if verina.ids():
+        assert len(verina.oracles()) >= 174 and len(verina.ids()) == 189
+
+
+def test_tasks_without_a_precondition_argument_are_detected():
+    verina = datasets.get("verina")
+    if not verina.ids():
+        pytest.skip("the Verina clone is not installed")
+    for task_id in ("verina_basic_48", "verina_advanced_44", "verina_advanced_74"):
+        task = verina.load(task_id)
+        assert not task.precond_arg and "h_precond" not in task.root_post and "h_precond" not in task.binders()
+    task = verina.load("verina_basic_5")
+    assert task.precond_arg and task.root_post.endswith("h_precond")
+
+
+def test_the_witness_search_is_only_added_for_verina():
+    from FormalLLM.lean.task import precondition_proof
+    assert "wit_search" not in precondition_proof("f_precond")
+    assert "wit_search" in precondition_proof("f_precond", witness_search=True)
+    assert "wit_search" in datasets.get("verina").compat and "wit_search" not in datasets.get("humaneval").compat
+
+
 def test_inputs_are_read_by_the_encoding_of_their_dataset():
     ours = datasets.get("humaneval").load("he_142_sum_squares")
     assert ours.encoding == "lean" and ours.call_args(ours.tests[0]) == f"({ours.tests[0]['input']['lst']})"

@@ -1,0 +1,45 @@
+{
+  "law": "loop",
+  "state": [
+    [
+      "i",
+      "Nat"
+    ],
+    [
+      "r",
+      "Array Int"
+    ]
+  ],
+  "init": [
+    "0",
+    "dest"
+  ],
+  "invariant": "i ≤ len ∧ r.size = dest.size ∧ (∀ k, k < dStart → r[k]! = dest[k]!) ∧ (∀ k, dStart + i ≤ k → k < r.size → r[k]! = dest[k]!) ∧ (∀ k, k < i → r[dStart + k]! = src[sStart + k]!)",
+  "guard": "i < len",
+  "variant": "len - i",
+  "result": "r",
+  "children": [
+    {
+      "law": "term",
+      "expr": "(i + 1, r.set! (dStart + i) src[sStart + i]!)",
+      "children": []
+    }
+  ],
+  "lemmas": [
+    {
+      "name": "set_bang_get",
+      "statement": "∀ (r : Array Int) (p : Nat) (v : Int) (k : Nat), p < r.size → (r.set! p v)[k]! = if p = k then v else r[k]!",
+      "proof": "by intro r p v k hp\n  rw [Array.set!_eq_setIfInBounds]\n  by_cases hk : k < r.size\n  · have hk' : k < (r.setIfInBounds p v).size := by simpa using hk\n    rw [getElem!_pos (r.setIfInBounds p v) k hk', getElem!_pos r k hk, Array.getElem_setIfInBounds hk]\n  · have h1 : ¬ k < (r.setIfInBounds p v).size := by simpa using hk\n    rw [getElem!_neg (r.setIfInBounds p v) k h1, getElem!_neg r k hk]\n    split\n    · omega\n    · rfl"
+    },
+    {
+      "name": "step56",
+      "statement": "∀ (src dest r : Array Int) (sStart dStart len i : Nat), copy_precond src sStart dest dStart len → i < len → (i ≤ len ∧ r.size = dest.size ∧ (∀ k, k < dStart → r[k]! = dest[k]!) ∧ (∀ k, dStart + i ≤ k → k < r.size → r[k]! = dest[k]!) ∧ (∀ k, k < i → r[dStart + k]! = src[sStart + k]!)) → (i + 1 ≤ len ∧ (r.set! (dStart + i) src[sStart + i]!).size = dest.size ∧ (∀ k, k < dStart → (r.set! (dStart + i) src[sStart + i]!)[k]! = dest[k]!) ∧ (∀ k, dStart + (i + 1) ≤ k → k < (r.set! (dStart + i) src[sStart + i]!).size → (r.set! (dStart + i) src[sStart + i]!)[k]! = dest[k]!) ∧ (∀ k, k < i + 1 → (r.set! (dStart + i) src[sStart + i]!)[dStart + k]! = src[sStart + k]!))",
+      "proof": "by intro src dest r sStart dStart len i hpre hi hinv\n  obtain ⟨h1, h2⟩ := hpre\n  obtain ⟨_, hs, ha, hb, hc⟩ := hinv\n  have hp : dStart + i < r.size := by omega\n  have hsz : (r.set! (dStart + i) src[sStart + i]!).size = r.size := Array.size_set! _ _ _\n  refine ⟨by omega, by rw [hsz]; exact hs, ?_, ?_, ?_⟩\n  · intro k hk\n    rw [set_bang_get r _ _ k hp, if_neg (by omega)]; exact ha k hk\n  · intro k hk hk2\n    rw [hsz] at hk2\n    rw [set_bang_get r _ _ k hp, if_neg (by omega)]; exact hb k (by omega) hk2\n  · intro k hk\n    rw [set_bang_get r _ _ _ hp]\n    by_cases hki : k = i\n    · subst hki; simp\n    · rw [if_neg (by omega)]; exact hc k (by omega)"
+    },
+    {
+      "name": "exit56",
+      "statement": "∀ (src dest r : Array Int) (sStart dStart len i : Nat) (h : copy_precond src sStart dest dStart len), (i ≤ len ∧ r.size = dest.size ∧ (∀ k, k < dStart → r[k]! = dest[k]!) ∧ (∀ k, dStart + i ≤ k → k < r.size → r[k]! = dest[k]!) ∧ (∀ k, k < i → r[dStart + k]! = src[sStart + k]!)) → ¬ i < len → copy_postcond src sStart dest dStart len r h",
+      "proof": "by intro src dest r sStart dStart len i h hinv hn\n  obtain ⟨hi, hs, ha, hb, hc⟩ := hinv\n  have hi' : i = len := by omega\n  subst hi'\n  unfold copy_postcond\n  exact ⟨hs, ha, hb, hc⟩"
+    }
+  ]
+}
