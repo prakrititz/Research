@@ -50,9 +50,29 @@ theorem head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []
   | nil => contradiction
   | cons x xs => simp
 
+theorem string_length_mk (l : List Char) : (String.mk l).length = l.length := String.length_ofList
+
+theorem string_toList_mk (l : List Char) : (String.mk l).toList = l := String.toList_ofList
+
 theorem take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) :
     l.take (i + 1) = l.take i ++ [l[i]!] := by
   rw [List.take_succ_eq_append_getElem h, getElem!_pos l i h]
+
+theorem filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) :
+    (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else []) := by
+  rw [take_succ_bang l i h, List.filter_append]
+  congr 1
+  simp only [List.filter_cons, List.filter_nil]
+
+theorem sorted_filter_range (n : Nat) (p : Nat → Bool) :
+    ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]! := by
+  have hs : List.Pairwise (· < ·) ((List.range n).filter p) := (List.pairwise_lt_range).filter _
+  intro i hi
+  rw [List.pairwise_iff_getElem] at hs
+  have hi' : i + 1 < ((List.range n).filter p).length := by omega
+  have := hs i (i + 1) (by omega) hi' (by omega)
+  rw [getElem!_pos _ i (by omega), getElem!_pos _ (i + 1) hi']
+  exact this
 
 theorem sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) :
     (l.take (i + 1)).sum = (l.take i).sum + l[i]! := by
@@ -135,12 +155,12 @@ end Refine
 #: ``l.take i ++ [l[i]]`` back into ``l.take (i + 1)``: with ``take_succ_bang`` unfolding it, ``simp`` loops (found with
 #: ``set_option trace.Meta.Tactic.simp.rewrite true``).
 SIMP_SET = ", ".join([f"Refine.{name}" for name in (
-    "forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
+    "forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
     "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ",
     "take_string_length", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
     "exists_mem_array_iff_idx")] + ["String.length_toList", "List.range_succ", "-List.take_append_getElem"])
 
-NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
+NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
          "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ", "take_string_length",
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
          "exists_mem_array_iff_idx")
