@@ -162,6 +162,54 @@ _BIN103 = [
     }
 ]
 
+_BASE044 = [
+    {
+        "name": "digit_val",
+        "statement": "∀ (d : Nat), d < 10 → (Nat.digitChar d).isDigit = true ∧ (Nat.digitChar d).toNat - '0'.toNat = d",
+        "proof": "by\n  intro d hd\n  interval_cases d <;> decide"
+    },
+    {
+        "name": "toDigits_single",
+        "statement": "∀ (b d : Nat), 1 < b → d < b → Nat.toDigits b d = [Nat.digitChar d]",
+        "proof": "by\n  intro b d hb hd\n  simp [Nat.toDigits, Nat.toDigitsCore, Nat.mod_eq_of_lt hd, Nat.div_eq_of_lt hd]"
+    },
+    {
+        "name": "core_ne_nil",
+        "statement": "∀ (b fuel n : Nat) (acc : List Char), Nat.toDigitsCore b (fuel + 1) n acc ≠ []",
+        "proof": "by\n  intro b fuel\n  induction fuel with\n  | zero => intro n acc; simp [Nat.toDigitsCore]\n  | succ f ih =>\n    intro n acc\n    rw [Nat.toDigitsCore]\n    split\n    · simp\n    · exact ih _ _"
+    },
+    {
+        "name": "toDigits_ne_nil",
+        "statement": "∀ (b n : Nat), Nat.toDigits b n ≠ []",
+        "proof": "by\n  intro b n\n  simp only [Nat.toDigits]\n  exact core_ne_nil b n n []"
+    },
+    {
+        "name": "change_base_ok",
+        "statement": "∀ (base v : Nat), 2 ≤ base → base < 10 → ((String.mk (Nat.toDigits base v)).toList.all (fun c => c.isDigit && c.toNat - '0'.toNat < base) = true ∧ (String.mk (Nat.toDigits base v)).toList.foldl (fun acc c => acc * base + (c.toNat - '0'.toNat)) 0 = v ∧ (v = 0 → String.mk (Nat.toDigits base v) = \"0\") ∧ (v > 0 → (String.mk (Nat.toDigits base v)).toList.head! ≠ '0'))",
+        "proof": "by\n  intro base v hb2 hb10\n  rw [Refine.string_toList_mk]\n  induction v using Nat.strong_induction_on with\n  | _ v ih =>\n    by_cases h0 : v = 0\n    · subst h0\n      rw [toDigits_single base 0 (by omega) (by omega)]\n      obtain ⟨hd0, hval0⟩ := digit_val 0 (by omega)\n      refine ⟨?_, ?_, fun _ => ?_, fun h => absurd h (by omega)⟩\n      · simp only [List.all_cons, List.all_nil, Bool.and_true, Bool.and_eq_true, hd0, true_and, decide_eq_true_eq, hval0]\n        omega\n      · simp only [List.foldl_cons, List.foldl_nil, hval0]\n        omega\n      · show String.mk ['0'] = \"0\"\n        rfl\n    · by_cases h1 : v / base = 0\n      · have hv : v < base := Nat.lt_of_div_eq_zero (by omega) h1\n        rw [toDigits_single base v (by omega) hv]\n        obtain ⟨hd, hval⟩ := digit_val v (by omega)\n        refine ⟨?_, ?_, fun h => absurd h h0, ?_⟩\n        · simp only [List.all_cons, List.all_nil, Bool.and_true, Bool.and_eq_true, hd, true_and, decide_eq_true_eq, hval]\n          exact hv\n        · simp only [List.foldl_cons, List.foldl_nil, hval]\n          omega\n        · intro _\n          have : Nat.digitChar v ≠ '0' := by\n            intro h\n            have h2 := hval\n            rw [h] at h2\n            simp at h2\n            omega\n          simpa using this\n      · have hlt : v / base < v := Nat.div_lt_self (by omega) (by omega)\n        obtain ⟨ha, hf, _, hh⟩ := ih (v / base) hlt\n        have hsplit : Nat.toDigits base v = Nat.toDigits base (v / base) ++ Nat.toDigits base (v % base) := by\n          have := Nat.toDigits_append_toDigits (b := base) (n := v / base) (d := v % base) (by omega) (by omega) (Nat.mod_lt _ (by omega))\n          rw [this]\n          congr 1\n          have h3 := Nat.div_add_mod v base\n          first | exact h3 | exact h3.symm\n        rw [hsplit, toDigits_single base (v % base) (by omega) (Nat.mod_lt _ (by omega))]\n        have hmod : v % base < base := Nat.mod_lt v (by omega)\n        obtain ⟨hd, hval⟩ := digit_val (v % base) (by omega)\n        refine ⟨?_, ?_, fun h => absurd h h0, ?_⟩\n        · rw [List.all_append]\n          simp only [Bool.and_eq_true]\n          refine ⟨ha, ?_⟩\n          simp only [List.all_cons, List.all_nil, Bool.and_true, Bool.and_eq_true, hd, true_and, decide_eq_true_eq, hval]\n          exact hmod\n        · rw [List.foldl_append, hf]\n          simp only [List.foldl_cons, List.foldl_nil, hval]\n          exact Nat.div_add_mod' v base\n        · intro _\n          have hh' := hh (by omega)\n          cases hA : Nat.toDigits base (v / base) with\n          | nil => exact absurd hA (toDigits_ne_nil base (v / base))\n          | cons a t => rw [hA] at hh'; simpa using hh'"
+    }
+]
+
+_SHIFT050 = [
+    {
+        "name": "decode_shift_string",
+        "statement": "∀ (s : String), s.toList.all (fun c => c.isLower) = true → ((String.mk (s.toList.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)))).toList.all (fun c => c.isLower) = true ∧ (String.mk (s.toList.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)))).toList.map shiftChar = s.toList)",
+        "proof": "by\n  have shift_roundtrip : ∀ (c : Char), c.isLower = true →\n      (Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)).isLower = true ∧\n      shiftChar (Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)) = c := by\n    intro c h\n    have ha : ('a' : Char).val.toNat = 97 := by decide\n    have hz : ('z' : Char).val.toNat = 122 := by decide\n    have hl : 97 ≤ c.toNat ∧ c.toNat ≤ 122 := by\n      unfold Char.isLower at h\n      simp only [Bool.and_eq_true, decide_eq_true_eq, ge_iff_le] at h\n      obtain ⟨h1, h2⟩ := h\n      rw [UInt32.le_iff_toNat_le] at h1 h2\n      rw [ha] at h1\n      rw [hz] at h2\n      exact ⟨h1, h2⟩\n    have hcn : c = Char.ofNat c.toNat := (Char.ofNat_toNat c).symm\n    generalize c.toNat = n at hl hcn ⊢\n    subst hcn\n    obtain ⟨h1, h2⟩ := hl\n    interval_cases n <;> decide\n  have decode_shift_ok : ∀ (l : List Char), l.all (fun c => c.isLower) = true →\n      ((l.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97))).all (fun c => c.isLower) = true ∧\n        (l.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97))).map shiftChar = l) := by\n    intro l\n    induction l with\n    | nil => intro _; simp\n    | cons a t ih =>\n      intro h\n      simp only [List.all_cons, Bool.and_eq_true] at h\n      obtain ⟨ha, ht⟩ := h\n      obtain ⟨h1, h2⟩ := shift_roundtrip a ha\n      obtain ⟨ih1, ih2⟩ := ih ht\n      simp only [List.map_cons, List.all_cons, Bool.and_eq_true]\n      refine ⟨⟨h1, ih1⟩, ?_⟩\n      rw [h2, ih2]\n  intro s h\n  rw [Refine.string_toList_mk]\n  exact decode_shift_ok s.toList h"
+    }
+]
+_NS090 = [
+    {
+        "name": "ns_some",
+        "statement": "∀ (lst : List Int) (m : Int) (p : Bool × Int), ((∃ k, k < lst.length ∧ lst[k]! = m) ∧ ∀ k, k < lst.length → m ≤ lst[k]!) → ((p.1 = true ↔ ∃ k, k < lst.length ∧ m < lst[k]!) ∧ (p.1 = true → (∃ k, k < lst.length ∧ lst[k]! = p.2 ∧ m < p.2) ∧ ∀ k, k < lst.length → m < lst[k]! → p.2 ≤ lst[k]!)) → p.1 = true → (p.2 ∈ lst ∧ (∃ m2 ∈ lst, m2 < p.2) ∧ ∀ x ∈ lst, (∃ m2 ∈ lst, m2 < x) → p.2 ≤ x)",
+        "proof": "by\n  intro lst m p ⟨⟨k0, hk0, hm⟩, hmin⟩ ⟨hiff, hd⟩ hp\n  obtain ⟨⟨k, hk, hkr, hmr⟩, hmax⟩ := hd hp\n  refine ⟨?_, ?_, ?_⟩\n  · rw [← hkr]; rw [getElem!_pos lst k hk]; exact List.getElem_mem hk\n  · refine ⟨m, ?_, hmr⟩\n    rw [← hm, getElem!_pos lst k0 hk0]; exact List.getElem_mem hk0\n  · intro x hx ⟨m2, hm2, hlt⟩\n    obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n    obtain ⟨j2, hj2, rfl⟩ := (Refine.mem_iff_idx lst m2).mp hm2\n    have := hmin j2 hj2\n    exact hmax j hj (by omega)"
+    },
+    {
+        "name": "ns_none",
+        "statement": "∀ (lst : List Int) (m : Int) (p : Bool × Int), ((∃ k, k < lst.length ∧ lst[k]! = m) ∧ ∀ k, k < lst.length → m ≤ lst[k]!) → ((p.1 = true ↔ ∃ k, k < lst.length ∧ m < lst[k]!) ∧ (p.1 = true → (∃ k, k < lst.length ∧ lst[k]! = p.2 ∧ m < p.2) ∧ ∀ k, k < lst.length → m < lst[k]! → p.2 ≤ lst[k]!)) → ¬ p.1 = true → ∀ x ∈ lst, ∀ y ∈ lst, x = y",
+        "proof": "by\n  intro lst m p ⟨⟨k0, hk0, hm⟩, hmin⟩ ⟨hiff, hd⟩ hp x hx y hy\n  obtain ⟨j, hj, rfl⟩ := (Refine.mem_iff_idx lst x).mp hx\n  obtain ⟨j2, hj2, rfl⟩ := (Refine.mem_iff_idx lst y).mp hy\n  have h1 : ¬ m < lst[j]! := fun h => hp (hiff.mpr ⟨j, hj, h⟩)\n  have h2 : ¬ m < lst[j2]! := fun h => hp (hiff.mpr ⟨j2, hj2, h⟩)\n  have := hmin j hj\n  have := hmin j2 hj2\n  omega"
+    }
+]
+
 ORACLES_MORE = {
     "he_005_intersperse": with_lemmas(
         loop([["i", "Nat"], ["acc", "List Int"]], ["0", "[]"],
@@ -239,4 +287,25 @@ ORACLES_MORE = {
         term("String.mk (Nat.toDigits 2 (((toString N).toList.map (fun c => c.toNat - '0'.toNat)).sum))"), _BIN084),
     "he_103_rounded_avg": with_lemmas(
         cases("n > m", term("none"), term("some (String.mk (['0', 'b'] ++ Nat.toDigits 2 (roundedHalfEven (n + m))))")), _BIN103),
+    "he_044_change_base": with_lemmas(term("String.mk (Nat.toDigits base x)"), _BASE044),
+
+    "he_050_decode_shift": with_lemmas(
+        term("String.mk (s.toList.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)))"), _SHIFT050),
+    "he_090_next_smallest": cases(
+        "lst = []", term("none"),
+        with_lemmas(
+            bind("m", "Int", "(∃ k, k < lst.length ∧ lst[k]! = m) ∧ ∀ k, k < lst.length → m ≤ lst[k]!",
+                 loop([["i", "Nat"], ["m", "Int"]], ["1", "lst[0]!"],
+                      "1 ≤ i ∧ i ≤ lst.length ∧ (∃ k, k < i ∧ lst[k]! = m) ∧ ∀ k, k < i → m ≤ lst[k]!",
+                      "i < lst.length", "lst.length - i", "m", term("(i + 1, min m lst[i]!)")),
+                 bind("p", "Bool × Int",
+                      "(p.1 = true ↔ ∃ k, k < lst.length ∧ m < lst[k]!) ∧ "
+                      "(p.1 = true → (∃ k, k < lst.length ∧ lst[k]! = p.2 ∧ m < p.2) ∧ ∀ k, k < lst.length → m < lst[k]! → p.2 ≤ lst[k]!)",
+                      loop([["i", "Nat"], ["f", "Bool"], ["r", "Int"]], ["0", "false", "0"],
+                           "i ≤ lst.length ∧ (f = true ↔ ∃ k, k < i ∧ m < lst[k]!) ∧ "
+                           "(f = true → (∃ k, k < i ∧ lst[k]! = r ∧ m < r) ∧ ∀ k, k < i → m < lst[k]! → r ≤ lst[k]!)",
+                           "i < lst.length", "lst.length - i", "(f, r)",
+                           term("(i + 1, f || decide (m < lst[i]!), if m < lst[i]! ∧ (f = false ∨ lst[i]! < r) then lst[i]! else r)")),
+                      cases("p.1 = true", term("some p.2"), term("none")))),
+            _NS090)),
 }
