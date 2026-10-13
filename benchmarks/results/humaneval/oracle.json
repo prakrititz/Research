@@ -1,12 +1,22 @@
 [
  {
-  "id": "he_020_find_closest_elements",
-  "laws": 7,
+  "id": "he_033_sort_third",
+  "laws": 1,
   "accepted": true,
   "certified": true,
-  "tests": 13,
-  "passed": 13,
+  "tests": 15,
+  "passed": 15,
   "failed_obligations": [],
-  "seconds": 19.0
+  "seconds": 5.9
+ },
+ {
+  "id": "he_037_sort_even",
+  "laws": 1,
+  "accepted": true,
+  "certified": true,
+  "tests": 11,
+  "passed": 11,
+  "failed_obligations": [],
+  "seconds": 5.9
  }
 ]
