@@ -1,0 +1,667 @@
+import Mathlib
+
+
+namespace Refine
+
+theorem forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) :
+    (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]! := by
+  constructor
+  · intro h k hk
+    have hmem : l[k]! ∈ l := by
+      rw [getElem!_pos l k hk]; exact List.getElem_mem hk
+    exact h _ hmem
+  · intro h x hx
+    obtain ⟨k, hk, rfl⟩ := List.mem_iff_getElem.mp hx
+    have := h k hk
+    rwa [getElem!_pos l k hk] at this
+
+theorem exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) :
+    (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]! := by
+  constructor
+  · rintro ⟨x, hx, hp⟩
+    obtain ⟨k, hk, rfl⟩ := List.mem_iff_getElem.mp hx
+    exact ⟨k, hk, by rwa [getElem!_pos l k hk]⟩
+  · rintro ⟨k, hk, hp⟩
+    exact ⟨l[k]!, by rw [getElem!_pos l k hk]; exact List.getElem_mem hk, hp⟩
+
+theorem mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) :
+    x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x := by
+  have := exists_mem_iff_idx l (fun y => y = x)
+  simpa using this
+
+theorem getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l := by
+  rw [getElem!_pos l k h]; exact List.getElem_mem h
+
+theorem getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) :
+    l[k]! ∈ l.take n := by
+  have h1 : k < (l.take n).length := by simp; omega
+  rw [getElem!_pos l k hl]
+  have h2 : l[k] = (l.take n)[k] := by simp [List.getElem_take]
+  rw [h2]; exact List.getElem_mem h1
+
+theorem head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1 := by
+  cases l with
+  | nil => contradiction
+  | cons x xs => simp
+
+theorem string_length_mk (l : List Char) : (String.mk l).length = l.length := String.length_ofList
+
+theorem string_toList_mk (l : List Char) : (String.mk l).toList = l := String.toList_ofList
+
+theorem take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) :
+    l.take (i + 1) = l.take i ++ [l[i]!] := by
+  rw [List.take_succ_eq_append_getElem h, getElem!_pos l i h]
+
+theorem filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) :
+    (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else []) := by
+  rw [take_succ_bang l i h, List.filter_append]
+  congr 1
+  simp only [List.filter_cons, List.filter_nil]
+
+theorem sorted_filter_range (n : Nat) (p : Nat → Bool) :
+    ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]! := by
+  have hs : List.Pairwise (· < ·) ((List.range n).filter p) := (List.pairwise_lt_range).filter _
+  intro i hi
+  rw [List.pairwise_iff_getElem] at hs
+  have hi' : i + 1 < ((List.range n).filter p).length := by omega
+  have := hs i (i + 1) (by omega) hi' (by omega)
+  rw [getElem!_pos _ i (by omega), getElem!_pos _ (i + 1) hi']
+  exact this
+
+theorem sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) :
+    (l.take (i + 1)).sum = (l.take i).sum + l[i]! := by
+  rw [take_succ_bang l i h, List.sum_append]; simp
+
+theorem head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]! := by
+  cases l with
+  | nil => contradiction
+  | cons x xs => simp
+
+theorem getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) :
+    (a ++ b)[k]! = a[k]! := by
+  rw [getElem!_pos (a ++ b) k (by simp; omega), getElem!_pos a k h, List.getElem_append_left h]
+
+theorem getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) :
+    (a ++ [x])[a.length]! = x := by
+  rw [getElem!_pos (a ++ [x]) a.length (by simp)]; simp
+
+theorem take_string_length (s : String) : s.toList.take s.length = s.toList := by
+  have h : s.toList.length = s.length := rfl
+  rw [← h]; exact List.take_length
+
+theorem exists_le_succ (P : Nat → Prop) (i : Nat) :
+    (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1) := by
+  constructor
+  · rintro ⟨k, hk, hp⟩
+    by_cases h : k ≤ i
+    · exact Or.inl ⟨k, h, hp⟩
+    · have : k = i + 1 := by omega
+      subst this; exact Or.inr hp
+  · rintro (⟨k, hk, hp⟩ | hp)
+    · exact ⟨k, by omega, hp⟩
+    · exact ⟨i + 1, le_refl _, hp⟩
+
+theorem forall_le_succ (P : Nat → Prop) (i : Nat) :
+    (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1) := by
+  constructor
+  · intro h; exact ⟨fun k hk => h k (by omega), h _ (le_refl _)⟩
+  · rintro ⟨h, hp⟩ k hk
+    by_cases h' : k ≤ i
+    · exact h k h'
+    · have : k = i + 1 := by omega
+      subst this; exact hp
+
+theorem toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) :
+    s.toList[k]! = s[k]! := by
+  rw [getElem!_pos s.toList k (by simpa using h), getElem!_pos s k h]; simp
+
+theorem forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) :
+    (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]! := by
+  rw [forall_mem_iff_idx]
+  constructor
+  · intro h k hk; have := h k (by simpa using hk); rwa [toList_getElem_bang s k hk] at this
+  · intro h k hk; have hk' : k < s.size := by simpa using hk
+    rw [toList_getElem_bang s k hk']; exact h k hk'
+
+theorem exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) :
+    (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]! := by
+  rw [exists_mem_iff_idx]
+  constructor
+  · rintro ⟨k, hk, hp⟩; have hk' : k < s.size := by simpa using hk
+    exact ⟨k, hk', by rwa [toList_getElem_bang s k hk'] at hp⟩
+  · rintro ⟨k, hk, hp⟩; exact ⟨k, by simpa using hk, by rwa [toList_getElem_bang s k hk]⟩
+
+theorem forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) :
+    (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]! := by
+  have h : (∀ x ∈ s, P x) ↔ ∀ x ∈ s.toList, P x := by simp only [Array.mem_def]
+  rw [h]; exact forall_mem_toList_iff_idx s P
+
+theorem exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) :
+    (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]! := by
+  have h : (∃ x ∈ s, P x) ↔ ∃ x ∈ s.toList, P x := by simp only [Array.mem_def]
+  rw [h]; exact exists_mem_toList_iff_idx s P
+
+theorem forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) :
+    (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]! := by
+  constructor
+  · intro h k hmk hk
+    have := h (l[k]'hk) (by
+      rw [List.mem_iff_getElem]; exact ⟨k - m, by simp; omega, by simp [List.getElem_drop]; congr 1; omega⟩)
+    rwa [getElem!_pos l k hk]
+  · intro h x hx
+    rw [List.mem_iff_getElem] at hx
+    obtain ⟨j, hj, rfl⟩ := hx
+    simp only [List.length_drop] at hj
+    have := h (m + j) (by omega) (by omega)
+    rw [getElem!_pos l (m + j) (by omega)] at this
+    simpa [List.getElem_drop] using this
+
+theorem exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) :
+    (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]! := by
+  constructor
+  · rintro ⟨x, hx, hp⟩
+    rw [List.mem_iff_getElem] at hx
+    obtain ⟨j, hj, rfl⟩ := hx
+    simp only [List.length_drop] at hj
+    refine ⟨m + j, by omega, by omega, ?_⟩
+    rw [getElem!_pos l (m + j) (by omega)]
+    simpa [List.getElem_drop] using hp
+  · rintro ⟨k, hmk, hk, hp⟩
+    refine ⟨l[k]'hk, ?_, by rwa [getElem!_pos l k hk] at hp⟩
+    rw [List.mem_iff_getElem]; exact ⟨k - m, by simp; omega, by simp [List.getElem_drop]; congr 1; omega⟩
+
+theorem forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) :
+    (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]! := by
+  constructor
+  · intro h k hkm hk
+    have := h (l[k]'hk) (by
+      rw [List.mem_iff_getElem]; exact ⟨k, by simp; omega, by simp⟩)
+    rwa [getElem!_pos l k hk]
+  · intro h x hx
+    rw [List.mem_iff_getElem] at hx
+    obtain ⟨j, hj, rfl⟩ := hx
+    simp only [List.length_take] at hj
+    have := h j (by omega) (by omega)
+    rw [getElem!_pos l j (by omega)] at this
+    simpa [List.getElem_take] using this
+
+theorem arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) :
+    (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true := by
+  have e : (a.take n).toList = a.toList.take n := by simp
+  rw [← Array.all_toList, e, List.all_eq_true, forall_mem_take_iff]
+  constructor
+  · intro h k hk hs; have := h k hk (by simpa using hs); rwa [Refine.toList_getElem_bang a k hs] at this
+  · intro h k hk hs; have hs' : k < a.size := by simpa using hs
+    rw [Refine.toList_getElem_bang a k hs']; exact h k hk hs'
+
+theorem arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) :
+    (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true := by
+  have e : (a.drop n).toList = a.toList.drop n := by simp
+  rw [← Array.all_toList, e, List.all_eq_true, Refine.forall_mem_drop_iff]
+  constructor
+  · intro h k hk hs; have := h k hk (by simpa using hs); rwa [Refine.toList_getElem_bang a k hs] at this
+  · intro h k hk hs; have hs' : k < a.size := by simpa using hs
+    rw [Refine.toList_getElem_bang a k hs']; exact h k hk hs'
+
+theorem sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) :
+    ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]! := by
+  intro i k hik hk
+  rcases Nat.eq_or_lt_of_le hik with rfl | hlt
+  · exact le_refl _
+  · have := List.pairwise_iff_getElem.mp h i k (by simpa using (by omega : i < a.size)) (by simpa using hk) hlt
+    rw [getElem!_pos a i (by omega), getElem!_pos a k hk]
+    simpa using this
+
+theorem foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α),
+    (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l := by
+  induction l with
+  | nil => intro m; simp
+  | cons a t ih =>
+    intro m
+    obtain ⟨h1, h2, h3⟩ := ih (max m a)
+    simp only [List.foldl_cons]
+    refine ⟨?_, ?_, ?_⟩
+    · rcases h1 with h | h
+      · by_cases hm : m ≤ a
+        · right; rw [max_eq_right hm] at h ⊢; rw [h]; simp
+        · left
+          have hmx : max m a = m := max_eq_left (le_of_lt (not_le.mp hm))
+          rw [hmx] at h ⊢; exact h
+      · right; exact List.mem_cons_of_mem a h
+    · exact le_trans (le_max_left m a) h2
+    · intro x hx
+      rcases List.mem_cons.mp hx with rfl | hx'
+      · exact le_trans (le_max_right m x) h2
+      · exact h3 x hx'
+
+theorem maxlist_nat (L : List Nat) (hne : L ≠ []) :
+    L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true := by
+  obtain ⟨h1, h2, h3⟩ := foldl_max_facts L 0
+  constructor
+  · rw [List.contains_iff_mem]
+    rcases h1 with h | h
+    · obtain ⟨x, hx⟩ := List.exists_mem_of_ne_nil L hne
+      have hx0 : x = 0 := by have := h3 x hx; omega
+      rw [h, ← hx0]; exact hx
+    · exact h
+  · rw [List.all_eq_true]; intro x hx; simpa using h3 x hx
+
+theorem maxlist_int (L : List Int) (hne : L ≠ []) :
+    L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true := by
+  obtain ⟨h1, h2, h3⟩ := foldl_max_facts L (L.headD 0)
+  have hhead : L.headD 0 ∈ L := by
+    cases L with
+    | nil => exact absurd rfl hne
+    | cons a t => simp
+  constructor
+  · rw [List.contains_iff_mem]
+    rcases h1 with h | h
+    · rw [h]; exact hhead
+    · exact h
+  · rw [List.all_eq_true]; intro x hx; simpa using h3 x hx
+
+theorem allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc →
+    [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc := by
+  induction xs with
+  | nil => intro acc h; simpa using h
+  | cons a t ih => intro acc h; exact ih _ (List.mem_append.mpr (Or.inl h))
+
+theorem allsub_nil_mem_arr {α : Type} (xs : Array α) :
+    [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]) := by
+  rw [← Array.foldl_toList]
+  exact allsub_nil_mem xs.toList [[]] (by simp)
+
+theorem allsub_rev_nil_mem {α : Type} (xs : List α) :
+    [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse) :=
+  List.mem_map.mpr ⟨[], allsub_nil_mem xs [[]] (by simp), rfl⟩
+
+theorem longest_facts {α : Type} (L : List (List α)) : ∀ (b : List α),
+    (L.foldl (fun best l => if best.length < l.length then l else best) b = b ∨
+      L.foldl (fun best l => if best.length < l.length then l else best) b ∈ L) ∧
+    b.length ≤ (L.foldl (fun best l => if best.length < l.length then l else best) b).length ∧
+    ∀ x ∈ L, x.length ≤ (L.foldl (fun best l => if best.length < l.length then l else best) b).length := by
+  induction L with
+  | nil => intro b; simp
+  | cons a t ih =>
+    intro b
+    simp only [List.foldl_cons]
+    by_cases hlt : b.length < a.length
+    · rw [if_pos hlt]
+      obtain ⟨h1, h2, h3⟩ := ih a
+      refine ⟨?_, by omega, ?_⟩
+      · rcases h1 with h | h
+        · right; rw [h]; exact List.mem_cons_self
+        · right; exact List.mem_cons_of_mem a h
+      · intro x hx
+        rcases List.mem_cons.mp hx with rfl | hx'
+        · exact h2
+        · exact h3 x hx'
+    · rw [if_neg hlt]
+      obtain ⟨h1, h2, h3⟩ := ih b
+      refine ⟨?_, h2, ?_⟩
+      · rcases h1 with h | h
+        · left; exact h
+        · right; exact List.mem_cons_of_mem a h
+      · intro x hx
+        rcases List.mem_cons.mp hx with rfl | hx'
+        · have := h2; omega
+        · exact h3 x hx'
+
+theorem longest_spec {α : Type} [BEq α] [LawfulBEq α] (L : List (List α)) (hn : [] ∈ L) :
+    L.contains (L.foldl (fun best l => if best.length < l.length then l else best) []) = true ∧
+    L.all (fun l => decide (l.length ≤ (L.foldl (fun best l => if best.length < l.length then l else best) []).length)) = true := by
+  obtain ⟨h1, h2, h3⟩ := longest_facts L []
+  constructor
+  · rw [List.contains_iff_mem]
+    rcases h1 with h | h
+    · rw [h]; exact hn
+    · exact h
+  · rw [List.all_eq_true]; intro x hx; simpa using h3 x hx
+
+theorem maxlist_int_any (L : List Int) (hne : L ≠ []) :
+    L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true := by
+  obtain ⟨h1, h2⟩ := maxlist_int L hne
+  refine ⟨?_, h2⟩
+  rw [List.contains_iff_mem] at h1
+  exact List.any_eq_true.mpr ⟨_, h1, by simp⟩
+
+theorem maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) :
+    L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧
+    L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true := by
+  have hne : L.map List.length ≠ [] := List.ne_nil_of_mem (a := 0) (List.mem_map.mpr ⟨[], hn, rfl⟩)
+  obtain ⟨h1, h2⟩ := maxlist_nat (L.map List.length) hne
+  rw [List.contains_iff_mem, List.mem_map] at h1
+  obtain ⟨a, ha, hlen⟩ := h1
+  constructor
+  · exact List.any_eq_true.mpr ⟨a, ha, by simpa using hlen⟩
+  · rw [List.all_eq_true]; intro x hx
+    have := List.all_eq_true.mp h2 x.length (List.mem_map.mpr ⟨x, hx, rfl⟩)
+    simpa using this
+
+theorem filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) :
+    (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length := by
+  induction l with
+  | nil => simp
+  | cons x t ih =>
+    by_cases hxa : x = a
+    · have hxb : ¬ x = b := fun h => hab (hxa.symm.trans h)
+      simp [List.filter_cons, hxa, hxb, hab, Ne.symm hab]; omega
+    · by_cases hxb : x = b
+      · simp [List.filter_cons, hxa, hxb, hab, Ne.symm hab]; omega
+      · simp [List.filter_cons, hxa, hxb, hab, Ne.symm hab]; omega
+
+theorem count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) :
+    l.count a + l.count b ≤ l.length := by
+  induction l with
+  | nil => simp
+  | cons x t ih =>
+    by_cases hxa : x = a
+    · have hxb : ¬ x = b := fun h => hab (hxa.symm.trans h)
+      simp [List.count_cons, hxa, hxb, hab, Ne.symm hab]; omega
+    · by_cases hxb : x = b
+      · simp [List.count_cons, hxa, hxb, hab, Ne.symm hab]; omega
+      · simp [List.count_cons, hxa, hxb, hab, Ne.symm hab]; omega
+
+theorem find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) :
+    ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true := by
+  obtain ⟨x, hx, hp⟩ := List.any_eq_true.mp h
+  have hs : (l.find? p).isSome = true := List.find?_isSome.mpr ⟨x, hx, hp⟩
+  obtain ⟨r, hr⟩ := Option.isSome_iff_exists.mp hs
+  exact ⟨r, hr, List.mem_of_find?_eq_some hr, List.find?_some hr⟩
+
+theorem find_majority {α : Type} [DecidableEq α] [Inhabited α] (xs : List α)
+    (h : xs.any (fun x => decide (xs.count x > xs.length / 2)) = true) :
+    ∃ r, (xs.find? (fun x => decide (xs.count x > xs.length / 2))).getD default = r ∧ xs.count r > xs.length / 2 ∧
+      ∀ x ∈ xs, x ≠ r → xs.count x ≤ xs.length / 2 := by
+  obtain ⟨r, hr, hmem, hp⟩ := find_some_of_any xs _ h
+  refine ⟨r, by rw [hr]; rfl, of_decide_eq_true hp, ?_⟩
+  intro x hx hne
+  by_contra hgt
+  have h1 := count_pair_le xs x r hne
+  have hp' := of_decide_eq_true hp
+  omega
+
+theorem ts_inner_step (S : Nat → Nat → Int) (target : Int) (n i j jb : Nat) (ok : Bool)
+    (hinv : i + 1 ≤ j ∧ j ≤ n ∧ (ok = true → i < jb ∧ jb < n ∧ S i jb = target ∧ ∀ j', i < j' → j' < jb → S i j' ≠ target) ∧
+      (ok = false → ∀ j', i < j' → j' < j → S i j' ≠ target))
+    (hg : j < n ∧ ok = false) :
+    i + 1 ≤ j + 1 ∧ j + 1 ≤ n ∧
+      ((decide (S i j = target) || ok) = true → i < (if S i j = target then j else jb) ∧ (if S i j = target then j else jb) < n ∧
+        S i (if S i j = target then j else jb) = target ∧
+        ∀ j', i < j' → j' < (if S i j = target then j else jb) → S i j' ≠ target) ∧
+      ((decide (S i j = target) || ok) = false → ∀ j', i < j' → j' < j + 1 → S i j' ≠ target) := by
+  obtain ⟨hij, hjn, hok1, hok2⟩ := hinv
+  obtain ⟨hjlt, hokf⟩ := hg
+  subst hokf
+  by_cases hs : S i j = target
+  · simp only [if_pos hs, decide_eq_true hs, Bool.true_or]
+    refine ⟨by omega, by omega, fun _ => ⟨by omega, hjlt, hs, ?_⟩, fun h => by simp at h⟩
+    intro j' h1 h2
+    exact hok2 rfl j' h1 h2
+  · simp only [if_neg hs, decide_eq_false hs, Bool.false_or]
+    refine ⟨by omega, by omega, fun hok => by simp at hok, fun _ => ?_⟩
+    intro j' h1 h2
+    by_cases hje : j' = j
+    · subst hje; exact hs
+    · exact hok2 rfl j' h1 (by omega)
+
+theorem ts_inner_exit (S : Nat → Nat → Int) (target : Int) (n i j jb : Nat) (ok : Bool)
+    (hinv : i + 1 ≤ j ∧ j ≤ n ∧ (ok = true → i < jb ∧ jb < n ∧ S i jb = target ∧ ∀ j', i < j' → j' < jb → S i j' ≠ target) ∧
+      (ok = false → ∀ j', i < j' → j' < j → S i j' ≠ target))
+    (hn : ¬ (j < n ∧ ok = false)) :
+    ((jb, ok).2 = true → i < (jb, ok).1 ∧ (jb, ok).1 < n ∧ S i (jb, ok).1 = target ∧ ∀ j', i < j' → j' < (jb, ok).1 → S i j' ≠ target) ∧
+    ((jb, ok).2 = false → ∀ j', i < j' → j' < n → S i j' ≠ target) := by
+  obtain ⟨hij, hjn, hok1, hok2⟩ := hinv
+  refine ⟨fun h => hok1 h, fun hf => ?_⟩
+  have : j = n := by
+    by_contra hne
+    exact hn ⟨by omega, hf⟩
+  subst this
+  exact hok2 hf
+
+theorem ts_outer_step (S : Nat → Nat → Int) (target : Int) (n i a b : Nat) (found : Bool) (jr : Nat × Bool)
+    (hinv : i ≤ n ∧ (found = true → a < b ∧ b < n ∧ S a b = target ∧
+        (∀ i' j', i' < a → i' < j' → j' < n → S i' j' ≠ target) ∧ ∀ j', a < j' → j' < b → S a j' ≠ target) ∧
+      (found = false → ∀ i' j', i' < i → i' < j' → j' < n → S i' j' ≠ target))
+    (hg : i < n ∧ found = false)
+    (hjr : (jr.2 = true → i < jr.1 ∧ jr.1 < n ∧ S i jr.1 = target ∧ ∀ j', i < j' → j' < jr.1 → S i j' ≠ target) ∧
+      (jr.2 = false → ∀ j', i < j' → j' < n → S i j' ≠ target)) :
+    i + 1 ≤ n ∧ ((jr.2 || found) = true → (if jr.2 = true then i else a) < (if jr.2 = true then jr.1 else b) ∧
+        (if jr.2 = true then jr.1 else b) < n ∧
+        S (if jr.2 = true then i else a) (if jr.2 = true then jr.1 else b) = target ∧
+        (∀ i' j', i' < (if jr.2 = true then i else a) → i' < j' → j' < n → S i' j' ≠ target) ∧
+        ∀ j', (if jr.2 = true then i else a) < j' → j' < (if jr.2 = true then jr.1 else b) →
+          S (if jr.2 = true then i else a) j' ≠ target) ∧
+      ((jr.2 || found) = false → ∀ i' j', i' < i + 1 → i' < j' → j' < n → S i' j' ≠ target) := by
+  obtain ⟨hin, hf1, hf2⟩ := hinv
+  obtain ⟨hlt, hfound⟩ := hg
+  subst hfound
+  obtain ⟨hj1, hj2⟩ := hjr
+  have hall := hf2 rfl
+  cases hb : jr.2 with
+  | true =>
+    have h := hj1 hb
+    simp only [if_true, Bool.true_or]
+    refine ⟨by omega, fun _ => ⟨h.1, h.2.1, h.2.2.1, hall, h.2.2.2⟩, fun h' => by simp at h'⟩
+  | false =>
+    have h := hj2 hb
+    simp only [Bool.false_or, Bool.false_eq_true, if_false]
+    refine ⟨by omega, fun h' => by simp at h', fun _ => ?_⟩
+    intro i' j' hi' hij hjn
+    by_cases hie : i' = i
+    · subst hie; exact h j' hij hjn
+    · exact hall i' j' (by omega) hij hjn
+theorem ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) :
+    i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧
+      ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target) := by
+  refine ⟨le_refl _, by omega, fun h => by simp at h, fun _ j' h1 h2 => by omega⟩
+
+theorem ts_outer_init (S : Nat → Nat → Int) (target : Int) (n : Nat) :
+    0 ≤ n ∧ ((false = true) → 0 < 0 ∧ 0 < n ∧ S 0 0 = target ∧
+        (∀ i' j', i' < 0 → i' < j' → j' < n → S i' j' ≠ target) ∧ ∀ j', 0 < j' → j' < 0 → S 0 j' ≠ target) ∧
+      ((false = false) → ∀ i' j', i' < 0 → i' < j' → j' < n → S i' j' ≠ target) := by
+  refine ⟨Nat.zero_le _, fun h => by simp at h, fun _ i' j' h1 _ _ => by omega⟩
+
+theorem ts_lex_all (l : List Int) (target : Int) (a b : Nat) (hb : b < l.length)
+    (h1 : ∀ i' j', i' < a → i' < j' → j' < l.length → l[i']! + l[j']! ≠ target)
+    (h2 : ∀ j', a < j' → j' < b → l[a]! + l[j']! ≠ target) :
+    ((l.take a).zipIdx.all (fun ⟨x, i'⟩ => (l.drop (i' + 1)).all (fun y => x + y ≠ target))) = true ∧
+    (((l.drop (a + 1)).take (b - a - 1)).all (fun y => l[a]! + y ≠ target)) = true := by
+  constructor
+  · rw [List.all_eq_true]
+    rintro ⟨x, i'⟩ hx
+    have hx' := List.mem_zipIdx_iff_getElem?.mp hx
+    simp only at hx'
+    obtain ⟨hi'a, hxe⟩ : i' < a ∧ l[i']? = some x := by
+      have hlt : i' < (l.take a).length := by
+        by_contra hge
+        rw [List.getElem?_eq_none (by omega)] at hx'; simp at hx'
+      have hl : (l.take a).length = min a l.length := by simp
+      refine ⟨by omega, ?_⟩
+      rw [List.getElem?_take_of_lt (by omega)] at hx'
+      exact hx'
+    simp only [decide_eq_true_eq, List.all_eq_true]
+    intro y hy
+    obtain ⟨k, hk, rfl⟩ := List.getElem_of_mem hy
+    simp only [List.length_drop] at hk
+    have hxv : x = l[i']! := by
+      have : i' < l.length := by omega
+      rw [getElem!_pos l i' this]; rw [List.getElem?_eq_getElem this] at hxe; simpa using hxe.symm
+    have := h1 i' (i' + 1 + k) hi'a (by omega) (by omega)
+    rw [List.getElem_drop]
+    rw [getElem!_pos l (i'+1+k) (by omega)] at this
+    simpa [hxv] using this
+  · rw [List.all_eq_true]
+    intro y hy
+    obtain ⟨k, hk, rfl⟩ := List.getElem_of_mem hy
+    simp only [List.length_take, List.length_drop] at hk
+    have := h2 (a + 1 + k) (by omega) (by omega)
+    rw [getElem!_pos l (a+1+k) (by omega)] at this
+    simp only [List.getElem_take, List.getElem_drop, decide_eq_true_eq]
+    exact this
+
+theorem ts_pairwise_none (l : List Int) (target : Int)
+    (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l := by
+  rw [List.pairwise_iff_getElem]
+  intro i j hi hj hij
+  have := h i j hij hj
+  rw [getElem!_pos l i hi, getElem!_pos l j hj] at this
+  exact this
+
+end Refine
+
+@[reducible, simp]
+def findClosestElements_precond (numbers : List ℚ) : Prop :=
+  numbers.length ≥ 2
+
+@[reducible, simp]
+def findClosestElements_postcond (numbers : List ℚ) (result: ℚ × ℚ) (h_precond : findClosestElements_precond (numbers)) :=
+  (∃ j, j < numbers.length ∧ ∃ i, i < j ∧
+      ((result.1 = numbers[i]! ∧ result.2 = numbers[j]!) ∨ (result.1 = numbers[j]! ∧ result.2 = numbers[i]!))) ∧
+    result.1 ≤ result.2 ∧
+    ∀ j, j < numbers.length → ∀ i, i < j → result.2 - result.1 ≤ |numbers[i]! - numbers[j]!|
+
+set_option maxHeartbeats 400000 in
+theorem maxmin_abs : ∀ (x y : ℚ), max x y - min x y = |x - y| := by
+  intro x y
+  rcases le_total x y with h | h
+  · rw [max_eq_right h, min_eq_left h, abs_of_nonpos (by linarith)]; ring
+  · rw [max_eq_left h, min_eq_right h, abs_of_nonneg (by linarith)]
+
+set_option maxHeartbeats 400000 in
+theorem closest_yes : ∀ (numbers : List ℚ) (i j : Nat) (lo hi : ℚ), i < j → j < numbers.length → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < i → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ i ≤ j) → |numbers[i]! - numbers[j]!| < hi - lo → (((min numbers[i]! numbers[j]!) ≤ (max numbers[i]! numbers[j]!) ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ (((min numbers[i]! numbers[j]!) = numbers[a]! ∧ (max numbers[i]! numbers[j]!) = numbers[b]!) ∨ ((min numbers[i]! numbers[j]!) = numbers[b]! ∧ (max numbers[i]! numbers[j]!) = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → (max numbers[i]! numbers[j]!) - (min numbers[i]! numbers[j]!) ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < (i + 1) → (max numbers[i]! numbers[j]!) - (min numbers[i]! numbers[j]!) ≤ |numbers[a]! - numbers[j]!|)) ∧ i + 1 ≤ j) := by
+  intro numbers i j lo hi hij hj ⟨⟨hle, hex, hbest, hall⟩, hi'⟩ hc
+  have hm := maxmin_abs numbers[i]! numbers[j]!
+  have hmle : min numbers[i]! numbers[j]! ≤ max numbers[i]! numbers[j]! := le_trans (min_le_left _ _) (le_max_left _ _)
+  refine ⟨⟨hmle, ?_, ?_, ?_⟩, by omega⟩
+  · refine ⟨j, by omega, i, hij, ?_⟩
+    rcases le_total numbers[i]! numbers[j]! with h | h
+    · left; exact ⟨min_eq_left h, max_eq_right h⟩
+    · right; exact ⟨min_eq_right h, max_eq_left h⟩
+  · intro b hb a ha
+    have := hbest b hb a ha
+    linarith
+  · intro a ha
+    by_cases hai : a < i
+    · have := hall a hai
+      linarith
+    · have : a = i := by omega
+      subst this
+      linarith
+
+set_option maxHeartbeats 400000 in
+theorem closest_no : ∀ (numbers : List ℚ) (i j : Nat) (lo hi : ℚ), i < j → j < numbers.length → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < i → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ i ≤ j) → ¬ |numbers[i]! - numbers[j]!| < hi - lo → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < (i + 1) → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ i + 1 ≤ j) := by
+  intro numbers i j lo hi hij hj ⟨⟨hle, hex, hbest, hall⟩, hi'⟩ hc
+  push_neg at hc
+  refine ⟨⟨hle, hex, hbest, ?_⟩, by omega⟩
+  intro a ha
+  by_cases hai : a < i
+  · exact hall a hai
+  · have : a = i := by omega
+    subst this
+    exact hc
+
+set_option maxHeartbeats 400000 in
+theorem closest_inner_init : ∀ (numbers : List ℚ) (j : Nat) (lo hi : ℚ), ((lo ≤ hi ∧ (∃ b, b < j ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|)) ∧ 2 ≤ j ∧ j ≤ numbers.length) → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < 0 → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ 0 ≤ j) := by
+  intro numbers j lo hi ⟨⟨hle, hex, hbest⟩, _, _⟩
+  refine ⟨⟨hle, ?_, hbest, ?_⟩, by omega⟩
+  · obtain ⟨b, hb, a, ha, h⟩ := hex
+    exact ⟨b, by omega, a, ha, h⟩
+  · intro a ha; omega
+
+set_option maxHeartbeats 400000 in
+theorem closest_outer : ∀ (numbers : List ℚ) (j : Nat) (lo hi : ℚ), j < numbers.length → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < j → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ j ≤ j) → 2 ≤ j → ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < (j + 1) → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|)) ∧ 2 ≤ j + 1 ∧ j + 1 ≤ numbers.length) := by
+  intro numbers j lo hi hj ⟨⟨hle, hex, hbest, hall⟩, _⟩ h2
+  refine ⟨⟨hle, hex, ?_⟩, by omega, by omega⟩
+  intro b hb a ha
+  by_cases hbj : b < j
+  · exact hbest b hbj a ha
+  · have : b = j := by omega
+    subst this
+    exact hall a ha
+
+set_option maxHeartbeats 400000 in
+theorem closest_init : ∀ (numbers : List ℚ), numbers.length ≥ 2 → (((min numbers[0]! numbers[1]!) ≤ (max numbers[0]! numbers[1]!) ∧ (∃ b, b < 2 ∧ ∃ a, a < b ∧ (((min numbers[0]! numbers[1]!) = numbers[a]! ∧ (max numbers[0]! numbers[1]!) = numbers[b]!) ∨ ((min numbers[0]! numbers[1]!) = numbers[b]! ∧ (max numbers[0]! numbers[1]!) = numbers[a]!))) ∧ (∀ b, b < 2 → ∀ a, a < b → (max numbers[0]! numbers[1]!) - (min numbers[0]! numbers[1]!) ≤ |numbers[a]! - numbers[b]!|)) ∧ 2 ≤ 2 ∧ 2 ≤ numbers.length) := by
+  intro numbers hl
+  have hm := maxmin_abs numbers[0]! numbers[1]!
+  have hmle : min numbers[0]! numbers[1]! ≤ max numbers[0]! numbers[1]! := le_trans (min_le_left _ _) (le_max_left _ _)
+  refine ⟨⟨hmle, ?_, ?_⟩, by omega, by omega⟩
+  · refine ⟨1, by omega, 0, by omega, ?_⟩
+    rcases le_total numbers[0]! numbers[1]! with h | h
+    · left; exact ⟨min_eq_left h, max_eq_right h⟩
+    · right; exact ⟨min_eq_right h, max_eq_left h⟩
+  · intro b hb a ha
+    have : b = 1 := by omega
+    subst this
+    have : a = 0 := by omega
+    subst this
+    linarith
+
+set_option maxHeartbeats 400000 in
+theorem closest_inner_exit : ∀ (numbers : List ℚ) (i j : Nat) (lo hi : ℚ), ((lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < i → hi - lo ≤ |numbers[a]! - numbers[j]!|)) ∧ i ≤ j) → ¬ i < j → (lo ≤ hi ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < j → hi - lo ≤ |numbers[a]! - numbers[j]!|)) := by
+  intro numbers i j lo hi ⟨⟨hle, hex, hbest, hall⟩, hij⟩ hn
+  have : i = j := by omega
+  subst this
+  exact ⟨hle, hex, hbest, hall⟩
+
+
+macro "refine_auto" : tactic => `(tactic| (first | (apply maxmin_abs; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (apply closest_yes; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (apply closest_no; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (apply closest_inner_init; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (apply closest_outer; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (apply closest_init; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (apply closest_inner_exit; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (refine And.intro ?_ ?_ <;> first | (apply maxmin_abs; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega) | (refine And.intro ?_ ?_ <;> first | (apply closest_yes; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega) | (refine And.intro ?_ ?_ <;> first | (apply closest_no; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega) | (refine And.intro ?_ ?_ <;> first | (apply closest_inner_init; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega) | (refine And.intro ?_ ?_ <;> first | (apply closest_outer; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega) | (refine And.intro ?_ ?_ <;> first | (apply closest_init; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega) | (refine And.intro ?_ ?_ <;> first | (apply closest_inner_exit; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | omega | grind | (simp_all; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, String.length_toList, List.range_succ, -List.take_append_getElem, maxmin_abs, closest_yes, closest_no, closest_inner_init, closest_outer, closest_init, closest_inner_exit]; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, String.length_toList, List.range_succ, -List.take_append_getElem, maxmin_abs, closest_yes, closest_no, closest_inner_init, closest_outer, closest_init, closest_inner_exit]; omega) | (simp_all; omega) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, String.length_toList, List.range_succ, -List.take_append_getElem, maxmin_abs, closest_yes, closest_no, closest_inner_init, closest_outer, closest_init, closest_inner_exit, Nat.mul_comm]; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, String.length_toList, List.range_succ, -List.take_append_getElem, maxmin_abs, closest_yes, closest_no, closest_inner_init, closest_outer, closest_init, closest_inner_exit, mul_assoc]; done) | (split <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, String.length_toList, List.range_succ, -List.take_append_getElem, maxmin_abs, closest_yes, closest_no, closest_inner_init, closest_outer, closest_init, closest_inner_exit]; done) | (split_ifs <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, String.length_toList, List.range_succ, -List.take_append_getElem, maxmin_abs, closest_yes, closest_no, closest_inner_init, closest_outer, closest_init, closest_inner_exit] <;> omega) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, String.length_toList, List.range_succ, -List.take_append_getElem, maxmin_abs, closest_yes, closest_no, closest_inner_init, closest_outer, closest_init, closest_inner_exit, Nat.mul_comm, Nat.mul_left_comm]; done) | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (apply maxmin_abs <;> simp_all) | (apply closest_yes <;> simp_all) | (apply closest_no <;> simp_all) | (apply closest_inner_init <;> simp_all) | (apply closest_outer <;> simp_all) | (apply closest_init <;> simp_all) | (apply closest_inner_exit <;> simp_all) | (grind [maxmin_abs, closest_yes, closest_no, closest_inner_init, closest_outer, closest_init, closest_inner_exit]) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, String.length_toList, List.range_succ, -List.take_append_getElem, maxmin_abs, closest_yes, closest_no, closest_inner_init, closest_outer, closest_init, closest_inner_exit] <;> grind [maxmin_abs, closest_yes, closest_no, closest_inner_init, closest_outer, closest_init, closest_inner_exit]) | nlinarith | (aesop; done)))))
+
+def loop3 (numbers : List ℚ) (j : Nat) (lo : ℚ) (hi : ℚ) (h_precond : findClosestElements_precond numbers) (h1i : ((lo ≤ hi ∧ (∃ b, b < j ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|)) ∧ 2 ≤ j ∧ j ≤ numbers.length)) (h1g : (j < numbers.length)) (i : Nat) (lo2 : ℚ) (hi2 : ℚ) (h3i : ((lo2 ≤ hi2 ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo2 = numbers[a]! ∧ hi2 = numbers[b]!) ∨ (lo2 = numbers[b]! ∧ hi2 = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi2 - lo2 ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < i → hi2 - lo2 ≤ |numbers[a]! - numbers[j]!|)) ∧ i ≤ j)) : { ρ : ℚ × ℚ // (fun (p : ℚ × ℚ) => (p.1 ≤ p.2 ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((p.1 = numbers[a]! ∧ p.2 = numbers[b]!) ∨ (p.1 = numbers[b]! ∧ p.2 = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → p.2 - p.1 ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < j → p.2 - p.1 ≤ |numbers[a]! - numbers[j]!|))) ρ } :=
+  if h3g : (i < j) then
+    match ((if h5 : (|numbers[i]! - numbers[j]!| < hi2 - lo2) then ⟨((i + 1, min numbers[i]! numbers[j]!, max numbers[i]! numbers[j]!)), by refine_auto⟩ else ⟨((i + 1, lo2, hi2)), by refine_auto⟩) : { ρ : Nat × ℚ × ℚ // (fun (i : Nat) (lo2 : ℚ) (hi2 : ℚ) => (lo2 ≤ hi2 ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((lo2 = numbers[a]! ∧ hi2 = numbers[b]!) ∨ (lo2 = numbers[b]! ∧ hi2 = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi2 - lo2 ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < i → hi2 - lo2 ≤ |numbers[a]! - numbers[j]!|)) ∧ i ≤ j) (ρ).1 (ρ).2.1 (ρ).2.2 ∧ (fun (i : Nat) (lo2 : ℚ) (hi2 : ℚ) => j - i) (ρ).1 (ρ).2.1 (ρ).2.2 < (j - i) }) with
+    | ⟨(i', lo2', hi2'), h3b⟩ => loop3 numbers j lo hi h_precond h1i h1g i' lo2' hi2' h3b.1
+  else ⟨((lo2, hi2)), by first | (have hEq : i = (j) := (by omega); subst hEq; refine_auto) | (refine_auto)⟩
+termination_by j - i
+decreasing_by
+  all_goals (try simp_wf)
+  all_goals (first | exact h3b.2 | omega)
+
+def loop1 (numbers : List ℚ) (h_precond : findClosestElements_precond numbers) (j : Nat) (lo : ℚ) (hi : ℚ) (h1i : ((lo ≤ hi ∧ (∃ b, b < j ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|)) ∧ 2 ≤ j ∧ j ≤ numbers.length)) : { ρ : ℚ × ℚ // findClosestElements_postcond numbers ρ h_precond } :=
+  if h1g : (j < numbers.length) then
+    match ((match ((loop3 numbers j lo hi h_precond h1i h1g (0) (lo) (hi) (by refine_auto)) : { p : ℚ × ℚ // (p.1 ≤ p.2 ∧ (∃ b, b < (j + 1) ∧ ∃ a, a < b ∧ ((p.1 = numbers[a]! ∧ p.2 = numbers[b]!) ∨ (p.1 = numbers[b]! ∧ p.2 = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → p.2 - p.1 ≤ |numbers[a]! - numbers[b]!|) ∧ (∀ a, a < j → p.2 - p.1 ≤ |numbers[a]! - numbers[j]!|)) }) with | ⟨p, h2⟩ => ⟨((j + 1, p.1, p.2)), by refine_auto⟩) : { ρ : Nat × ℚ × ℚ // (fun (j : Nat) (lo : ℚ) (hi : ℚ) => (lo ≤ hi ∧ (∃ b, b < j ∧ ∃ a, a < b ∧ ((lo = numbers[a]! ∧ hi = numbers[b]!) ∨ (lo = numbers[b]! ∧ hi = numbers[a]!))) ∧ (∀ b, b < j → ∀ a, a < b → hi - lo ≤ |numbers[a]! - numbers[b]!|)) ∧ 2 ≤ j ∧ j ≤ numbers.length) (ρ).1 (ρ).2.1 (ρ).2.2 ∧ (fun (j : Nat) (lo : ℚ) (hi : ℚ) => numbers.length - j) (ρ).1 (ρ).2.1 (ρ).2.2 < (numbers.length - j) }) with
+    | ⟨(j', lo', hi'), h1b⟩ => loop1 numbers h_precond j' lo' hi' h1b.1
+  else ⟨((lo, hi)), by first | (have hEq : j = (numbers.length) := (by omega); subst hEq; refine_auto) | (refine_auto)⟩
+termination_by numbers.length - j
+decreasing_by
+  all_goals (try simp_wf)
+  all_goals (first | exact h1b.2 | omega)
+
+
+set_option maxHeartbeats 1000000 in
+def findClosestElements_derived (numbers : List ℚ) (h_precond : findClosestElements_precond numbers) : { ρ : ℚ × ℚ // findClosestElements_postcond numbers ρ h_precond } :=
+  (loop1 numbers h_precond (2) (min numbers[0]! numbers[1]!) (max numbers[0]! numbers[1]!) (by refine_auto))
+
+def findClosestElements (numbers : List ℚ) (h_precond : findClosestElements_precond numbers) : ℚ × ℚ := (findClosestElements_derived numbers h_precond).val
+
+theorem findClosestElements_spec_satisfied (numbers : List ℚ) (h_precond : findClosestElements_precond numbers) :
+    findClosestElements_postcond numbers (findClosestElements numbers h_precond) h_precond := (findClosestElements_derived numbers h_precond).property
+
+#print axioms findClosestElements_spec_satisfied
+
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(1 : ℚ), (2 : ℚ), (39 / 10 : ℚ), (4 : ℚ), (5 : ℚ), (11 / 5 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((39 / 10 : ℚ), (4 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(1 : ℚ), (2 : ℚ), (39 / 10 : ℚ), (4 : ℚ), (5 : ℚ), (11 / 5 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((39 / 10 : ℚ), (4 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(1 : ℚ), (2 : ℚ), (59 / 10 : ℚ), (4 : ℚ), (5 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((5 : ℚ), (59 / 10 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(1 : ℚ), (2 : ℚ), (59 / 10 : ℚ), (4 : ℚ), (5 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((5 : ℚ), (59 / 10 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(1 : ℚ), (2 : ℚ), (3 : ℚ), (4 : ℚ), (5 : ℚ), (11 / 5 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((2 : ℚ), (11 / 5 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(1 : ℚ), (2 : ℚ), (3 : ℚ), (4 : ℚ), (5 : ℚ), (11 / 5 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((2 : ℚ), (11 / 5 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(1 : ℚ), (2 : ℚ), (3 : ℚ), (4 : ℚ), (5 : ℚ), (2 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((2 : ℚ), (2 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(1 : ℚ), (2 : ℚ), (3 : ℚ), (4 : ℚ), (5 : ℚ), (2 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((2 : ℚ), (2 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(11 / 10 : ℚ), (11 / 5 : ℚ), (31 / 10 : ℚ), (41 / 10 : ℚ), (51 / 10 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((11 / 5 : ℚ), (31 / 10 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(11 / 10 : ℚ), (11 / 5 : ℚ), (31 / 10 : ℚ), (41 / 10 : ℚ), (51 / 10 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((11 / 5 : ℚ), (31 / 10 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(3 / 2 : ℚ), (5 / 2 : ℚ), (7 / 2 : ℚ), (9 / 2 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((3 / 2 : ℚ), (5 / 2 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(3 / 2 : ℚ), (5 / 2 : ℚ), (7 / 2 : ℚ), (9 / 2 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((3 / 2 : ℚ), (5 / 2 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(13 / 10 : ℚ), (13 / 10 : ℚ), (11162204380573 / 8000000000000 : ℚ), (7 / 5 : ℚ), (9850912356383853 / 5000000000000000 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((13 / 10 : ℚ), (13 / 10 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(13 / 10 : ℚ), (13 / 10 : ℚ), (11162204380573 / 8000000000000 : ℚ), (7 / 5 : ℚ), (9850912356383853 / 5000000000000000 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((13 / 10 : ℚ), (13 / 10 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(3 / 2 : ℚ), (5 / 2 : ℚ), (22 / 5 : ℚ), (9 / 2 : ℚ), (23 / 5 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((22 / 5 : ℚ), (9 / 2 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(3 / 2 : ℚ), (5 / 2 : ℚ), (22 / 5 : ℚ), (9 / 2 : ℚ), (23 / 5 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((22 / 5 : ℚ), (9 / 2 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(1 : ℚ), (2 : ℚ), (21 / 10 : ℚ), (23 / 10 : ℚ), (12 / 5 : ℚ), (3 : ℚ), (1609054999362697 / 500000000000000 : ℚ), (4 : ℚ), (2399389616508989 / 500000000000000 : ℚ), (6 : ℚ), (7 : ℚ), (8 : ℚ), (9 : ℚ), (10 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((2 : ℚ), (21 / 10 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(1 : ℚ), (2 : ℚ), (21 / 10 : ℚ), (23 / 10 : ℚ), (12 / 5 : ℚ), (3 : ℚ), (1609054999362697 / 500000000000000 : ℚ), (4 : ℚ), (2399389616508989 / 500000000000000 : ℚ), (6 : ℚ), (7 : ℚ), (8 : ℚ), (9 : ℚ), (10 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((2 : ℚ), (21 / 10 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(23 / 10 : ℚ), (23 / 10 : ℚ), (12 / 5 : ℚ), (4 : ℚ), (4 : ℚ), (6 : ℚ), (8 : ℚ), (10 : ℚ), (14 : ℚ), (14 : ℚ), (16 : ℚ), (20 : ℚ), (20 : ℚ), (20 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((23 / 10 : ℚ), (23 / 10 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(23 / 10 : ℚ), (23 / 10 : ℚ), (12 / 5 : ℚ), (4 : ℚ), (4 : ℚ), (6 : ℚ), (8 : ℚ), (10 : ℚ), (14 : ℚ), (14 : ℚ), (16 : ℚ), (20 : ℚ), (20 : ℚ), (20 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((23 / 10 : ℚ), (23 / 10 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(1630696387753793 / 1250000000000000 : ℚ), (4 : ℚ), (13106016442415033 / 2000000000000000 : ℚ), (8 : ℚ), (8 : ℚ), (12 : ℚ), (14 : ℚ), (14 : ℚ), (18 : ℚ), (20 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((8 : ℚ), (8 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(1630696387753793 / 1250000000000000 : ℚ), (4 : ℚ), (13106016442415033 / 2000000000000000 : ℚ), (8 : ℚ), (8 : ℚ), (12 : ℚ), (14 : ℚ), (14 : ℚ), (18 : ℚ), (20 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((8 : ℚ), (8 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(4 / 5 : ℚ), (4 : ℚ), (4 : ℚ), (4 : ℚ), (6 : ℚ), (13 / 2 : ℚ), (7 : ℚ), (10 : ℚ), (14 : ℚ), (2971017225500917 / 200000000000000 : ℚ), (16 : ℚ), (16 : ℚ), (18 : ℚ), (20 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((4 : ℚ), (4 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(4 / 5 : ℚ), (4 : ℚ), (4 : ℚ), (4 : ℚ), (6 : ℚ), (13 / 2 : ℚ), (7 : ℚ), (10 : ℚ), (14 : ℚ), (2971017225500917 / 200000000000000 : ℚ), (16 : ℚ), (16 : ℚ), (18 : ℚ), (20 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((4 : ℚ), (4 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
+set_option maxHeartbeats 2000000 in
+#eval (decide (|((findClosestElements ([(2 : ℚ), (4 : ℚ), (11 / 2 : ℚ), (6 : ℚ), (8 : ℚ), (246298174358277 / 25000000000000 : ℚ), (10 : ℚ), (12 : ℚ), (12 : ℚ), (12 : ℚ), (283235953998117 / 20000000000000 : ℚ), (16 : ℚ), (18 : ℚ), (20 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).1 - (((12 : ℚ), (12 : ℚ))).1| ≤ (1 / 1000000 : ℚ)) && decide (|((findClosestElements ([(2 : ℚ), (4 : ℚ), (11 / 2 : ℚ), (6 : ℚ), (8 : ℚ), (246298174358277 / 25000000000000 : ℚ), (10 : ℚ), (12 : ℚ), (12 : ℚ), (12 : ℚ), (283235953998117 / 20000000000000 : ℚ), (16 : ℚ), (18 : ℚ), (20 : ℚ)]) (by first | native_decide | trivial | (norm_num [findClosestElements_precond]; done) | (simp [findClosestElements_precond]; done) | decide | omega))).2 - (((12 : ℚ), (12 : ℚ))).2| ≤ (1 / 1000000 : ℚ)))
