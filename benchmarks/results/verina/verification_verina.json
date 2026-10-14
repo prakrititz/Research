@@ -16,7 +16,28 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 28.6,
+  "seconds": 29.4,
+  "verified": true
+ },
+ {
+  "id": "verina_advanced_10",
+  "laws": 1,
+  "helpers": 5,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 6,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_advanced_10.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 6,
+  "seconds": 29.4,
   "verified": true
  },
  {
@@ -36,7 +57,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 28.6,
+  "seconds": 4.9,
   "verified": true
  },
  {
@@ -76,7 +97,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 5.7,
   "verified": true
  },
  {
@@ -96,7 +117,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 13,
-  "seconds": 4.9,
+  "seconds": 5.5,
   "verified": true
  },
  {
@@ -117,7 +138,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.8,
+  "seconds": 5.9,
   "verified": true
  },
  {
@@ -138,7 +159,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 5.6,
   "verified": true
  },
  {
@@ -159,7 +180,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 5.7,
   "verified": true
  },
  {
@@ -180,7 +201,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.9,
+  "seconds": 5.5,
   "verified": true
  },
  {
@@ -201,7 +222,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 5.6,
   "verified": true
  },
  {
@@ -221,7 +242,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 5.6,
   "verified": true
  },
  {
@@ -241,7 +262,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 10,
-  "seconds": 17.6,
+  "seconds": 21.6,
   "verified": true
  },
  {
@@ -262,7 +283,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 5.5,
   "verified": true
  },
  {
@@ -282,7 +303,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 5.1,
+  "seconds": 5.7,
   "verified": true
  },
  {
@@ -302,7 +323,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.3,
+  "seconds": 5.2,
   "verified": true
  },
  {
@@ -323,7 +344,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 5.3,
   "verified": true
  },
  {
@@ -343,7 +364,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 9,
-  "seconds": 4.4,
+  "seconds": 5.8,
   "verified": true
  },
  {
@@ -364,7 +385,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.5,
+  "seconds": 5.8,
   "verified": true
  },
  {
@@ -385,7 +406,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 5.9,
   "verified": true
  },
  {
@@ -405,7 +426,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.6,
+  "seconds": 5.8,
   "verified": true
  },
  {
@@ -425,7 +446,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.6,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -445,7 +466,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 5.9,
   "verified": true
  },
  {
@@ -466,7 +487,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.5,
+  "seconds": 6.1,
   "verified": true
  },
  {
@@ -486,7 +507,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 5.8,
   "verified": true
  },
  {
@@ -506,7 +527,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.4,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -526,7 +547,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 5.7,
   "verified": true
  },
  {
@@ -546,7 +567,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -566,7 +587,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -586,7 +607,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 6.1,
   "verified": true
  },
  {
@@ -606,7 +627,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 10,
-  "seconds": 4.4,
+  "seconds": 6.1,
   "verified": true
  },
  {
@@ -626,7 +647,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 6.1,
   "verified": true
  },
  {
@@ -647,7 +668,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 6.3,
   "verified": true
  },
  {
@@ -667,7 +688,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.5,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -688,7 +709,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.6,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -708,7 +729,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 5.9,
   "verified": true
  },
  {
@@ -729,7 +750,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 5.8,
   "verified": true
  },
  {
@@ -749,7 +770,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -769,7 +790,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.5,
+  "seconds": 5.9,
   "verified": true
  },
  {
@@ -790,7 +811,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 6.3,
   "verified": true
  },
  {
@@ -810,7 +831,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.5,
+  "seconds": 6.2,
   "verified": true
  },
  {
@@ -831,7 +852,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.4,
+  "seconds": 6.2,
   "verified": true
  },
  {
@@ -852,7 +873,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 6.2,
   "verified": true
  },
  {
@@ -873,7 +894,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 4,
-  "seconds": 4.6,
+  "seconds": 6.5,
   "verified": true
  },
  {
@@ -894,7 +915,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.5,
+  "seconds": 6.2,
   "verified": true
  },
  {
@@ -915,7 +936,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 6.1,
   "verified": true
  },
  {
@@ -935,7 +956,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.6,
+  "seconds": 5.9,
   "verified": true
  },
  {
@@ -956,7 +977,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.5,
+  "seconds": 6.3,
   "verified": true
  },
  {
@@ -977,7 +998,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 6.1,
   "verified": true
  },
  {
@@ -997,7 +1018,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 6.4,
   "verified": true
  },
  {
@@ -1018,7 +1039,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 9,
-  "seconds": 4.6,
+  "seconds": 6.4,
   "verified": true
  },
  {
@@ -1039,7 +1060,28 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.5,
+  "seconds": 6.5,
+  "verified": true
+ },
+ {
+  "id": "verina_advanced_58",
+  "laws": 2,
+  "helpers": 3,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_advanced_58.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 6.4,
   "verified": true
  },
  {
@@ -1060,7 +1102,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.4,
+  "seconds": 6.2,
   "verified": true
  },
  {
@@ -1081,7 +1123,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.4,
+  "seconds": 6.2,
   "verified": true
  },
  {
@@ -1102,7 +1144,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 6.2,
   "verified": true
  },
  {
@@ -1122,7 +1164,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 6.3,
   "verified": true
  },
  {
@@ -1142,7 +1184,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.6,
+  "seconds": 6.5,
   "verified": true
  },
  {
@@ -1162,7 +1204,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 11,
-  "seconds": 4.4,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -1182,7 +1224,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 6.1,
   "verified": true
  },
  {
@@ -1203,7 +1245,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 5.7,
   "verified": true
  },
  {
@@ -1224,7 +1266,28 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.8,
+  "seconds": 6.3,
+  "verified": true
+ },
+ {
+  "id": "verina_advanced_67",
+  "laws": 2,
+  "helpers": 6,
+  "complete": true,
+  "statement_regions_missing": [],
+  "tests_expected": 5,
+  "file": "/Users/goalguard/Downloads/Research/benchmarks/results/verina/verified/verina_advanced_67.lean",
+  "exit_code": 0,
+  "errors": [],
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "axioms_standard": true,
+  "sorry_warning": false,
+  "tests_true": 5,
+  "seconds": 6.7,
   "verified": true
  },
  {
@@ -1245,7 +1308,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.7,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -1265,7 +1328,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.8,
+  "seconds": 5.9,
   "verified": true
  },
  {
@@ -1286,7 +1349,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.8,
+  "seconds": 6.2,
   "verified": true
  },
  {
@@ -1307,7 +1370,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 9,
-  "seconds": 5.4,
+  "seconds": 7.0,
   "verified": true
  },
  {
@@ -1328,7 +1391,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 6.2,
+  "seconds": 8.3,
   "verified": true
  },
  {
@@ -1349,7 +1412,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.8,
+  "seconds": 6.5,
   "verified": true
  },
  {
@@ -1366,7 +1429,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -1386,7 +1449,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -1407,7 +1470,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 6.4,
   "verified": true
  },
  {
@@ -1428,7 +1491,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.4,
+  "seconds": 6.0,
   "verified": true
  },
  {
@@ -1448,7 +1511,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 7.3,
   "verified": true
  },
  {
@@ -1468,7 +1531,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 7.0,
   "verified": true
  },
  {
@@ -1489,7 +1552,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.6,
+  "seconds": 16.0,
   "verified": true
  },
  {
@@ -1510,7 +1573,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 5.0,
+  "seconds": 17.5,
   "verified": true
  },
  {
@@ -1531,7 +1594,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 17.7,
   "verified": true
  },
  {
@@ -1551,7 +1614,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 17.1,
   "verified": true
  },
  {
@@ -1572,7 +1635,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 11,
-  "seconds": 4.8,
+  "seconds": 17.8,
   "verified": true
  },
  {
@@ -1593,7 +1656,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.9,
+  "seconds": 17.3,
   "verified": true
  },
  {
@@ -1613,7 +1676,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 18.4,
   "verified": true
  },
  {
@@ -1633,7 +1696,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 17.9,
   "verified": true
  },
  {
@@ -1653,7 +1716,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 5.2,
+  "seconds": 21.5,
   "verified": true
  },
  {
@@ -1674,7 +1737,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.6,
+  "seconds": 19.6,
   "verified": true
  },
  {
@@ -1695,7 +1758,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.6,
+  "seconds": 18.2,
   "verified": true
  },
  {
@@ -1716,7 +1779,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 17.3,
   "verified": true
  },
  {
@@ -1737,7 +1800,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 18.9,
   "verified": true
  },
  {
@@ -1757,7 +1820,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 17.7,
   "verified": true
  },
  {
@@ -1778,7 +1841,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.8,
+  "seconds": 21.2,
   "verified": true
  },
  {
@@ -1798,7 +1861,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.4,
+  "seconds": 19.1,
   "verified": true
  },
  {
@@ -1818,7 +1881,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 18.1,
   "verified": true
  },
  {
@@ -1839,7 +1902,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 18.1,
   "verified": true
  },
  {
@@ -1860,7 +1923,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 9,
-  "seconds": 4.4,
+  "seconds": 18.3,
   "verified": true
  },
  {
@@ -1881,7 +1944,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.6,
+  "seconds": 18.4,
   "verified": true
  },
  {
@@ -1902,7 +1965,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.8,
+  "seconds": 20.1,
   "verified": true
  },
  {
@@ -1923,7 +1986,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 5.0,
+  "seconds": 20.4,
   "verified": true
  },
  {
@@ -1944,7 +2007,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.4,
+  "seconds": 18.1,
   "verified": true
  },
  {
@@ -1965,7 +2028,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.6,
+  "seconds": 18.4,
   "verified": true
  },
  {
@@ -1986,7 +2049,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.6,
+  "seconds": 19.7,
   "verified": true
  },
  {
@@ -2006,7 +2069,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.5,
+  "seconds": 18.4,
   "verified": true
  },
  {
@@ -2027,7 +2090,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.5,
+  "seconds": 19.6,
   "verified": true
  },
  {
@@ -2048,7 +2111,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.7,
+  "seconds": 18.7,
   "verified": true
  },
  {
@@ -2069,7 +2132,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 21.2,
   "verified": true
  },
  {
@@ -2090,7 +2153,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 19.5,
   "verified": true
  },
  {
@@ -2111,7 +2174,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.7,
+  "seconds": 19.1,
   "verified": true
  },
  {
@@ -2132,7 +2195,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.7,
+  "seconds": 17.7,
   "verified": true
  },
  {
@@ -2153,7 +2216,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 4,
-  "seconds": 4.7,
+  "seconds": 20.5,
   "verified": true
  },
  {
@@ -2174,7 +2237,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 12,
-  "seconds": 110.7,
+  "seconds": 19.8,
   "verified": true
  },
  {
@@ -2195,7 +2258,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 3,
-  "seconds": 110.7,
+  "seconds": 19.7,
   "verified": true
  },
  {
@@ -2216,7 +2279,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 5.4,
+  "seconds": 21.0,
   "verified": true
  },
  {
@@ -2237,7 +2300,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 4,
-  "seconds": 4.9,
+  "seconds": 19.2,
   "verified": true
  },
  {
@@ -2258,7 +2321,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 5.0,
+  "seconds": 19.7,
   "verified": true
  },
  {
@@ -2279,7 +2342,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.7,
+  "seconds": 19.5,
   "verified": true
  },
  {
@@ -2300,7 +2363,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 18.2,
   "verified": true
  },
  {
@@ -2321,7 +2384,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 4,
-  "seconds": 5.3,
+  "seconds": 20.8,
   "verified": true
  },
  {
@@ -2342,7 +2405,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.5,
+  "seconds": 18.1,
   "verified": true
  },
  {
@@ -2363,7 +2426,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 6.4,
+  "seconds": 27.5,
   "verified": true
  },
  {
@@ -2384,7 +2447,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 4,
-  "seconds": 4.3,
+  "seconds": 17.8,
   "verified": true
  },
  {
@@ -2404,7 +2467,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 10,
-  "seconds": 4.4,
+  "seconds": 17.7,
   "verified": true
  },
  {
@@ -2425,7 +2488,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 5.2,
+  "seconds": 21.7,
   "verified": true
  },
  {
@@ -2446,7 +2509,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.5,
+  "seconds": 18.6,
   "verified": true
  },
  {
@@ -2467,7 +2530,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.3,
+  "seconds": 17.8,
   "verified": true
  },
  {
@@ -2488,7 +2551,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 5.1,
+  "seconds": 20.8,
   "verified": true
  },
  {
@@ -2509,7 +2572,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.7,
+  "seconds": 19.1,
   "verified": true
  },
  {
@@ -2528,7 +2591,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 3,
-  "seconds": 4.3,
+  "seconds": 17.7,
   "verified": true
  },
  {
@@ -2549,7 +2612,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.6,
+  "seconds": 19.2,
   "verified": true
  },
  {
@@ -2570,7 +2633,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 4,
-  "seconds": 4.4,
+  "seconds": 18.4,
   "verified": true
  },
  {
@@ -2591,7 +2654,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 10,
-  "seconds": 4.6,
+  "seconds": 18.0,
   "verified": true
  },
  {
@@ -2612,7 +2675,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 6,
-  "seconds": 4.7,
+  "seconds": 17.7,
   "verified": true
  },
  {
@@ -2632,7 +2695,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.5,
+  "seconds": 17.3,
   "verified": true
  },
  {
@@ -2652,7 +2715,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.3,
+  "seconds": 17.5,
   "verified": true
  },
  {
@@ -2673,7 +2736,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 17.7,
   "verified": true
  },
  {
@@ -2694,7 +2757,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.3,
+  "seconds": 17.6,
   "verified": true
  },
  {
@@ -2715,7 +2778,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 5.5,
+  "seconds": 22.4,
   "verified": true
  },
  {
@@ -2736,7 +2799,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 2,
-  "seconds": 4.4,
+  "seconds": 17.9,
   "verified": true
  },
  {
@@ -2756,7 +2819,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 19.6,
   "verified": true
  },
  {
@@ -2777,7 +2840,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 18.6,
   "verified": true
  },
  {
@@ -2797,7 +2860,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 18.4,
   "verified": true
  },
  {
@@ -2818,7 +2881,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 9,
-  "seconds": 4.4,
+  "seconds": 17.9,
   "verified": true
  },
  {
@@ -2839,7 +2902,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 4.7,
+  "seconds": 20.1,
   "verified": true
  },
  {
@@ -2860,7 +2923,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 18.3,
   "verified": true
  },
  {
@@ -2881,7 +2944,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 20.4,
   "verified": true
  },
  {
@@ -2902,7 +2965,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 17.9,
   "verified": true
  },
  {
@@ -2923,7 +2986,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.8,
+  "seconds": 18.4,
   "verified": true
  },
  {
@@ -2944,7 +3007,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.6,
+  "seconds": 18.0,
   "verified": true
  },
  {
@@ -2965,7 +3028,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 18.5,
   "verified": true
  },
  {
@@ -2986,7 +3049,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 17.9,
   "verified": true
  },
  {
@@ -3007,7 +3070,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 7,
-  "seconds": 5.2,
+  "seconds": 20.7,
   "verified": true
  },
  {
@@ -3028,7 +3091,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.8,
+  "seconds": 18.3,
   "verified": true
  },
  {
@@ -3049,7 +3112,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.6,
+  "seconds": 18.8,
   "verified": true
  },
  {
@@ -3070,7 +3133,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 17.6,
   "verified": true
  },
  {
@@ -3091,7 +3154,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.8,
+  "seconds": 19.8,
   "verified": true
  },
  {
@@ -3111,7 +3174,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.6,
+  "seconds": 19.2,
   "verified": true
  },
  {
@@ -3132,7 +3195,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 19.9,
   "verified": true
  },
  {
@@ -3152,7 +3215,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 18.9,
   "verified": true
  },
  {
@@ -3172,7 +3235,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 4.7,
+  "seconds": 18.9,
   "verified": true
  },
  {
@@ -3193,7 +3256,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 18.0,
   "verified": true
  },
  {
@@ -3214,7 +3277,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 19.8,
   "verified": true
  },
  {
@@ -3235,7 +3298,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 20.0,
   "verified": true
  },
  {
@@ -3256,7 +3319,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 20.1,
   "verified": true
  },
  {
@@ -3277,7 +3340,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.8,
+  "seconds": 19.6,
   "verified": true
  },
  {
@@ -3298,7 +3361,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 5.0,
+  "seconds": 19.8,
   "verified": true
  },
  {
@@ -3319,7 +3382,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 19.4,
   "verified": true
  },
  {
@@ -3340,7 +3403,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 5.1,
+  "seconds": 19.8,
   "verified": true
  },
  {
@@ -3361,7 +3424,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 5.2,
+  "seconds": 20.4,
   "verified": true
  },
  {
@@ -3382,7 +3445,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 8,
-  "seconds": 5.0,
+  "seconds": 20.0,
   "verified": true
  },
  {
@@ -3403,7 +3466,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 5.2,
+  "seconds": 20.7,
   "verified": true
  },
  {
@@ -3420,7 +3483,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 18.4,
   "verified": true
  },
  {
@@ -3437,7 +3500,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.6,
+  "seconds": 18.0,
   "verified": true
  },
  {
@@ -3454,7 +3517,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 18.9,
   "verified": true
  },
  {
@@ -3474,7 +3537,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.4,
+  "seconds": 17.6,
   "verified": true
  },
  {
@@ -3495,7 +3558,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 5.1,
+  "seconds": 20.3,
   "verified": true
  },
  {
@@ -3512,7 +3575,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.9,
+  "seconds": 19.4,
   "verified": true
  },
  {
@@ -3533,7 +3596,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.7,
+  "seconds": 19.4,
   "verified": true
  },
  {
@@ -3553,7 +3616,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.5,
+  "seconds": 18.6,
   "verified": true
  },
  {
@@ -3573,7 +3636,7 @@
   "axioms_standard": true,
   "sorry_warning": false,
   "tests_true": 5,
-  "seconds": 4.2,
+  "seconds": 16.6,
   "verified": true
  }
 ]

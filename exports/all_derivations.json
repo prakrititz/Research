@@ -4649,6 +4649,38 @@
     }
    ]
   },
+  "verina_advanced_10": {
+   "law": "term",
+   "expr": "(primes.map (fun p => (p, padicValNat p n)))",
+   "children": [],
+   "lemmas": [
+    {
+     "name": "rpf_eq",
+     "statement": "∀ (p : Nat), p.Prime → ∀ (n : Nat), 0 < n → removePrimeFactor n p = n / p ^ (padicValNat p n)",
+     "proof": "by\n  intro p hp\n  intro n\n  induction n using Nat.strong_induction_on with\n  | _ n ih =>\n    intro hn\n    rw [removePrimeFactor]\n    have hp1 : p > 1 := hp.one_lt\n    rw [dif_pos ⟨hp1, hn⟩]\n    haveI := Fact.mk hp\n    by_cases hd : n % p = 0\n    · rw [if_pos hd]\n      have hdv : p ∣ n := Nat.dvd_of_mod_eq_zero hd\n      have hlt : n / p < n := Nat.div_lt_self hn hp1\n      have hpos : 0 < n / p := Nat.div_pos (Nat.le_of_dvd hn hdv) (by omega)\n      rw [ih (n / p) hlt hpos]\n      have hv : padicValNat p n = padicValNat p (n / p) + 1 := by\n        have h1 : n = p * (n / p) := (Nat.mul_div_cancel' hdv).symm\n        conv_lhs => rw [h1]\n        rw [padicValNat.mul (by omega) (by omega), padicValNat_self]; omega\n      rw [hv, pow_succ', Nat.div_div_eq_div_mul]\n    · rw [if_neg hd]\n      have : padicValNat p n = 0 := padicValNat.eq_zero_of_not_dvd (by\n        intro h; exact hd (Nat.mod_eq_zero_of_dvd h))\n      simp [this]\n"
+    },
+    {
+     "name": "rpf_dvd",
+     "statement": "∀ (p : Nat), p.Prime → ∀ (n : Nat), 0 < n → p ^ padicValNat p n * removePrimeFactor n p = n",
+     "proof": "by\n  intro p hp n hn\n  haveI := Fact.mk hp\n  rw [rpf_eq p hp n hn]\n  exact Nat.mul_div_cancel' pow_padicValNat_dvd\n"
+    },
+    {
+     "name": "fold_mul",
+     "statement": "∀ (l : List (Nat × Nat)) (a : Nat), l.foldl (fun acc (x : Nat × Nat) => acc * x.1 ^ x.2) a = a * l.foldl (fun acc (x : Nat × Nat) => acc * x.1 ^ x.2) 1",
+     "proof": "by\n  intro l\n  induction l with\n  | nil => intro a; simp\n  | cons x t ih => intro a; simp only [List.foldl_cons]; rw [ih (a * x.1 ^ x.2), ih (1 * x.1 ^ x.2)]; ring\n"
+    },
+    {
+     "name": "fe_main",
+     "statement": "∀ (ps : List Nat) (n : Nat), 0 < n → (∀ p ∈ ps, p.Prime) → ps.Nodup → ps.foldl removePrimeFactor n = 1 → n = (ps.map (fun p => (p, padicValNat p n))).foldl (fun acc (x : Nat × Nat) => acc * x.1 ^ x.2) 1",
+     "proof": "by\n  intro ps\n  induction ps with\n  | nil => intro n hn _ _ h; simp at h ⊢; exact h\n  | cons p qs ih =>\n    intro n hn hprime hnd h\n    have hp : p.Prime := hprime p List.mem_cons_self\n    have hqs : ∀ q ∈ qs, q.Prime := fun q hq => hprime q (List.mem_cons_of_mem p hq)\n    have hnd' := List.nodup_cons.mp hnd\n    haveI := Fact.mk hp\n    have hdiv := rpf_dvd p hp n hn\n    have hn' : 0 < removePrimeFactor n p := by\n      rcases Nat.eq_zero_or_pos (removePrimeFactor n p) with h0 | h0\n      · rw [h0] at hdiv; omega\n      · exact h0\n    have hfold : qs.foldl removePrimeFactor (removePrimeFactor n p) = 1 := by simpa [List.foldl_cons] using h\n    have h1 := ih (removePrimeFactor n p) hn' hqs hnd'.2 hfold\n    have hval : ∀ q ∈ qs, padicValNat q (removePrimeFactor n p) = padicValNat q n := by\n      intro q hq\n      haveI := Fact.mk (hqs q hq)\n      have hqp : q ≠ p := fun e => hnd'.1 (e ▸ hq)\n      have : padicValNat q n = padicValNat q (p ^ padicValNat p n) + padicValNat q (removePrimeFactor n p) := by\n        conv_lhs => rw [← hdiv]\n        exact padicValNat.mul (pow_ne_zero _ hp.ne_zero) (by omega)\n      rw [this, padicValNat.pow p (padicValNat p n), padicValNat_primes hqp]; simp\n    have hmap : (qs.map (fun q => (q, padicValNat q n))) = (qs.map (fun q => (q, padicValNat q (removePrimeFactor n p)))) :=\n      List.map_congr_left (fun q hq => by rw [hval q hq])\n    simp only [List.map_cons, List.foldl_cons]\n    rw [hmap, fold_mul, ← h1]\n    simp only [one_mul]\n    exact hdiv.symm\n"
+    },
+    {
+     "name": "exps10",
+     "statement": "∀ (n : Nat) (primes : List Nat) (h : findExponents_precond n primes), findExponents_postcond n primes (primes.map (fun p => (p, padicValNat p n))) h",
+     "proof": "by intro n primes h\n  obtain ⟨hn, _, hprime, hnd, hrem⟩ := h\n  unfold findExponents_postcond\n  refine ⟨?_, ?_, ?_⟩\n  · exact fe_main primes n hn (fun p hp => by simpa using List.all_eq_true.mp hprime p hp) hnd hrem\n  · rw [List.all_eq_true]; intro x hx\n    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hx\n    simpa using hp\n  · rw [List.all_eq_true]; intro p hp\n    rw [List.any_eq_true]\n    exact ⟨(p, padicValNat p n), List.mem_map.mpr ⟨p, hp, rfl⟩, by simp⟩"
+    }
+   ]
+  },
   "verina_advanced_11": {
    "law": "term",
    "expr": "(lst.find? (fun x => decide ((lst.filter (fun y => y = x)).length > lst.length / 2))).getD (-1)",
@@ -5509,6 +5541,51 @@
     }
    ]
   },
+  "verina_advanced_58": {
+   "law": "loop",
+   "state": [
+    [
+     "x",
+     "Nat"
+    ],
+    [
+     "c",
+     "Nat"
+    ]
+   ],
+   "init": [
+    "0",
+    "0"
+   ],
+   "invariant": "x ≤ 2 ^ (n - 1) ∧ c = ((List.range x).filter (fun i => isUgly i)).length ∧ c < n",
+   "guard": "x < 2 ^ (n - 1) ∧ ¬ (isUgly x = true ∧ c + 1 = n)",
+   "variant": "2 ^ (n - 1) - x",
+   "result": "x",
+   "children": [
+    {
+     "law": "term",
+     "expr": "(x + 1, if isUgly x = true then c + 1 else c)",
+     "children": []
+    }
+   ],
+   "lemmas": [
+    {
+     "name": "step58",
+     "statement": "∀ (n x c : Nat), (x ≤ 2 ^ (n - 1) ∧ c = ((List.range x).filter (fun i => isUgly i)).length ∧ c < n) → (x < 2 ^ (n - 1) ∧ ¬ (isUgly x = true ∧ c + 1 = n)) → (x + 1 ≤ 2 ^ (n - 1) ∧ (if isUgly x = true then c + 1 else c) = ((List.range (x + 1)).filter (fun i => isUgly i)).length ∧ (if isUgly x = true then c + 1 else c) < n)",
+     "proof": "by\n  intro n x c hinv hg\n  have count_succ : ∀ (p : Nat → Bool) (x : Nat), ((List.range (x + 1)).filter p).length = ((List.range x).filter p).length + (if p x = true then 1 else 0) := by\n    intro p x\n    rw [List.range_succ, List.filter_append, List.length_append]\n    by_cases h : p x = true <;> simp [h]\n  obtain ⟨hx, hc, hlt⟩ := hinv\n  obtain ⟨hxlt, hg⟩ := hg\n  have hcs := count_succ (fun i => isUgly i) x\n  refine ⟨by omega, ?_, ?_⟩\n  · rw [hcs]\n    by_cases hu : isUgly x = true\n    · simp [hu, hc]\n    · simp [hu, hc]\n  · by_cases hu : isUgly x = true\n    · rw [if_pos hu]\n      have : c + 1 ≠ n := fun e => hg ⟨hu, e⟩\n      omega\n    · rw [if_neg hu]; exact hlt\n"
+    },
+    {
+     "name": "init58",
+     "statement": "∀ (n : Nat), nthUglyNumber_precond n → (0 ≤ 2 ^ (n - 1) ∧ 0 = ((List.range 0).filter (fun i => isUgly i)).length ∧ 0 < n)",
+     "proof": "by intro n hn\n  exact ⟨Nat.zero_le _, by simp, hn⟩"
+    },
+    {
+     "name": "exit58",
+     "statement": "∀ (n : Nat) (h : nthUglyNumber_precond n) (x c : Nat), (x ≤ 2 ^ (n - 1) ∧ c = ((List.range x).filter (fun i => isUgly i)).length ∧ c < n) → ¬ (x < 2 ^ (n - 1) ∧ ¬ (isUgly x = true ∧ c + 1 = n)) → nthUglyNumber_postcond n x h",
+     "proof": "by\n  intro n h x c hinv hng\n  have dO_one : ∀ (p : Nat), divideOut 1 p = 1 := by\n    intro p\n    rw [divideOut]\n    split_ifs with h\n    · obtain ⟨h1, _, h3⟩ := h\n      rw [Nat.mod_eq_of_lt h1] at h3; omega\n    · rfl\n  have dO_pow2 : ∀ (k : Nat), divideOut (2 ^ k) 2 = 1 := by\n    intro k\n    induction k with\n    | zero => simpa using dO_one 2\n    | succ k ih =>\n      rw [divideOut]\n      have hc : 2 > 1 ∧ 2 ^ (k + 1) > 0 ∧ 2 ^ (k + 1) % 2 = 0 := by\n        refine ⟨by omega, by positivity, ?_⟩\n        rw [pow_succ]; simp\n      rw [dif_pos hc]\n      have : 2 ^ (k + 1) / 2 = 2 ^ k := by rw [pow_succ]; simp\n      show divideOut (2 ^ (k + 1) / 2) 2 = 1\n      rw [this]; exact ih\n  have ugly_pow2 : ∀ (k : Nat), isUgly (2 ^ k) = true := by\n    intro k\n    unfold isUgly\n    have hne : 2 ^ k ≠ 0 := by positivity\n    rw [if_neg hne]\n    simp only [dO_pow2, dO_one]\n    decide\n  have count_pow2 : ∀ (m : Nat), m ≤ ((List.range (2 ^ m)).filter (fun i => isUgly i)).length := by\n    intro m\n    have hsub : (List.range m).map (fun k => 2 ^ k) ⊆ (List.range (2 ^ m)).filter (fun i => isUgly i) := by\n      intro x hx\n      obtain ⟨k, hk, rfl⟩ := List.mem_map.mp hx\n      refine List.mem_filter.mpr ⟨List.mem_range.mpr ?_, by simpa using ugly_pow2 k⟩\n      exact Nat.pow_lt_pow_right (by omega) (List.mem_range.mp hk)\n    have hnd : ((List.range m).map (fun k => 2 ^ k)).Nodup :=\n      List.Nodup.map (Nat.pow_right_injective (le_refl 2)) List.nodup_range\n    have := (hnd.subperm hsub).length_le\n    simpa using this\n  obtain ⟨hx, hc, hlt⟩ := hinv\n  have hg : isUgly x = true ∧ c + 1 = n := by\n    by_cases hlt' : x < 2 ^ (n - 1)\n    · by_contra hcon\n      exact hng ⟨hlt', hcon⟩\n    · have hxe : x = 2 ^ (n - 1) := by omega\n      have h1 := count_pow2 (n - 1)\n      rw [← hxe] at h1\n      refine ⟨by rw [hxe]; exact ugly_pow2 _, ?_⟩\n      omega\n  unfold nthUglyNumber_postcond\n  exact ⟨hg.1, by rw [← hc]; omega⟩\n"
+    }
+   ]
+  },
   "verina_advanced_59": {
    "law": "term",
    "expr": "decide ((s.data.filter (fun c => c.isAlpha || c.isDigit) |>.map Char.toLower) = (s.data.filter (fun c => c.isAlpha || c.isDigit) |>.map Char.toLower).reverse)",
@@ -5584,6 +5661,66 @@
      "name": "rev66",
      "statement": "∀ (words_str : String) (h : reverseWords_precond words_str), reverseWords_postcond words_str (String.intercalate \" \" (((words_str.splitOn \" \").filter (fun w => w ≠ \"\")).reverse)) h",
      "proof": "by intro words_str h\n  unfold reverseWords_postcond\n  exact ⟨_, rfl, rfl⟩"
+    }
+   ]
+  },
+  "verina_advanced_67": {
+   "law": "loop",
+   "state": [
+    [
+     "i",
+     "Nat"
+    ],
+    [
+     "acc",
+     "List (Char × Nat)"
+    ]
+   ],
+   "init": [
+    "0",
+    "[]"
+   ],
+   "invariant": "i ≤ s.toList.length ∧ decodeRLE acc.reverse = String.mk (s.toList.take i) ∧ (∀ p ∈ acc, 0 < p.2) ∧ List.IsChain (fun a b => a.1 ≠ b.1) acc",
+   "guard": "i < s.toList.length",
+   "variant": "s.toList.length - i",
+   "result": "acc.reverse",
+   "children": [
+    {
+     "law": "term",
+     "expr": "(i + 1, (if (acc.head?.map Prod.fst) = some s.toList[i]! then (s.toList[i]!, (acc.headD (s.toList[i]!, 0)).2 + 1) :: acc.tail else (s.toList[i]!, 1) :: acc))",
+     "children": []
+    }
+   ],
+   "lemmas": [
+    {
+     "name": "str_mk_append",
+     "statement": "∀ (a b : List Char), String.mk (a ++ b) = String.mk a ++ String.mk b",
+     "proof": "by\n  intro a b\n  apply String.ext\n  rw [String.toList_append]\n  simp only [Refine.string_toList_mk]\n"
+    },
+    {
+     "name": "dec_append",
+     "statement": "∀ (xs ys : List (Char × Nat)), decodeRLE (xs ++ ys) = decodeRLE xs ++ decodeRLE ys",
+     "proof": "by\n  intro xs ys\n  induction xs with\n  | nil => simp [decodeRLE]\n  | cons p t ih =>\n    obtain ⟨c, n⟩ := p\n    simp only [List.cons_append, decodeRLE, ih]\n    rw [String.append_assoc]\n"
+    },
+    {
+     "name": "dec_single",
+     "statement": "∀ (c : Char) (n : Nat), decodeRLE [(c, n)] = String.mk (List.replicate n c)",
+     "proof": "by\n  intro c n\n  simp [decodeRLE]\n"
+    },
+    {
+     "name": "dec_rev_cons",
+     "statement": "∀ (c : Char) (n : Nat) (rest : List (Char × Nat)), decodeRLE ((c, n) :: rest).reverse = decodeRLE rest.reverse ++ String.mk (List.replicate n c)",
+     "proof": "by\n  intro c n rest\n  rw [List.reverse_cons, dec_append, dec_single]\n"
+    },
+    {
+     "name": "rle_step2",
+     "statement": "∀ (cs : List Char) (i : Nat) (acc : List (Char × Nat)), i < cs.length → (i ≤ cs.length ∧ decodeRLE acc.reverse = String.mk (cs.take i) ∧ (∀ p ∈ acc, 0 < p.2) ∧ List.IsChain (fun a b => a.1 ≠ b.1) acc) → (i + 1 ≤ cs.length ∧ decodeRLE (if (acc.head?.map Prod.fst) = some cs[i]! then (cs[i]!, (acc.headD (cs[i]!, 0)).2 + 1) :: acc.tail else (cs[i]!, 1) :: acc).reverse = String.mk (cs.take (i + 1)) ∧ (∀ p ∈ (if (acc.head?.map Prod.fst) = some cs[i]! then (cs[i]!, (acc.headD (cs[i]!, 0)).2 + 1) :: acc.tail else (cs[i]!, 1) :: acc), 0 < p.2) ∧ List.IsChain (fun a b => a.1 ≠ b.1) (if (acc.head?.map Prod.fst) = some cs[i]! then (cs[i]!, (acc.headD (cs[i]!, 0)).2 + 1) :: acc.tail else (cs[i]!, 1) :: acc))",
+     "proof": "by\n  intro cs i acc hi hinv\n  obtain ⟨_, hdec, hpos, hch⟩ := hinv\n  have htake : String.mk (cs.take (i + 1)) = String.mk (cs.take i) ++ String.mk [cs[i]!] := by\n    rw [Refine.take_succ_bang cs i hi, str_mk_append]\n  refine ⟨by omega, ?_⟩\n  rw [htake, ← hdec]\n  generalize cs[i]! = c\n  cases acc with\n  | nil =>\n    simp [decodeRLE]\n  | cons p rest =>\n    obtain ⟨c', n⟩ := p\n    split_ifs with h\n    · have hc : c' = c := by simpa using h\n      subst hc\n      simp only [List.headD_cons, List.tail_cons]\n      refine ⟨?_, ?_, ?_⟩\n      · rw [dec_rev_cons, dec_rev_cons, List.replicate_succ', str_mk_append, String.append_assoc]\n      · intro q hq\n        rcases List.mem_cons.mp hq with rfl | hq'\n        · simp\n        · exact hpos q (List.mem_cons_of_mem _ hq')\n      · cases rest with\n        | nil => simp\n        | cons r rs =>\n          rw [List.isChain_cons_cons] at hch ⊢\n          exact hch\n    · have hc : c' ≠ c := fun e => h (by simp [e])\n      refine ⟨?_, ?_, ?_⟩\n      · rw [dec_rev_cons, dec_rev_cons]; simp [List.replicate]\n      · intro q hq\n        rcases List.mem_cons.mp hq with rfl | hq'\n        · simp\n        · exact hpos q hq'\n      · rw [List.isChain_cons_cons]\n        exact ⟨fun e => hc e.symm, hch⟩\n"
+    },
+    {
+     "name": "exit67",
+     "statement": "∀ (s : String) (h : runLengthEncode_precond s) (i : Nat) (acc : List (Char × Nat)), (i ≤ s.toList.length ∧ decodeRLE acc.reverse = String.mk (s.toList.take i) ∧ (∀ p ∈ acc, 0 < p.2) ∧ List.IsChain (fun a b => a.1 ≠ b.1) acc) → ¬ i < s.toList.length → runLengthEncode_postcond s acc.reverse h",
+     "proof": "by\n  intro s h i acc hinv hn\n  obtain ⟨hi, hdec, hpos, hch⟩ := hinv\n  unfold runLengthEncode_postcond\n  have hi' : i = s.toList.length := by omega\n  subst hi'\n  rw [List.take_of_length_le (le_refl _)] at hdec\n  refine ⟨?_, ?_, ?_⟩\n  · intro p hp\n    exact hpos p (List.mem_reverse.mp hp)\n  · intro k hk\n    have hchr : List.IsChain (fun a b => a.1 ≠ b.1) acc.reverse := by\n      rw [List.isChain_reverse]\n      refine hch.imp ?_\n      intro a b h e\n      exact h e.symm\n    have hk' : k + 1 < acc.reverse.length := by omega\n    have := List.isChain_iff_getElem.mp hchr k hk'\n    rw [getElem!_pos acc.reverse k (by omega), getElem!_pos acc.reverse (k + 1) hk']\n    exact this\n  · rw [hdec]\n    apply String.ext\n    simp only [Refine.string_toList_mk]\n"
     }
    ]
   },

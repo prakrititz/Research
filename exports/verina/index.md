@@ -3,7 +3,7 @@
 | task | kind | laws | lemmas | certified | verified independently | note |
 |---|---|---|---|---|---|---|
 | [verina_advanced_1](verina_advanced_1/) | restate | 1 | 4 | yes | yes |  |
-| [verina_advanced_10](verina_advanced_10/) | - | - | - | no | no | not closed: needs padicValNat/factorisation lemmas against the task's well-founded removePrimeFactor (plan in Reading Material/27, section 7) |
+| [verina_advanced_10](verina_advanced_10/) | restate | 1 | 5 | yes | yes |  |
 | [verina_advanced_11](verina_advanced_11/) | restate | 1 | 2 | yes | yes |  |
 | [verina_advanced_12](verina_advanced_12/) | restate | 1 | 2 | yes | yes |  |
 | [verina_advanced_13](verina_advanced_13/) | restate | 1 | 3 | yes | yes |  |
@@ -43,7 +43,7 @@
 | [verina_advanced_44](verina_advanced_44/) | restate | 3 | 2 | yes | yes |  |
 | [verina_advanced_45](verina_advanced_45/) | restate | 3 | 2 | yes | yes |  |
 | [verina_advanced_46](verina_advanced_46/) | restate | 1 | 1 | yes | yes |  |
-| [verina_advanced_47](verina_advanced_47/) | - | - | - | no | no | not closed: needs the sort-and-merge invariant for four conjuncts, including 'no spurious merge' (plan in Reading Material/27, section 7) |
+| [verina_advanced_47](verina_advanced_47/) | - | - | - | no | no | not closed: the sort-and-merge algorithm needs five coupled invariants (separation, coverage, bounds, 'no spurious merge' with a chain witness, and a bound on every earlier end); see Reading Material/27, section 7 |
 | [verina_advanced_48](verina_advanced_48/) | restate | 1 | 1 | yes | yes |  |
 | [verina_advanced_49](verina_advanced_49/) | restate | 1 | 1 | yes | yes |  |
 | [verina_advanced_5](verina_advanced_5/) | restate | 1 | 5 | yes | yes |  |
@@ -55,7 +55,7 @@
 | [verina_advanced_55](verina_advanced_55/) | restate | 1 | 2 | yes | yes |  |
 | [verina_advanced_56](verina_advanced_56/) | restate | 1 | 3 | yes | yes |  |
 | [verina_advanced_57](verina_advanced_57/) | restate | 1 | 2 | yes | yes |  |
-| [verina_advanced_58](verina_advanced_58/) | - | - | - | no | no | not closed: the search loop needs a bound for the n-th ugly number (plan in Reading Material/27, section 7) |
+| [verina_advanced_58](verina_advanced_58/) | loop | 2 | 3 | yes | yes |  |
 | [verina_advanced_59](verina_advanced_59/) | restate | 1 | - | yes | yes |  |
 | [verina_advanced_6](verina_advanced_6/) | restate | 1 | - | yes | yes |  |
 | [verina_advanced_60](verina_advanced_60/) | restate | 1 | - | yes | yes |  |
@@ -65,7 +65,7 @@
 | [verina_advanced_64](verina_advanced_64/) | restate | 1 | 1 | yes | yes |  |
 | [verina_advanced_65](verina_advanced_65/) | restate | 1 | - | yes | yes |  |
 | [verina_advanced_66](verina_advanced_66/) | restate | 1 | 1 | yes | yes |  |
-| [verina_advanced_67](verina_advanced_67/) | - | - | - | no | no | not closed: needs decode-after-append lemmas for the run-length stack (plan in Reading Material/27, section 7) |
+| [verina_advanced_67](verina_advanced_67/) | loop | 2 | 6 | yes | yes |  |
 | [verina_advanced_68](verina_advanced_68/) | - | - | - | no | no | the specification does not elaborate on Lean 4.34.1 (`c.isDigit` with `c`'s type not yet known) |
 | [verina_advanced_69](verina_advanced_69/) | loop | 2 | - | yes | yes |  |
 | [verina_advanced_7](verina_advanced_7/) | restate | 1 | - | yes | yes |  |
@@ -125,7 +125,7 @@
 | [verina_basic_37](verina_basic_37/) | loop | 2 | - | yes | yes |  |
 | [verina_basic_38](verina_basic_38/) | loop | 2 | 2 | yes | yes |  |
 | [verina_basic_39](verina_basic_39/) | restate | 3 | 1 | yes | yes |  |
-| [verina_basic_4](verina_basic_4/) | restate | 1 | 1 | no | yes |  |
+| [verina_basic_4](verina_basic_4/) | restate | 1 | 1 | yes | yes |  |
 | [verina_basic_40](verina_basic_40/) | loop | 5 | 2 | yes | yes |  |
 | [verina_basic_41](verina_basic_41/) | loop | 2 | 2 | yes | yes |  |
 | [verina_basic_42](verina_basic_42/) | restate | 1 | - | yes | yes |  |

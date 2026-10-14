@@ -8,16 +8,16 @@ Plain-file copy of the Lean specifications and the hand-written refinement deriv
 |---|---|---|---|---|
 | humaneval | 164 | 159 | 159 | 159 |
 | classic | 5 | 5 | 5 | 5 |
-| verina | 189 | 174 | 173 | 174 |
+| verina | 189 | 177 | 177 | 177 |
 
 Kinds of derivation (what the derivation actually contains):
 
 * **humaneval**: definitional 3, loop 87, restate 69
 * **classic**: loop 4, restate 1
-* **verina**: loop 63, restate 111
+* **verina**: loop 65, restate 112
 
 * `loop`: an invariant-based loop (the algorithmic content);
-* `restate`: one `term`/`cases` step for a specification that is already decidable (the derivation shows that the task is reachable and that the two readings agree; nothing was searched);
+* `restate`: no loop; `term`/`cases`/`bind` steps with helper lemmas. Either the specification is already a decidable check (the term is that check), or it enumerates its own search space (all subsequences, all pairs, ...) and the derivation is the brute-force search over that space plus a lemma that the extremum is a member and a bound. These programs are exponential on purpose and say nothing about an efficient algorithm;
 * `definitional`: the specification is itself a recursive definition and the answer is that definition.
 
 ## How to read one task
@@ -35,6 +35,10 @@ Kinds of derivation (what the derivation actually contains):
 ## What the guarantee is
 
 A derivation is *certified* when the whole term type-checks in Lean, `#print axioms` lists only `propext`, `Classical.choice` and `Quot.sound`, and the program passes the task's tests. It is *independently verified* when the generated file also compiles in a fresh `lake env lean` process with the dataset's own precondition and postcondition text (`benchmarks/verify_derivations.py`). The specification itself is checked against test data only (`benchmarks/lean_eval.py validate`): it accepts the expected outputs and rejects the wrong ones; that is evidence that it says what the English says, not a proof of it.
+
+## Mutation testing
+
+Each derivation was mutated (a number +1, `<` against `≤`, `+` against `-`, ...; at most 3 mutants each) and given back to the engine: Verina 350 mutants, 96.0% rejected; HumanEval 378 mutants, 97.1% rejected. Every survivor was certified and passed all tests (an equivalent mutant or a boundary the specification allows); none was accepted and failed a test. Raw rows: `benchmarks/results/<dataset>/mutation_feedback.json`.
 
 ## Tasks without a derivation
 
