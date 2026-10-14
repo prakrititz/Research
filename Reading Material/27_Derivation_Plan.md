@@ -4,15 +4,13 @@
 
 ## 1. Where things stand
 
-| | tasks | with a derivation | certified by the engine | blocked by the Lean version | not derived (reason in §5) |
-|---|---|---|---|---|---|
-| HumanEval (Lean specs, `he_*`) | 164 | **159** | 159 | 0 | 5 |
-| the five classics (`classic_*`) | 5 | **5** | 5 | 0 | 0 |
-| Verina basic | 108 | see below | | | |
-| Verina advanced | 81 | see below | | | |
-| **Verina total** | 189 | **174** (+4 in progress, see §5) | 174 | 9 | 6 |
+| | tasks | with a derivation | certified by the engine | re-verified in a fresh process | blocked by the Lean version | not derived (reason in §5) |
+|---|---|---|---|---|---|---|
+| HumanEval (Lean specs, `he_*`) | 164 | **159** | 159 | 159 | 0 | 5 |
+| the five classics (`classic_*`) | 5 | **5** | 5 | 5 | 0 | 0 |
+| Verina (108 basic + 81 advanced) | 189 | **177** | 177 | 177 | 9 | 3 (2 Float, 1 open) |
 
-"Certified" means: the whole refinement term type-checks in Lean 4.34.1 (loop termination proofs included), `#print axioms <f>_spec_satisfied` lists only `propext`, `Classical.choice`, `Quot.sound`, and the program passes every test of the task. The numbers are produced by `python benchmarks/lean_eval.py oracles --dataset <d>`; the independent re-check is `benchmarks/verify_derivations.py` (§6).
+"Certified" means: the whole refinement term type-checks in Lean 4.34.1 (loop termination proofs included), `#print axioms <f>_spec_satisfied` lists only `propext`, `Classical.choice`, `Quot.sound`, and the program passes every test of the task. The numbers are produced by `python benchmarks/lean_eval.py oracles --dataset <d>`; the independent re-check is `benchmarks/verify_derivations.py` (§6). Kinds (§2): HumanEval 87 loop / 69 restate / 3 definitional, classics 4 loop / 1 restate, Verina 70 loop / 107 restate.
 
 ## 2. What a derivation is, and the three labels
 
@@ -60,12 +58,9 @@ New library lemmas this round (all proved by Lean): `forall_mem_drop_iff`, `exis
 | `verina_basic_61` | reference code uses `String.Iterator.curr/next` whose signature changed after Lean 4.18 |
 | `verina_advanced_68` | the specification does not elaborate on 4.34.1 (`c.isDigit` with `c`'s type not yet known) |
 | `verina_basic_25`, `verina_basic_63` | the postcondition is a `Float` equality; `Float` operations are opaque and the dataset's own `axiom`s are needed to prove `x == x`. The certificate refuses declared axioms, so these cannot be certified without weakening it |
-| `verina_advanced_10` (`findExponents`) | needs the factorisation theory of `padicValNat` against the task's well-founded `removePrimeFactor`; a plan exists (§7), not yet closed |
-| `verina_advanced_47` (`mergeIntervals`) | needs the sort-and-merge invariant for four conjuncts including "no spurious merge"; not closed |
-| `verina_advanced_58` (`nthUglyNumber`) | needs a bound for the n-th ugly number (powers of two) before the search loop terminates; not closed |
-| `verina_advanced_67` (`runLengthEncode`) | needs a decode-after-append lemma and a stack-order invariant; not closed |
+| `verina_advanced_47` (`mergeIntervals`) | the sort-and-merge algorithm needs five coupled invariants (separation, coverage, bounds, "no spurious merge" with a chain witness, and a bound on every earlier end); the plan is in §7, it was not closed |
 
-(The four `verina_advanced_*` rows are the only tasks that are reachable in principle and not done; if a later pass closes them this table shrinks.)
+(Everything else that exists in the dataset and compiles has a derivation.)
 
 ## 6. How the derivations were checked
 
@@ -73,12 +68,12 @@ New library lemmas this round (all proved by Lean): `forall_mem_drop_iff`, `exis
 2. **Independent recompile** (`benchmarks/verify_derivations.py --dataset verina|lean_specs`): the finished file is written to disk and compiled by `lake env lean` in its own process; no error, only the three standard axioms, the file contains the dataset's own precondition/postcondition regions verbatim, and every test prints `true`. Output: `benchmarks/results/<dataset>/verification_<dataset>.json` and `verified/<task>.lean`.
 3. **Mutation tests** (`benchmarks/lean_mutation_feedback.py --dataset …`): the derivation's program is mutated and the tests must notice. See `22_Lean_Plan_Progress.md` for the numbers.
 
-## 7. Plans for the four open tasks (so the next session need not rediscover them)
+## 7. The open task, and the ones that were closed late (so the next session need not rediscover them)
 
-* `findExponents`: `result := primes.map (fun p => (p, padicValNat p n))`. Lemma R: `removePrimeFactor m p = m / p ^ padicValNat p m` for prime `p`, `m > 0` (strong induction, `padicValNat.mul`, `padicValNat_self`). Then by induction on `primes` (nodup, prime): `n = p^e * (n / p^e)` and `padicValNat q (n / p^e) = padicValNat q n` for `q ≠ p`.
-* `mergeIntervals`: sort by start, fold with the running interval; invariants: result sorted and strictly separated, every input covered, bounds come from input endpoints, nothing merged without a witness chain.
-* `nthUglyNumber`: search loop with variant `2^n - x`; lemma `isUgly (2^k)` by induction on `divideOut`, hence at least `n` uglies below `2^n`.
-* `runLengthEncode`: accumulate runs in a stack; `decodeRLE (xs ++ ys) = decodeRLE xs ++ decodeRLE ys`; `replicate_succ'` for the extension step.
+* `findExponents` (closed): `result := primes.map (fun p => (p, padicValNat p n))`. Lemma R: `removePrimeFactor m p = m / p ^ padicValNat p m` for prime `p`, `m > 0` (strong induction through the well-founded definition); then induction on `primes`: `n = p^e * (n / p^e)` and `padicValNat q (n / p^e) = padicValNat q n` for `q ≠ p`.
+* `nthUglyNumber` (closed): loop on `(x, c)`, `c` = number of ugly numbers below `x`, variant `2^(n-1) - x`; the bound is the lemma that `1, 2, …, 2^(n-1)` are ugly (`divideOut (2^k) 2 = 1`), so the search stops at `2^(n-1)` at the latest. The helper lemmas are `have`s inside two lemmas: the cascade tries every helper of a step on every obligation and a list of eight exhausted the heartbeats.
+* `runLengthEncode` (closed): runs kept on a reversed stack; invariants `decodeRLE acc.reverse = take i`, positive counts, `List.IsChain (·.1 ≠ ·.1)`; the step is written with `head?`/`headD`/`tail` and not with a `match`, because a `match` creates an auxiliary matcher whose unification with the lemma's own matcher exhausted the heartbeats.
+* `mergeIntervals` (open): sort by start and fold with a stack of merged intervals; invariants on the processed prefix `P`: every result interval has `rs ≤ re`; consecutive ones are strictly separated; every interval of `P` is covered; both ends come from `P`; every interval of `P` inside a result interval starts at its start or has a witness `(s2,e2)` inside it with `s2 < s ≤ e2`; and every interval of `P` that is not inside the head result ends before the head starts. The last invariant is what is needed for the merge step and the one that makes the proof long.
 
 ## 8. Where to look
 

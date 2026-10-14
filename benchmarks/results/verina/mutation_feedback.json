@@ -1,0 +1,2117 @@
+{
+ "summary": {
+  "mutants": 350,
+  "outcomes": {
+   "unproved_with_counterexample": 210,
+   "survived_certified": 14,
+   "unproved": 75,
+   "ill_formed": 51
+  },
+  "killed": 336,
+  "kill_rate": 0.96,
+  "counterexample_share_of_killed": 0.625,
+  "seconds": 3889.4
+ },
+ "rows": [
+  {
+   "task": "verina_basic_1",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := 0, b := 13"
+  },
+  {
+   "task": "verina_basic_1",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := 0, b := 13"
+  },
+  {
+   "task": "verina_basic_11",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 10"
+  },
+  {
+   "task": "verina_basic_12",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "size := 1"
+  },
+  {
+   "task": "verina_basic_26",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 3"
+  },
+  {
+   "task": "verina_basic_26",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "verina_basic_50",
+   "mutation": "root:cases.cond:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_50",
+   "mutation": "root:cases.cond:ge->gt",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_55",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := 0, b := 0"
+  },
+  {
+   "task": "verina_basic_100",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "x := 1"
+  },
+  {
+   "task": "verina_basic_107",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := 0, b := 2"
+  },
+  {
+   "task": "verina_basic_107",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := 0, b := -1"
+  },
+  {
+   "task": "verina_basic_53",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): N := 0"
+  },
+  {
+   "task": "verina_basic_53",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "N := 2, i := 2, s := 1"
+  },
+  {
+   "task": "verina_basic_53",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): N := 0\n    state (i = 0, s = 0)  invariant true  guard true\n      your step gives (i = 1, s = 1)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_13",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]"
+  },
+  {
+   "task": "verina_basic_13",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]"
+  },
+  {
+   "task": "verina_basic_13",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]\n    Error: index out of bounds\n    backtrace:\n    0   repl                                0x0000000106ceb4a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000106ce1fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x0000000106ce259c lean_array_get_panic + 108\n    3   repl                                0x0000000100aab494 Array.get!InternalBorrowed [boxed] + 96\n    4   repl                                0x000000010059dff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "verina_basic_19",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]"
+  },
+  {
+   "task": "verina_basic_19",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]"
+  },
+  {
+   "task": "verina_basic_19",
+   "mutation": "root:loop.variant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0, 0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant true  variant 0 -> 0   <- the variant does not decrease"
+  },
+  {
+   "task": "verina_basic_10",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0, a := #[0]"
+  },
+  {
+   "task": "verina_basic_10",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0, a := #[0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = false)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_10",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0, a := #[0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = false)  invariant true  variant 1 -> 0\n    state (i = 1, ok = false)  invariant true  guard true\n      your step gives (i = 2, ok = false)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_105",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], b := #[]"
+  },
+  {
+   "task": "verina_basic_105",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], b := #[]"
+  },
+  {
+   "task": "verina_basic_105",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], b := #[]\n    Error: index out of bounds\n    backtrace:\n    0   repl                                0x0000000106ceb4a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000106ce1fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x0000000106ce259c lean_array_get_panic + 108\n    3   repl                                0x0000000100aab494 Array.get!InternalBorrowed [boxed] + 96\n    4   repl                                0x000000010059dff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "verina_basic_106",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], b := #[]"
+  },
+  {
+   "task": "verina_basic_106",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0], b := #[-1]"
+  },
+  {
+   "task": "verina_basic_106",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], b := #[]"
+  },
+  {
+   "task": "verina_basic_30",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0], b := #[1]"
+  },
+  {
+   "task": "verina_basic_30",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0], b := #[1]\n    state (i = 0, acc = #[])  invariant true  guard true\n      your step gives (i = 1, acc = #[0])  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_30",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0], b := #[1]\n    Error: index out of bounds\n    backtrace:\n    0   repl                                0x0000000106ceb4a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000106ce1fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x0000000106ce259c lean_array_get_panic + 108\n    3   repl                                0x0000000100aab494 Array.get!InternalBorrowed [boxed] + 96\n    4   repl                                0x000000010059dff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "verina_basic_47",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[1]"
+  },
+  {
+   "task": "verina_basic_47",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0]\n    state (i = 0, acc = 0)  invariant true  guard true\n      your step gives (i = 1, acc = 0)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_47",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0]\n    Error: index out of bounds\n    backtrace:\n    0   repl                                0x0000000106ceb4a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000106ce1fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x0000000106ce259c lean_array_get_panic + 108\n    3   repl                                0x0000000100aab494 Array.get!InternalBorrowed [boxed] + 96\n    4   repl                                0x000000010059dff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "verina_basic_44",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]"
+  },
+  {
+   "task": "verina_basic_44",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]"
+  },
+  {
+   "task": "verina_basic_44",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_advanced_41",
+   "mutation": "root:bind.prop:ge->gt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := 0, b := 0, c := 0"
+  },
+  {
+   "task": "verina_advanced_41",
+   "mutation": "root:bind.prop:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := 0, b := -1, c := -1"
+  },
+  {
+   "task": "verina_advanced_41",
+   "mutation": "0:cases.cond:ge->gt",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_39",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]"
+  },
+  {
+   "task": "verina_advanced_39",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_39",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    backtrace:\n    0   repl                                0x0000000106ceb4a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000106ce1fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x0000000106ce2108 lean_panic_fn_borrowed + 64\n    3   repl                                0x000000010099717c List.get!Internal [boxed, arity↓] + 28\n    4   repl                                0x000000010059dff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "verina_advanced_40",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]"
+  },
+  {
+   "task": "verina_advanced_40",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_40",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): lst := [0]\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    backtrace:\n    0   repl                                0x0000000106ceb4a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000106ce1fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x0000000106ce2108 lean_panic_fn_borrowed + 64\n    3   repl                                0x000000010099717c List.get!Internal [boxed, arity↓] + 28\n    4   repl                                0x000000010059dff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "verina_advanced_16",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_17",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_4",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "arr := #[0, 1], k := 2"
+  },
+  {
+   "task": "verina_basic_2",
+   "mutation": "root:cases.cond:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := #[0]"
+  },
+  {
+   "task": "verina_basic_2",
+   "mutation": "1:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := #[1]"
+  },
+  {
+   "task": "verina_basic_2",
+   "mutation": "1:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := #[0]"
+  },
+  {
+   "task": "verina_basic_101",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "x := 1"
+  },
+  {
+   "task": "verina_basic_98",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "x := 1"
+  },
+  {
+   "task": "verina_basic_99",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "x := 1"
+  },
+  {
+   "task": "verina_basic_59",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "x := 1"
+  },
+  {
+   "task": "verina_basic_6",
+   "mutation": "root:cases.cond:le->lt",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_6",
+   "mutation": "1:cases.cond:le->lt",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_76",
+   "mutation": "root:cases.cond:lt->le",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_8",
+   "mutation": "root:cases.cond:le->lt",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_78",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "x := 0, y := -1"
+  },
+  {
+   "task": "verina_basic_58",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := #[]"
+  },
+  {
+   "task": "verina_basic_58",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := #[1]"
+  },
+  {
+   "task": "verina_basic_58",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := #[]"
+  },
+  {
+   "task": "verina_basic_85",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]"
+  },
+  {
+   "task": "verina_basic_85",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[1]"
+  },
+  {
+   "task": "verina_basic_85",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]"
+  },
+  {
+   "task": "verina_basic_84",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := #[], k := 0"
+  },
+  {
+   "task": "verina_basic_84",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := #[-1], k := 0"
+  },
+  {
+   "task": "verina_basic_84",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := #[], k := 0"
+  },
+  {
+   "task": "verina_basic_83",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], b := #[]"
+  },
+  {
+   "task": "verina_basic_83",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], b := #[]"
+  },
+  {
+   "task": "verina_basic_83",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], b := #[]\n    Error: index out of bounds\n    backtrace:\n    0   repl                                0x0000000106ceb4a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000106ce1fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x0000000106ce259c lean_array_get_panic + 108\n    3   repl                                0x0000000100aab494 Array.get!InternalBorrowed [boxed] + 96\n    4   repl                                0x000000010059dff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "verina_basic_65",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): N := 0"
+  },
+  {
+   "task": "verina_basic_65",
+   "mutation": "root:loop.guard:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "N := 1, r := 0"
+  },
+  {
+   "task": "verina_basic_65",
+   "mutation": "root:loop.guard:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "N := 1, r := 0"
+  },
+  {
+   "task": "verina_basic_67",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): x := []"
+  },
+  {
+   "task": "verina_basic_67",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): x := []"
+  },
+  {
+   "task": "verina_basic_67",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): x := ['\\x01']\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 2, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_73",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\", p := \"\""
+  },
+  {
+   "task": "verina_basic_73",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\", p := \"\""
+  },
+  {
+   "task": "verina_basic_73",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_68",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], e := 0"
+  },
+  {
+   "task": "verina_basic_68",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], e := 0"
+  },
+  {
+   "task": "verina_basic_68",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0], e := 1\n    state (n = 0)  invariant true  guard true\n      your step gives (n = 2)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_62",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], key := 0"
+  },
+  {
+   "task": "verina_basic_62",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], key := 0"
+  },
+  {
+   "task": "verina_basic_62",
+   "mutation": "root:loop.result:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_37",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := #[], target := 0"
+  },
+  {
+   "task": "verina_basic_37",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := #[], target := 0"
+  },
+  {
+   "task": "verina_basic_37",
+   "mutation": "root:loop.result:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_70",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0], P := [_ => true]"
+  },
+  {
+   "task": "verina_basic_70",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_70",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[2, 0, -1], P := [2 => false, _ => true]"
+  },
+  {
+   "task": "verina_basic_80",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := #[-1, -2], key := -1"
+  },
+  {
+   "task": "verina_basic_80",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := #[], key := 0"
+  },
+  {
+   "task": "verina_basic_20",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "arr := #[]"
+  },
+  {
+   "task": "verina_basic_18",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1"
+  },
+  {
+   "task": "verina_basic_28",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 3"
+  },
+  {
+   "task": "verina_basic_15",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]"
+  },
+  {
+   "task": "verina_basic_15",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[]"
+  },
+  {
+   "task": "verina_basic_15",
+   "mutation": "root:loop.variant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0, 0]\n    state (i = 0, f = false)  invariant true  guard true\n      your step gives (i = 1, f = false)  invariant true  variant 0 -> 0   <- the variant does not decrease"
+  },
+  {
+   "task": "verina_basic_16",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\", oldChar := '`', newChar := '\\x00'"
+  },
+  {
+   "task": "verina_basic_16",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\", oldChar := '`', newChar := '\\x00'"
+  },
+  {
+   "task": "verina_basic_16",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"c\", oldChar := 'C', newChar := 'A', i := 0, acc := []"
+  },
+  {
+   "task": "verina_basic_17",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "verina_basic_17",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "verina_basic_17",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"2\", i := 0, acc := []"
+  },
+  {
+   "task": "verina_basic_31",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "verina_basic_31",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "verina_basic_31",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"2\", i := 0, acc := []"
+  },
+  {
+   "task": "verina_basic_36",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "verina_basic_36",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "verina_basic_36",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"2\", i := 0, acc := []"
+  },
+  {
+   "task": "verina_basic_21",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_21",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_21",
+   "mutation": "root:loop.variant:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): sub := [], main := []\n    state (i = 0, f = false)  invariant true  guard true\n      your step gives (i = 1, f = true)  invariant true  variant 0 -> 0   <- the variant does not decrease"
+  },
+  {
+   "task": "verina_basic_38",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "verina_basic_38",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := \"\""
+  },
+  {
+   "task": "verina_basic_38",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_3",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_3",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_66",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_66",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_48",
+   "mutation": "root:bind.prop:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_48",
+   "mutation": "0:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "verina_basic_48",
+   "mutation": "0:loop.guard:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, r := 0"
+  },
+  {
+   "task": "verina_basic_88",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := []"
+  },
+  {
+   "task": "verina_basic_88",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := []"
+  },
+  {
+   "task": "verina_basic_88",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := []\n    PANIC at List.get!Internal Init.GetElem:333:18: invalid index\n    backtrace:\n    0   repl                                0x0000000106ceb4a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000106ce1fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x0000000106ce2108 lean_panic_fn_borrowed + 64\n    3   repl                                0x000000010099717c List.get!Internal [boxed, arity↓] + 28\n    4   repl                                0x000000010059dff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "verina_basic_82",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0]"
+  },
+  {
+   "task": "verina_basic_82",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0, 1]"
+  },
+  {
+   "task": "verina_basic_82",
+   "mutation": "root:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_97",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := #[0], j := 0"
+  },
+  {
+   "task": "verina_basic_103",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := #[0, 0, 0, 0, 0, 0, 0, 0]"
+  },
+  {
+   "task": "verina_basic_103",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := #[0, 0, 0, 0, 0, 0, 0, 0]"
+  },
+  {
+   "task": "verina_basic_32",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_81",
+   "mutation": "root:cases.cond:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "x := 1, y := 1"
+  },
+  {
+   "task": "verina_basic_81",
+   "mutation": "root:cases.cond:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "x := 1, y := 1"
+  },
+  {
+   "task": "verina_basic_81",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "x := 0, y := 0"
+  },
+  {
+   "task": "verina_basic_33",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := []"
+  },
+  {
+   "task": "verina_basic_33",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_33",
+   "mutation": "root:loop.variant:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_45",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_49",
+   "mutation": "root:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_49",
+   "mutation": "0:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[1]"
+  },
+  {
+   "task": "verina_basic_49",
+   "mutation": "0:loop.guard:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_9",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[1], b := #[1]"
+  },
+  {
+   "task": "verina_basic_9",
+   "mutation": "0:bind.prop:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := #[0, 0, 3], b := #[-2, 3], i := 1, f := false, j := 2, g := false"
+  },
+  {
+   "task": "verina_basic_9",
+   "mutation": "0/0:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0], b := #[0], i := 0, f := false"
+  },
+  {
+   "task": "verina_basic_87",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_69",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0], e := 0"
+  },
+  {
+   "task": "verina_basic_69",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_69",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[1, -2], e := -2\n    state (n = 0)  invariant true  guard true\n      your step gives (n = 2)  invariant false  variant 2 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_41",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_41",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 1, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_41",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0]\n    state (i = 0, ok = true)  invariant true  guard true\n      your step gives (i = 2, ok = true)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_24",
+   "mutation": "root:bind.prop:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_24",
+   "mutation": "0:loop.guard:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_24",
+   "mutation": "1/0:loop.init:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_18",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_18",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_18",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_19",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_59",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\""
+  },
+  {
+   "task": "verina_advanced_60",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [3]"
+  },
+  {
+   "task": "verina_advanced_7",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "digits := [1, 0]"
+  },
+  {
+   "task": "verina_advanced_7",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "digits := [1]"
+  },
+  {
+   "task": "verina_advanced_9",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, d := 1"
+  },
+  {
+   "task": "verina_advanced_9",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_9",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, d := 1"
+  },
+  {
+   "task": "verina_advanced_72",
+   "mutation": "root:cases.cond:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "verina_advanced_72",
+   "mutation": "1/0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2"
+  },
+  {
+   "task": "verina_advanced_72",
+   "mutation": "1/1/1:cases.cond:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1"
+  },
+  {
+   "task": "verina_advanced_81",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_48",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_49",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_51",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_70",
+   "mutation": "root:cases.cond:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [1]"
+  },
+  {
+   "task": "verina_advanced_70",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [2, 1]"
+  },
+  {
+   "task": "verina_advanced_70",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [2, 1]"
+  },
+  {
+   "task": "verina_advanced_77",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "height := [0, 1]"
+  },
+  {
+   "task": "verina_advanced_77",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "height := [1, 0, 1]"
+  },
+  {
+   "task": "verina_advanced_73",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := []"
+  },
+  {
+   "task": "verina_advanced_73",
+   "mutation": "root:loop.variant:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_73",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): l := [0]\n    state (v = 0)  invariant true  guard true\n      your step gives (v = 2)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_advanced_69",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := [], target := 0"
+  },
+  {
+   "task": "verina_advanced_69",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := [], target := 0"
+  },
+  {
+   "task": "verina_advanced_69",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): xs := [0], target := 1\n    state (n = 0)  invariant true  guard true\n      your step gives (n = 2)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_46",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "arr := #[], elem := 0"
+  },
+  {
+   "task": "verina_basic_46",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_46",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_40",
+   "mutation": "root:bind.prop:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_40",
+   "mutation": "0:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_40",
+   "mutation": "1:loop.invariant:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_60",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := #[]"
+  },
+  {
+   "task": "verina_basic_60",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := #[]"
+  },
+  {
+   "task": "verina_basic_60",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := #[0]\n    state (i = 0, acc = #[])  invariant true  guard true\n      your step gives (i = 2, acc = #[0])  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_51",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], key := 0"
+  },
+  {
+   "task": "verina_basic_51",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[], key := 0"
+  },
+  {
+   "task": "verina_basic_51",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0], key := 1\n    state (i = 0)  invariant true  guard true\n      your step gives (i = 2)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_54",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[0], b := #[-4, -3]"
+  },
+  {
+   "task": "verina_basic_54",
+   "mutation": "0:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_54",
+   "mutation": "0/0:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_7",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "verina_basic_7",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_7",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0\n    state (i = 0, acc = 0)  invariant true  guard true\n      your step gives (i = 1, acc = 1)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_43",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0"
+  },
+  {
+   "task": "verina_basic_43",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_43",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): n := 0\n    state (i = 0, acc = 0)  invariant true  guard true\n      your step gives (i = 1, acc = 1)  invariant false  variant 0 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_basic_29",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := #[0], k := 0"
+  },
+  {
+   "task": "verina_basic_29",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): s := #[0], k := 0"
+  },
+  {
+   "task": "verina_basic_29",
+   "mutation": "root:loop.variant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_64",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): oline := #[], l := 0, nl := #[], p := 0, atPos := 0"
+  },
+  {
+   "task": "verina_basic_64",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): oline := #[], l := 0, nl := #[], p := 0, atPos := 0"
+  },
+  {
+   "task": "verina_basic_64",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): oline := #[], l := 0, nl := #[], p := 0, atPos := 0\n    Error: index out of bounds\n    backtrace:\n    0   repl                                0x0000000106ceb4a8 _ZN4leanL15print_backtraceEb + 60\n    1   repl                                0x0000000106ce1fec _ZN4leanL15lean_panic_implEPKcmb + 176\n    2   repl                                0x0000000106ce259c lean_array_get_panic + 108\n    3   repl                                0x0000000100aab494 Array.get!InternalBorrowed [boxed] + 96\n    4   repl                                0x000000010059dff4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 512\n    5   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    6   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    7   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784\n    8   repl                                0x000000010059e1f4 _ZN4lean2ir11interpreter4callERKNS_4nameERKNS_9array_refINS_10object_refEEE + 1024\n    9   repl                                0x000000010059c2f8 _ZN4lean2ir11interpreter9eval_bodyERKNS_10object_refE + 1784"
+  },
+  {
+   "task": "verina_basic_71",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): str1 := [], str2 := []"
+  },
+  {
+   "task": "verina_basic_71",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): str1 := [], str2 := []"
+  },
+  {
+   "task": "verina_basic_71",
+   "mutation": "root:loop.guard:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "str1 := [' ', '1', '\\x05', ';', 'C', '`'], str2 := [' ', '0', '\\t', '\\x01', '\\x02', '/'], idx := 0"
+  },
+  {
+   "task": "verina_basic_35",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_35",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_39",
+   "mutation": "root:cases.cond:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_39",
+   "mutation": "root:cases.cond:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_39",
+   "mutation": "1:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_56",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): src := #[], sStart := 0, dest := #[], dStart := 0, len := 0"
+  },
+  {
+   "task": "verina_basic_56",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_56",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): src := #[], sStart := 0, dest := #[], dStart := 0, len := 0"
+  },
+  {
+   "task": "verina_basic_108",
+   "mutation": "root:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_108",
+   "mutation": "0:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := []"
+  },
+  {
+   "task": "verina_basic_108",
+   "mutation": "0:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): operations := []"
+  },
+  {
+   "task": "verina_basic_34",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): arr := #[]"
+  },
+  {
+   "task": "verina_basic_34",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_34",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_45",
+   "mutation": "root:cases.cond:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_45",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_45",
+   "mutation": "1:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_75",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_75",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_43",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [1]"
+  },
+  {
+   "task": "verina_advanced_27",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_46",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_46",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_34",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_34",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [-6, -6]"
+  },
+  {
+   "task": "verina_advanced_4",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_4",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := #[-6, -6]"
+  },
+  {
+   "task": "verina_advanced_2",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_3",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_25",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := []"
+  },
+  {
+   "task": "verina_advanced_25",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [-6, -6]"
+  },
+  {
+   "task": "verina_advanced_31",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "xs := []"
+  },
+  {
+   "task": "verina_advanced_31",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "xs := [-6, -6]"
+  },
+  {
+   "task": "verina_advanced_32",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "numbers := []"
+  },
+  {
+   "task": "verina_advanced_32",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "numbers := [-6, -6]"
+  },
+  {
+   "task": "verina_advanced_33",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := []"
+  },
+  {
+   "task": "verina_advanced_33",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [-6, -6]"
+  },
+  {
+   "task": "verina_advanced_44",
+   "mutation": "root:cases.cond:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_44",
+   "mutation": "root:cases.cond:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_44",
+   "mutation": "1:term.expr:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_29",
+   "mutation": "root:cases.cond:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_29",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_29",
+   "mutation": "1:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_28",
+   "mutation": "root:cases.cond:eq->ne",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_28",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := []"
+  },
+  {
+   "task": "verina_advanced_28",
+   "mutation": "1:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_38",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "intervals := [(0, 0)]"
+  },
+  {
+   "task": "verina_advanced_38",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "intervals := [(0, 0), (0, 1)]"
+  },
+  {
+   "task": "verina_advanced_38",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_14",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_14",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_14",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_23",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_23",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_23",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_20",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_20",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_22",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_22",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_22",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_36",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "xs := [5, 2, 2, 5, 2]"
+  },
+  {
+   "task": "verina_advanced_35",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_37",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_74",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [1, 2]"
+  },
+  {
+   "task": "verina_advanced_74",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [1]"
+  },
+  {
+   "task": "verina_advanced_11",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [0, 1]"
+  },
+  {
+   "task": "verina_advanced_11",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [0]"
+  },
+  {
+   "task": "verina_advanced_26",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "digits := \"2\""
+  },
+  {
+   "task": "verina_advanced_50",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_15",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_24",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := []"
+  },
+  {
+   "task": "verina_advanced_13",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_53",
+   "mutation": "root:cases.cond:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_53",
+   "mutation": "1:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): nums := [0, 1]"
+  },
+  {
+   "task": "verina_advanced_53",
+   "mutation": "1:loop.result:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_52",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): nums := [], k := 0"
+  },
+  {
+   "task": "verina_advanced_52",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): nums := [], k := 0"
+  },
+  {
+   "task": "verina_advanced_52",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_55",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_55",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "xs := [1]"
+  },
+  {
+   "task": "verina_advanced_56",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_56",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_54",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_54",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [0]"
+  },
+  {
+   "task": "verina_advanced_8",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): gas := [1], cost := [1]"
+  },
+  {
+   "task": "verina_advanced_8",
+   "mutation": "root:loop.invariant:ge->gt",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_8",
+   "mutation": "root:loop.guard:ge->gt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): gas := [1], cost := [1]\n    state (s = 0)  invariant true  guard true\n      your step gives (s = 1)  invariant false  variant 1 -> 0   <- the invariant is false after your step"
+  },
+  {
+   "task": "verina_advanced_61",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_61",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_1",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [1]"
+  },
+  {
+   "task": "verina_advanced_1",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [1]"
+  },
+  {
+   "task": "verina_basic_102",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := #[0, 0], target := 0, i' := 0, j' := 1"
+  },
+  {
+   "task": "verina_basic_102",
+   "mutation": "0:bind.prop:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_102",
+   "mutation": "0/0:loop.invariant:le->lt",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_79",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [], target := 0"
+  },
+  {
+   "task": "verina_advanced_79",
+   "mutation": "root:loop.result:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_79",
+   "mutation": "0/0:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_78",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := [0, 0], target := 0, i' := 0, j' := 1"
+  },
+  {
+   "task": "verina_advanced_78",
+   "mutation": "0:bind.prop:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_78",
+   "mutation": "0/0:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_80",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "nums := #[0, 0], target := 0, i' := 0, j' := 1"
+  },
+  {
+   "task": "verina_advanced_80",
+   "mutation": "0:bind.prop:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_80",
+   "mutation": "0/0:loop.invariant:le->lt",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_22",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_89",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := []"
+  },
+  {
+   "task": "verina_basic_89",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := []"
+  },
+  {
+   "task": "verina_basic_89",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_5",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_5",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_5",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_76",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_57",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_57",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_12",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_12",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_71",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_71",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_71",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_42",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "prices := [0]"
+  },
+  {
+   "task": "verina_advanced_42",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_62",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "heights := [1, 0, 1]"
+  },
+  {
+   "task": "verina_advanced_62",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "heights := [1, 0, 1]"
+  },
+  {
+   "task": "verina_advanced_30",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_30",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_advanced_30",
+   "mutation": "root:term.expr:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_90",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "counter-example (found by running the loop): a := #[#[0]], key := 0"
+  },
+  {
+   "task": "verina_basic_90",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "ill_formed",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_90",
+   "mutation": "0/0:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "verina_basic_104",
+   "mutation": "root:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  }
+ ]
+}
