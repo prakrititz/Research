@@ -8,9 +8,9 @@
   "kind": "restate",
   "laws": 1,
   "helper_lemmas": 1,
-  "certified": false,
+  "certified": true,
   "independently_verified": true,
-  "tests_passed": "0/0",
+  "tests_passed": "10/10",
   "blocked_reason": "",
   "spec_checks": {
     "compiles": true,

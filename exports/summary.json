@@ -24,13 +24,13 @@
   },
   "verina": {
     "tasks": 189,
-    "with_derivation": 174,
-    "certified": 173,
-    "independently_verified": 174,
+    "with_derivation": 177,
+    "certified": 177,
+    "independently_verified": 177,
     "kinds": {
-      "restate": 111,
-      "loop": 63
+      "restate": 112,
+      "loop": 65
     },
-    "blocked_listed": 15
+    "blocked_listed": 12
   }
 }

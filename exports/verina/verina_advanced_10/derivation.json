@@ -1,0 +1,32 @@
+{
+  "law": "term",
+  "expr": "(primes.map (fun p => (p, padicValNat p n)))",
+  "children": [],
+  "lemmas": [
+    {
+      "name": "rpf_eq",
+      "statement": "∀ (p : Nat), p.Prime → ∀ (n : Nat), 0 < n → removePrimeFactor n p = n / p ^ (padicValNat p n)",
+      "proof": "by\n  intro p hp\n  intro n\n  induction n using Nat.strong_induction_on with\n  | _ n ih =>\n    intro hn\n    rw [removePrimeFactor]\n    have hp1 : p > 1 := hp.one_lt\n    rw [dif_pos ⟨hp1, hn⟩]\n    haveI := Fact.mk hp\n    by_cases hd : n % p = 0\n    · rw [if_pos hd]\n      have hdv : p ∣ n := Nat.dvd_of_mod_eq_zero hd\n      have hlt : n / p < n := Nat.div_lt_self hn hp1\n      have hpos : 0 < n / p := Nat.div_pos (Nat.le_of_dvd hn hdv) (by omega)\n      rw [ih (n / p) hlt hpos]\n      have hv : padicValNat p n = padicValNat p (n / p) + 1 := by\n        have h1 : n = p * (n / p) := (Nat.mul_div_cancel' hdv).symm\n        conv_lhs => rw [h1]\n        rw [padicValNat.mul (by omega) (by omega), padicValNat_self]; omega\n      rw [hv, pow_succ', Nat.div_div_eq_div_mul]\n    · rw [if_neg hd]\n      have : padicValNat p n = 0 := padicValNat.eq_zero_of_not_dvd (by\n        intro h; exact hd (Nat.mod_eq_zero_of_dvd h))\n      simp [this]\n"
+    },
+    {
+      "name": "rpf_dvd",
+      "statement": "∀ (p : Nat), p.Prime → ∀ (n : Nat), 0 < n → p ^ padicValNat p n * removePrimeFactor n p = n",
+      "proof": "by\n  intro p hp n hn\n  haveI := Fact.mk hp\n  rw [rpf_eq p hp n hn]\n  exact Nat.mul_div_cancel' pow_padicValNat_dvd\n"
+    },
+    {
+      "name": "fold_mul",
+      "statement": "∀ (l : List (Nat × Nat)) (a : Nat), l.foldl (fun acc (x : Nat × Nat) => acc * x.1 ^ x.2) a = a * l.foldl (fun acc (x : Nat × Nat) => acc * x.1 ^ x.2) 1",
+      "proof": "by\n  intro l\n  induction l with\n  | nil => intro a; simp\n  | cons x t ih => intro a; simp only [List.foldl_cons]; rw [ih (a * x.1 ^ x.2), ih (1 * x.1 ^ x.2)]; ring\n"
+    },
+    {
+      "name": "fe_main",
+      "statement": "∀ (ps : List Nat) (n : Nat), 0 < n → (∀ p ∈ ps, p.Prime) → ps.Nodup → ps.foldl removePrimeFactor n = 1 → n = (ps.map (fun p => (p, padicValNat p n))).foldl (fun acc (x : Nat × Nat) => acc * x.1 ^ x.2) 1",
+      "proof": "by\n  intro ps\n  induction ps with\n  | nil => intro n hn _ _ h; simp at h ⊢; exact h\n  | cons p qs ih =>\n    intro n hn hprime hnd h\n    have hp : p.Prime := hprime p List.mem_cons_self\n    have hqs : ∀ q ∈ qs, q.Prime := fun q hq => hprime q (List.mem_cons_of_mem p hq)\n    have hnd' := List.nodup_cons.mp hnd\n    haveI := Fact.mk hp\n    have hdiv := rpf_dvd p hp n hn\n    have hn' : 0 < removePrimeFactor n p := by\n      rcases Nat.eq_zero_or_pos (removePrimeFactor n p) with h0 | h0\n      · rw [h0] at hdiv; omega\n      · exact h0\n    have hfold : qs.foldl removePrimeFactor (removePrimeFactor n p) = 1 := by simpa [List.foldl_cons] using h\n    have h1 := ih (removePrimeFactor n p) hn' hqs hnd'.2 hfold\n    have hval : ∀ q ∈ qs, padicValNat q (removePrimeFactor n p) = padicValNat q n := by\n      intro q hq\n      haveI := Fact.mk (hqs q hq)\n      have hqp : q ≠ p := fun e => hnd'.1 (e ▸ hq)\n      have : padicValNat q n = padicValNat q (p ^ padicValNat p n) + padicValNat q (removePrimeFactor n p) := by\n        conv_lhs => rw [← hdiv]\n        exact padicValNat.mul (pow_ne_zero _ hp.ne_zero) (by omega)\n      rw [this, padicValNat.pow p (padicValNat p n), padicValNat_primes hqp]; simp\n    have hmap : (qs.map (fun q => (q, padicValNat q n))) = (qs.map (fun q => (q, padicValNat q (removePrimeFactor n p)))) :=\n      List.map_congr_left (fun q hq => by rw [hval q hq])\n    simp only [List.map_cons, List.foldl_cons]\n    rw [hmap, fold_mul, ← h1]\n    simp only [one_mul]\n    exact hdiv.symm\n"
+    },
+    {
+      "name": "exps10",
+      "statement": "∀ (n : Nat) (primes : List Nat) (h : findExponents_precond n primes), findExponents_postcond n primes (primes.map (fun p => (p, padicValNat p n))) h",
+      "proof": "by intro n primes h\n  obtain ⟨hn, _, hprime, hnd, hrem⟩ := h\n  unfold findExponents_postcond\n  refine ⟨?_, ?_, ?_⟩\n  · exact fe_main primes n hn (fun p hp => by simpa using List.all_eq_true.mp hprime p hp) hnd hrem\n  · rw [List.all_eq_true]; intro x hx\n    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hx\n    simpa using hp\n  · rw [List.all_eq_true]; intro p hp\n    rw [List.any_eq_true]\n    exact ⟨(p, padicValNat p n), List.mem_map.mpr ⟨p, hp, rfl⟩, by simp⟩"
+    }
+  ]
+}

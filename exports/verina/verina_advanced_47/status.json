@@ -11,7 +11,7 @@
   "certified": false,
   "independently_verified": false,
   "tests_passed": null,
-  "blocked_reason": "not closed: needs the sort-and-merge invariant for four conjuncts, including 'no spurious merge' (plan in Reading Material/27, section 7)",
+  "blocked_reason": "not closed: the sort-and-merge algorithm needs five coupled invariants (separation, coverage, bounds, 'no spurious merge' with a chain witness, and a bound on every earlier end); see Reading Material/27, section 7",
   "spec_checks": {
     "compiles": true,
     "reference_passes": "7/7",
