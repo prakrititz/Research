@@ -58,13 +58,15 @@ The 24 Verina tasks that do not pass all four, by cause (`results/verina/validat
 
 ## 4. Derivations on both (hand-written, no model)
 
+> Updated 2026-10-14: the counts below were measured on 2026-10-13 and have since been completed; see **doc 27** for the coverage, the families and what was not derived.
+
 `python benchmarks/lean_eval.py oracles --dataset D`:
 
 | | tasks | derivations | certified | tests of the derived programs |
 |---|---|---|---|---|
-| HumanEval | 164 | **57** (107 problems still have none) | **57 / 57** | all pass |
+| HumanEval | 164 | **159** (5 listed as not derivable) | **159 / 159** | all pass |
 | classic | 5 | 5 | 5 / 5 | all pass |
-| Verina | 189 | 25 | 24 / 25 (`verina_basic_4` needs a witness) | all pass |
+| Verina | 189 | **177** (9 do not compile, 2 are Float, 1 open) | **177 / 177** | all pass |
 
 All 26 specifications added on 2026-10-11 now have one: **26 of 26 certified** (they are in the 62 above together with the 36 earlier ones). Of the 26: 10 are real loops with an invariant (133, 135, 136, 142, 146, 151, 153, 154, 155, 158), 12 are a `term`/`cases` that restates a decidable specification (134, 137, 141, 143, 144, 145, 148, 149, 159, 161, 163 with a sorting/witness lemma where one is needed), and 4 are *definitional* (140, 156, 160, 162: the specification is a recursive definition and the answer is that definition; 147 is the same with a counting expression). The honest reading: a derivation exists, the four laws reach the task; for the last group nothing was searched.
 

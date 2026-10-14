@@ -12,8 +12,23 @@
 | 3. Replace Z3's jobs | **in progress** | counter-examples: small-input search 24%, Lean's `plausible` 29% of Z3's refutations (equality-heavy arithmetic); on the Lean engine's own wrong steps `plausible` alone gives a counter-example for 44% of rejected mutants, running the loop on random inputs raises it to 76%, and the unsolved goal state accompanies every rejection |
 | 4. Specs in Lean | **done: all 164 HumanEval problems + 5 classics** | 169 specifications in Lean, validated on 2,332 tests: reference passes 2,332/2,332, postcondition accepts 2,332/2,332 expected outputs, rejects 5,651/5,657 wrong outputs (the 6 are reorderings of one dictionary, `he_111`, whose specification accepts any order on purpose); doc 24 |
 | 5. Verina baseline | **in progress** | harness validated on ground truth: 169 of 189 compile, 146 fully scored; model run blocked (server); repo and dataset obtained; 189 tasks confirmed; toolchain mismatch found (Verina: Lean 4.18, ours: 4.34.1); compile check done: 154 of 189 compile on 4.34.1 as shipped, 169 of 189 with proofs ignored |
-| 6. Refinement on Verina | **engine built; opens 188 of 189 goals; no model run yet** | Lean-native engine (doc 23): hand-written derivations certified for 36 of 36 library tasks and 24 of 25 Verina tasks (not written by us); model-driven agent built and tested with a scripted model; waiting for a model run |
+| 6. Refinement on Verina | **engine built; opens 188 of 189 goals; no model run yet** | Lean-native engine (doc 23): hand-written derivations certified for 164 of 164 library tasks and 177 of 189 Verina tasks (the other 12 are listed with a reason in doc 27); model-driven agent built and tested with a scripted model; waiting for a model run |
 | 7. Harder families | not started | — |
+
+## 2026-10-14 — Derivations for every reachable HumanEval and Verina task (no model run)
+
+User instruction: "we need derivations for all the HumanEval problems, and for Verina; save them with the specifications somewhere readable and exportable, with a README". Details: **doc 27**; files: `exports/`.
+
+| | tasks | derivations | certified | re-verified in a fresh process | not derived |
+|---|---|---|---|---|---|
+| HumanEval | 164 | 159 | 159 | 159 | 5 (3 `String.splitOn`, root finding, unsatisfiable `prime_fib`) |
+| classics | 5 | 5 | 5 | 5 | 0 |
+| Verina | 189 | 177 | 177 | 177 | 12 (9 do not compile on 4.34.1, 2 are `Float`, `mergeIntervals` is open) |
+
+* **Mutation testing** of the derivations (`benchmarks/lean_mutation_feedback.py`, at most 3 mutants per derivation): Verina 350 mutants, 336 rejected (96.0%), 14 survivors, all equivalent (`<` against `≤` in a min/max, a variant `+1`); HumanEval 378 mutants, 367 rejected (97.1%), 11 survivors, all certified and passing every test (an initial value or a boundary the specification allows). No mutant was accepted *and* failed a test.
+* **Harness changes the derivations forced** (doc 27 §4): tasks without `h_precond` (3 Verina tasks), a witness search for existential preconditions (6 reference solutions could not be tested before), the dataset prelude in `certify`.
+* **Lesson**: the cascade tries every helper lemma of a step on every obligation. A list of eight exhausted one obligation's heartbeats (`nthUglyNumber`); keep auxiliary facts as `have`s inside the lemma that needs them.
+* **Lesson**: a `match` in a step term creates an auxiliary matcher that does not unify cheaply with the lemma's own; `head?`/`headD`/`tail` do.
 
 ## 2026-10-13 (later) — Verification of the derivations
 
