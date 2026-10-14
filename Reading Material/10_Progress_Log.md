@@ -2,6 +2,10 @@
 
 Newest first. One entry per working session, so you can see what changed and why.
 
+## 2026-10-14 — Derivations for all reachable HumanEval and Verina tasks, and a readable export (no model run)
+
+**You said** "we need derivations for all the human eval problems, and also Verina ... save these derivations and formal specs somewhere readable exportable too, with a readme". **Done:** HumanEval 159 of 164 (+ the 5 classics), Verina 177 of 189, each certified by the engine and re-compiled in a fresh Lean process; the rest is listed with the reason (9 Verina tasks do not compile on Lean 4.34.1, 2 are about `Float`, 3 HumanEval ones are about `String.splitOn`, one needs root finding, one is unsatisfiable, one Verina task, `mergeIntervals`, is open). Mutation testing: 96-97% of changed steps are rejected, the survivors are equivalent mutants. Files: `exports/` (specification, English statement, derivation as JSON and as text, the finished Lean file and a status per task; `exports/README.md`), `Reading Material/27_Derivation_Plan.md` (what a derivation is, the families, what was not done and why).
+
 ## 2026-10-13 — Derivations for all of HumanEval's new specs, and one interface for Verina and HumanEval (no model run)
 
 **You said** "write the derivations ... don't run a small model ... make Verina and HumanEval the same page ... modular for both". Done: the 26 new specifications each have a certified hand-written derivation (62 / 62 across the library, Verina 24 / 25 unchanged); a dataset registry and one evaluator/validator/CLI take `--dataset verina|humaneval`; Verina now goes through the same four specification checks as ours (165 / 189 pass; 14 have a postcondition Lean cannot run, 9 do not compile on 4.34.1, 1 is weak). The comparison also found a real harness bug (String/Char inputs were unquoted for Verina). Doc 26 has the table of differences that remain.
