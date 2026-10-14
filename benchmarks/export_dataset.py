@@ -49,12 +49,8 @@ BLOCKED = {
     "verina_basic_25": "the postcondition is a Float equality; Float operations are opaque and only the dataset's own `axiom`s prove "
                        "`x == x`, which the certificate (three standard axioms) refuses",
     "verina_basic_63": "the specification is about Float comparisons; same cause as verina_basic_25",
-    "verina_advanced_10": "not closed: needs padicValNat/factorisation lemmas against the task's well-founded removePrimeFactor "
-                          "(plan in Reading Material/27, section 7)",
-    "verina_advanced_47": "not closed: needs the sort-and-merge invariant for four conjuncts, including 'no spurious merge' "
-                          "(plan in Reading Material/27, section 7)",
-    "verina_advanced_58": "not closed: the search loop needs a bound for the n-th ugly number (plan in Reading Material/27, section 7)",
-    "verina_advanced_67": "not closed: needs decode-after-append lemmas for the run-length stack (plan in Reading Material/27, section 7)",
+    "verina_advanced_47": "not closed: the sort-and-merge algorithm needs five coupled invariants (separation, coverage, bounds, "
+                          "'no spurious merge' with a chain witness, and a bound on every earlier end); see Reading Material/27, section 7",
 }
 
 
