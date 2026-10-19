@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from benchmarks.cases import CASES
 from benchmarks.baseline_cases import BASELINE, UNSATISFIABLE
-from benchmarks.run_bench import CONFIGS, REMOTE_BASE_URL, expand_configs
+from benchmarks.run_bench import CONFIGS, REMOTE_BASE_URL, expand_configs, remote_model
 from FormalLLM.llm.provider import OllamaProvider, OpenAIChatProvider
 
 CODE_ROOT = "benchmarks/baseline_code"
@@ -150,7 +150,7 @@ def make_code_provider(cfg, temperature, timeout):
     """
     if cfg["kind"] == "openai":
         return OpenAIChatProvider(
-            model_name=cfg["model"],
+            model_name=remote_model(cfg),
             base_url=REMOTE_BASE_URL,
             temperature=temperature,
             max_tokens=2048,

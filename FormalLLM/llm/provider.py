@@ -176,6 +176,12 @@ class OllamaProvider(LLMProvider):
         return text
 
 
+def remote_model_id(default: str) -> str:
+    """The model id to send to the OpenAI-compatible server: ``FORMALLLM_REMOTE_MODEL`` if set, else ``default``. The same
+    model has different ids on different hosts (``gpt-oss:120b`` on Ollama, ``openai/gpt-oss-120b`` on OpenRouter or Groq)."""
+    return os.environ.get("FORMALLLM_REMOTE_MODEL") or default
+
+
 class OpenAIChatProvider(LLMProvider):
     """Connects to any OpenAI-compatible ``/v1/chat/completions`` endpoint.
 
@@ -237,10 +243,12 @@ class OpenAIChatProvider(LLMProvider):
 
     def _headers(self) -> dict:
         headers = {"Content-Type": "application/json"}
+        if (self.auth or "").strip().lower() == "none":
+            return headers                        # a local server (Ollama /v1, llama.cpp, vLLM) that takes no credentials
         if not self.auth:
             raise Exception(
                 f"No credentials for {self.base_url}. Set {self.auth_env} to "
-                f"'user:password' (or pass auth=...) before running."
+                f"'user:password', 'Bearer <token>' or 'none' (a local server) before running."
             )
         if ":" in self.auth and not self.auth.lower().startswith("bearer "):
             token = base64.b64encode(self.auth.encode("utf-8")).decode("ascii")

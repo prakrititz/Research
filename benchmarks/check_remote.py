@@ -31,7 +31,7 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from benchmarks.run_bench import CONFIGS, CONFIG_GROUPS, REMOTE_BASE_URL
+from benchmarks.run_bench import CONFIGS, CONFIG_GROUPS, REMOTE_BASE_URL, remote_model
 from FormalLLM.llm.provider import OpenAIChatProvider
 from FormalLLM.llm.parser import parse_llm_response
 
@@ -51,7 +51,7 @@ Do not include markdown formatting or explanations."""
 
 def check(name, cfg, timeout, stream):
     provider = OpenAIChatProvider(
-        model_name=cfg["model"], base_url=REMOTE_BASE_URL,
+        model_name=remote_model(cfg), base_url=REMOTE_BASE_URL,
         timeout=timeout, stream=stream,
     )
     print(f"\n=== {name}  ({cfg['model']}) ===")
