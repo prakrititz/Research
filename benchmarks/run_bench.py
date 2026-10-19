@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from benchmarks.cases import CASES
 from benchmarks.harness import run_trial
-from FormalLLM.llm.provider import OllamaProvider, OpenAIChatProvider
+from FormalLLM.llm.provider import OllamaProvider, OpenAIChatProvider, remote_model_id
 
 CORE_LAWS = ["assignment", "skip", "sequential", "alternation", "iteration"]
 EXTENDED_LAWS = CORE_LAWS + ["strengthen_post", "weaken_pre",
@@ -82,12 +82,19 @@ def expand_configs(names):
     return out
 
 
+def remote_model(cfg):
+    """The model id sent to the OpenAI-compatible server: ``FORMALLLM_REMOTE_MODEL`` if set, else the config's own."""
+    return remote_model_id(cfg["model"])
+
+
 def make_provider(cfg, temperature, timeout=900, seed=None):
     if cfg["kind"] == "openai":
         extra = {"seed": seed} if seed is not None else None
         return OpenAIChatProvider(
-            model_name=cfg["model"],
-            base_url=REMOTE_BASE_URL,
+            # any OpenAI-compatible server: FORMALLLM_REMOTE_URL picks the host, FORMALLLM_REMOTE_MODEL the model id it
+            # uses for the same model (OpenRouter and Groq call it "openai/gpt-oss-120b", Ollama "gpt-oss:20b")
+            model_name=remote_model(cfg),
+            base_url=os.environ.get("FORMALLLM_REMOTE_URL", REMOTE_BASE_URL),
             temperature=temperature,
             reasoning_effort=cfg.get("reasoning_effort"),
             extra_body=extra,
