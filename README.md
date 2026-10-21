@@ -1,3 +1,5 @@
+> **Branches.** `main` is the current Lean workflow only (Lean engine, Verina + HumanEval behind one interface, hand-written derivations, `exports/`). `archive` keeps everything older exactly as it was: Z3/Coq-era results, gpt-oss runs and logs, study folders and reliability scripts.
+
 # FormalLLM
 
 **DISCLAIMER: This project is not an original work. It is a completely personal, independent implementation of the architecture described in the paper "Automated Program Refinement: Guide and Verify Code Large Language Model with Refinement Calculus" (Refine4LLM).** 
