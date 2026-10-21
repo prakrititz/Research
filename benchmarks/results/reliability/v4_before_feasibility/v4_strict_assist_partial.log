@@ -1,9 +1,0 @@
-study: v4_strict_assist  trials=30  turns=2  budget=30  max_retries=4  strict=1  assist=True
-results -> C:\Users\Prakrititz Borah\Downloads\Work\Research\Symbolic_LLM\benchmarks\results\reliability\v4_strict_assist_20261003-092733.jsonl
-transcripts -> C:\Users\PRAKRI~1\AppData\Local\Temp\runs\transcripts\v4_strict_assist_20261003-092733
-[ 1/30] SUCCESS   calls=2   wall=   12.1s   running: 1/1  certified: coq 3/3
-[ 2/30] SUCCESS   calls=2   wall=   14.6s   running: 2/2  certified: coq 3/3
-[ 3/30] BUDGET    calls=30  wall=  250.6s   running: 2/3
-[ 4/30] SUCCESS   calls=2   wall=   12.3s   running: 3/4  certified: coq 3/3
-[ 5/30] SUCCESS   calls=2   wall=   11.6s   running: 4/5  certified: coq 3/3
-finished
