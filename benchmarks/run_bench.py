@@ -52,15 +52,17 @@ CONFIGS = {
     # Same model, with the reasoning budget set explicitly. Measured on the hosted
     # endpoint: about 24 s per call by default, 12 s at medium, 7 s at low.
     "gpt-oss-120b-low": dict(kind="openai", model="gpt-oss:120b", reasoning_effort="low"),
-    "gpt-oss-120b-medium": dict(kind="openai", model="gpt-oss:120b", reasoning_effort="medium"),
-    "gpt-oss-120b-high": dict(kind="openai", model="gpt-oss:120b", reasoning_effort="high"),
-    "qwen3-coder-next": dict(kind="openai", model="qwen3-coder-next:latest"),
+    # --- OpenAI direct API ------------------------------------------------
+    "gpt-4o": dict(kind="openai", model="gpt-4o", base_url="https://api.openai.com/v1"),
+    "gpt-4o-mini": dict(kind="openai", model="gpt-4o-mini", base_url="https://api.openai.com/v1"),
+    "o3-mini": dict(kind="openai", model="o3-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192),
 }
 
 #: Named groups so an arm can be selected without listing every config.
 #: `--configs high-end` expands to the hosted models, `local` to the Ollama ones.
 CONFIG_GROUPS = {
     "high-end": ["gpt-oss-120b", "qwen3-coder-next"],
+    "openai": ["gpt-4o", "gpt-4o-mini"],
     "local": ["llama3.1", "qwen3.5-nothink", "qwen3.5-think", "ornith", "ornith-think"],
     "all": [name for name in CONFIGS],
 }
@@ -90,11 +92,12 @@ def remote_model(cfg):
 def make_provider(cfg, temperature, timeout=900, seed=None):
     if cfg["kind"] == "openai":
         extra = {"seed": seed} if seed is not None else None
+        base_url = cfg.get("base_url") or os.environ.get("OPENAI_BASE_URL") or os.environ.get("FORMALLLM_REMOTE_URL", REMOTE_BASE_URL)
         return OpenAIChatProvider(
-            # any OpenAI-compatible server: FORMALLLM_REMOTE_URL picks the host, FORMALLLM_REMOTE_MODEL the model id it
-            # uses for the same model (OpenRouter and Groq call it "openai/gpt-oss-120b", Ollama "gpt-oss:20b")
-            model_name=remote_model(cfg),
-            base_url=os.environ.get("FORMALLLM_REMOTE_URL", REMOTE_BASE_URL),
+            # a config with its own base_url (the OpenAI direct API) is used as written; every other config goes to the
+            # OpenAI-compatible server picked by FORMALLLM_REMOTE_URL / FORMALLLM_REMOTE_MODEL (OpenRouter, Groq, Ollama, ...)
+            model_name=cfg["model"] if cfg.get("base_url") else remote_model(cfg),
+            base_url=base_url,
             temperature=temperature,
             reasoning_effort=cfg.get("reasoning_effort"),
             extra_body=extra,

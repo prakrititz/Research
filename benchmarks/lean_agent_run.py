@@ -73,15 +73,27 @@ def run(args):
                 if (task_id, trial) in done:
                     continue
                 started = time.time()
-                result = agent.solve(task, lean)
-                row = record(task_id, trial, result, time.time() - started, args.config)
-                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-                handle.flush()
-                print(f"{task_id:30s} trial {trial}  {result.outcome:9s} verified={result.verified!s:5s} calls={row['calls']:2d} "
-                      f"{row['seconds']:6.1f}s", flush=True)
-                if result.outcome == "NETWORK":
-                    print("the endpoint stopped serving; stopping (re-run later: finished trials are kept)", flush=True)
-                    return
+                try:
+                    result = agent.solve(task, lean)
+                    row = record(task_id, trial, result, time.time() - started, args.config)
+                    handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+                    handle.flush()
+                    print(f"{task_id:30s} trial {trial}  {result.outcome:9s} verified={result.verified!s:5s} calls={row['calls']:2d} "
+                          f"{row['seconds']:6.1f}s", flush=True)
+                    if result.outcome == "NETWORK":
+                        print("the endpoint stopped serving; stopping (re-run later: finished trials are kept)", flush=True)
+                        return
+                except Exception as e:
+                    print(f"{task_id:30s} trial {trial}  ERROR: {str(e)[:120]}", flush=True)
+                    err_row = {
+                        "task": task_id, "trial": trial, "config": args.config, "outcome": "ERROR",
+                        "verified": False, "calls": 0, "retractions": 0, "detail": str(e)[:300],
+                        "seconds": round(time.time() - started, 1), "call_outcomes": [], "replies": [],
+                        "feedback": [str(e)[:300]], "laws": 0, "helper_lemmas": [], "certificate": None,
+                        "tree": None, "lean_seconds": 0.0
+                    }
+                    handle.write(json.dumps(err_row, ensure_ascii=False) + "\n")
+                    handle.flush()
 
 
 def solved_table(rows):
@@ -175,8 +187,8 @@ def main():
     p.add_argument("file")
     args = ap.parse_args()
     if args.command == "run":
-        from FormalLLM.lean.session import DEFAULT_IMPORTS
-        args.imports = args.imports or DEFAULT_IMPORTS
+        from FormalLLM.lean.session import FULL_IMPORTS
+        args.imports = args.imports or FULL_IMPORTS
         run(args)
     elif args.command == "summarize":
         summarize(args.file)

@@ -10,6 +10,12 @@ import urllib.request
 import urllib.error
 import os
 
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 class Spinner:
     def __init__(self, message="Waiting for LLM..."):
         self.spinner = itertools.cycle(['-', '\\', '|', '/'])
@@ -204,6 +210,18 @@ class OpenAIChatProvider(LLMProvider):
     #: Fields that have carried the reasoning text on the endpoints we use.
     REASONING_FIELDS = ("reasoning", "reasoning_content", "thinking")
 
+    CUMULATIVE_COST_USD = 0.0
+    MAX_BUDGET_USD = float(os.environ.get("FORMALLLM_MAX_BUDGET_USD", "100.0"))
+    MODEL_RATES = {
+        "gpt-4o": (2.50 / 1e6, 10.00 / 1e6),
+        "gpt-4o-mini": (0.15 / 1e6, 0.60 / 1e6),
+        "gpt-4o-2024-08-06": (2.50 / 1e6, 10.00 / 1e6),
+        "gpt-4o-2024-11-20": (2.50 / 1e6, 10.00 / 1e6),
+        "o3-mini": (1.10 / 1e6, 4.40 / 1e6),
+        "o1-mini": (1.10 / 1e6, 4.40 / 1e6),
+        "o1": (15.00 / 1e6, 60.00 / 1e6),
+    }
+
     def __init__(self,
                  model_name: str,
                  base_url: str,
@@ -214,12 +232,29 @@ class OpenAIChatProvider(LLMProvider):
                  response_format: str = "json_object",
                  timeout: int = 900,
                  stream: bool = True,
-                 max_transport_retries: int = 4,
+                 max_transport_retries: int = 8,
                  extra_body: dict = None,
                  reasoning_effort: str = None):
         self.model_name = model_name
         self.base_url = base_url.rstrip("/")
-        self.auth = auth if auth is not None else os.environ.get(auth_env)
+        
+        # Resolve authentication: explicit -> env auth_env -> OPENAI_API_KEY -> ~/.formalllm credentials
+        resolved_auth = auth if auth is not None else os.environ.get(auth_env)
+        if not resolved_auth:
+            resolved_auth = os.environ.get("OPENAI_API_KEY")
+        if not resolved_auth:
+            for candidate in ("openai_key", "remote_auth"):
+                cred_path = os.path.join(os.path.expanduser("~"), ".formalllm", candidate)
+                if os.path.exists(cred_path):
+                    try:
+                        with open(cred_path, "r", encoding="utf-8") as f:
+                            c = f.read().strip()
+                            if c:
+                                resolved_auth = c
+                                break
+                    except Exception:
+                        pass
+        self.auth = resolved_auth
         self.auth_env = auth_env
         self.temperature = temperature
         self.max_tokens = max_tokens
@@ -241,16 +276,32 @@ class OpenAIChatProvider(LLMProvider):
             self.extra_body.setdefault("reasoning_effort", reasoning_effort)
         self.last_meta = {}
 
+    def _track_usage_cost(self, usage: dict):
+        p_tokens = usage.get("prompt_tokens") or 0
+        c_tokens = usage.get("completion_tokens") or 0
+        p_rate, c_rate = self.MODEL_RATES.get(self.model_name, (2.50 / 1e6, 10.00 / 1e6))
+        call_cost = (p_tokens * p_rate) + (c_tokens * c_rate)
+        OpenAIChatProvider.CUMULATIVE_COST_USD += call_cost
+        print(f"\n[Usage: {p_tokens} prompt + {c_tokens} completion tokens | Call: ${call_cost:.5f} | "
+              f"Cumulative Total: ${OpenAIChatProvider.CUMULATIVE_COST_USD:.4f} / ${OpenAIChatProvider.MAX_BUDGET_USD:.2f}]", flush=True)
+        if OpenAIChatProvider.CUMULATIVE_COST_USD >= OpenAIChatProvider.MAX_BUDGET_USD:
+            raise LLMBudgetExhausted(
+                f"Global budget ceiling reached (${OpenAIChatProvider.CUMULATIVE_COST_USD:.2f} >= ${OpenAIChatProvider.MAX_BUDGET_USD:.2f})"
+            )
+
     def _headers(self) -> dict:
         headers = {"Content-Type": "application/json"}
         if (self.auth or "").strip().lower() == "none":
             return headers                        # a local server (Ollama /v1, llama.cpp, vLLM) that takes no credentials
         if not self.auth:
             raise Exception(
-                f"No credentials for {self.base_url}. Set {self.auth_env} to "
-                f"'user:password', 'Bearer <token>' or 'none' (a local server) before running."
+                f"No credentials for {self.base_url}. Set {self.auth_env} or OPENAI_API_KEY, "
+                f"or save key in ~/.formalllm/openai_key before running."
             )
-        if ":" in self.auth and not self.auth.lower().startswith("bearer "):
+        if self.auth.startswith("sk-") or self.auth.lower().startswith("bearer "):
+            token = self.auth.split(" ", 1)[-1]
+            headers["Authorization"] = f"Bearer {token}"
+        elif ":" in self.auth:
             token = base64.b64encode(self.auth.encode("utf-8")).decode("ascii")
             headers["Authorization"] = f"Basic {token}"
         else:
@@ -259,21 +310,34 @@ class OpenAIChatProvider(LLMProvider):
         return headers
 
     def generate(self, prompt: str, max_tokens: int = None) -> str:
-        print("\n" + "="*50)
-        print("=== LLM PROMPT ===")
-        print("="*50)
-        print(prompt)
-        print("="*50 + "\n")
+        try:
+            print("\n" + "="*50)
+            print("=== LLM PROMPT ===")
+            print("="*50)
+            print(prompt)
+            print("="*50 + "\n")
+        except Exception:
+            pass
         
         url = f"{self.base_url}/chat/completions"
+
+        is_reasoning = self.model_name.startswith("o1") or self.model_name.startswith("o3")
 
         data = {
             "model": self.model_name,
             "messages": [{"role": "user", "content": prompt}],
             "stream": self.stream,
-            "temperature": self.temperature,
-            "max_tokens": max_tokens if max_tokens is not None else self.max_tokens,
         }
+        if not is_reasoning:
+            data["temperature"] = self.temperature
+            data["max_tokens"] = max_tokens if max_tokens is not None else self.max_tokens
+        else:
+            # Reasoning tokens count toward completion tokens. If caller passes a small max_tokens
+            # (e.g. 1024), reasoning will consume all of it before outputting anything.
+            # Ensure at least 8192 completion tokens.
+            comp_tokens = max(max_tokens or 0, self.max_tokens or 0)
+            data["max_completion_tokens"] = max(comp_tokens, 8192)
+
         if self.response_format:
             data["response_format"] = {"type": self.response_format}
         if self.stream:
@@ -309,6 +373,19 @@ class OpenAIChatProvider(LLMProvider):
                 break
             except urllib.error.HTTPError as e:
                 detail = e.read().decode("utf-8", "replace")[:500]
+                if e.code == 429:
+                    wait_s = 20
+                    # Try to extract "Please try again in Xs" from error detail if present
+                    import re
+                    m = re.search(r"try again in ([\d\.]+)s", detail)
+                    if m:
+                        wait_s = int(float(m.group(1))) + 2
+                    retry_after = e.headers.get("retry-after") if hasattr(e, "headers") else None
+                    if retry_after and retry_after.isdigit():
+                        wait_s = max(wait_s, int(retry_after))
+                    print(f"\n[HTTP 429 Rate limit: waiting {wait_s}s before retry (attempt {attempt+1}/{self.max_transport_retries})...]", flush=True)
+                    time.sleep(wait_s)
+                    continue
                 raise Exception(f"{self.base_url} returned HTTP {e.code}: {detail}")
             except (urllib.error.URLError, socket.error, OSError) as e:
                 last_error = e
@@ -332,6 +409,7 @@ class OpenAIChatProvider(LLMProvider):
         message = (choices[0].get("message") or {}) if choices else {}
 
         usage = result.get("usage") or {}
+        self._track_usage_cost(usage)
         self.last_meta = {
             "prompt_eval_count": usage.get("prompt_tokens"),
             "eval_count": usage.get("completion_tokens"),
@@ -385,17 +463,22 @@ class OpenAIChatProvider(LLMProvider):
                 if delta.get("content"):
                     content = delta["content"]
                     content_parts.append(content)
-                    import sys
-                    sys.stdout.write(content)
-                    sys.stdout.flush()
+                    try:
+                        sys.stdout.write(content)
+                        sys.stdout.flush()
+                    except Exception:
+                        pass
                 for field in self.REASONING_FIELDS:
                     if delta.get(field):
                         reason = delta[field]
                         reasoning_parts.append(reason)
-                        import sys
-                        sys.stdout.write(reason)
-                        sys.stdout.flush()
+                        try:
+                            sys.stdout.write(reason)
+                            sys.stdout.flush()
+                        except Exception:
+                            pass
 
+        self._track_usage_cost(usage)
         self.last_meta = {
             "prompt_eval_count": usage.get("prompt_tokens"),
             "eval_count": usage.get("completion_tokens"),
@@ -409,9 +492,12 @@ class OpenAIChatProvider(LLMProvider):
             self.last_meta["used_thinking_channel"] = True
             text = "".join(reasoning_parts)
             
-        print("\n" + "="*50)
-        print("=== LLM STREAM RESPONSE ===")
-        print("="*50)
-        print(text)
-        print("="*50 + "\n")
+        try:
+            print("\n" + "="*50)
+            print("=== LLM STREAM RESPONSE ===")
+            print("="*50)
+            print(text)
+            print("="*50 + "\n")
+        except Exception:
+            pass
         return text
