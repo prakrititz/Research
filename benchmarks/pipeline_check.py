@@ -52,8 +52,12 @@ def main():
     print(f"{len(jobs)} derivations to check ({len(done)} already done)", flush=True)
     with LeanSession(imports=FULL_IMPORTS) as lean, open(out, "a", encoding="utf8") as handle:
         for task_id, path in jobs:
-            if lean.recycle():
-                print(f"(Lean REPL restarted to free memory; restart {lean.restarts})", flush=True)
+            try:
+                if lean.recycle():
+                    print(f"(Lean REPL restarted to free memory; restart {lean.restarts})", flush=True)
+            except Exception as error:
+                print(f"Lean could not be restarted ({error}); stopping (run again to resume)", flush=True)
+                return
             started = time.time()
             answer = open(path, encoding="utf8").read()
             provider = Scripted([answer])
@@ -62,8 +66,18 @@ def main():
                 result = LeanAgent(provider, max_calls=2).solve(task, lean)
                 outcome, verified, detail = result.outcome, result.verified, result.detail
                 feedback = [c.feedback[:600] for c in result.calls if c.outcome != "applied"]
-            except Exception as error:                     # a crash is a framework fault too
-                outcome, verified, detail, feedback = "CRASH", False, f"{type(error).__name__}: {error}"[:400], []
+            except Exception as error:                     # a crash is a framework fault too ...
+                text = f"{type(error).__name__}: {error}"
+                if "LeanUnavailable" in text or "did not finish importing" in text:
+                    # ... except Lean itself going down (infrastructure): record nothing, restart, or stop if it stays down
+                    print(f"{task_id:36s} Lean went down; not recorded ({text[:80]})", flush=True)
+                    try:
+                        lean.restart()
+                        continue
+                    except Exception:
+                        print("Lean could not be restarted; stopping (run again to resume)", flush=True)
+                        return
+                outcome, verified, detail, feedback = "CRASH", False, text[:400], []
             row = {"task": task_id, "outcome": outcome, "verified": verified, "calls": len(provider.prompts),
                    "detail": detail, "feedback": feedback, "prompt_chars": max((len(p) for p in provider.prompts), default=0),
                    "seconds": round(time.time() - started, 1)}

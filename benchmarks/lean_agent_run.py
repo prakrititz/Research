@@ -50,6 +50,12 @@ def record(task_id, trial, result, seconds, config):
     }
 
 
+def _lean_down(error) -> bool:
+    """The Lean process is gone or could not start: an infrastructure failure, never a model failure."""
+    text = f"{type(error).__name__}: {error}"
+    return "LeanUnavailable" in text or "did not finish importing" in text or "Lean REPL ended" in text
+
+
 def run(args):
     from benchmarks import run_bench
     from FormalLLM.lean.agent import LeanAgent
@@ -76,8 +82,13 @@ def run(args):
             for trial in range(args.repeats):
                 if (task_id, trial) in done:
                     continue
-                if lean.recycle():
-                    print(f"(Lean REPL restarted to free memory; restart {lean.restarts})", flush=True)
+                try:
+                    if lean.recycle():
+                        print(f"(Lean REPL restarted to free memory; restart {lean.restarts})", flush=True)
+                except Exception as e:
+                    print(f"Lean could not be restarted ({str(e)[:120]}); stopping. Finished trials are kept: run the same "
+                          f"command again to resume.", flush=True)
+                    return
                 started = time.time()
                 try:
                     result = agent.solve(task, lean)
@@ -96,6 +107,16 @@ def run(args):
                               f"inspect them before spending more", flush=True)
                         return
                 except Exception as e:
+                    if _lean_down(e):
+                        # infrastructure, not the model: record nothing (a resumed run redoes this trial), and stop if Lean
+                        # cannot be brought back, instead of crashing through every remaining task
+                        print(f"{task_id:30s} trial {trial}  Lean went down ({str(e)[:100]}); not recorded", flush=True)
+                        try:
+                            lean.restart()
+                            continue
+                        except Exception:
+                            print("Lean could not be restarted; stopping. Run the same command again to resume.", flush=True)
+                            return
                     print(f"{task_id:30s} trial {trial}  ERROR: {str(e)[:120]}", flush=True)
                     err_row = {
                         "task": task_id, "trial": trial, "config": args.config, "outcome": "ERROR",

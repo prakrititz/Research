@@ -133,15 +133,21 @@ class LeanSession:
 
     # --- process management ---------------------------------------------------------------------------------------
 
-    def _start(self):
-        self.process = Toolchain().spawn_repl()
-        started = time.time()
-        reply = self._exchange({"cmd": self.imports}, self.startup_timeout)
-        if reply is None:
+    def _start(self, attempts: int = 3):
+        """Spawn the REPL and import. A starved machine can refuse a new process for a while (Windows: "fork: Resource
+        temporarily unavailable"), so try a few times, cleaning up the half-started process tree in between."""
+        for attempt in range(attempts):
+            self.process = Toolchain().spawn_repl()
+            started = time.time()
+            reply = self._exchange({"cmd": self.imports}, self.startup_timeout)
+            if reply is not None:
+                self.env = reply["env"]
+                self.startup_seconds = time.time() - started
+                return
             self.close()
-            raise LeanUnavailable("the Lean REPL did not finish importing")
-        self.env = reply["env"]
-        self.startup_seconds = time.time() - started
+            if attempt + 1 < attempts:
+                time.sleep(15 * (attempt + 1))
+        raise LeanUnavailable(f"the Lean REPL did not finish importing ({attempts} attempts)")
 
     def _exchange(self, message: dict, timeout: float):
         """Send one JSON command and read one JSON reply; ``None`` if nothing came back in ``timeout`` seconds."""
