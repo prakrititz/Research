@@ -31,11 +31,16 @@ LIBRARY_APPLY = "".join(f"(apply Refine.{n}; all_goals first | assumption | (sim
                         for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
 
 
-def make_cascade(extra_simp=()):
+def make_cascade(extra_simp=(), task_defs=(), pre="True"):
     """The tactic that proves an obligation, and its *diagnosis* form (a part no tactic closes becomes ``sorry``, so that
     Lean reports its goal state). It reduces ``fun`` redexes and projections, splits conjunctions, then tries each tactic in
     turn. ``Refine.*`` are the lemmas of ``lemmas.py``; ``extra_simp`` are helper lemmas a step brought along."""
     simp = ", ".join([SIMP_SET, *extra_simp])
+    # the task's own helper definitions (``fib4Spec``, ``isPal``...): unfold them one step and finish by arithmetic. Last, because
+    # unfolding a recursive definition can hit Lean's recursion limit, which ``first`` cannot catch (he_046, he_063)
+    defs = ", ".join(task_defs)
+    defs_alt = (f" | (simp_all [{simp}, {defs}]; done) | (simp_all [{simp}, {defs}] <;> omega) | "
+                f"(simp only [{defs}] at * <;> grind)") if task_defs else ""
     # helper lemmas are used three ways: as rewrite rules (above); by ``apply`` when the goal is one of their conclusions (the
     # hypotheses are then discharged by ``simp_all``); and by ``grind``, which instantiates them by pattern
     helpers = ""
@@ -64,16 +69,19 @@ def make_cascade(extra_simp=()):
               # backward chaining over the whole library (the closest thing here to the paper's prover searching its
               # library): split the conjunctions, bring the bound variables in, and chain library lemmas and hypotheses.
               # grind alone failed on he_009 because it rewrites `take (i + 1)` away from the form the lemmas state
-              f"((try intros); (repeat' apply And.intro) <;> (try intros) <;> solve_by_elim (maxDepth := 4) [{LIBRARY}]) | "
+              # facts hidden in the precondition / in conjunctions (`h : f_precond a b` = `a > 0 ∧ b > 0`) are made usable:
+              # unfold the precondition and split every conjunction hypothesis (he_013 needed `0 < a`)
+              f"((try intros); (try unfold {pre} at *); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> "
+              f"first | omega | solve_by_elim (maxDepth := 6) [{LIBRARY}]) | "
               # closed-form values: evaluate indices into constructions only (EVAL_SET), keep `take (i + 1)` and members as stated
               f"((try intros); (try simp_all only [{EVAL_SET}]); (repeat' apply And.intro) <;> (try intros) <;> "
-              f"solve_by_elim (maxDepth := 4) [{LIBRARY}]) | "
+              f"solve_by_elim (maxDepth := 6) [{LIBRARY}]) | "
               # lists built by appending (`acc ++ [d, x]`, the builder family): evaluate the index into the append / literal,
               # split the cases, and let grind finish on the goal as written. Not the full simplifier first: it turns
               # `acc[j]!` into `acc[j]` in the goal but not in the invariant, and grind then cannot connect them (he_005)
               f"((try intros); (try split_ifs) <;> (try simp only [Refine.getElem_bang_append, Refine.getElem_bang_cons, "
               f"Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind) | "
-              f"nlinarith | (aesop; done) | decide)")
+              f"nlinarith | (aesop; done) | decide{defs_alt})")
     diagnose = tactic[:-1] + " | sorry)"
     if extra_simp:
         use = lambda n: f"(apply {n}; all_goals first | done | assumption | (simp_all; done) | omega | grind)"
@@ -240,11 +248,18 @@ class Derivation:
 
     @property
     def tactic(self) -> str:
-        return self._tactic or make_cascade([h.name for h in self.helpers])[0]
+        return self._tactic or make_cascade([h.name for h in self.helpers], self._task_defs(), self.task.pre_name)[0]
 
     @property
     def diagnose(self) -> str:
-        return self._diagnose or make_cascade([h.name for h in self.helpers])[1]
+        return self._diagnose or make_cascade([h.name for h in self.helpers], self._task_defs(), self.task.pre_name)[1]
+
+    def _task_defs(self) -> list:
+        """Names of the helper functions the task's specification defines (not its pre/postcondition)."""
+        import re as _re
+        names = _re.findall(r"(?m)^\s*(?:@\[[^\]]*\]\s*)?(?:private\s+)?def\s+([A-Za-z_][A-Za-z0-9_']*)", self.task.prelude)
+        skip = {self.task.pre_name, self.task.post_name, "mkArray", "empty"}          # Verina compatibility shims
+        return [n for n in dict.fromkeys(names) if n not in skip][:6]
 
     def _helper_text(self) -> str:
         return "\n".join(h.source() for h in self.helpers)
