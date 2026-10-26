@@ -384,37 +384,73 @@ class Derivation:
                   "(rw [Refine.forall_mem_iff_idx]; intros; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (intros; grind))")
         tries = [f"((try unfold {post} at *); (try simp only [{post}] at *); refine ⟨{v}, ?_⟩; {finish})"
                  for v in candidates[-4:][::-1]]
-        return "first | " + " | ".join(tries) + f" | ({self.diagnose})"
+        return "first | " + " | ".join(tries)
+
+    def _cases_tactic(self, obligation: Obligation) -> Optional[str]:
+        """A postcondition over inputs of a sum type (HumanEval's ``PyVal``, ``Option``, ``Bool``, or an ``inductive`` of the
+        task): case-split those inputs, then simplify (he_092: ``cases x <;> cases y <;> cases z <;> simp``)."""
+        if obligation.body is not None or self.task.post_name not in obligation.statement:
+            return None
+        inductives = set(re.findall(r"(?m)^\s*inductive\s+([A-Za-z_][A-Za-z0-9_']*)", self.task.prelude)) | {"PyVal", "Bool"}
+        names = []
+        depth, start = 0, None
+        for k, ch in enumerate(obligation.binders):
+            if ch == "(":
+                if depth == 0:
+                    start = k + 1
+                depth += 1
+            elif ch == ")":
+                depth -= 1
+                if depth == 0 and start is not None and ":" in obligation.binders[start:k]:
+                    vs, typ = obligation.binders[start:k].split(":", 1)
+                    head = typ.strip().split()[0] if typ.strip() else ""
+                    if head in inductives or head == "Option":
+                        names += [v for v in vs.split() if not v.startswith("h")]
+        if not names or len(names) > 3:
+            return None
+        post = self.task.post_name
+        split = " <;> ".join(f"cases {v}" for v in names)
+        return (f"((try unfold {post} at *); {split} <;> (first | (simp_all; done) | (simp_all <;> omega) | (simp_all <;> grind) "
+                f"| (decide) | grind))")
+
+    def _prove_as_helper(self, obligation: Obligation, name: str, tactic: str) -> bool:
+        """Prove the obligation with ``tactic`` in a command of its own; on success keep the proof as an automatic helper
+        lemma, so that the final certificate (which re-runs only the common cascade, ``refine_auto``) closes this proof site
+        by ``apply`` too."""
+        names = _binder_names(obligation.binders)
+        if names is None:
+            return False
+        reply = self._run(obligation.source(f"{name}_alt", tactic))
+        if reply.timed_out or reply.errors or reply.goals:
+            return False
+        statement = f"∀ {obligation.binders}, {obligation.statement}" if obligation.binders.strip() else obligation.statement
+        intro = f"  intro {' '.join(names)}\n" if names else ""
+        lemma = HelperLemma(f"auto_{len(self.helpers)}_{name}"[:60], statement,
+                            f"by\n{intro}  {with_bound(tactic, obligation.bound)}")
+        return self._admit(lemma) is None
 
     def _portfolio_prove(self, obligation: Obligation, name: str) -> bool:
         """The combined cascade died on a Lean resource limit: run its groups one by one (each its own command and budget).
         A group that proves the obligation becomes an automatic helper lemma, so that the final certificate closes this
         proof site by ``apply`` instead of re-running the cascade that exploded."""
-        names = _binder_names(obligation.binders)
-        if names is None:
-            return False
         make_cascade([h.name for h in self.helpers], self._task_defs(), self.task.pre_name)
         groups = PORTFOLIO_CACHE.get((tuple(h.name for h in self.helpers), ", ".join(self._task_defs()), self.task.pre_name), [])
-        for k, group in enumerate(groups):
-            reply = self._run(obligation.source(f"{name}_g{k}", group))
-            if reply.timed_out or reply.errors or reply.goals:
-                continue
-            statement = f"∀ {obligation.binders}, {obligation.statement}" if obligation.binders.strip() else obligation.statement
-            intro = f"  intro {' '.join(names)}\n" if names else ""
-            lemma = HelperLemma(f"auto_{len(self.helpers)}_{name}"[:60], statement,
-                                f"by\n{intro}  {with_bound(group, obligation.bound)}")
-            if self._admit(lemma) is None:
-                return True
-        return False
+        return any(self._prove_as_helper(obligation, f"{name}_g{k}", group) for k, group in enumerate(groups))
 
     def _check(self, obligation: Obligation, name: str) -> Verdict:
         verdict = self._check_once(obligation, name)
-        if verdict.status == "UNPROVED" and "resource limit" in verdict.message and self._portfolio_prove(obligation, name):
-            verdict = Verdict(obligation, "PROVED", seconds=verdict.seconds)
+        if verdict.status != "UNPROVED":
+            return verdict
+        # tactics the common cascade does not contain (they depend on this obligation): each proof found becomes a helper
+        specials = [t for t in (self._witness_tactic(obligation), self._cases_tactic(obligation)) if t]
+        if any(self._prove_as_helper(obligation, f"{name}_s{k}", t) for k, t in enumerate(specials)):
+            return Verdict(obligation, "PROVED", seconds=verdict.seconds)
+        if "resource limit" in verdict.message and self._portfolio_prove(obligation, name):
+            return Verdict(obligation, "PROVED", seconds=verdict.seconds)
         return verdict
 
     def _check_once(self, obligation: Obligation, name: str) -> Verdict:
-        source = obligation.source(name, self._witness_tactic(obligation) or self.diagnose)
+        source = obligation.source(name, self.diagnose)
         if source in self._memo:
             return self._memo[source]
         reply = self._run(source)

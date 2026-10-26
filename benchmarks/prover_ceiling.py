@@ -67,7 +67,12 @@ def main():
                 der = Derivation(task, lean, counterexamples=False)
                 steps = der.apply_tree(tree)
                 failing = [s for s in steps if not s.ok]
-                row["automation_alone"] = not failing and der.complete
+                # counted only with the full certificate: the whole term compiles, standard axioms only, every test passes
+                certificate = der.certify() if (not failing and der.complete) else None
+                row["automation_alone"] = bool(certificate and certificate.verified)
+                row["steps_accepted"] = not failing and der.complete
+                if certificate is not None and not certificate.verified:
+                    row["certificate_errors"] = [e[:300] for e in certificate.errors[:2]]
                 open_obs = [v for s in failing for v in s.verdicts if v.status == "UNPROVED"]
                 row["failed_status"] = failing[0].status if failing else ""
                 row["open_obligations"] = [v.obligation.description for v in open_obs][:4]
