@@ -19,7 +19,24 @@ import time
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
-from FormalLLM.lean.laws import (Goal, HOLE, IllFormed, Law, Obligation, Rendered, RESULT, law_from_json)
+from FormalLLM.lean.laws import (Goal, HOLE, IllFormed, Law, Obligation, Rendered, RESULT, law_from_json, with_bound)
+
+
+def _binder_names(binders: str) -> Optional[List[str]]:
+    """The names bound by ``(a : A) (h : P a) ...``; ``None`` if there are implicit or instance binders."""
+    names, depth, start = [], 0, None
+    for k, ch in enumerate(binders):
+        if ch in "{[" and depth == 0:
+            return None
+        if ch == "(":
+            if depth == 0:
+                start = k + 1
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+            if depth == 0 and start is not None:
+                names += binders[start:k].split(":", 1)[0].split()
+    return names
 from FormalLLM.lean.lemmas import EVAL_SET, LEMMAS, SIMP_SET
 from FormalLLM.lean.session import LeanSession
 from FormalLLM.lean.task import LeanTask
@@ -48,6 +65,7 @@ def make_cascade(extra_simp=(), task_defs=(), pre="True"):
         names = ", ".join(extra_simp)
         applied = " | ".join(f"(apply {n} <;> simp_all)" for n in extra_simp)
         helpers = f"{applied} | (grind [{names}]) | (simp_all [{simp}] <;> grind [{names}]) | "
+    groups = _cascade_groups(simp, helpers, defs_alt, pre)
     tactic = ("(try dsimp only at *); (repeat' apply And.intro); all_goals (first | omega | grind | (simp_all; done) | "
               f"(simp_all [{simp}]; done) | (simp_all [{simp}]; omega) | (simp_all; omega) | "
               f"(simp_all [{simp}, Nat.mul_comm]; done) | (simp_all [{simp}, mul_assoc]; done) | "
@@ -89,8 +107,40 @@ def make_cascade(extra_simp=(), task_defs=(), pre="True"):
         # a step obligation is ``invariant' ∧ variant decreases``: apply the lemma to the part that is its conclusion
         both = " | ".join(f"(refine And.intro ?_ ?_ <;> first | {use(n)} | (dsimp only; omega) | omega)" for n in extra_simp)
         whole = whole + " | " + both
+        groups = [f"first | {whole}"] + groups
+        PORTFOLIO_CACHE[(tuple(extra_simp), defs, pre)] = groups
         return f"first | {whole} | ({tactic})", f"first | {whole} | ({diagnose})"
+    PORTFOLIO_CACHE[(tuple(extra_simp), defs, pre)] = groups
     return tactic, diagnose
+
+
+#: the cascade's alternatives as separate groups (see ``Derivation._portfolio``), filled by ``make_cascade``
+PORTFOLIO_CACHE: Dict[tuple, List[str]] = {}
+
+
+def _cascade_groups(simp: str, helpers: str, defs_alt: str, pre: str) -> List[str]:
+    """The cascade's alternatives in groups, each a complete tactic of its own. A Lean resource limit (heartbeats, recursion
+    depth) raised by one alternative is not caught by ``first``: it ends the whole cascade, and the alternatives after it
+    never run (he_001, he_103: "deterministic timeout at whnf"). Run separately, a group that explodes cannot stop the others."""
+    start = "(try dsimp only at *); (repeat' apply And.intro); all_goals (first | "
+    lib_apply = LIBRARY_APPLY.rstrip(" |")
+    chunks = [
+        f"omega | (simp_all [{simp}]; done) | (simp_all [{simp}]; omega) | (simp_all; omega) | (simp_all; done) | "
+        f"(split_ifs <;> simp_all [{simp}] <;> omega) | (split <;> simp_all [{simp}]; done)",
+        (helpers.rstrip(" |") if helpers else ""),
+        lib_apply,
+        f"((try intros); (try unfold {pre} at *); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> "
+        f"first | omega | solve_by_elim (maxDepth := 6) [{LIBRARY}]) | "
+        f"((try intros); (try simp_all only [{EVAL_SET}]); (repeat' apply And.intro) <;> (try intros) <;> "
+        f"solve_by_elim (maxDepth := 6) [{LIBRARY}])",
+        f"((try intros); (try split_ifs) <;> (try simp only [Refine.getElem_bang_append, Refine.getElem_bang_cons, "
+        f"Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind)",
+        f"grind | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (grind [{LIBRARY}]) | "
+        f"(simp_all [{simp}] <;> grind [{LIBRARY}]) | (intros; simp_all [{simp}] <;> grind [{LIBRARY}])",
+        f"(norm_num; done) | (simp_all [{simp}]; norm_num; done) | nlinarith | (aesop; done) | decide",
+        defs_alt.lstrip(" |"),
+    ]
+    return [start + c + ")" for c in chunks if c.strip()]
 
 
 CASCADE, DIAGNOSE = make_cascade()
@@ -336,7 +386,34 @@ class Derivation:
                  for v in candidates[-4:][::-1]]
         return "first | " + " | ".join(tries) + f" | ({self.diagnose})"
 
+    def _portfolio_prove(self, obligation: Obligation, name: str) -> bool:
+        """The combined cascade died on a Lean resource limit: run its groups one by one (each its own command and budget).
+        A group that proves the obligation becomes an automatic helper lemma, so that the final certificate closes this
+        proof site by ``apply`` instead of re-running the cascade that exploded."""
+        names = _binder_names(obligation.binders)
+        if names is None:
+            return False
+        make_cascade([h.name for h in self.helpers], self._task_defs(), self.task.pre_name)
+        groups = PORTFOLIO_CACHE.get((tuple(h.name for h in self.helpers), ", ".join(self._task_defs()), self.task.pre_name), [])
+        for k, group in enumerate(groups):
+            reply = self._run(obligation.source(f"{name}_g{k}", group))
+            if reply.timed_out or reply.errors or reply.goals:
+                continue
+            statement = f"∀ {obligation.binders}, {obligation.statement}" if obligation.binders.strip() else obligation.statement
+            intro = f"  intro {' '.join(names)}\n" if names else ""
+            lemma = HelperLemma(f"auto_{len(self.helpers)}_{name}"[:60], statement,
+                                f"by\n{intro}  {with_bound(group, obligation.bound)}")
+            if self._admit(lemma) is None:
+                return True
+        return False
+
     def _check(self, obligation: Obligation, name: str) -> Verdict:
+        verdict = self._check_once(obligation, name)
+        if verdict.status == "UNPROVED" and "resource limit" in verdict.message and self._portfolio_prove(obligation, name):
+            verdict = Verdict(obligation, "PROVED", seconds=verdict.seconds)
+        return verdict
+
+    def _check_once(self, obligation: Obligation, name: str) -> Verdict:
         source = obligation.source(name, self._witness_tactic(obligation) or self.diagnose)
         if source in self._memo:
             return self._memo[source]
