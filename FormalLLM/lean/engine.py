@@ -101,7 +101,7 @@ def make_cascade(extra_simp=(), task_defs=(), pre="True"):
               f"Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind) | "
               # builder loops over a prefix (`acc = (l.take i).filterMap f`): one more element of the prefix, distribute the
               # map/filter over the append, substitute the invariant, split the match on `l[i]?` (he_022)
-              "((try intros); (try casesm* _ ∧ _); (try simp only [Refine.take_succ_getElem?, List.filterMap_append, List.map_append, List.filter_append, List.flatMap_append] at *); (try subst_vars); (try split) <;> simp_all) | "
+              "((try intros); (try casesm* _ ∧ _); (try simp only [Refine.take_succ_getElem?, List.filterMap_append, List.map_append, List.filter_append, List.flatMap_append] at *); (try subst_vars); (try split) <;> (simp_all; done)) | "
               f"nlinarith | (aesop; done) | decide{defs_alt})")
     diagnose = tactic[:-1] + " | sorry)"
     if extra_simp:
@@ -140,7 +140,7 @@ def _cascade_groups(simp: str, helpers: str, defs_alt: str, pre: str) -> List[st
         f"Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind)",
         f"grind | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (lib_grind) | "
         f"(simp_all [{simp}] <;> lib_grind) | (intros; simp_all [{simp}] <;> lib_grind)",
-        "((try intros); (try casesm* _ ∧ _); (try simp only [Refine.take_succ_getElem?, List.filterMap_append, List.map_append, List.filter_append, List.flatMap_append] at *); (try subst_vars); (try split) <;> simp_all)",
+        "((try intros); (try casesm* _ ∧ _); (try simp only [Refine.take_succ_getElem?, List.filterMap_append, List.map_append, List.filter_append, List.flatMap_append] at *); (try subst_vars); (try split) <;> (simp_all; done))",
         f"(norm_num; done) | (simp_all [{simp}]; norm_num; done) | nlinarith | (aesop; done) | decide",
         defs_alt.lstrip(" |"),
     ]
