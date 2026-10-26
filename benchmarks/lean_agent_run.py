@@ -76,6 +76,8 @@ def run(args):
             for trial in range(args.repeats):
                 if (task_id, trial) in done:
                     continue
+                if lean.recycle():
+                    print(f"(Lean REPL restarted to free memory; restart {lean.restarts})", flush=True)
                 started = time.time()
                 try:
                     result = agent.solve(task, lean)

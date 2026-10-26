@@ -174,16 +174,46 @@ class LeanSession:
         process, self.process = self.process, None
         if process is None:
             return
+        try:                                   # the REPL runs as a grandchild (lake -> lake -> repl): remember the whole tree
+            import psutil
+            tree = psutil.Process(process.pid).children(recursive=True)
+        except Exception:
+            tree = []
         try:
             process.stdin.close()
             process.wait(timeout=5)
         except Exception:
             process.kill()
+        # on Windows the children outlive their parent: without this every restart leaked a full REPL (GBs)
+        for child in tree:
+            try:
+                child.kill()
+            except Exception:
+                pass
 
     def restart(self):
         self.close()
         self.restarts += 1
         self._start()
+
+    def memory_gb(self) -> float:
+        """Resident memory of the REPL and its children. It only grows: every task's environment stays in the REPL."""
+        try:
+            import psutil
+            root = psutil.Process(self.process.pid)
+            return sum(p.memory_info().rss for p in [root, *root.children(recursive=True)]) / 2 ** 30
+        except Exception:
+            return 0.0
+
+    def recycle(self, limit_gb: Optional[float] = None) -> bool:
+        """Restart the REPL when it holds more than ``limit_gb`` (default ``FORMALLLM_LEAN_MAX_GB``, 6 GB; a fresh REPL with
+        Mathlib holds about 3.6 GB). Call between tasks: a long run otherwise starves the machine and later tasks time out
+        (found 2026-10-26: two REPLs at 5.5 and 4.1 GB after ~100 tasks each, 2.8 GB left free)."""
+        limit = limit_gb if limit_gb is not None else float(os.environ.get("FORMALLLM_LEAN_MAX_GB", "6"))
+        if self.process is not None and self.memory_gb() > limit:
+            self.restart()
+            return True
+        return False
 
     def __enter__(self):
         return self

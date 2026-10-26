@@ -52,6 +52,8 @@ def main():
     print(f"{len(jobs)} derivations to check ({len(done)} already done)", flush=True)
     with LeanSession(imports=FULL_IMPORTS) as lean, open(out, "a", encoding="utf8") as handle:
         for task_id, path in jobs:
+            if lean.recycle():
+                print(f"(Lean REPL restarted to free memory; restart {lean.restarts})", flush=True)
             started = time.time()
             answer = open(path, encoding="utf8").read()
             provider = Scripted([answer])

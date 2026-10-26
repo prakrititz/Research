@@ -246,7 +246,12 @@ class Derivation:
     def _environment(self) -> int:
         """The Lean environment holding the task's definitions (loaded once; again after a restart of the session)."""
         if self._env_id is None or self._env_restarts != self.lean.restarts:
-            reply, env = self.lean.load(self.lemmas + "\n" + self.task.prelude + "\n" + self._helper_text())
+            source = self.lemmas + "\n" + self.task.prelude + "\n" + self._helper_text()
+            reply, env = self.lean.load(source)
+            if env is None and reply.timed_out:
+                # a starved or bloated REPL times out on a load that normally takes seconds; the session restarted itself
+                # on the timeout, so try once more on the fresh process (with more time) before calling it a failure
+                reply, env = self.lean.load(source, timeout=max(300.0, self.lean.command_timeout * 2))
             if env is None:
                 raise ValueError("the task's own definitions do not compile: " + (reply.errors or ["?"])[0][:300])
             self._env_id, self._env_restarts = env, self.lean.restarts
