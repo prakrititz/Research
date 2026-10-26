@@ -44,7 +44,9 @@ def make_cascade(extra_simp=()):
               # a quantifier over members whose predicate mentions a loop variable (``∀ w ∈ words, f w ≤ f words[b]!``): turn it into
               # the index form the invariant uses, then let ``grind`` close it (``simp_all`` leaves it open: found on he_158)
               f"(rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | "
-              + helpers + "nlinarith | (aesop; done))")
+              + helpers +
+              f"(norm_num; done) | (simp_all [{simp}]; norm_num; done) | "
+              f"nlinarith | (aesop; done) | decide)")
     diagnose = tactic[:-1] + " | sorry)"
     if extra_simp:
         use = lambda n: f"(apply {n}; all_goals first | done | assumption | (simp_all; done) | omega | grind)"
@@ -109,6 +111,7 @@ PLAUSIBLE_CONFIG = "(config := { randomSeed := some 20261008, numInst := 200 })"
 TESTING = "set_option synthInstance.maxSize 100000 in\nset_option synthInstance.maxHeartbeats 0 in\n"
 STANDARD_AXIOMS = frozenset({"propext", "Classical.choice", "Quot.sound"})
 PRINT_AXIOMS = re.compile(r"depends on axioms: \[(.*?)\]", re.S)
+RESOURCE_LIMIT = re.compile(r"maximum recursion depth|maximum number of heartbeats|deterministic\) timeout")
 
 
 @dataclass
@@ -262,6 +265,13 @@ class Derivation:
         reply = self._run(source)
         if reply.timed_out:
             verdict = Verdict(obligation, "TIMEOUT", "Lean gave no answer within the time limit", seconds=reply.seconds)
+        elif reply.errors and obligation.body is None and RESOURCE_LIMIT.search(reply.errors[0]) and self._elaborates(obligation):
+            # a tactic of the cascade ran into a Lean limit (recursion depth, heartbeats): ``first`` cannot catch that, so it
+            # surfaced as an error. The statement itself is well-formed, so this is "the automation did not prove it", not
+            # "the step is ill-formed": the step stays repairable by a proof
+            verdict = Verdict(obligation, "UNPROVED", "the automation hit a Lean resource limit (" +
+                              reply.errors[0].splitlines()[0][:120] + "); the statement itself is well-formed",
+                              seconds=reply.seconds)
         elif reply.errors:
             verdict = Verdict(obligation, "ILL_FORMED", reply.errors[0][:600], seconds=reply.seconds)
         elif reply.goals:
@@ -273,6 +283,11 @@ class Derivation:
             verdict = Verdict(obligation, "PROVED", seconds=reply.seconds)
         self._memo[source] = verdict
         return verdict
+
+    def _elaborates(self, obligation: Obligation) -> bool:
+        """The obligation's statement type-checks (its proof aside)."""
+        reply = self._run(f"example {obligation.binders} :\n    {obligation.statement} := by\n  sorry\n")
+        return not reply.timed_out and not reply.errors
 
     def _counterexample(self, obligation: Obligation, name: str) -> Optional[str]:
         source = (TESTING + f"theorem {name}_cex {obligation.binders} :\n    {obligation.statement} := by\n"

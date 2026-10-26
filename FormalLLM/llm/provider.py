@@ -218,9 +218,17 @@ class OpenAIChatProvider(LLMProvider):
         "gpt-4o-2024-08-06": (2.50 / 1e6, 10.00 / 1e6),
         "gpt-4o-2024-11-20": (2.50 / 1e6, 10.00 / 1e6),
         "o3-mini": (1.10 / 1e6, 4.40 / 1e6),
+        "o4-mini": (1.10 / 1e6, 4.40 / 1e6),
         "o1-mini": (1.10 / 1e6, 4.40 / 1e6),
         "o1": (15.00 / 1e6, 60.00 / 1e6),
+        # list prices per million tokens (input, output), checked 2026-10-26; re-check before budgeting a large run
+        "gpt-5.4-mini": (0.75 / 1e6, 4.50 / 1e6),
+        "gpt-5.4": (2.50 / 1e6, 15.00 / 1e6),
+        "gpt-5.4-nano": (0.20 / 1e6, 1.25 / 1e6),
+        "gpt-5.5": (5.00 / 1e6, 30.00 / 1e6),
     }
+    #: a model not in the table is charged at a high rate, so that the spending cap errs on the side of stopping early
+    UNKNOWN_RATE = (5.00 / 1e6, 30.00 / 1e6)
 
     def __init__(self,
                  model_name: str,
@@ -279,7 +287,7 @@ class OpenAIChatProvider(LLMProvider):
     def _track_usage_cost(self, usage: dict):
         p_tokens = usage.get("prompt_tokens") or 0
         c_tokens = usage.get("completion_tokens") or 0
-        p_rate, c_rate = self.MODEL_RATES.get(self.model_name, (2.50 / 1e6, 10.00 / 1e6))
+        p_rate, c_rate = self.MODEL_RATES.get(self.model_name, self.UNKNOWN_RATE)
         call_cost = (p_tokens * p_rate) + (c_tokens * c_rate)
         OpenAIChatProvider.CUMULATIVE_COST_USD += call_cost
         print(f"\n[Usage: {p_tokens} prompt + {c_tokens} completion tokens | Call: ${call_cost:.5f} | "
@@ -321,7 +329,7 @@ class OpenAIChatProvider(LLMProvider):
         
         url = f"{self.base_url}/chat/completions"
 
-        is_reasoning = self.model_name.startswith("o1") or self.model_name.startswith("o3")
+        is_reasoning = self.model_name.startswith(("o1", "o3", "o4", "gpt-5"))
 
         data = {
             "model": self.model_name,

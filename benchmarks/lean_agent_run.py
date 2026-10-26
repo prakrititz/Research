@@ -61,7 +61,11 @@ def run(args):
     path = os.path.join(OUT, args.out or f"{ds.name}_{args.config}.jsonl")
     done = {(r["task"], r["trial"]) for r in jsonl(path)}
     cfg = run_bench.CONFIGS[args.config]
+    if args.max_usd is not None:
+        from FormalLLM.llm.provider import OpenAIChatProvider
+        OpenAIChatProvider.MAX_BUDGET_USD = args.max_usd
     provider = run_bench.make_provider(cfg, args.temperature, args.timeout)
+    failed = 0
     if cfg["kind"] == "ollama" and not args.free_text:
         provider.response_format = "json"                                  # the reply is one JSON object
     agent = LeanAgent(provider, max_calls=args.budget, attempts_per_goal=args.attempts, retractions=args.retractions)
@@ -81,7 +85,13 @@ def run(args):
                     print(f"{task_id:30s} trial {trial}  {result.outcome:9s} verified={result.verified!s:5s} calls={row['calls']:2d} "
                           f"{row['seconds']:6.1f}s", flush=True)
                     if result.outcome == "NETWORK":
-                        print("the endpoint stopped serving; stopping (re-run later: finished trials are kept)", flush=True)
+                        print("the endpoint stopped serving (or the model is retired, the key refused, the spending cap "
+                              f"reached): stopping. {result.detail[:160]}", flush=True)
+                        return
+                    failed += result.outcome != "SOLVED"
+                    if args.stop_after_exhausted and failed >= args.stop_after_exhausted:
+                        print(f"stopping: {failed} trial(s) not solved (--stop-after-exhausted {args.stop_after_exhausted}); "
+                              f"inspect them before spending more", flush=True)
                         return
                 except Exception as e:
                     print(f"{task_id:30s} trial {trial}  ERROR: {str(e)[:120]}", flush=True)
@@ -94,6 +104,10 @@ def run(args):
                     }
                     handle.write(json.dumps(err_row, ensure_ascii=False) + "\n")
                     handle.flush()
+                    failed += 1
+                    if args.stop_after_exhausted and failed >= args.stop_after_exhausted:
+                        print(f"stopping: {failed} trial(s) not solved; inspect them before spending more", flush=True)
+                        return
 
 
 def solved_table(rows):
@@ -181,6 +195,11 @@ def main():
     r.add_argument("--imports", default=None, help="Lean imports; default: the small set; use 'import Mathlib' for tasks that need it")
     r.add_argument("--free-text", action="store_true", help="do not force a JSON object from Ollama models")
     r.add_argument("--out", default=None)
+    r.add_argument("--stop-after-exhausted", type=int, default=0,
+                   help="stop the run once this many trials ended EXHAUSTED or ERROR (0 = never), so a run that is going "
+                        "wrong does not keep spending")
+    r.add_argument("--max-usd", type=float, default=None,
+                   help="hard spending cap for this run in US dollars (OpenAI API); the run stops when it is reached")
     s = sub.add_parser("summarize")
     s.add_argument("file")
     p = sub.add_parser("replay")

@@ -25,7 +25,12 @@ from typing import Any, Dict, Iterable
 TRANSPORT_FAILURE_MARK = "Failed to reach"
 
 #: Errors that mean the endpoint itself stopped serving (not a reply the model gave).
-ENDPOINT_CUTOFF_MARKS = ("network bandwidth limit", "ERR_NGROK")
+#: Also the errors after which no later call can succeed either: a retired model (OpenAI answers 404 "model_not_found",
+#: "has been deprecated"), a rejected key or exhausted quota, and our own spending cap. Without these a trial kept "trying"
+#: until its call limit and was recorded as EXHAUSTED, a model failure that never happened.
+ENDPOINT_CUTOFF_MARKS = ("network bandwidth limit", "ERR_NGROK", "model_not_found", "has been deprecated",
+                         "invalid_api_key", "insufficient_quota", "returned HTTP 401", "returned HTTP 403",
+                         "returned HTTP 404", "Global budget ceiling reached")
 
 #: The outcome label for such a trial.
 NETWORK = "NETWORK"

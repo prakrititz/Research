@@ -56,6 +56,9 @@ CONFIGS = {
     "gpt-4o": dict(kind="openai", model="gpt-4o", base_url="https://api.openai.com/v1"),
     "gpt-4o-mini": dict(kind="openai", model="gpt-4o-mini", base_url="https://api.openai.com/v1"),
     "o3-mini": dict(kind="openai", model="o3-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192),
+    "o4-mini": dict(kind="openai", model="o4-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192),
+    "gpt-5.4-mini": dict(kind="openai", model="gpt-5.4-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192),
+    "gpt-5.4": dict(kind="openai", model="gpt-5.4", base_url="https://api.openai.com/v1", reasoning_effort="medium", max_tokens=16384),
 }
 
 #: Named groups so an arm can be selected without listing every config.
