@@ -78,22 +78,22 @@ def make_cascade(extra_simp=(), task_defs=(), pre="True"):
               f"(norm_num; done) | (simp_all [{simp}]; norm_num; done) | "
               # the whole proved library, for grind to instantiate by pattern (the paper's prover searches its library): the
               # human helper lemmas are mostly instances of these general facts (max of a list, membership by index, ...)
-              f"(grind [{LIBRARY}]) | (simp_all [{simp}] <;> grind [{LIBRARY}]) | "
+              f"(lib_grind) | (simp_all [{simp}] <;> lib_grind) | "
               # a goal that is a library fact as stated (``he_034``'s was ``Refine.dedup_mergeSort_strict`` exactly): apply it
-              + LIBRARY_APPLY +
+              + "lib_apply | " +
               # ``∀ i < n, ...``: conditional rewrites (``((range n).map f)[i]! = f i`` needs ``i < n``) only fire once the
               # bound variables and their hypotheses are in the context
-              f"(intros; simp_all [{simp}] <;> grind [{LIBRARY}]) | "
+              f"(intros; simp_all [{simp}] <;> lib_grind) | "
               # backward chaining over the whole library (the closest thing here to the paper's prover searching its
               # library): split the conjunctions, bring the bound variables in, and chain library lemmas and hypotheses.
               # grind alone failed on he_009 because it rewrites `take (i + 1)` away from the form the lemmas state
               # facts hidden in the precondition / in conjunctions (`h : f_precond a b` = `a > 0 ∧ b > 0`) are made usable:
               # unfold the precondition and split every conjunction hypothesis (he_013 needed `0 < a`)
               f"((try intros); (try unfold {pre} at *); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> "
-              f"first | omega | solve_by_elim (maxDepth := 6) [{LIBRARY}]) | "
+              f"first | omega | lib_chain) | "
               # closed-form values: evaluate indices into constructions only (EVAL_SET), keep `take (i + 1)` and members as stated
               f"((try intros); (try simp_all only [{EVAL_SET}]); (repeat' apply And.intro) <;> (try intros) <;> "
-              f"solve_by_elim (maxDepth := 6) [{LIBRARY}]) | "
+              f"lib_chain) | "
               # lists built by appending (`acc ++ [d, x]`, the builder family): evaluate the index into the append / literal,
               # split the cases, and let grind finish on the goal as written. Not the full simplifier first: it turns
               # `acc[j]!` into `acc[j]` in the goal but not in the invariant, and grind then cannot connect them (he_005)
@@ -123,20 +123,20 @@ def _cascade_groups(simp: str, helpers: str, defs_alt: str, pre: str) -> List[st
     depth) raised by one alternative is not caught by ``first``: it ends the whole cascade, and the alternatives after it
     never run (he_001, he_103: "deterministic timeout at whnf"). Run separately, a group that explodes cannot stop the others."""
     start = "(try dsimp only at *); (repeat' apply And.intro); all_goals (first | "
-    lib_apply = LIBRARY_APPLY.rstrip(" |")
+    lib_apply = "lib_apply"
     chunks = [
         f"omega | (simp_all [{simp}]; done) | (simp_all [{simp}]; omega) | (simp_all; omega) | (simp_all; done) | "
         f"(split_ifs <;> simp_all [{simp}] <;> omega) | (split <;> simp_all [{simp}]; done)",
         (helpers.rstrip(" |") if helpers else ""),
         lib_apply,
         f"((try intros); (try unfold {pre} at *); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> "
-        f"first | omega | solve_by_elim (maxDepth := 6) [{LIBRARY}]) | "
+        f"first | omega | lib_chain) | "
         f"((try intros); (try simp_all only [{EVAL_SET}]); (repeat' apply And.intro) <;> (try intros) <;> "
-        f"solve_by_elim (maxDepth := 6) [{LIBRARY}])",
+        f"lib_chain)",
         f"((try intros); (try split_ifs) <;> (try simp only [Refine.getElem_bang_append, Refine.getElem_bang_cons, "
         f"Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind)",
-        f"grind | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (grind [{LIBRARY}]) | "
-        f"(simp_all [{simp}] <;> grind [{LIBRARY}]) | (intros; simp_all [{simp}] <;> grind [{LIBRARY}])",
+        f"grind | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (lib_grind) | "
+        f"(simp_all [{simp}] <;> lib_grind) | (intros; simp_all [{simp}] <;> lib_grind)",
         f"(norm_num; done) | (simp_all [{simp}]; norm_num; done) | nlinarith | (aesop; done) | decide",
         defs_alt.lstrip(" |"),
     ]
@@ -144,8 +144,13 @@ def _cascade_groups(simp: str, helpers: str, defs_alt: str, pre: str) -> List[st
 
 
 CASCADE, DIAGNOSE = make_cascade()
+#: the library steps as named tactics, defined once. Spelling the 90-lemma library out in every alternative made the cascade
+#: ~28k characters, and parsing it took Lean ~17 s per macro (twice per certificate): a full run would take hours longer
+LIB_MACROS = (f'macro "lib_grind" : tactic => `(tactic| grind [{LIBRARY}])\n'
+              f'macro "lib_chain" : tactic => `(tactic| solve_by_elim (maxDepth := 6) [{LIBRARY}])\n'
+              f'macro "lib_apply" : tactic => `(tactic| first | {LIBRARY_APPLY.rstrip(" |")})\n')
 #: the library cascade as a named tactic in every task environment (see ``Derivation.__init__``)
-AUTO_CLOSE = f'macro "auto_close" : tactic => `(tactic| ({CASCADE}))\n'
+AUTO_CLOSE = LIB_MACROS + f'macro "auto_close" : tactic => `(tactic| ({CASCADE}))\n'
 LEMMA_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")
 
 
