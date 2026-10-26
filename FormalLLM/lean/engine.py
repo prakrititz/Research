@@ -20,9 +20,16 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
 from FormalLLM.lean.laws import (Goal, HOLE, IllFormed, Law, Obligation, Rendered, RESULT, law_from_json)
-from FormalLLM.lean.lemmas import LEMMAS, SIMP_SET
+from FormalLLM.lean.lemmas import EVAL_SET, LEMMAS, SIMP_SET
 from FormalLLM.lean.session import LeanSession
 from FormalLLM.lean.task import LeanTask
+
+#: every proved lemma of ``lemmas.py``, as ``grind`` arguments
+LIBRARY = ", ".join(f"Refine.{n}" for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
+#: ``(apply L; all_goals first | assumption | (simp_all; done) | omega) | ...`` for every library lemma (fails fast on a mismatch)
+LIBRARY_APPLY = "".join(f"(apply Refine.{n}; all_goals first | assumption | (simp_all; done) | omega) | "
+                        for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
+
 
 def make_cascade(extra_simp=()):
     """The tactic that proves an obligation, and its *diagnosis* form (a part no tactic closes becomes ``sorry``, so that
@@ -46,6 +53,21 @@ def make_cascade(extra_simp=()):
               f"(rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | "
               + helpers +
               f"(norm_num; done) | (simp_all [{simp}]; norm_num; done) | "
+              # the whole proved library, for grind to instantiate by pattern (the paper's prover searches its library): the
+              # human helper lemmas are mostly instances of these general facts (max of a list, membership by index, ...)
+              f"(grind [{LIBRARY}]) | (simp_all [{simp}] <;> grind [{LIBRARY}]) | "
+              # a goal that is a library fact as stated (``he_034``'s was ``Refine.dedup_mergeSort_strict`` exactly): apply it
+              + LIBRARY_APPLY +
+              # ``∀ i < n, ...``: conditional rewrites (``((range n).map f)[i]! = f i`` needs ``i < n``) only fire once the
+              # bound variables and their hypotheses are in the context
+              f"(intros; simp_all [{simp}] <;> grind [{LIBRARY}]) | "
+              # backward chaining over the whole library (the closest thing here to the paper's prover searching its
+              # library): split the conjunctions, bring the bound variables in, and chain library lemmas and hypotheses.
+              # grind alone failed on he_009 because it rewrites `take (i + 1)` away from the form the lemmas state
+              f"((try intros); (repeat' apply And.intro) <;> (try intros) <;> solve_by_elim (maxDepth := 4) [{LIBRARY}]) | "
+              # closed-form values: evaluate indices into constructions only (EVAL_SET), keep `take (i + 1)` and members as stated
+              f"((try intros); (try simp_all only [{EVAL_SET}]); (repeat' apply And.intro) <;> (try intros) <;> "
+              f"solve_by_elim (maxDepth := 4) [{LIBRARY}]) | "
               f"nlinarith | (aesop; done) | decide)")
     diagnose = tactic[:-1] + " | sorry)"
     if extra_simp:

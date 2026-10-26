@@ -514,6 +514,83 @@ theorem ts_pairwise_none (l : List Int) (target : Int)
   rw [getElem!_pos l i hi, getElem!_pos l j hj] at this
   exact this
 
+
+-- general facts added 2026-10-27 from the prover-ceiling scoreboard (indexing a mapped range or an append, sorted
+-- and duplicate-free lists): the human helper lemmas of he_009, he_005, he_034 and others are instances of these
+theorem getElem_bang_map_range {α : Type} [Inhabited α] (f : Nat → α) (n i : Nat) (h : i < n) :
+    ((List.range n).map f)[i]! = f i := by
+  have hl : i < ((List.range n).map f).length := by simp; exact h
+  rw [getElem!_pos _ i hl]
+  simp
+
+theorem getElem_bang_append {α : Type} [Inhabited α] (a b : List α) (j : Nat) :
+    (a ++ b)[j]! = if j < a.length then a[j]! else b[j - a.length]! := by
+  by_cases h : j < a.length
+  · rw [if_pos h, getElem!_pos (a ++ b) j (by simp; omega), getElem!_pos a j h]
+    simp [List.getElem_append_left h]
+  · rw [if_neg h]
+    by_cases h2 : j < (a ++ b).length
+    · have h3 : j - a.length < b.length := by simp at h2; omega
+      rw [getElem!_pos (a ++ b) j h2, getElem!_pos b (j - a.length) h3]
+      simp [List.getElem_append_right (by omega : a.length ≤ j)]
+    · have h3 : ¬ (j - a.length < b.length) := by simp at h2; omega
+      rw [getElem!_neg (a ++ b) j h2, getElem!_neg b (j - a.length) h3]
+
+theorem pairwise_le_nodup_lt (s : List Int) (hs : s.Pairwise (· ≤ ·)) (hn : s.Nodup) :
+    ∀ i, i < s.length - 1 → s[i]! < s[i + 1]! := by
+  intro i hi
+  have h1 : i < s.length := by omega
+  have h2 : i + 1 < s.length := by omega
+  rw [getElem!_pos s i h1, getElem!_pos s (i + 1) h2]
+  have hle : s[i] ≤ s[i + 1] := List.pairwise_iff_getElem.mp hs i (i + 1) h1 h2 (by omega)
+  have hne : s[i] ≠ s[i + 1] := by
+    intro heq
+    have := (List.Nodup.getElem_inj_iff hn).mp heq
+    omega
+  omega
+
+theorem dedup_mergeSort_strict (l : List Int) :
+    ∀ i, i < (l.dedup.mergeSort (fun a b => decide (a ≤ b))).length - 1 →
+      (l.dedup.mergeSort (fun a b => decide (a ≤ b)))[i]! < (l.dedup.mergeSort (fun a b => decide (a ≤ b)))[i + 1]! := by
+  apply pairwise_le_nodup_lt
+  · have := List.pairwise_mergeSort (le := fun a b : Int => decide (a ≤ b))
+      (fun a b c hab hbc => by simp at *; omega) (fun a b => by simp; omega) l.dedup
+    simpa using this
+  · exact (List.mergeSort_perm l.dedup _).nodup_iff.mpr (List.nodup_dedup l)
+
+theorem mem_dedup_mergeSort (l : List Int) (x : Int) :
+    x ∈ l.dedup.mergeSort (fun a b => decide (a ≤ b)) ↔ x ∈ l := by
+  rw [(List.mergeSort_perm l.dedup _).mem_iff, List.mem_dedup]
+
+
+-- the maximum of a list (55 of the 281 human helper lemmas were about `foldl max`), stated so that the automation
+-- can use them directly
+theorem foldl_max_mem_of_mem {α : Type} [LinearOrder α] (l : List α) (m : α) (h : m ∈ l) : List.foldl max m l ∈ l := by
+  rcases (foldl_max_facts l m).1 with h1 | h1
+  · rw [h1]; exact h
+  · exact h1
+
+theorem le_foldl_max {α : Type} [LinearOrder α] (l : List α) (m x : α) (h : x ∈ l) : x ≤ List.foldl max m l :=
+  (foldl_max_facts l m).2.2 x h
+
+theorem start_le_foldl_max {α : Type} [LinearOrder α] (l : List α) (m : α) : m ≤ List.foldl max m l :=
+  (foldl_max_facts l m).2.1
+
+theorem getElem_bang_zero_mem_take {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : l ≠ []) : l[0]! ∈ l.take (i + 1) := by
+  cases l with
+  | nil => contradiction
+  | cons x xs => simp
+
+theorem getElem_bang_zero_mem_take' {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : 0 < l.length) : l[0]! ∈ l.take (i + 1) := by
+  cases l with
+  | nil => simp at h
+  | cons x xs => simp
+
+theorem getElem_bang_zero_mem_take_of_lt {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l[0]! ∈ l.take (i + 1) := by
+  cases l with
+  | nil => simp at h
+  | cons x xs => simp
+
 end Refine
 '''
 
@@ -525,9 +602,15 @@ SIMP_SET = ", ".join([f"Refine.{name}" for name in (
     "forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
     "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ",
     "take_string_length", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-    "exists_mem_array_iff_idx")] + ["String.length_toList", "List.range_succ", "-List.take_append_getElem"])
+    "exists_mem_array_iff_idx", "getElem_bang_map_range", "mem_dedup_mergeSort")] + ["String.length_toList", "List.range_succ", "-List.take_append_getElem", "-List.getElem!_eq_getElem?_getD"])
 
 NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
          "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ", "take_string_length",
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none")
+         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "getElem_bang_map_range", "getElem_bang_append", "pairwise_le_nodup_lt", "dedup_mergeSort_strict", "mem_dedup_mergeSort", "foldl_max_mem_of_mem", "le_foldl_max", "start_le_foldl_max", "getElem_bang_zero_mem_take", "getElem_bang_zero_mem_take'", "getElem_bang_zero_mem_take_of_lt")
+
+#: "Evaluation" rewrites only: an index into a construction becomes its value (``((range n).map f)[i]! = f i``). Unlike
+#: ``SIMP_SET`` they do not unfold ``take (i + 1)`` or turn ``∀ x ∈ l`` into the index form (right for loop steps, wrong for a
+#: closed-form value, where the library lemmas are stated over ``take (i + 1)`` and members): found on he_009, 2026-10-27.
+EVAL_SET = ", ".join(["Refine.getElem_bang_map_range", "Refine.mem_dedup_mergeSort", "Refine.toList_getElem_bang",
+                      "Refine.string_toList_mk", "Refine.string_length_mk", "List.length_map", "List.length_range"])
