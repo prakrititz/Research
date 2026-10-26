@@ -434,20 +434,21 @@ class LeanAgent:
         indent = min((len(l) - len(l.lstrip()) for l in lines[1:] if l.strip()), default=2) or 2
         task = derivation.task
         unfold = " " * indent + f"(try unfold {task.post_name} {task.pre_name} at *)"
+        # the model is shown the goal as Lean prints it after ``dsimp only`` (lambdas applied, ``(fun i b => P i b) (i+1) x``
+        # reduced to ``P (i+1) x``); the stored obligation is the unreduced form, where ``constructor``, ``right``, ``rcases``
+        # on it fail. The same normalisation is therefore offered before the model's own tactics
+        beta = " " * indent + "(try dsimp only at *)"
         theorem = f"theorem {name} {ob.binders} :\n    {ob.statement}"
         message = ""
-        for variant in (lines, [lines[0], unfold] + lines[1:]):
+        for variant in (lines, [lines[0], unfold] + lines[1:], [lines[0], unfold, beta] + lines[1:]):
             reply = derivation._run(f"set_option maxHeartbeats 400000 in\n{theorem} := " + "\n".join(variant) + "\n")
             if not (reply.timed_out or reply.errors or reply.goals):
                 intro = [" " * indent + "intro " + " ".join(names)] if names else []
                 statement = f"∀ {ob.binders}, {ob.statement}" if ob.binders.strip() else ob.statement
                 return {"name": name, "statement": statement, "proof": "\n".join([variant[0]] + intro + variant[1:])}, ""
-            failed = "timeout" if reply.timed_out else (reply.errors[0][:700] if reply.errors else
-                                                         "unsolved: " + reply.goals[0][:700])
-            folded = not message and ("no additional binders" in failed or "introN" in failed)
-            message = failed
-            if not folded:
-                break                                   # the failure was not the folded-definition one: report it
+            # report the error against the normalised goal (the one the model saw), i.e. of the last variant tried
+            message = "timeout" if reply.timed_out else (reply.errors[0][:700] if reply.errors else
+                                                          "unsolved: " + reply.goals[0][:700])
         if "3" in FIXES:
             message += self._name_hints(derivation, message)
         return None, message
