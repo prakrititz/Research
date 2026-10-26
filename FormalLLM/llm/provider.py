@@ -371,6 +371,7 @@ class OpenAIChatProvider(LLMProvider):
         answered_and_lost = 0            # failures after the server had started answering: those tokens may be billed
         for attempt in range(self.max_transport_retries):
             started = False
+            sent_at = time.time()
             try:
                 if self.stream:
                     print(f"\n[{self.model_name} is thinking (Live Stream)...]")
@@ -400,9 +401,15 @@ class OpenAIChatProvider(LLMProvider):
                 raise Exception(f"{self.base_url} returned HTTP {e.code}: {detail}")
             except (urllib.error.URLError, socket.error, OSError) as e:
                 last_error = e
+                waited = time.time() - sent_at
+                # A reasoning model sends nothing while it thinks, so a connection cut after a long wait (a proxy or VPN
+                # dropping an idle connection: "Remote end closed connection without response") was also being worked on
+                # by the server, and may be billed, although no byte of the answer arrived
+                started = started or waited > 20
                 # Never retry silently: an answer lost after the server started generating it is (probably) billed, so
                 # such a call is repeated at most once; a connection that never got through costs nothing and is retried
-                print(f"\n[{self.model_name}: connection failed {'after the answer had started' if started else 'before any answer'}"
+                print(f"\n[{self.model_name}: connection failed after {waited:.0f}s, "
+                      f"{'the server was probably working on it (may be billed)' if started else 'before the request got through'}"
                       f" ({type(e).__name__}: {str(e)[:120]}); attempt {attempt + 1}/{self.max_transport_retries}]", flush=True)
                 if started:
                     answered_and_lost += 1
