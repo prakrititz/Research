@@ -368,11 +368,14 @@ class OpenAIChatProvider(LLMProvider):
         # get recorded as a refinement failure -- three runs were lost this way
         # before this retry existed.
         last_error = None
+        answered_and_lost = 0            # failures after the server had started answering: those tokens may be billed
         for attempt in range(self.max_transport_retries):
+            started = False
             try:
                 if self.stream:
                     print(f"\n[{self.model_name} is thinking (Live Stream)...]")
                     with urllib.request.urlopen(req, timeout=self.timeout) as response:
+                        started = True
                         return self._read_stream(response)
                 else:
                     with Spinner(f"Waiting for OpenAI-compatible endpoint ({self.model_name}), attempt {attempt+1}..."):
@@ -397,6 +400,17 @@ class OpenAIChatProvider(LLMProvider):
                 raise Exception(f"{self.base_url} returned HTTP {e.code}: {detail}")
             except (urllib.error.URLError, socket.error, OSError) as e:
                 last_error = e
+                # Never retry silently: an answer lost after the server started generating it is (probably) billed, so
+                # such a call is repeated at most once; a connection that never got through costs nothing and is retried
+                print(f"\n[{self.model_name}: connection failed {'after the answer had started' if started else 'before any answer'}"
+                      f" ({type(e).__name__}: {str(e)[:120]}); attempt {attempt + 1}/{self.max_transport_retries}]", flush=True)
+                if started:
+                    answered_and_lost += 1
+                    if answered_and_lost > 1:
+                        raise Exception(
+                            f"Failed to reach {self.base_url}: the answer was lost twice after it had started "
+                            f"(not retried again, to avoid paying for more lost answers). Error: {e}"
+                        )
                 if attempt == self.max_transport_retries - 1:
                     raise Exception(
                         f"Failed to reach {self.base_url} after "
