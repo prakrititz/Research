@@ -379,12 +379,13 @@ class LeanAgent:
 
     def _prove_one(self, derivation: Derivation, goal: Goal, verdict, result: "AgentResult",
                    seed: Optional[List[str]] = None) -> Optional[dict]:
-        from FormalLLM.lean.engine import HelperLemma
         ob = verdict.obligation
-        names = self._binder_names(ob.binders)
-        if names is None:
+        if self._binder_names(ob.binders) is None:
             return None
         name = f"ob{goal.id}_{len(result.calls)}"
+        lemma, search_hint = self._library_search(derivation, name, ob)
+        if lemma is not None:
+            return lemma                                # proved by Lean's library search: no model call
         theorem = f"theorem {name} {ob.binders} :\n    {ob.statement}"
         history: List[str] = list(seed or [])
         for _ in range(3):
@@ -395,6 +396,7 @@ class LeanAgent:
             proof_calls[goal.id] = proof_calls.get(goal.id, 0) + 1
             prompt = "\n".join([self.PROOF_CARD, "", library_card(), "", "Theorem:", theorem, "",
                                 "What is left after the automation (Lean's goal state):", *verdict.unsolved[:2],
+                                *(["", search_hint] if search_hint else []),
                                 *(["", "Your earlier attempts failed:"] + history[-2:] if history else []), "",
                                 "Your answer (one JSON object):"])
             try:
@@ -407,25 +409,20 @@ class LeanAgent:
                 result.calls.append(Call(goal.id, prompt, reply, "proof_unparsable"))
                 history.append("- the reply had no JSON object with a \"proof\"")
                 continue
-            body = HelperLemma.from_json({"name": name, "statement": "True", "proof": proof}).proof
-            lean_reply = derivation._run(f"set_option maxHeartbeats 400000 in\n{theorem} := {body}\n")
-            ok = not lean_reply.errors and not lean_reply.goals and not lean_reply.timed_out
-            message = "" if ok else ("timeout" if lean_reply.timed_out else
-                                     (lean_reply.errors[0][:700] if lean_reply.errors else "unsolved: " + lean_reply.goals[0][:700]))
-            result.calls.append(Call(goal.id, prompt, reply, "proof_ok" if ok else "proof_failed", message))
-            if ok:
-                lines = body.split("\n")
-                indent = min((len(l) - len(l.lstrip()) for l in lines[1:] if l.strip()), default=2) or 2
-                intro = [" " * indent + "intro " + " ".join(names)] if names else []
-                statement = f"∀ {ob.binders}, {ob.statement}" if ob.binders.strip() else ob.statement
-                return {"name": name, "statement": statement, "proof": "\n".join([lines[0]] + intro + lines[1:])}
+            lemma, message = self._check_proof(derivation, name, ob, proof)
+            result.calls.append(Call(goal.id, prompt, reply, "proof_ok" if lemma else "proof_failed", message))
+            if lemma is not None:
+                return lemma
             history.append(f"- {proof[:400]}\n  Lean: {message}")
         return None
 
-    def _as_helper(self, derivation: Derivation, name: str, verdict, proof: str) -> Tuple[Optional[dict], str]:
-        """Check ``proof`` against the open obligation; on success return it as a helper lemma (closed over the context)."""
+    def _check_proof(self, derivation: Derivation, name: str, ob, proof: str) -> Tuple[Optional[dict], str]:
+        """Check a tactic ``proof`` of obligation ``ob``; on success return it as a helper lemma closed over the context.
+
+        The goal state the model is shown has the specification's definitions unfolded, but the theorem states them folded
+        (``f_postcond x (value) h``), so a proof written against what the model saw fails at its first ``intro``. A failed
+        proof is therefore tried once more after ``unfold`` of the task's pre/postcondition: a free Lean check, no model call."""
         from FormalLLM.lean.engine import HelperLemma
-        ob = verdict.obligation
         names = self._binder_names(ob.binders)
         if names is None:
             return None, "the goal has implicit binders"
@@ -433,17 +430,52 @@ class LeanAgent:
             body = HelperLemma.from_json({"name": name, "statement": "True", "proof": proof}).proof
         except Exception as error:
             return None, str(error)
-        theorem = f"theorem {name} {ob.binders} :\n    {ob.statement}"
-        reply = derivation._run(f"set_option maxHeartbeats 400000 in\n{theorem} := {body}\n")
-        if reply.timed_out:
-            return None, "timeout"
-        if reply.errors or reply.goals:
-            return None, (reply.errors[0][:700] if reply.errors else "unsolved: " + reply.goals[0][:700])
         lines = body.split("\n")
         indent = min((len(l) - len(l.lstrip()) for l in lines[1:] if l.strip()), default=2) or 2
-        intro = [" " * indent + "intro " + " ".join(names)] if names else []
-        statement = f"∀ {ob.binders}, {ob.statement}" if ob.binders.strip() else ob.statement
-        return {"name": name, "statement": statement, "proof": "\n".join([lines[0]] + intro + lines[1:])}, ""
+        task = derivation.task
+        unfold = " " * indent + f"(try unfold {task.post_name} {task.pre_name} at *)"
+        theorem = f"theorem {name} {ob.binders} :\n    {ob.statement}"
+        message = ""
+        for variant in (lines, [lines[0], unfold] + lines[1:]):
+            reply = derivation._run(f"set_option maxHeartbeats 400000 in\n{theorem} := " + "\n".join(variant) + "\n")
+            if not (reply.timed_out or reply.errors or reply.goals):
+                intro = [" " * indent + "intro " + " ".join(names)] if names else []
+                statement = f"∀ {ob.binders}, {ob.statement}" if ob.binders.strip() else ob.statement
+                return {"name": name, "statement": statement, "proof": "\n".join([variant[0]] + intro + variant[1:])}, ""
+            failed = "timeout" if reply.timed_out else (reply.errors[0][:700] if reply.errors else
+                                                         "unsolved: " + reply.goals[0][:700])
+            folded = not message and ("no additional binders" in failed or "introN" in failed)
+            message = failed
+            if not folded:
+                break                                   # the failure was not the folded-definition one: report it
+        if "3" in FIXES:
+            message += self._name_hints(derivation, message)
+        return None, message
+
+    def _library_search(self, derivation: Derivation, name: str, ob) -> Tuple[Optional[dict], str]:
+        """Lean's own library search (``exact?``) on each part of the obligation, before any model call (the paper's prover
+        is CoqHammer, a library search). If it closes every part, the obligation is proved for free; otherwise the lemmas it
+        found for some parts become hints for the model."""
+        task = derivation.task
+        script = "\n".join(["by", f"  (try unfold {task.post_name} {task.pre_name} at *)", "  (try dsimp only at *)",
+                            "  (repeat' apply And.intro)", "  all_goals (first | omega | (simp_all; done) | exact? | skip)"])
+        theorem = f"theorem {name} {ob.binders} :\n    {ob.statement}"
+        try:
+            reply = derivation.lean.run(f"set_option maxHeartbeats 1000000 in\n{theorem} := {script}\n",
+                                        timeout=240, env=derivation._environment())
+        except Exception:
+            return None, ""
+        found = [i.strip() for i in reply.infos if "Try this" in i]
+        if not (reply.timed_out or reply.errors or reply.goals):
+            lemma, _ = self._check_proof(derivation, name, ob, script)
+            if lemma is not None:
+                return lemma, ""
+        if not found:
+            return None, ""
+        return None, "Lean's library search found, for some parts of it:\n  " + "\n  ".join(f[:300] for f in found[:4])
+
+    def _as_helper(self, derivation: Derivation, name: str, verdict, proof: str) -> Tuple[Optional[dict], str]:
+        return self._check_proof(derivation, name, verdict.obligation, proof)
 
     def _use_given_proof(self, derivation: Derivation, goal: Goal, result: "AgentResult", failures: Dict[int, List[str]]) -> bool:
         """A ``term`` the automation could not prove, sent with the model's own ``proof``: let Lean check that proof."""
