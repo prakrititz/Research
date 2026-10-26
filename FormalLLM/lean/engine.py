@@ -68,6 +68,11 @@ def make_cascade(extra_simp=()):
               # closed-form values: evaluate indices into constructions only (EVAL_SET), keep `take (i + 1)` and members as stated
               f"((try intros); (try simp_all only [{EVAL_SET}]); (repeat' apply And.intro) <;> (try intros) <;> "
               f"solve_by_elim (maxDepth := 4) [{LIBRARY}]) | "
+              # lists built by appending (`acc ++ [d, x]`, the builder family): evaluate the index into the append / literal,
+              # split the cases, and let grind finish on the goal as written. Not the full simplifier first: it turns
+              # `acc[j]!` into `acc[j]` in the goal but not in the invariant, and grind then cannot connect them (he_005)
+              f"((try intros); (try split_ifs) <;> (try simp only [Refine.getElem_bang_append, Refine.getElem_bang_cons, "
+              f"Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind) | "
               f"nlinarith | (aesop; done) | decide)")
     diagnose = tactic[:-1] + " | sorry)"
     if extra_simp:
@@ -285,8 +290,39 @@ class Derivation:
         self.lean_seconds += time.time() - started
         return reply
 
+    def _witness_tactic(self, obligation: Obligation) -> Optional[str]:
+        """An obligation about a postcondition that asks for a witness (``∃ i, ...``): the automation never chooses one,
+        so try the context's number variables first (a loop very often computes exactly the index the specification
+        asks for: he_012's ``∃ i, strings[i]! = s ∧ ...`` is the loop's ``b``). ``None`` when this does not apply."""
+        if obligation.body is not None:
+            return None
+        post = self.task.post_name
+        definition = self.task.prelude.split(f"def {post}", 1)
+        if post not in obligation.statement or len(definition) < 2 or "∃" not in definition[1]:
+            return None
+        candidates = []
+        depth, start = 0, None
+        for k, ch in enumerate(obligation.binders):
+            if ch == "(":
+                if depth == 0:
+                    start = k + 1
+                depth += 1
+            elif ch == ")":
+                depth -= 1
+                if depth == 0 and start is not None and ":" in obligation.binders[start:k]:
+                    names, typ = obligation.binders[start:k].split(":", 1)
+                    if typ.strip() in ("Nat", "ℕ", "Int", "ℤ"):
+                        candidates += [n for n in names.split() if not n.startswith("h")]
+        if not candidates:
+            return None
+        finish = ("(repeat' apply And.intro) <;> (first | omega | rfl | (simp_all; done) | "
+                  "(rw [Refine.forall_mem_iff_idx]; intros; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (intros; grind))")
+        tries = [f"((try unfold {post} at *); (try simp only [{post}] at *); refine ⟨{v}, ?_⟩; {finish})"
+                 for v in candidates[-4:][::-1]]
+        return "first | " + " | ".join(tries) + f" | ({self.diagnose})"
+
     def _check(self, obligation: Obligation, name: str) -> Verdict:
-        source = obligation.source(name, self.diagnose)
+        source = obligation.source(name, self._witness_tactic(obligation) or self.diagnose)
         if source in self._memo:
             return self._memo[source]
         reply = self._run(source)
