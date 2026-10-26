@@ -144,6 +144,8 @@ def _cascade_groups(simp: str, helpers: str, defs_alt: str, pre: str) -> List[st
 
 
 CASCADE, DIAGNOSE = make_cascade()
+#: the library cascade as a named tactic in every task environment (see ``Derivation.__init__``)
+AUTO_CLOSE = f'macro "auto_close" : tactic => `(tactic| ({CASCADE}))\n'
 LEMMA_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")
 
 
@@ -279,7 +281,9 @@ class Derivation:
                  counterexamples: bool = True, timeout: float = 90.0, lemmas: str = LEMMAS):
         self.task, self.lean = task, lean
         self._tactic, self._diagnose = tactic, diagnose            # None: the cascade, extended by accepted helper lemmas
-        self.lemmas = lemmas
+        # the common automation as a tactic, ``auto_close``, usable inside helper-lemma and sub-agent proofs: the model writes
+        # the structure of a proof (cases, witnesses), the automation the routine parts (arithmetic, indexing, library facts)
+        self.lemmas = lemmas + ("\n" + AUTO_CLOSE if lemmas is LEMMAS else "")
         self.helpers: List[HelperLemma] = []
         self.counterexamples, self.timeout = counterexamples, timeout
         self._next = 0

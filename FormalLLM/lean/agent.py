@@ -47,7 +47,7 @@ type that satisfies a property, in a context of variables and assumptions. You a
 
 Any of these may also carry "lemmas": [{"name": "f_succ", "statement": "<Lean proposition>", "proof": "by …"}]: facts that Lean
 proves first and then uses in the obligations (for example how a recursive definition in the specification unfolds one step).
-A false lemma is refused.
+A false lemma is refused. In a proof, `auto_close` runs the project's automation on the current goal (use it for routine parts).
 
 Rules: Lean 4 syntax. `a[i]!` indexes (default value if out of range). `Nat` subtraction stops at 0. Names you introduce
 (bind variable, loop state) must not already be in scope. Reply with the JSON object only."""
@@ -346,8 +346,10 @@ class LeanAgent:
 
     PROOF_CARD = ("Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the "
                   "tactic proof. Reply with a JSON object {\"proof\": \"by\\n  <tactics, one per line>\"} and nothing else. "
-                  "Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, "
-                  "grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.")
+                  "Write the structure of the proof yourself (intro, constructor, rcases, cases, induction ... with, a witness with "
+                  "refine ⟨w, ?_⟩, a key `have`), and close the routine parts with `auto_close`: the project's automation as one "
+                  "tactic (arithmetic, list indexing, sorting, max/min of lists, gcd, the library lemmas below). Also available: "
+                  "simp_all, omega, grind, exact, rw. Never use sorry, native_decide or axiom.")
 
     def _proof_provider(self):
         """The model that writes proofs: the refinement model, unless ``FORMALLLM_PROOF_CONFIG`` names a stronger one (the
