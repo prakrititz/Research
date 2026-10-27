@@ -245,8 +245,14 @@ class OpenAIChatProvider(LLMProvider):
                  stream: bool = True,
                  max_transport_retries: int = 8,
                  extra_body: dict = None,
-                 reasoning_effort: str = None):
+                 reasoning_effort: str = None,
+                 background: bool = False):
         self.model_name = model_name
+        # OpenAI's Responses API in background mode: the request is queued on the server and polled with short GETs, so
+        # no connection has to stay open (silent) while the model thinks. On 2026-10-27 such silent connections were
+        # reset after ~60 s or stalled mid-answer, which stopped two capped runs with nothing wrong in the framework.
+        self.background = background
+        self.reasoning_effort = reasoning_effort
         self.base_url = base_url.rstrip("/")
         
         # Resolve authentication: explicit -> env auth_env -> OPENAI_API_KEY -> ~/.formalllm credentials
@@ -329,7 +335,9 @@ class OpenAIChatProvider(LLMProvider):
             print("="*50 + "\n")
         except Exception:
             pass
-        
+        if self.background:
+            return self._generate_background(prompt, max_tokens)
+
         url = f"{self.base_url}/chat/completions"
 
         is_reasoning = self.model_name.startswith(("o1", "o3", "o4", "gpt-5"))
@@ -464,6 +472,91 @@ class OpenAIChatProvider(LLMProvider):
         print("="*50)
         print(text)
         print("="*50 + "\n")
+        return text
+
+    # --- background mode (OpenAI Responses API) ---------------------------------------------------------------------
+
+    def _json_request(self, method: str, url: str, data: dict = None, timeout: int = 60) -> dict:
+        body = json.dumps(data).encode("utf-8") if data is not None else None
+        req = urllib.request.Request(url, data=body, headers=self._headers(), method=method)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode("utf-8", "replace")[:500]
+            raise Exception(f"{self.base_url} returned HTTP {e.code}: {detail}")
+
+    def _generate_background(self, prompt: str, max_tokens: int = None) -> str:
+        data = {
+            "model": self.model_name,
+            "input": prompt,
+            "background": True,
+            "store": True,                       # required by background mode
+            "max_output_tokens": max(max_tokens or 0, self.max_tokens or 0, 8192),
+        }
+        if self.reasoning_effort:
+            data["reasoning"] = {"effort": self.reasoning_effort}
+        if self.response_format == "json_object":
+            data["text"] = {"format": {"type": "json_object"}}
+        # Creating the response is one short request. Only a failure that leaves us without the id after the server may
+        # have accepted it can cost money (an orphaned response), so such a failure is retried at most once.
+        job, last_error, maybe_created = None, None, 0
+        for attempt in range(self.max_transport_retries):
+            sent_at = time.time()
+            try:
+                job = self._json_request("POST", f"{self.base_url}/responses", data, timeout=60)
+                break
+            except (urllib.error.URLError, socket.error, OSError) as e:
+                last_error = e
+                waited = time.time() - sent_at
+                accepted = waited > 5 and not isinstance(getattr(e, "reason", None), socket.gaierror)
+                print(f"\n[{self.model_name}: submitting failed after {waited:.0f}s "
+                      f"({'may have been accepted' if accepted else 'not sent'}; {type(e).__name__}: {str(e)[:120]}); "
+                      f"attempt {attempt + 1}/{self.max_transport_retries}]", flush=True)
+                maybe_created += accepted
+                if maybe_created > 1:
+                    raise Exception(f"Failed to reach {self.base_url}: submitting failed twice after it may have been "
+                                    f"accepted (not retried again). Error: {e}")
+                time.sleep(min(60, 5 * 2 ** attempt))
+        if job is None:
+            raise Exception(f"Failed to reach {self.base_url} after {self.max_transport_retries} attempts. Error: {last_error}")
+
+        # Polling costs nothing and loses nothing: a failed poll is simply repeated, for up to `timeout` seconds in all
+        job_id, started, failures = job["id"], time.time(), 0
+        print(f"\n[{self.model_name} is thinking (background {job_id[:16]}...)]", flush=True)
+        while job.get("status") in ("queued", "in_progress"):
+            if time.time() - started > self.timeout:
+                try:
+                    self._json_request("POST", f"{self.base_url}/responses/{job_id}/cancel", {}, timeout=30)
+                except Exception:
+                    pass
+                raise Exception(f"{self.base_url}: response {job_id} not finished after {self.timeout}s (cancelled)")
+            time.sleep(2 if time.time() - started < 30 else 5)
+            try:
+                job = self._json_request("GET", f"{self.base_url}/responses/{job_id}", timeout=60)
+                failures = 0
+            except (urllib.error.URLError, socket.error, OSError) as e:
+                failures += 1
+                print(f"\n[{self.model_name}: polling failed ({type(e).__name__}: {str(e)[:100]}); retrying]", flush=True)
+                time.sleep(min(60, 5 * failures))
+
+        usage = job.get("usage") or {}
+        self._track_usage_cost({"prompt_tokens": usage.get("input_tokens"), "completion_tokens": usage.get("output_tokens")})
+        status = job.get("status")
+        if status not in ("completed", "incomplete"):
+            error = job.get("error") or {}
+            raise Exception(f"{self.base_url}: response {job_id} {status}: {error.get('code')} {error.get('message')}")
+        text = "".join(part.get("text") or ""
+                       for item in job.get("output") or [] if item.get("type") == "message"
+                       for part in item.get("content") or [] if part.get("type") == "output_text")
+        self.last_meta = {
+            "prompt_eval_count": usage.get("input_tokens"),
+            "eval_count": usage.get("output_tokens"),
+            "total_duration": round(time.time() - started, 1),
+            "used_thinking_channel": False,
+            "finish_reason": (job.get("incomplete_details") or {}).get("reason") or "stop",
+        }
+        print("\n" + "=" * 50 + "\n=== LLM RESPONSE ===\n" + "=" * 50 + f"\n{text}\n" + "=" * 50 + "\n")
         return text
 
     def _read_stream(self, response) -> str:

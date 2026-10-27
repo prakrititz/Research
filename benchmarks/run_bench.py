@@ -57,8 +57,9 @@ CONFIGS = {
     "gpt-4o-mini": dict(kind="openai", model="gpt-4o-mini", base_url="https://api.openai.com/v1"),
     "o3-mini": dict(kind="openai", model="o3-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192),
     "o4-mini": dict(kind="openai", model="o4-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192),
-    "gpt-5.4-mini": dict(kind="openai", model="gpt-5.4-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192),
-    "gpt-5.4": dict(kind="openai", model="gpt-5.4", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=16384),
+    # background=True: submitted to the Responses API and polled, so no connection idles while the model thinks
+    "gpt-5.4-mini": dict(kind="openai", model="gpt-5.4-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192, background=True),
+    "gpt-5.4": dict(kind="openai", model="gpt-5.4", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=16384, background=True),
 }
 
 #: Named groups so an arm can be selected without listing every config.
@@ -103,6 +104,7 @@ def make_provider(cfg, temperature, timeout=900, seed=None):
             base_url=base_url,
             temperature=temperature,
             reasoning_effort=cfg.get("reasoning_effort"),
+            background=cfg.get("background", False),
             extra_body=extra,
             # Reasoning models spend hundreds of tokens thinking before the
             # answer; at 512 gpt-oss returned no content at all and only its
