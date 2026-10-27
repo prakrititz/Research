@@ -1,0 +1,44 @@
+diff --git a/Auto/Solver/TPTP.lean b/Auto/Solver/TPTP.lean
+index 24ef36d..18fc663 100644
+--- a/Auto/Solver/TPTP.lean
++++ b/Auto/Solver/TPTP.lean
+@@ -151,7 +151,8 @@ def queryZipperposition (query : String) : MetaM (Bool × String) := do
+   let stdout ← solver.stdout.readToEnd
+   let stderr ← solver.stderr.readToEnd
+   trace[auto.tptp.result] "Result: \nstderr:\n{stderr}\nstdout:\n{stdout}"
+-  solver.kill
++  -- on Windows, killing a prover that has already exited fails with error 5 (access denied)
++  try solver.kill catch _ => pure ()
+   let proven := (stdout.splitOn "SZS status Unsatisfiable").length >= 2
+   return (proven, stdout)
+ 
+@@ -175,7 +176,8 @@ def queryZEPort (zept : ZEPortType) (query : String) : MetaM (Bool × String) :=
+   let stdout ← solver.stdout.readToEnd
+   let stderr ← solver.stderr.readToEnd
+   trace[auto.tptp.result] "Result: \nstderr:\n{stderr}\nstdout:\n{stdout}"
+-  solver.kill
++  -- on Windows, killing a prover that has already exited fails with error 5 (access denied)
++  try solver.kill catch _ => pure ()
+   IO.FS.removeFile s!"./.zeport_ignore/problem{idx}.p"
+   -- For synchronization, remove directory in the end
+   IO.FS.removeDirAll s!"./.zeport_ignore/tmp{idx}"
+@@ -199,7 +201,8 @@ def queryE (query : String) : MetaM (Bool × String) := do
+   let stdout ← solver.stdout.readToEnd
+   let stderr ← solver.stderr.readToEnd
+   trace[auto.tptp.result] "Result: \nstderr:\n{stderr}\nstdout:\n{stdout}"
+-  solver.kill
++  -- on Windows, killing a prover that has already exited fails with error 5 (access denied)
++  try solver.kill catch _ => pure ()
+   let proven := (stdout.splitOn "Proof found!").length >= 2
+   return (proven, stdout)
+ 
+@@ -212,7 +215,8 @@ def queryVampire (query : String) : MetaM (Bool × String) := do
+   let stdout ← solver.stdout.readToEnd
+   let stderr ← solver.stderr.readToEnd
+   trace[auto.tptp.result] "Result: \nstderr:\n{stderr}\nstdout:\n{stdout}"
+-  solver.kill
++  -- on Windows, killing a prover that has already exited fails with error 5 (access denied)
++  try solver.kill catch _ => pure ()
+   let proven := (stdout.splitOn "Refutation found. Thanks to Tanya!").length >= 2
+   return (proven, stdout)
+ 

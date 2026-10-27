@@ -81,7 +81,9 @@ class Toolchain:
 DEFAULT_IMPORTS = ("import Mathlib.Data.Real.Basic\nimport Mathlib.Tactic.Linarith\nimport Mathlib.Tactic.Positivity\n"
                    "import Mathlib.Tactic.NormNum\nimport Mathlib.Tactic.Ring\nimport Mathlib.Data.List.Basic\nimport Mathlib.Data.List.Sort\n"
                    "import Mathlib.Data.Nat.Prime.Basic\nimport Plausible")
-FULL_IMPORTS = "import Mathlib"
+#: ``FORMALLLM_LEAN_IMPORTS`` swaps in another header, e.g. ``import LeanEnv.Hammer`` with the hammer project as
+#: ``FORMALLLM_LEAN_PROJECT`` (Mathlib + Duper + lean-auto + Zipperposition, ``refine_hammer``)
+FULL_IMPORTS = os.environ.get("FORMALLLM_LEAN_IMPORTS", "import Mathlib")
 
 
 class LeanUnavailable(RuntimeError):

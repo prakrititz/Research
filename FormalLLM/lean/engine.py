@@ -120,6 +120,9 @@ def make_cascade(extra_simp=(), task_defs=(), pre="True"):
 
 #: Lean's built-in hammer as a last stage of the prover (``Derivation._hammer_tactics``); FORMALLLM_HAMMER=0 turns it off
 HAMMER = os.environ.get("FORMALLLM_HAMMER", "1") != "0"
+#: the external-prover hammer (``refine_hammer``: premise selection -> Zipperposition -> Duper reconstruction), present
+#: only when the session imports ``LeanEnv.Hammer``
+ATP = "LeanEnv.Hammer" in os.environ.get("FORMALLLM_LEAN_IMPORTS", "")
 
 #: the cascade's alternatives as separate groups (see ``Derivation._portfolio``), filled by ``make_cascade``
 PORTFOLIO_CACHE: Dict[tuple, List[str]] = {}
@@ -480,7 +483,7 @@ class Derivation:
                 f"(try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> ")
         return [prep + "first | (solve_by_elim +suggestions) | exact? | (grind +suggestions) | (simp_all; grind +suggestions)",
                 prep + "try?",
-                "try?"]
+                "try?"] + ([prep + "refine_hammer", "refine_hammer"] if ATP else [])
 
     def _check_once(self, obligation: Obligation, name: str) -> Verdict:
         source = obligation.source(name, self.diagnose)
