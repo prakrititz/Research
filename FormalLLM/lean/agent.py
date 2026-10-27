@@ -62,6 +62,29 @@ The body goal is then: find (i', s') with the invariant and n - i' < n - i. Answ
 #: environment, 4 = retrieved worked examples, 5 = proof sub-agent for obligations the automation leaves open.
 FIXES = set(os.environ.get("FORMALLLM_FIXES", "").replace(" ", "").split(",")) - {""}
 
+#: The paper's protocol (Refine4LLM): the model only chooses refinement steps, the prover alone proves every obligation; a
+#: step the prover cannot prove is refused and the model must choose another. No model-written proofs or lemmas, no proof
+#: sub-agent. Set FORMALLLM_STRICT=0 for the hybrid mode (model proofs as a fallback).
+STRICT = os.environ.get("FORMALLLM_STRICT", "1") != "0"
+
+LAW_CARD_STRICT = LAW_CARD.split("\n\nAny of these may also carry")[0] + """
+
+You never write proofs: Lean's prover proves every step. If it cannot prove a step, the step is refused and you choose a
+different one: a different (equivalent) expression, a case split, or a loop whose invariant states exactly what the goal
+needs, in the goal's own words.
+
+Rules: Lean 4 syntax. `a[i]!` indexes (default value if out of range). `Nat` subtraction stops at 0. Names you introduce
+(bind variable, loop state) must not already be in scope. Reply with the JSON object only."""
+
+VALUE_ONLY = """How to answer (important):
+- `expr`, `init`, `invariant`, `guard`, `variant`, `result` are Lean *expressions*: the program and its annotations. Never put
+  `by ...`, `⟨value, proof⟩`, `?_` or `Exists.intro` in them. The goal is shown as `∃ ρ, ...`, but you do not prove it:
+  you give ρ, and the prover checks it."""
+
+UNPROVED_STRICT = ("\n  The prover could not prove this step. Choose a different step: an equivalent expression the prover can "
+                   "relate to the specification, a case split, or a loop whose invariant restates the specification on "
+                   "the processed part.")
+
 #: Fix 6: a goal is shown the way Lean prints it, ``⊢ ∃ ρ, P ρ``, and a capable model then *proves* it: it put whole tactic
 #: proofs into ``expr`` (34 of 39 failed calls in the first dev run). The value and its proof are now separate fields.
 VALUE_AND_PROOF = """How to answer (important):
@@ -73,6 +96,15 @@ VALUE_AND_PROOF = """How to answer (important):
   `exists`). The goal's variables and hypotheses are in scope; unfold the specification's definitions first
   (`unfold f_postcond` or `simp only [f_postcond]`). It is used only if the automation cannot prove the step.
   Example: {"law": "term", "expr": "Nat.primeFactorsList n", "proof": "by\\n  unfold factorize_postcond\\n  constructor\\n  · ..."}"""
+
+def _without_proofs(data):
+    """Strict mode: an answer is steps only; any "proof" or "lemmas" the model adds is dropped (never checked or used)."""
+    if isinstance(data, dict):
+        return {k: _without_proofs(v) for k, v in data.items() if k not in ("proof", "lemmas")}
+    if isinstance(data, list):
+        return [_without_proofs(v) for v in data]
+    return data
+
 
 _PROOF_IN_VALUE = re.compile(r"^\s*(by\b|Exists\.intro\b)|^\s*⟨[\s\S]*\bby\b|\?_")
 
@@ -90,17 +122,23 @@ LEAN_RULES = """Lean 4 rules (this is Lean 4.34 with Mathlib, not Lean 3):
 - A helper lemma is a standalone theorem: the goal's variables are NOT in scope. Quantify everything it mentions,
   e.g. "∀ (l : List Int) (i : Nat), i < l.length → (l.take (i + 1)).sum = (l.take i).sum + l[i]!"."""
 
-_UNDECIDABLE = re.compile(r"failed to synthesize[^\n]*\n\s*Decidable\s*\(?\s*[∃∀]")
+_UNDECIDABLE = re.compile(r"failed to synthesize[^\n]*\n\s*Decidable\b([\s\S]{0,500}?)(?:\n\s*\n|Hint:|$)")
 
 
 def _error_hints(feedback: str) -> str:
     """Plain words for Lean errors the raw message does not explain to the model (it retried an unbounded `∃` 10 times)."""
-    if _UNDECIDABLE.search(feedback):
+    m = _UNDECIDABLE.search(feedback)
+    if m and re.search(r"[∃∀]", m.group(1)):
         return ("\n  Hint: Lean cannot run a search over all natural numbers, so this condition has no Decidable instance. "
-                "Bound every quantifier by a length: `∃ i < l.length, ∃ j < l.length, ...` runs; `∃ i j : Nat, ...` "
-                "does not. `Classical`/`decide` on an unbounded quantifier do not help.")
+                "Bound every quantifier: `∃ i < l.length, ∃ j < l.length, ...` runs; `∃ i j : Nat, ...` does not. Or say "
+                "it with a finite list: `x ∈ l`, `l.any p`, `l.all p` run. `Classical`/`decide` on an unbounded "
+                "quantifier do not help.")
     return ""
 
+
+#: a proof line that only unfolds or simplifies definitions (kept with its indentation and focusing dot)
+_NORMALISING = re.compile(r"^(\s*(?:[·•]\s*)?)((?:unfold|dsimp|delta|simp only)\b[^;<]*)$")
+_NO_PROGRESS = re.compile(r"failed to unfold|made no progress")
 
 _LIBRARY = None
 
@@ -195,11 +233,16 @@ class LeanAgent:
 
     def prompt(self, derivation: Derivation, goal: Goal, failures: List[str]) -> str:
         task = derivation.task
-        parts = [LAW_CARD, EXAMPLE, ""]
-        if "6" in FIXES:
-            parts += [VALUE_AND_PROOF, ""]
-        if "2" in FIXES:
-            parts += [LEAN_RULES, "", library_card(), ""]
+        if STRICT:
+            parts = [LAW_CARD_STRICT, EXAMPLE, "", VALUE_ONLY, ""]
+            if "2" in FIXES:
+                parts += [LEAN_RULES.split("\n- A helper lemma is")[0], ""]
+        else:
+            parts = [LAW_CARD, EXAMPLE, ""]
+            if "6" in FIXES:
+                parts += [VALUE_AND_PROOF, ""]
+            if "2" in FIXES:
+                parts += [LEAN_RULES, "", library_card(), ""]
         if "4" in FIXES:
             from FormalLLM.lean import retrieval
             shown = retrieval.examples(os.path.basename(task.directory.rstrip("/\\")), task.prelude)
@@ -262,9 +305,10 @@ class LeanAgent:
             result.calls.append(call)
             if call.outcome not in ("applied", "repeat") and getattr(self, "_last_key", None):
                 self._rejected.setdefault(goal.id, set()).add(self._last_key)
-            if call.outcome == "unproved" and "6" in FIXES and self._use_given_proof(derivation, goal, result, failures):
+            if (call.outcome == "unproved" and "6" in FIXES and not STRICT
+                    and self._use_given_proof(derivation, goal, result, failures)):
                 continue                                # the model's own proof of its value closed the step
-            if call.outcome == "unproved" and "5" in FIXES and len(result.calls) < self.max_calls:
+            if call.outcome == "unproved" and "5" in FIXES and not STRICT and len(result.calls) < self.max_calls:
                 if self._prove_open_obligations(derivation, goal, call, result, failures):
                     continue                                # the step went through with proofs of its open obligations
             # Lean running out of time while *stating* an obligation is the engine's limit, not the model's mistake: do not
@@ -292,6 +336,8 @@ class LeanAgent:
             failures.setdefault(goal.id, []).append("- your reply contained no JSON object")
             return Call(goal.id, prompt, reply, "unparsable")
         self._last = (None, None)
+        if STRICT:
+            data = _without_proofs(data)
         self._last_key = json.dumps(data, sort_keys=True, ensure_ascii=False)
         if self._last_key in getattr(self, "_rejected", {}).get(goal.id, set()):
             text = ("you sent exactly the same answer as before, and it was already rejected (see above): change the "
@@ -303,8 +349,8 @@ class LeanAgent:
                    if isinstance(data.get(k), str) and _PROOF_IN_VALUE.search(data[k])]
             if bad:
                 text = (f"`{bad[0]}` must be a plain Lean expression (the program value), but it contains a proof "
-                        f"(`by`, `⟨_, _⟩`, `?_` or `Exists.intro`). Give the value in `{bad[0]}` and, for a term, the proof "
-                        f"in a separate \"proof\" field.")
+                        f"(`by`, `⟨_, _⟩`, `?_` or `Exists.intro`). Give the value in `{bad[0]}`" +
+                        (": the prover proves it." if STRICT else " and, for a term, the proof in a separate \"proof\" field."))
                 failures.setdefault(goal.id, []).append(f"- {json.dumps(data, ensure_ascii=False)[:300]}\n  {text}")
                 return Call(goal.id, prompt, reply, "ill_formed", text)
         steps: List[Step] = derivation.apply_tree(data, goal.id)
@@ -314,6 +360,8 @@ class LeanAgent:
         text = last.feedback()
         if "3" in FIXES:
             text += self._name_hints(derivation, text) + _error_hints(text)
+        if STRICT and last.status == "unproved":
+            text += UNPROVED_STRICT
         self._last = (data, steps)
         # the failing step may be inside a nested reply: attribute the feedback to the goal it concerns
         target = goal.id
@@ -455,8 +503,12 @@ class LeanAgent:
         # on it fail. The same normalisation is therefore offered before the model's own tactics
         beta = " " * indent + "(try dsimp only at *)"
         theorem = f"theorem {name} {ob.binders} :\n    {ob.statement}"
-        message = ""
-        for variant in (lines, [lines[0], unfold] + lines[1:], [lines[0], unfold, beta] + lines[1:]):
+        # after our own unfold/dsimp, the model's `unfold f_postcond` / `dsimp [...]` has nothing left to do and fails with
+        # "failed to unfold" / "made no progress": that error, not the real one further down, was all the model was told
+        # (4 Verina tasks exhausted repeating it). In the normalised variants such a line may therefore do nothing.
+        tolerant = [_NORMALISING.sub(r"\1try \2", l) for l in lines[1:]]
+        message, first = "", ""
+        for variant in (lines, [lines[0], unfold] + tolerant, [lines[0], unfold, beta] + tolerant):
             reply = derivation._run(f"set_option maxHeartbeats 400000 in\n{theorem} := " + "\n".join(variant) + "\n")
             if not (reply.timed_out or reply.errors or reply.goals):
                 intro = [" " * indent + "intro " + " ".join(names)] if names else []
@@ -465,6 +517,9 @@ class LeanAgent:
             # report the error against the normalised goal (the one the model saw), i.e. of the last variant tried
             message = "timeout" if reply.timed_out else (reply.errors[0][:700] if reply.errors else
                                                           "unsolved: " + reply.goals[0][:700])
+            first = first or message
+        if _NO_PROGRESS.search(message) and not _NO_PROGRESS.search(first):
+            message = first
         if "3" in FIXES:
             message += self._name_hints(derivation, message)
         return None, message

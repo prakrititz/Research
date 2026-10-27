@@ -14,6 +14,7 @@ proved on their own, so a wrong step is rejected where it is made; (2) the finis
 ``{ ρ : T // post }`` whose elaboration re-checks every obligation in context; (3) ``#print axioms`` must not list
 ``sorryAx``, and the program is run on the task's tests.
 """
+import os
 import re
 import time
 from dataclasses import dataclass, field
@@ -116,6 +117,9 @@ def make_cascade(extra_simp=(), task_defs=(), pre="True"):
     PORTFOLIO_CACHE[(tuple(extra_simp), defs, pre)] = groups
     return tactic, diagnose
 
+
+#: Lean's built-in hammer as a last stage of the prover (``Derivation._hammer_tactics``); FORMALLLM_HAMMER=0 turns it off
+HAMMER = os.environ.get("FORMALLLM_HAMMER", "1") != "0"
 
 #: the cascade's alternatives as separate groups (see ``Derivation._portfolio``), filled by ``make_cascade``
 PORTFOLIO_CACHE: Dict[tuple, List[str]] = {}
@@ -460,7 +464,23 @@ class Derivation:
             return Verdict(obligation, "PROVED", seconds=verdict.seconds)
         if "resource limit" in verdict.message and self._portfolio_prove(obligation, name):
             return Verdict(obligation, "PROVED", seconds=verdict.seconds)
+        if HAMMER and any(self._prove_as_helper(obligation, f"{name}_h{k}", t)
+                          for k, t in enumerate(self._hammer_tactics(obligation))):
+            return Verdict(obligation, "PROVED", seconds=verdict.seconds)
         return verdict
+
+    def _hammer_tactics(self, obligation: Obligation) -> List[str]:
+        """Lean's own hammer, the counterpart of the paper's CoqHammer: premise selection over all of Mathlib (Sine Qua Non,
+        the selector of Isabelle's Sledgehammer, built into Lean 4.34) feeding ``grind`` / ``solve_by_elim``, plus ``exact?``
+        and ``try?`` (Lean's portfolio of strategies). Like CoqHammer's provers, each covers goals the others miss, so they
+        run as a portfolio of separate commands, each under its own heartbeat limit; a proof found becomes a helper lemma."""
+        if obligation.body is not None:
+            return []
+        prep = (f"(try unfold {self.task.post_name} {self.task.pre_name} at *); (try dsimp only at *); (try intros); "
+                f"(try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> ")
+        return [prep + "first | (solve_by_elim +suggestions) | exact? | (grind +suggestions) | (simp_all; grind +suggestions)",
+                prep + "try?",
+                "try?"]
 
     def _check_once(self, obligation: Obligation, name: str) -> Verdict:
         source = obligation.source(name, self.diagnose)
