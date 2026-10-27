@@ -758,6 +758,39 @@ theorem pairwise_mergeSort_key_le {α : Type} (key : α → Int) (l : List α) :
     List.Pairwise (fun a b => key a ≤ key b) (l.mergeSort (fun a b => decide (key a ≤ key b))) := by
   have := List.pairwise_mergeSort (le := fun a b : α => decide (key a ≤ key b)) (fun a b c h1 h2 => by simp at *; omega) (fun a b => by simp; omega) l
   simpa using this
+-- stability: sorting by a key keeps the order of the elements with equal keys (he_145's "ties keep their original order")
+theorem filter_mergeSort_key {α β : Type} [LinearOrder β] (key : α → β) (l : List α) (x : α) :
+    List.filter (fun y => key y == key x) (l.mergeSort fun a b => decide (key a ≤ key b)) =
+      List.filter (fun y => key y == key x) l := by
+  have trans : ∀ a b c : α, decide (key a ≤ key b) = true → decide (key b ≤ key c) = true →
+      decide (key a ≤ key c) = true := by
+    intro a b c h1 h2; simp only [decide_eq_true_eq] at *; exact le_trans h1 h2
+  have total : ∀ a b : α, (decide (key a ≤ key b) || decide (key b ≤ key a)) = true := by
+    intro a b; simp only [Bool.or_eq_true, decide_eq_true_eq]; exact le_total _ _
+  have hc : (l.filter fun y => key y == key x).Pairwise (fun a b => decide (key a ≤ key b) = true) := by
+    apply List.Pairwise.imp_of_mem (R := fun _ _ => True) _ (List.pairwise_of_forall (by simp))
+    intro a b ha hb _
+    simp only [List.mem_filter, beq_iff_eq] at ha hb
+    simp [ha.2, hb.2]
+  have sub := List.sublist_mergeSort trans total hc (List.filter_sublist (l := l))
+  have sub' := sub.filter (fun y => key y == key x)
+  rw [List.filter_filter] at sub'
+  simp only [Bool.and_self] at sub'
+  symm
+  apply sub'.eq_of_length
+  exact ((List.mergeSort_perm l _).filter _).length_eq.symm
+-- the same for keys in `Int` / `Nat`: a goal's `decide (key a ≤ key b)` uses the type's own `Decidable` instance, which the
+-- general statement (over `LinearOrder`) does not match syntactically (he_145)
+theorem filter_mergeSort_key_int {α : Type} (key : α → Int) (l : List α) (x : α) :
+    List.filter (fun y => key y == key x) (l.mergeSort fun a b => decide (key a ≤ key b)) =
+      List.filter (fun y => key y == key x) l := by
+  have := filter_mergeSort_key key l x
+  convert this using 3 <;> rw [Bool.eq_iff_iff] <;> simp
+theorem filter_mergeSort_key_nat {α : Type} (key : α → Nat) (l : List α) (x : α) :
+    List.filter (fun y => key y == key x) (l.mergeSort fun a b => decide (key a ≤ key b)) =
+      List.filter (fun y => key y == key x) l := by
+  have := filter_mergeSort_key key l x
+  convert this using 3 <;> rw [Bool.eq_iff_iff] <;> simp
 
 end Refine
 '''
@@ -770,12 +803,12 @@ SIMP_SET = ", ".join([f"Refine.{name}" for name in (
     "forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
     "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ",
     "take_string_length", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-    "exists_mem_array_iff_idx", "getElem_bang_map_range", "mem_dedup_mergeSort", "mergeSort_isPerm", "isPerm_mergeSort", "mem_mergeSort'", "length_filter_range_succ")] + ["String.length_toList", "List.range_succ", "-List.take_append_getElem", "-List.getElem!_eq_getElem?_getD"])
+    "exists_mem_array_iff_idx", "getElem_bang_map_range", "mem_dedup_mergeSort", "mergeSort_isPerm", "isPerm_mergeSort", "mem_mergeSort'", "length_filter_range_succ", "filter_mergeSort_key_int", "filter_mergeSort_key_nat")] + ["String.length_toList", "List.range_succ", "-List.take_append_getElem", "-List.getElem!_eq_getElem?_getD"])
 
 NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
          "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ", "take_string_length",
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "getElem_bang_map_range", "getElem_bang_append", "pairwise_le_nodup_lt", "dedup_mergeSort_strict", "mem_dedup_mergeSort", "foldl_max_mem_of_mem", "le_foldl_max", "start_le_foldl_max", "getElem_bang_zero_mem_take", "getElem_bang_zero_mem_take'", "getElem_bang_zero_mem_take_of_lt", "getElem_bang_cons", "getElem_bang_nil", "mergeSort_isPerm", "isPerm_mergeSort", "mergeSort_le_int", "mergeSort_ge_int", "mergeSort_le_nat", "mergeSort_key_le", "mergeSort_key_le_nat", "mergeSort_length'", "mem_mergeSort'", "mod_gcd_left", "mod_gcd_right", "mod_eq_zero_of_dvd'", "dvd_of_mod_eq_zero'", "le_of_dvd_pos", "mergeSort_ge_nat", "foldl_min_facts", "foldl_min_mem_of_mem", "foldl_min_le", "foldl_min_le_start", "le_gcd_of_mod_left", "le_gcd_of_mod_right", "mergeSort_perm'", "perm_mergeSort'", "filter_mergeSort_perm", "length_filter_range_succ", "count_take_succ", "countP_take_succ", "take_succ_getElem?", "pairwise_mergeSort_le_int", "pairwise_mergeSort_le_nat", "pairwise_mergeSort_ge_int", "pairwise_mergeSort_ge_nat", "pairwise_mergeSort_key_le")
+         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "getElem_bang_map_range", "getElem_bang_append", "pairwise_le_nodup_lt", "dedup_mergeSort_strict", "mem_dedup_mergeSort", "foldl_max_mem_of_mem", "le_foldl_max", "start_le_foldl_max", "getElem_bang_zero_mem_take", "getElem_bang_zero_mem_take'", "getElem_bang_zero_mem_take_of_lt", "getElem_bang_cons", "getElem_bang_nil", "mergeSort_isPerm", "isPerm_mergeSort", "mergeSort_le_int", "mergeSort_ge_int", "mergeSort_le_nat", "mergeSort_key_le", "mergeSort_key_le_nat", "mergeSort_length'", "mem_mergeSort'", "mod_gcd_left", "mod_gcd_right", "mod_eq_zero_of_dvd'", "dvd_of_mod_eq_zero'", "le_of_dvd_pos", "mergeSort_ge_nat", "foldl_min_facts", "foldl_min_mem_of_mem", "foldl_min_le", "foldl_min_le_start", "le_gcd_of_mod_left", "le_gcd_of_mod_right", "mergeSort_perm'", "perm_mergeSort'", "filter_mergeSort_perm", "length_filter_range_succ", "count_take_succ", "countP_take_succ", "take_succ_getElem?", "pairwise_mergeSort_le_int", "pairwise_mergeSort_le_nat", "pairwise_mergeSort_ge_int", "pairwise_mergeSort_ge_nat", "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat")
 
 #: "Evaluation" rewrites only: an index into a construction becomes its value (``((range n).map f)[i]! = f i``). Unlike
 #: ``SIMP_SET`` they do not unfold ``take (i + 1)`` or turn ``∀ x ∈ l`` into the index form (right for loop steps, wrong for a

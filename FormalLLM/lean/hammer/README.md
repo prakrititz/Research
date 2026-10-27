@@ -15,7 +15,9 @@ Make a copy of the Lean project `~/.formalllm/lean-env-parent/lean-env` as `lean
 1. Use `lakefile.toml` from this folder. It adds Duper v4.34.1 (which brings lean-auto) and the `zipwrap` executable.
 2. Copy `Hammer.lean` to `LeanEnv/Hammer.lean` and `ZipWrap.lean` to the project root.
 3. Run `lake update Duper`. Building lean-auto downloads Zipperposition 2.1.
-4. Apply `lean-auto-windows-kill.patch` inside `.lake/packages/auto`.
+4. Apply `lean-auto-windows-kill.patch` inside `.lake/packages/auto`, and `hide-placeholder-axioms.patch` inside
+   `.lake/packages`. The second hides three axioms that prove any goal (`Duper.skSorryAx`, `autoTPTPSorry`,
+   `autoSMTSorry`) from library search; otherwise `try?` closes goals with them.
 5. Run `lake build LeanEnv.Hammer zipwrap`.
 6. Run with:
 

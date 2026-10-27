@@ -77,6 +77,7 @@ def main():
                 row["failed_status"] = failing[0].status if failing else ""
                 row["open_obligations"] = [v.obligation.description for v in open_obs][:4]
                 row["unsolved"] = [g[:500] for v in open_obs for g in v.unsolved][:2]
+                row["messages"] = [v.message[:300] for v in open_obs][:2]       # why, when there is no goal state (a resource limit)
                 if failing and open_obs and len(failing) == 1 and not args.no_search:
                     found = []
                     for k, v in enumerate(open_obs):

@@ -14,6 +14,7 @@ proved on their own, so a wrong step is rejected where it is made; (2) the finis
 ``{ ρ : T // post }`` whose elaboration re-checks every obligation in context; (3) ``#print axioms`` must not list
 ``sorryAx``, and the program is run on the task's tests.
 """
+import json
 import os
 import re
 import time
@@ -123,6 +124,10 @@ HAMMER = os.environ.get("FORMALLLM_HAMMER", "1") != "0"
 #: the external-prover hammer (``refine_hammer``: premise selection -> Zipperposition -> Duper reconstruction), present
 #: only when the session imports ``LeanEnv.Hammer``
 ATP = "LeanEnv.Hammer" in os.environ.get("FORMALLLM_LEAN_IMPORTS", "")
+#: the per-goal portfolio tries many slow alternatives (``try?``, Zipperposition) on each goal: it gets more time
+PORTFOLIO_TIMEOUT = 600.0
+#: what ``refine_portfolio`` logs for each goal it closes
+PORTFOLIO_CLOSER = re.compile(r"refine_portfolio: (.+)$", re.S)
 
 #: the cascade's alternatives as separate groups (see ``Derivation._portfolio``), filled by ``make_cascade``
 PORTFOLIO_CACHE: Dict[tuple, List[str]] = {}
@@ -369,9 +374,9 @@ class Derivation:
             self._env_id, self._env_restarts = env, self.lean.restarts
         return self._env_id
 
-    def _run(self, source: str):
+    def _run(self, source: str, timeout: Optional[float] = None):
         started = time.time()
-        reply = self.lean.run(source, timeout=self.timeout, env=self._environment())
+        reply = self.lean.run(source, timeout=timeout or self.timeout, env=self._environment())
         self.lean_seconds += time.time() - started
         return reply
 
@@ -440,9 +445,16 @@ class Derivation:
         names = _binder_names(obligation.binders)
         if names is None:
             return False
-        reply = self._run(obligation.source(f"{name}_alt", tactic))
+        portfolio = "refine_portfolio" in tactic
+        reply = self._run(obligation.source(f"{name}_alt", tactic), timeout=PORTFOLIO_TIMEOUT if portfolio else None)
         if reply.timed_out or reply.errors or reply.goals:
             return False
+        if portfolio:
+            # replay only the alternatives that closed a goal (the lemma is re-proved on every reload and in the certificate)
+            closers = list(dict.fromkeys(m.group(1).strip() for info in reply.infos
+                                         for m in [PORTFOLIO_CLOSER.match(info.strip())] if m))
+            replay = "refine_portfolio [" + ", ".join(json.dumps(c, ensure_ascii=False) for c in closers) + "]"
+            tactic = tactic.replace("refine_portfolio", replay)
         statement = f"∀ {obligation.binders}, {obligation.statement}" if obligation.binders.strip() else obligation.statement
         intro = f"  intro {' '.join(names)}\n" if names else ""
         lemma = HelperLemma(f"auto_{len(self.helpers)}_{name}"[:60], statement,
@@ -481,9 +493,15 @@ class Derivation:
             return []
         prep = (f"(try unfold {self.task.post_name} {self.task.pre_name} at *); (try dsimp only at *); (try intros); "
                 f"(try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> ")
+        if ATP:
+            # each goal on its own, by the first of: the cascade, the generic closers, the library search, try?, the external
+            # hammer (``refine_portfolio`` in ``LeanEnv/Hammer.lean``); each under its own heartbeat budget
+            # (no second attempt without ``prep``: ``auto_close`` splits the goal itself, and a failing portfolio costs
+            # minutes; he_020's inner-loop invariant spent 435 s + 508 s on the two attempts)
+            return [prep + "refine_portfolio"]
         return [prep + "first | (solve_by_elim +suggestions) | exact? | (grind +suggestions) | (simp_all; grind +suggestions)",
                 prep + "try?",
-                "try?"] + ([prep + "refine_hammer", "refine_hammer"] if ATP else [])
+                "try?"]
 
     def _check_once(self, obligation: Obligation, name: str) -> Verdict:
         source = obligation.source(name, self.diagnose)

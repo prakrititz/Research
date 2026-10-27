@@ -1,0 +1,33 @@
+--- a/Duper/Duper/Interface/Basic.lean
++++ b/Duper/Duper/Interface/Basic.lean
+@@ -69,6 +69,8 @@
+     to deliberately bypass the warning in `Lean.addAndCompile` because the `skolemSorry` constant that Duper adds to the environment
+     is only temporary and will be removed from the actual proof that should be checked by the kernel. -/
+ axiom skSorryAx : ∀ {α : Sort u}, α
++-- proves any goal: hidden from library search (exact?, try?, +suggestions), whose hits would fail `#print axioms`
++attribute [deprecated "a placeholder axiom that proves anything" (since := "2026-10-27")] skSorryAx
+ 
+ /-- Add the constant `skolemSorry` to the environment and add suitable postfix to avoid name conflict. -/
+ def addSkolemSorry : CoreM Name := do
+--- a/auto/Auto/Solver/SMT.lean
++++ b/auto/Auto/Solver/SMT.lean
+@@ -33,6 +33,8 @@
+ }
+ 
+ axiom autoSMTSorry.{u} (α : Sort u) : α
++-- proves any goal: hidden from library search (exact?, try?, +suggestions), whose hits would fail `#print axioms`
++attribute [deprecated "a placeholder axiom that proves anything" (since := "2026-10-27")] autoSMTSorry
+ 
+ register_option auto.smt.timeout : Nat := {
+   defValue := 10
+--- a/auto/Auto/Solver/TPTP.lean
++++ b/auto/Auto/Solver/TPTP.lean
+@@ -29,6 +29,8 @@
+ }
+ 
+ axiom autoTPTPSorry.{u} (α : Sort u) : α
++-- proves any goal: hidden from library search (exact?, try?, +suggestions), whose hits would fail `#print axioms`
++attribute [deprecated "a placeholder axiom that proves anything" (since := "2026-10-27")] autoTPTPSorry
+ 
+ register_option auto.tptp.premiseSelection : Bool := {
+   defValue := true
