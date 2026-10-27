@@ -16,6 +16,9 @@ if hasattr(sys.stdout, "reconfigure"):
     except Exception:
         pass
 
+#: seconds of silence after a streamed answer has started before the connection is taken for dead
+STREAM_IDLE_S = 120
+
 class Spinner:
     def __init__(self, message="Waiting for LLM..."):
         self.spinner = itertools.cycle(['-', '\\', '|', '/'])
@@ -423,9 +426,9 @@ class OpenAIChatProvider(LLMProvider):
                         f"Failed to reach {self.base_url} after "
                         f"{self.max_transport_retries} attempts. Error: {e}"
                     )
-                # Back off long enough for a refused ephemeral port to be
-                # released before trying again.
-                time.sleep(2 * (attempt + 1))
+                # Back off long enough for a refused ephemeral port to be released, and to ride out a short loss of the
+                # internet connection (DNS "getaddrinfo failed"): 5, 10, 20, 40, 60 ... s, about 4 minutes in all
+                time.sleep(min(60, 5 * 2 ** attempt))
 
         if not body.strip():
             raise Exception(
@@ -472,8 +475,17 @@ class OpenAIChatProvider(LLMProvider):
         """
         content_parts, reasoning_parts = [], []
         usage, finish_reason = {}, None
+        idle_set = False
 
         for raw_line in response:
+            if not idle_set:
+                # Once the answer streams, a silence of minutes means a dead connection (the internet dropped mid-answer
+                # and the read waited the full 900 s twice in one run): fail fast so the retry logic takes over
+                idle_set = True
+                try:
+                    response.fp.raw._sock.settimeout(STREAM_IDLE_S)
+                except AttributeError:
+                    pass
             line = raw_line.decode("utf-8", "replace").strip()
             if not line or not line.startswith("data:"):
                 continue

@@ -79,6 +79,8 @@ _PROOF_IN_VALUE = re.compile(r"^\s*(by\b|Exists\.intro\b)|^\s*⟨[\s\S]*\bby\b|\
 LEAN_RULES = """Lean 4 rules (this is Lean 4.34 with Mathlib, not Lean 3):
 - Functions are `fun x => e` (never `λ x, e`). Local values: `let x := e; body` (never `let ... in`).
 - An expression cannot define a recursive function (`let rec`, recursive `match`). Repetition is the `loop` law's job.
+- Values and conditions must run. A quantifier over all of `Nat` cannot run (`∃ i j : Nat, ...` is not decidable):
+  bound each one, `∃ i < l.length, ∃ j < l.length, p i j` (that runs). `Classical`, `by_cases` belong in proofs only.
 - Index with `a[i]!` (plain `a[i]` needs a bounds proof). `Nat` subtraction stops at 0; `/` on Nat and Int rounds down.
 - Common names: `l.length`, `l.take n`, `l.drop n`, `l.map f`, `l.filter p`, `l.foldl f init`, `l.reverse`, `l.sum`,
   `List.range n`, `l.mergeSort (fun a b => decide (a ≤ b))` (there is no `List.sort`), `a.size`, `a.push x`, `a.toList`,
@@ -87,6 +89,18 @@ LEAN_RULES = """Lean 4 rules (this is Lean 4.34 with Mathlib, not Lean 3):
   "invariant and not guard imply the postcondition" is then mechanical.
 - A helper lemma is a standalone theorem: the goal's variables are NOT in scope. Quantify everything it mentions,
   e.g. "∀ (l : List Int) (i : Nat), i < l.length → (l.take (i + 1)).sum = (l.take i).sum + l[i]!"."""
+
+_UNDECIDABLE = re.compile(r"failed to synthesize[^\n]*\n\s*Decidable\s*\(?\s*[∃∀]")
+
+
+def _error_hints(feedback: str) -> str:
+    """Plain words for Lean errors the raw message does not explain to the model (it retried an unbounded `∃` 10 times)."""
+    if _UNDECIDABLE.search(feedback):
+        return ("\n  Hint: Lean cannot run a search over all natural numbers, so this condition has no Decidable instance. "
+                "Bound every quantifier by a length: `∃ i < l.length, ∃ j < l.length, ...` runs; `∃ i j : Nat, ...` "
+                "does not. `Classical`/`decide` on an unbounded quantifier do not help.")
+    return ""
+
 
 _LIBRARY = None
 
@@ -299,7 +313,7 @@ class LeanAgent:
             return Call(goal.id, prompt, reply, "applied")
         text = last.feedback()
         if "3" in FIXES:
-            text += self._name_hints(derivation, text)
+            text += self._name_hints(derivation, text) + _error_hints(text)
         self._last = (data, steps)
         # the failing step may be inside a nested reply: attribute the feedback to the goal it concerns
         target = goal.id
