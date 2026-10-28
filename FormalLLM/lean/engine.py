@@ -48,6 +48,12 @@ LIBRARY = ", ".join(f"Refine.{n}" for n in __import__("FormalLLM.lean.lemmas", f
 #: ``(apply L; all_goals first | assumption | (simp_all; done) | omega) | ...`` for every library lemma (fails fast on a mismatch)
 LIBRARY_APPLY = "".join(f"(apply Refine.{n}; all_goals first | assumption | (simp_all; done) | omega) | "
                         for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
+#: ... and side goals for ``grind`` too; a side goal over members (``∀ g ∈ l, P g``) whose facts the simp set turned into
+#: the index form (``∀ k < l.length, P l[k]``) is bridged by naming the member's index (he_001)
+LIBRARY_APPLY_GRIND = "".join(
+    f"(apply Refine.{n}; all_goals first | assumption | (simp_all; done) | omega | grind | "
+    f"(intro _ hmem; obtain ⟨_, _, rfl⟩ := List.getElem_of_mem hmem; grind)) | "
+    for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
 
 
 def make_cascade(extra_simp=(), task_defs=(), pre="True"):
@@ -172,7 +178,9 @@ LIB_MACROS = (f'macro "lib_grind" : tactic => `(tactic| grind [{LIBRARY}])\n'
               f'macro "lib_chain" : tactic => `(tactic| solve_by_elim (maxDepth := 6) [{LIBRARY}])\n'
               f'macro "lib_apply" : tactic => `(tactic| first | {LIBRARY_APPLY.rstrip(" |")})\n'
               # the library's rewrites, for ``refine_portfolio``'s ``unfold_local; (try lib_simp); lib_apply`` (he_033)
-              f'macro "lib_simp" : tactic => `(tactic| simp_all [{SIMP_SET}])\n')
+              f'macro "lib_simp" : tactic => `(tactic| simp_all [{SIMP_SET}])\n'
+              # ``lib_apply`` whose side goals may also need ``grind`` (a hypothesis to project from under a binder: he_001)
+              f'macro "lib_apply_grind" : tactic => `(tactic| first | {LIBRARY_APPLY_GRIND.rstrip(" |")})\n')
 #: the library cascade as a named tactic in every task environment (see ``Derivation.__init__``)
 AUTO_CLOSE = LIB_MACROS + f'macro "auto_close" : tactic => `(tactic| ({CASCADE}))\n'
 LEMMA_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")

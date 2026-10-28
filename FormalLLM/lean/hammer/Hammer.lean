@@ -396,6 +396,37 @@ def modEqSplit : TacticM Unit := do
 syntax (name := modEqSplitTac) "mod_eq_split" : tactic
 @[tactic modEqSplitTac] def evalModEqSplit : Tactic := fun _ => modEqSplit
 
+/-- An existential goal whose witness a hypothesis already has (`∃ b < j, P b` for the goal `∃ b < j + 1, P b`, he_020's
+inner loop starting from the outer one): take that witness, then the rest from the hypothesis and arithmetic. -/
+def existsHyp : TacticM Unit := do
+  let goal ← getMainGoal
+  unless (← whnfR (← instantiateMVars (← goal.getType))).isAppOf ``Exists do throwError "exists_hyp: not `∃`"
+  -- name the existential hypotheses (they are often inaccessible after `casesm`)
+  let (names, goal) ← goal.withContext do
+    let mut goal := goal
+    let mut names := #[]
+    for d in ← getLCtx do
+      if d.isImplementationDetail then continue
+      if (← whnfR (← instantiateMVars d.type)).isAppOf ``Exists then
+        let name := Name.mkSimple s!"hex{names.size}"
+        goal ← goal.rename d.fvarId name
+        names := names.push name
+    return (names, goal)
+  replaceMainGoal [goal]
+  for h in names do
+    let saved ← saveState
+    try
+      runText s!"obtain ⟨w_, hw_⟩ := {h}"
+      runText "refine ⟨w_, ?_⟩"
+      runText ("first | (exact ⟨by omega, hw_.2⟩) | (exact ⟨by omega, hw_.2.1, hw_.2.2⟩) | (simp_all; done) | " ++
+        "(constructor <;> first | omega | assumption | (simp_all; done)) | grind")
+      return
+    catch _ => saved.restore
+  throwError "exists_hyp: no hypothesis gives a witness"
+
+syntax (name := existsHypTac) "exists_hyp" : tactic
+@[tactic existsHypTac] def evalExistsHyp : Tactic := fun _ => existsHyp
+
 syntax (name := prodBoundsTac) "prod_bounds" : tactic
 @[tactic prodBoundsTac] def evalProdBounds : Tactic := fun _ => prodBounds
 
@@ -478,9 +509,15 @@ def portfolio : List (Nat × String) :=
   [(200, "auto_close"), (200, "bool_split"), (400, "lin_hyps"), (400, "mod_split; lin_hyps"), (400, "exists_small"),
    (400, "fold_facts"), (400, "div_split"), (200, "mod_eq_split"), (600, "task_induction"), (600, "unfold_local; auto_close"),
    (600, "(try unfold_local); (try lib_simp); lib_apply"),
-   -- a member of `l ++ [d]` (or of `a :: l`): split the cases, then each part by the library (he_025: `d` is prime)
-   (400, "(simp only [List.mem_append, List.mem_singleton, List.mem_cons] at *); (casesm* _ ∨ _) <;> " ++
-     "(try subst_vars) <;> (repeat' apply And.intro) <;> first | (simp_all; done) | omega | lib_apply | grind"),
+   -- a member of `l ++ [d]`, `a :: l` or `l.map f`: split the cases / unpack the preimage, then each part by the library
+   -- (he_025: `d` is prime; he_001: a group `String.mk g` has the properties of `g`)
+   (400, "(simp only [List.mem_append, List.mem_singleton, List.mem_cons, List.mem_map] at *); " ++
+     "(casesm* _ ∨ _, _ ∧ _, Exists _) <;> (try subst_vars) <;> " ++
+     -- name the member's index, for hypotheses the simp set states by index
+     "(try obtain ⟨_, _, rfl⟩ := List.getElem_of_mem ‹_ ∈ _›) <;> (try lib_simp) <;> (repeat' apply And.intro) <;> " ++
+     "first | (simp_all; done) | omega | lib_apply | grind"),
+   (200, "exists_hyp"),
+   (600, "(try unfold_local); (try lib_simp); lib_apply_grind"),
    (200, "solve_by_elim +suggestions"), (200, "exact?"), (200, "grind +suggestions"), (200, "(simp_all; grind +suggestions)"),
    (400, "try?"), (400, "refine_hammer")]
 
