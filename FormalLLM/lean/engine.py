@@ -129,6 +129,12 @@ PORTFOLIO_TIMEOUT = 600.0
 #: what ``refine_portfolio`` logs for each goal it closes
 PORTFOLIO_CLOSER = re.compile(r"refine_portfolio: (.+)$", re.S)
 
+
+def heartbeats(proof: str, default: int) -> int:
+    """The heartbeat limit of a theorem with this proof. ``refine_portfolio`` gives each alternative its own budget, but Lean
+    keeps counting for the whole theorem, which then failed after every goal was closed (he_025, he_044): no limit there."""
+    return 0 if "refine_portfolio" in proof else default
+
 #: the cascade's alternatives as separate groups (see ``Derivation._portfolio``), filled by ``make_cascade``
 PORTFOLIO_CACHE: Dict[tuple, List[str]] = {}
 
@@ -164,7 +170,9 @@ CASCADE, DIAGNOSE = make_cascade()
 #: ~28k characters, and parsing it took Lean ~17 s per macro (twice per certificate): a full run would take hours longer
 LIB_MACROS = (f'macro "lib_grind" : tactic => `(tactic| grind [{LIBRARY}])\n'
               f'macro "lib_chain" : tactic => `(tactic| solve_by_elim (maxDepth := 6) [{LIBRARY}])\n'
-              f'macro "lib_apply" : tactic => `(tactic| first | {LIBRARY_APPLY.rstrip(" |")})\n')
+              f'macro "lib_apply" : tactic => `(tactic| first | {LIBRARY_APPLY.rstrip(" |")})\n'
+              # the library's rewrites, for ``refine_portfolio``'s ``unfold_local; (try lib_simp); lib_apply`` (he_033)
+              f'macro "lib_simp" : tactic => `(tactic| simp_all [{SIMP_SET}])\n')
 #: the library cascade as a named tactic in every task environment (see ``Derivation.__init__``)
 AUTO_CLOSE = LIB_MACROS + f'macro "auto_close" : tactic => `(tactic| ({CASCADE}))\n'
 LEMMA_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")
@@ -193,7 +201,7 @@ class HelperLemma:
     proof: str                        # ``by …`` or a term
 
     def source(self) -> str:
-        return f"set_option maxHeartbeats 400000 in\ntheorem {self.name} : {self.statement} := {self.proof}\n"
+        return f"set_option maxHeartbeats {heartbeats(self.proof, 400000)} in\ntheorem {self.name} : {self.statement} := {self.proof}\n"
 
     @staticmethod
     def from_json(data: dict) -> "HelperLemma":
@@ -446,7 +454,10 @@ class Derivation:
         if names is None:
             return False
         portfolio = "refine_portfolio" in tactic
-        reply = self._run(obligation.source(f"{name}_alt", tactic), timeout=PORTFOLIO_TIMEOUT if portfolio else None)
+        source = obligation.source(f"{name}_alt", tactic)
+        if portfolio:
+            source = source.replace("set_option maxHeartbeats 200000 in", "set_option maxHeartbeats 0 in", 1)
+        reply = self._run(source, timeout=PORTFOLIO_TIMEOUT if portfolio else None)
         if reply.timed_out or reply.errors or reply.goals:
             return False
         if portfolio:
