@@ -913,6 +913,73 @@ theorem flatten_eq_of_balanced {α : Type} [BEq α] (a b : α) (G : List (List �
     omega
   rw [rest_nil_of_counts a b c hca hc, List.append_nil] at h
   exact h
+-- closing a group: if every non-empty prefix of `cur` has more `a`s than `b`s and `cur ++ [x]` has equal counts, then
+-- `cur ++ [x]` is balanced (no prefix has more `b`s; equal counts) and no proper non-empty prefix of it is (he_001)
+theorem closed_group_balanced {α : Type} [BEq α] (a b x : α) (cur : List α)
+    (hc : ∀ k, 0 < k → k ≤ cur.length → (cur.take k).count b < (cur.take k).count a)
+    (heq : (cur ++ [x]).count a = (cur ++ [x]).count b) :
+    (∀ k, k ≤ (cur ++ [x]).length → ((cur ++ [x]).take k).count b ≤ ((cur ++ [x]).take k).count a) ∧
+      (cur ++ [x]).count a = (cur ++ [x]).count b := by
+  refine ⟨fun k hk => ?_, heq⟩
+  simp only [List.length_append, List.length_singleton] at hk
+  by_cases hk' : k ≤ cur.length
+  · rw [List.take_append_of_le_length hk']
+    rcases Nat.eq_zero_or_pos k with rfl | hpos
+    · simp
+    · exact Nat.le_of_lt (hc k hpos hk')
+  · have e : k = cur.length + 1 := by omega
+    subst e
+    rw [List.take_of_length_le (by simp)]
+    omega
+-- its first half alone (a goal split at `∧` asks for the halves separately)
+theorem closed_group_prefix {α : Type} [BEq α] (a b x : α) (cur : List α)
+    (hc : ∀ k, 0 < k → k ≤ cur.length → (cur.take k).count b < (cur.take k).count a)
+    (heq : (cur ++ [x]).count a = (cur ++ [x]).count b) :
+    ∀ k, k ≤ (cur ++ [x]).length → ((cur ++ [x]).take k).count b ≤ ((cur ++ [x]).take k).count a :=
+  (closed_group_balanced a b x cur hc heq).1
+theorem closed_group_minimal {α : Type} [BEq α] (a b x : α) (cur : List α)
+    (hc : ∀ k, 0 < k → k ≤ cur.length → (cur.take k).count b < (cur.take k).count a) :
+    ∀ k < (cur ++ [x]).length, 0 < k →
+      ¬((∀ j, j ≤ ((cur ++ [x]).take k).length →
+          (((cur ++ [x]).take k).take j).count b ≤ (((cur ++ [x]).take k).take j).count a) ∧
+        ((cur ++ [x]).take k).count a = ((cur ++ [x]).take k).count b) := by
+  intro k hk hpos ⟨_, h⟩
+  simp only [List.length_append, List.length_singleton] at hk
+  rw [List.take_append_of_le_length (by omega)] at h
+  have := hc k hpos (by omega)
+  omega
+-- extending an open group: the next symbol `L[i]` keeps every non-empty prefix of `cur ++ [L[i]]` strictly open when the
+-- whole of `cur ++ [L[i]]` is not balanced (the prefix `L.take (i + 1)` = closed groups ++ `cur ++ [L[i]]` has no more
+-- `b`s than `a`s, and the closed groups have equal counts) (he_001)
+theorem open_group_extend {α : Type} [BEq α] [Inhabited α] (a b : α) (G : List (List α)) (cur L : List α) (i : Nat)
+    (hc : ∀ k, 0 < k → k ≤ cur.length → (cur.take k).count b < (cur.take k).count a)
+    (hflat : G.flatten ++ cur = L.take i) (hi : i < L.length)
+    (hne : ¬ (cur ++ [L[i]!]).count a = (cur ++ [L[i]!]).count b)
+    (hpre : ∀ k, k ≤ L.length → (L.take k).count b ≤ (L.take k).count a)
+    (hG : ∀ g ∈ G, g.count a = g.count b) :
+    ∀ k, 0 < k → k ≤ (cur ++ [L[i]!]).length → ((cur ++ [L[i]!]).take k).count b < ((cur ++ [L[i]!]).take k).count a := by
+  intro k hk0 hk
+  simp only [List.length_append, List.length_singleton] at hk
+  by_cases hk' : k ≤ cur.length
+  · rw [List.take_append_of_le_length hk']
+    exact hc k hk0 hk'
+  · have e : k = cur.length + 1 := by omega
+    subst e
+    rw [List.take_of_length_le (by simp)]
+    have hp := hpre (i + 1) (by omega)
+    rw [take_succ_bang L i hi, ← hflat, List.append_assoc] at hp
+    simp only [List.count_append] at hp hne ⊢
+    have hf := count_flatten_eq a b G hG
+    omega
+-- the same for one prefix length `k` (a goal whose `∀ k` is already introduced)
+theorem open_group_extend_at {α : Type} [BEq α] [Inhabited α] (a b : α) (G : List (List α)) (cur L : List α) (i k : Nat)
+    (hc : ∀ k, 0 < k → k ≤ cur.length → (cur.take k).count b < (cur.take k).count a)
+    (hflat : G.flatten ++ cur = L.take i) (hi : i < L.length)
+    (hne : ¬ (cur ++ [L[i]!]).count a = (cur ++ [L[i]!]).count b)
+    (hpre : ∀ k, k ≤ L.length → (L.take k).count b ≤ (L.take k).count a)
+    (hG : ∀ g ∈ G, g.count a = g.count b) (hk0 : 0 < k) (hk : k ≤ (cur ++ [L[i]!]).length) :
+    ((cur ++ [L[i]!]).take k).count b < ((cur ++ [L[i]!]).take k).count a :=
+  open_group_extend a b G cur L i hc hflat hi hne hpre hG k hk0 hk
 -- the positions `i % m = 0` below `n` (m = 2, 3) are `m * k` for `k < (n + m - 1) / m`
 theorem filter_range_mod2 (n : Nat) :
     (List.range n).filter (fun i => decide (i % 2 = 0)) = (List.range ((n + 1) / 2)).map (fun k => 2 * k) := by
@@ -989,7 +1056,7 @@ SIMP_SET = ", ".join([f"Refine.{name}" for name in (
 NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
          "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ", "take_string_length",
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "getElem_bang_map_range", "getElem_bang_append", "pairwise_le_nodup_lt", "dedup_mergeSort_strict", "mem_dedup_mergeSort", "foldl_max_mem_of_mem", "le_foldl_max", "start_le_foldl_max", "getElem_bang_zero_mem_take", "getElem_bang_zero_mem_take'", "getElem_bang_zero_mem_take_of_lt", "getElem_bang_cons", "getElem_bang_nil", "mergeSort_isPerm", "isPerm_mergeSort", "mergeSort_le_int", "mergeSort_ge_int", "mergeSort_le_nat", "mergeSort_key_le", "mergeSort_key_le_nat", "mergeSort_length'", "mem_mergeSort'", "mod_gcd_left", "mod_gcd_right", "mod_eq_zero_of_dvd'", "dvd_of_mod_eq_zero'", "le_of_dvd_pos", "mergeSort_ge_nat", "foldl_min_facts", "foldl_min_mem_of_mem", "foldl_min_le", "foldl_min_le_start", "le_gcd_of_mod_left", "le_gcd_of_mod_right", "mergeSort_perm'", "perm_mergeSort'", "filter_mergeSort_perm", "length_filter_range_succ", "count_take_succ", "countP_take_succ", "take_succ_getElem?", "pairwise_mergeSort_le_int", "pairwise_mergeSort_le_nat", "pairwise_mergeSort_ge_int", "pairwise_mergeSort_ge_nat", "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "digitChar_toNat", "mem_toDigits_lt", "toDigits_all_digit", "toDigits_idx_digit", "foldl_toDigits", "foldl_toDigits'", "toDigits_head_ne_zero", "toDigits_getElem_zero_ne_zero", "prime_of_min_divisor", "not_dvd_div_of_not_dvd", "div_one_or_ge_of_min_divisor", "sorted_append_ge", "map_toList_mk", "map_comp_toList_mk", "count_flatten_eq", "rest_nil_of_counts", "flatten_eq_of_balanced", "filter_range_mod2", "filter_range_mod3", "gather_scatter2", "gather_scatter3", "mergeSort_le_int'", "mergeSort_le_nat'")
+         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "getElem_bang_map_range", "getElem_bang_append", "pairwise_le_nodup_lt", "dedup_mergeSort_strict", "mem_dedup_mergeSort", "foldl_max_mem_of_mem", "le_foldl_max", "start_le_foldl_max", "getElem_bang_zero_mem_take", "getElem_bang_zero_mem_take'", "getElem_bang_zero_mem_take_of_lt", "getElem_bang_cons", "getElem_bang_nil", "mergeSort_isPerm", "isPerm_mergeSort", "mergeSort_le_int", "mergeSort_ge_int", "mergeSort_le_nat", "mergeSort_key_le", "mergeSort_key_le_nat", "mergeSort_length'", "mem_mergeSort'", "mod_gcd_left", "mod_gcd_right", "mod_eq_zero_of_dvd'", "dvd_of_mod_eq_zero'", "le_of_dvd_pos", "mergeSort_ge_nat", "foldl_min_facts", "foldl_min_mem_of_mem", "foldl_min_le", "foldl_min_le_start", "le_gcd_of_mod_left", "le_gcd_of_mod_right", "mergeSort_perm'", "perm_mergeSort'", "filter_mergeSort_perm", "length_filter_range_succ", "count_take_succ", "countP_take_succ", "take_succ_getElem?", "pairwise_mergeSort_le_int", "pairwise_mergeSort_le_nat", "pairwise_mergeSort_ge_int", "pairwise_mergeSort_ge_nat", "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "digitChar_toNat", "mem_toDigits_lt", "toDigits_all_digit", "toDigits_idx_digit", "foldl_toDigits", "foldl_toDigits'", "toDigits_head_ne_zero", "toDigits_getElem_zero_ne_zero", "prime_of_min_divisor", "not_dvd_div_of_not_dvd", "div_one_or_ge_of_min_divisor", "sorted_append_ge", "map_toList_mk", "map_comp_toList_mk", "count_flatten_eq", "rest_nil_of_counts", "flatten_eq_of_balanced", "closed_group_balanced", "closed_group_prefix", "closed_group_minimal", "open_group_extend", "open_group_extend_at", "filter_range_mod2", "filter_range_mod3", "gather_scatter2", "gather_scatter3", "mergeSort_le_int'", "mergeSort_le_nat'")
 
 #: "Evaluation" rewrites only: an index into a construction becomes its value (``((range n).map f)[i]! = f i``). Unlike
 #: ``SIMP_SET`` they do not unfold ``take (i + 1)`` or turn ``∀ x ∈ l`` into the index form (right for loop steps, wrong for a

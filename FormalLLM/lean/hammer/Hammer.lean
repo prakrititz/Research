@@ -516,6 +516,11 @@ def portfolio : List (Nat × String) :=
      -- name the member's index, for hypotheses the simp set states by index
      "(try obtain ⟨_, _, rfl⟩ := List.getElem_of_mem ‹_ ∈ _›) <;> (try lib_simp) <;> (repeat' apply And.intro) <;> " ++
      "first | (simp_all; done) | omega | lib_apply | grind"),
+   -- the same without the simp set, whose rewriting would hide a definition (`isBalanced`) the library's facts
+   -- unfold to (he_001: a closed group is balanced)
+   (400, "(simp only [List.mem_append, List.mem_singleton, List.mem_cons, List.mem_map] at *); " ++
+     "(casesm* _ ∨ _, _ ∧ _, Exists _) <;> (try subst_vars) <;> (repeat' apply And.intro) <;> " ++
+     "first | (simp_all; done) | omega | lib_apply_grind | grind"),
    (200, "exists_hyp"),
    (600, "(try unfold_local); (try lib_simp); lib_apply_grind"),
    (200, "solve_by_elim +suggestions"), (200, "exact?"), (200, "grind +suggestions"), (200, "(simp_all; grind +suggestions)"),

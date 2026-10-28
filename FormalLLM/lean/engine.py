@@ -380,7 +380,7 @@ class Derivation:
         """The Lean environment holding the task's definitions (loaded once; again after a restart of the session)."""
         if self._env_id is None or self._env_restarts != self.lean.restarts:
             source = self.lemmas + "\n" + self.task.prelude + "\n" + self._helper_text()
-            reply, env = self.lean.load(source)
+            reply, env = self.lean.load(source, timeout=self._replay_timeout())
             if env is None and reply.timed_out:
                 # a starved or bloated REPL times out on a load that normally takes seconds; the session restarted itself
                 # on the timeout, so try once more on the fresh process (with more time) before calling it a failure
@@ -389,6 +389,12 @@ class Derivation:
                 raise ValueError("the task's own definitions do not compile: " + (reply.errors or ["?"])[0][:300])
             self._env_id, self._env_restarts = env, self.lean.restarts
         return self._env_id
+
+    def _replay_timeout(self) -> Optional[float]:
+        """Time to re-check the helper lemmas: ``refine_portfolio`` proofs replay their closers (``grind +suggestions``,
+        ``try?``...), which can take minutes each (he_001: the 90 s limit cut a proof that had just been found)."""
+        n = sum(1 for h in self.helpers if "refine_portfolio" in h.proof)
+        return PORTFOLIO_TIMEOUT * n if n else None
 
     def _run(self, source: str, timeout: Optional[float] = None):
         started = time.time()
@@ -565,7 +571,7 @@ class Derivation:
             return Verdict(Obligation("lemma", f"helper lemma {lemma.name}", "", lemma.statement), "ILL_FORMED",
                            f"a helper lemma named {lemma.name} already exists")
         obligation = Obligation("lemma", f"helper lemma {lemma.name}", "", lemma.statement)
-        reply = self._run(lemma.source())
+        reply = self._run(lemma.source(), timeout=PORTFOLIO_TIMEOUT if "refine_portfolio" in lemma.proof else None)
         if reply.timed_out:
             return Verdict(obligation, "TIMEOUT", "Lean gave no answer within the time limit", seconds=reply.seconds)
         if reply.errors or reply.goals:
@@ -710,7 +716,7 @@ class Derivation:
             return Certificate(False, [f"{len(self.open_goals())} goals are still open"])
         started = time.time()
         source = self.source()
-        reply = self.lean.run(source, timeout=max(self.timeout, 240.0))
+        reply = self.lean.run(source, timeout=max(self.timeout, 240.0, self._replay_timeout() or 0))
         certificate = Certificate(not reply.errors and not reply.timed_out, errors=reply.errors[:3])
         theorem = f"'{self.task.name}_spec_satisfied'"
         for info in reply.infos:
@@ -727,7 +733,7 @@ class Derivation:
             tests = self.task.test_commands()
             certificate.tests = len(tests)
             prefix = self.task.compat + "\n" if self.task.compat else ""     # the dataset's prelude (e.g. the witness search)
-            ran = self.lean.run(prefix + source + "\n" + "\n".join(tests), timeout=max(self.timeout, 240.0))
+            ran = self.lean.run(prefix + source + "\n" + "\n".join(tests), timeout=max(self.timeout, 240.0, self._replay_timeout() or 0))
             certificate.passed = sum(1 for info in ran.infos if info.strip() == "true")
         certificate.seconds = round(time.time() - started, 2)
         return certificate
