@@ -244,6 +244,20 @@ class Loop(Law):
             return None
         return var, expr
 
+    def bounded(self) -> Optional["Loop"]:
+        """The loop with ``v ≤ e`` added to its invariant, for a guard ``v < e`` whose invariant does not state the bound.
+        Without it the exit obligation is false (``¬ v < e`` allows ``v > e``) although no run of the loop gets there: the
+        commonest gap in models' loops (o3-mini's he_011, he_014, he_042). The added conjunct is checked like the rest of
+        the invariant (before the first iteration and by the body), so the strengthening is sound."""
+        bound = self._exit_bound()
+        if bound is None:
+            return None
+        var, expr = bound
+        stated = rf"(?<![\w']){re.escape(var)}\s*(≤|<=)\s*\(?\s*{re.escape(expr)}\s*\)?(?![\w'.])"
+        if re.search(stated, self.invariant):
+            return None
+        return Loop(self.state, self.init, f"({self.invariant}) ∧ {var} ≤ ({expr})", self.guard, self.variant, self.result)
+
     def _pattern(self, names: List[str]) -> str:
         return names[0] if len(names) == 1 else "(" + ", ".join(names) + ")"
 

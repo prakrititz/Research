@@ -39,6 +39,7 @@ def _binder_names(binders: str) -> Optional[List[str]]:
             if depth == 0 and start is not None:
                 names += binders[start:k].split(":", 1)[0].split()
     return names
+from FormalLLM.lean import smallscope
 from FormalLLM.lean.lemmas import EVAL_SET, LEMMAS, SIMP_SET
 from FormalLLM.lean.session import LeanSession
 from FormalLLM.lean.task import LeanTask
@@ -496,8 +497,8 @@ class Derivation:
 
     def _check(self, obligation: Obligation, name: str) -> Verdict:
         verdict = self._check_once(obligation, name)
-        if verdict.status != "UNPROVED":
-            return verdict
+        if verdict.status != "UNPROVED" or verdict.counterexample:
+            return verdict                              # proved, ill-formed, or false: no prover can do more
         # tactics the common cascade does not contain (they depend on this obligation): each proof found becomes a helper
         specials = [t for t in (self._witness_tactic(obligation), self._cases_tactic(obligation)) if t]
         if any(self._prove_as_helper(obligation, f"{name}_s{k}", t) for k, t in enumerate(specials)):
@@ -551,6 +552,8 @@ class Derivation:
                 verdict.counterexample = self._counterexample(obligation, name)
         else:
             verdict = Verdict(obligation, "PROVED", seconds=reply.seconds)
+        if verdict.status == "UNPROVED" and self.counterexamples and not verdict.counterexample:
+            verdict.counterexample = self._small_scope(obligation)
         self._memo[source] = verdict
         return verdict
 
@@ -564,6 +567,17 @@ class Derivation:
                   f"  (try dsimp only at *); plausible {PLAUSIBLE_CONFIG}\n")
         reply = self._run(source)
         return reply.counterexample
+
+    def _small_scope(self, obligation: Obligation) -> Optional[str]:
+        """Every combination of small values (``smallscope.py``): the falsifying one, as the counter-example text."""
+        source = smallscope.falsifier(obligation.binders, obligation.statement)
+        if source is None:
+            return None
+        reply = self._run(source, timeout=60.0)
+        if reply.timed_out or reply.errors:
+            return None
+        found = smallscope.parse("\n".join(reply.infos))
+        return f"the statement is false for {found}" if found else None
 
     def _admit(self, lemma: HelperLemma) -> Optional[Verdict]:
         """Have Lean prove a helper lemma; ``None`` when it is accepted (and now part of the environment)."""
@@ -626,8 +640,15 @@ class Derivation:
                 return Step(False, status, f"the helper lemma {helper.name} was not accepted", [refused])
         verdicts = [self._check(ob, f"obl{goal_id}_{k}") for k, ob in enumerate(expansion.obligations)]
         bad = [v for v in verdicts if not v.proved]
+        if bad and all(v.obligation.kind == "exit" and v.status == "UNPROVED" for v in bad):
+            # a loop whose invariant does not bound the guard's variable: retry with the bound added (``Loop.bounded``)
+            bounded = getattr(law, "bounded", lambda: None)()
+            if bounded is not None:
+                step = self.apply(goal_id, bounded)
+                if step.ok:
+                    return step
         if bad:
-            status = {"ILL_FORMED": "ill_formed", "TIMEOUT": "timeout"}.get(bad[0].status, "unproved")
+            status ={"ILL_FORMED": "ill_formed", "TIMEOUT": "timeout"}.get(bad[0].status, "unproved")
             if any(v.status == "ILL_FORMED" for v in bad):
                 status = "ill_formed"
             elif status == "unproved" and self.counterexamples:
