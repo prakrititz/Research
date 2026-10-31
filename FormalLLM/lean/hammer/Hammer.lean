@@ -522,6 +522,9 @@ def portfolio : List (Nat × String) :=
      "(casesm* _ ∨ _, _ ∧ _, Exists _) <;> (try subst_vars) <;> (repeat' apply And.intro) <;> " ++
      "first | (simp_all; done) | omega | lib_apply_grind | grind"),
    (200, "exists_hyp"),
+   -- members and list quantifiers in index form (`x ∈ l` ↦ `∃ k < l.length, l[k]! = x`), the form loop invariants state
+   -- facts in; then `grind` chains them (he_090: a member above the minimum is above the next smallest)
+   (400, "(try simp only [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.mem_iff_idx] at *); grind"),
    (600, "(try unfold_local); (try lib_simp); lib_apply_grind"),
    (200, "solve_by_elim +suggestions"), (200, "exact?"), (200, "grind +suggestions"), (200, "(simp_all; grind +suggestions)"),
    (400, "try?"), (400, "refine_hammer")]
