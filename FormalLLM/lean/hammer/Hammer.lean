@@ -396,6 +396,22 @@ def modEqSplit : TacticM Unit := do
 syntax (name := modEqSplitTac) "mod_eq_split" : tactic
 @[tactic modEqSplitTac] def evalModEqSplit : Tactic := fun _ => modEqSplit
 
+/-- A natural number `n` that the hypotheses show positive, whose predecessor `n - 1` occurs: write it `k + 1` (so that
+`a ^ n = a * a ^ k` and `n - 1 = k` are plain rewriting) and finish with `grind` (classic_fast_power, a loop counting
+down: `r * a * a ^ (e' - 1) = b ^ e` from `r * a ^ e' = b ^ e` and `e' > 0`). -/
+def succPos : TacticM Unit := do
+  let text := toString (← withMainContext do Meta.ppGoal (← getMainGoal))
+  let mut written := 0
+  for (n, t) in ← namedLocals do
+    if t.isConstOf ``Nat && (text.splitOn s!"{n} - 1").length > 1 then
+      if ← tryTactic (runText s!"obtain ⟨{n}_pred, rfl⟩ : ∃ k, {n} = k + 1 := ⟨{n} - 1, by omega⟩") then
+        written := written + 1
+  if written == 0 then throwError "succ_pos: no positive natural number whose predecessor occurs"
+  runText "(try simp only [Nat.add_sub_cancel] at *); first | grind | (simp_all; done) | (simp_all <;> grind)"
+
+syntax (name := succPosTac) "succ_pos" : tactic
+@[tactic succPosTac] def evalSuccPos : Tactic := fun _ => succPos
+
 /-- An existential goal whose witness a hypothesis already has (`∃ b < j, P b` for the goal `∃ b < j + 1, P b`, he_020's
 inner loop starting from the outer one): take that witness, then the rest from the hypothesis and arithmetic. -/
 def existsHyp : TacticM Unit := do
@@ -507,7 +523,7 @@ syntax (name := refinePortfolio) "refine_portfolio" (ppSpace "[" str,* "]")? : t
 the task's cascade (a macro of the task file); where it is not defined, that alternative simply fails to parse. -/
 def portfolio : List (Nat × String) :=
   [(200, "auto_close"), (200, "bool_split"), (400, "lin_hyps"), (400, "mod_split; lin_hyps"), (400, "exists_small"),
-   (400, "fold_facts"), (400, "div_split"), (200, "mod_eq_split"), (600, "task_induction"), (600, "unfold_local; auto_close"),
+   (400, "fold_facts"), (400, "div_split"), (200, "mod_eq_split"), (400, "succ_pos"), (600, "task_induction"), (600, "unfold_local; auto_close"),
    (600, "(try unfold_local); (try lib_simp); lib_apply"),
    -- a member of `l ++ [d]`, `a :: l` or `l.map f`: split the cases / unpack the preimage, then each part by the library
    -- (he_025: `d` is prime; he_001: a group `String.mk g` has the properties of `g`)

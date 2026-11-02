@@ -88,7 +88,9 @@ def make_cascade(extra_simp=(), task_defs=(), pre="True"):
     helpers = ""
     if extra_simp:
         names = ", ".join(extra_simp)
-        applied = " | ".join(f"(apply {n} <;> simp_all)" for n in extra_simp)
+        # ``done``: ``simp_all`` succeeds without closing a goal, and ``first`` then takes this alternative: the proof ended
+        # with "unsolved goals", which reads as an ill-formed step (he_012: five of o3-mini's loops refused that way)
+        applied = " | ".join(f"(apply {n} <;> simp_all; done)" for n in extra_simp)
         helpers = f"{applied} | (grind [{names}]) | (simp_all [{simp}] <;> grind [{names}]) | "
     groups = _cascade_groups(simp, helpers, defs_alt, pre)
     tactic = ("(try dsimp only at *); (repeat' apply And.intro); all_goals (first | omega | grind | (simp_all; done) | "
@@ -526,7 +528,7 @@ class Derivation:
         specials = [t for t in (self._witness_tactic(obligation), self._cases_tactic(obligation)) if t]
         if any(self._prove_as_helper(obligation, f"{name}_s{k}", t) for k, t in enumerate(specials)):
             return Verdict(obligation, "PROVED", seconds=verdict.seconds)
-        if "resource limit" in verdict.message and self._portfolio_prove(obligation, name):
+        if ("resource limit" in verdict.message or "proof failed" in verdict.message) and self._portfolio_prove(obligation, name):
             return Verdict(obligation, "PROVED", seconds=verdict.seconds)
         if HAMMER and any(self._prove_as_helper(obligation, f"{name}_h{k}", t)
                           for k, t in enumerate(self._hammer_tactics(obligation))):
@@ -564,6 +566,12 @@ class Derivation:
             # surfaced as an error. The statement itself is well-formed, so this is "the automation did not prove it", not
             # "the step is ill-formed": the step stays repairable by a proof
             verdict = Verdict(obligation, "UNPROVED", "the automation hit a Lean resource limit (" +
+                              reply.errors[0].splitlines()[0][:120] + "); the statement itself is well-formed",
+                              seconds=reply.seconds)
+        elif reply.errors and obligation.body is None and self._elaborates(obligation):
+            # any other error of the cascade on a statement that type-checks is a failed proof, not an ill-formed step (an
+            # alternative that succeeded without closing its goal ended in "unsolved goals": he_012)
+            verdict = Verdict(obligation, "UNPROVED", "the automation's proof failed (" +
                               reply.errors[0].splitlines()[0][:120] + "); the statement itself is well-formed",
                               seconds=reply.seconds)
         elif reply.errors:
