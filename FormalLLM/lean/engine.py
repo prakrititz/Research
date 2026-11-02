@@ -44,8 +44,19 @@ from FormalLLM.lean.lemmas import EVAL_SET, LEMMAS, SIMP_SET
 from FormalLLM.lean.session import LeanSession
 from FormalLLM.lean.task import LeanTask
 
-#: every proved lemma of ``lemmas.py``, as ``grind`` arguments
+#: every proved lemma of ``lemmas.py``, as ``solve_by_elim`` arguments
 LIBRARY = ", ".join(f"Refine.{n}" for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
+#: lemmas ``grind`` refuses ("failed to find an usable pattern": an iff over a binder, a conclusion with no subterm to match).
+#: One refused argument fails the whole ``grind [...]`` call, so ``lib_grind`` failed on every goal while they were listed
+NO_GRIND_PATTERN = {
+    "forall_mem_iff_idx", "exists_mem_iff_idx", "exists_le_succ", "forall_le_succ", "forall_mem_toList_iff_idx",
+    "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx", "exists_mem_array_iff_idx", "forall_mem_drop_iff",
+    "exists_mem_drop_iff", "forall_mem_take_iff", "filter_pair_le", "ts_inner_init", "ts_outer_init", "ts_inner_step",
+    "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "mergeSort_key_le", "mergeSort_key_le_nat",
+    "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat"}
+#: ... the rest, as ``grind`` arguments
+LIBRARY_GRIND = ", ".join(f"Refine.{n}" for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES
+                          if n not in NO_GRIND_PATTERN)
 #: ``(apply L; all_goals first | assumption | (simp_all; done) | omega) | ...`` for every library lemma (fails fast on a mismatch)
 LIBRARY_APPLY = "".join(f"(apply Refine.{n}; all_goals first | assumption | (simp_all; done) | omega) | "
                         for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
@@ -175,8 +186,19 @@ def _cascade_groups(simp: str, helpers: str, defs_alt: str, pre: str) -> List[st
 CASCADE, DIAGNOSE = make_cascade()
 #: the library steps as named tactics, defined once. Spelling the 90-lemma library out in every alternative made the cascade
 #: ~28k characters, and parsing it took Lean ~17 s per macro (twice per certificate): a full run would take hours longer
-LIB_MACROS = (f'macro "lib_grind" : tactic => `(tactic| grind [{LIBRARY}])\n'
-              f'macro "lib_chain" : tactic => `(tactic| solve_by_elim (maxDepth := 6) [{LIBRARY}])\n'
+#: The library searches run within a heartbeat budget of their own: a search that runs out fails like any tactic, and
+#: ``first`` goes on to the next alternative. Without it the declaration's limit is hit, which ``first`` cannot catch, and
+#: the whole cascade fails (``lib_chain`` over the grown library took 40 s on he_009 and hid the alternative after it)
+LIB_MACROS = ('open Lean Elab Tactic in\n'
+              'elab "lib_budget " n:num ppSpace t:tactic : tactic => do\n'
+              '  let ok ← tryCatchRuntimeEx\n'
+              '    (do withCurrHeartbeats <| withTheReader Core.Context (fun c => { c with maxHeartbeats := n.getNat * 1000 * 1000 }) <|\n'
+              '          evalTactic t\n'
+              '        pure true)\n'
+              '    (fun e => if e.isRuntime then pure false else throw e)\n'
+              '  unless ok do throwError "lib_budget: the heartbeat budget ran out"\n'
+              f'macro "lib_grind" : tactic => `(tactic| lib_budget 20 (grind [{LIBRARY_GRIND}]))\n'
+              f'macro "lib_chain" : tactic => `(tactic| lib_budget 40 (solve_by_elim (maxDepth := 6) [{LIBRARY}]))\n'
               f'macro "lib_apply" : tactic => `(tactic| first | {LIBRARY_APPLY.rstrip(" |")})\n'
               # the library's rewrites, for ``refine_portfolio``'s ``unfold_local; (try lib_simp); lib_apply`` (he_033)
               f'macro "lib_simp" : tactic => `(tactic| simp_all [{SIMP_SET}])\n'
