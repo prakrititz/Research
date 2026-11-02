@@ -525,6 +525,8 @@ def portfolio : List (Nat × String) :=
    -- members and list quantifiers in index form (`x ∈ l` ↦ `∃ k < l.length, l[k]! = x`), the form loop invariants state
    -- facts in; then `grind` chains them (he_090: a member above the minimum is above the next smallest)
    (400, "(try simp only [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.mem_iff_idx] at *); grind"),
+   -- `grind` with the whole library (a macro of the task file; he_010's loop exit)
+   (400, "lib_grind"),
    (600, "(try unfold_local); (try lib_simp); lib_apply_grind"),
    (200, "solve_by_elim +suggestions"), (200, "exact?"), (200, "grind +suggestions"), (200, "(simp_all; grind +suggestions)"),
    (400, "try?"), (400, "refine_hammer")]

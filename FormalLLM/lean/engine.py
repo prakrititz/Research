@@ -44,10 +44,15 @@ from FormalLLM.lean.lemmas import EVAL_SET, LEMMAS, SIMP_SET
 from FormalLLM.lean.session import LeanSession
 from FormalLLM.lean.task import LeanTask
 
-#: every proved lemma of ``lemmas.py``, as ``solve_by_elim`` arguments
-LIBRARY = ", ".join(f"Refine.{n}" for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
+#: the library ``lib_chain`` chains over, as ``solve_by_elim`` arguments: the lemmas up to the task-family facts added from
+#: 28 Oct (``filter_mergeSort_key`` on). With those (many hypotheses each) the search no longer fails fast but runs out of
+#: heartbeats (he_009, he_010, he_022 regressed); ``lib_apply`` and the portfolio still use the whole library
+_NAMES = __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES
+LIBRARY = ", ".join(f"Refine.{n}" for n in _NAMES[:_NAMES.index("filter_mergeSort_key")])
 #: lemmas ``grind`` refuses ("failed to find an usable pattern": an iff over a binder, a conclusion with no subterm to match).
-#: One refused argument fails the whole ``grind [...]`` call, so ``lib_grind`` failed on every goal while they were listed
+#: One refused argument fails the whole ``grind [...]`` call, so ``lib_grind`` failed on every goal while they were listed.
+#: It is not in the cascade: everything certified so far was certified without it, and running it on every goal that the
+#: cascade fails made the runs several times slower and spent the heartbeats certificates need (he_010)
 NO_GRIND_PATTERN = {
     "forall_mem_iff_idx", "exists_mem_iff_idx", "exists_le_succ", "forall_le_succ", "forall_mem_toList_iff_idx",
     "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx", "exists_mem_array_iff_idx", "forall_mem_drop_iff",
@@ -96,14 +101,8 @@ def make_cascade(extra_simp=(), task_defs=(), pre="True"):
               f"(rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | "
               + helpers +
               f"(norm_num; done) | (simp_all [{simp}]; norm_num; done) | "
-              # the whole proved library, for grind to instantiate by pattern (the paper's prover searches its library): the
-              # human helper lemmas are mostly instances of these general facts (max of a list, membership by index, ...)
-              f"(lib_grind) | (simp_all [{simp}] <;> lib_grind) | "
               # a goal that is a library fact as stated (``he_034``'s was ``Refine.dedup_mergeSort_strict`` exactly): apply it
               + "lib_apply | " +
-              # ``∀ i < n, ...``: conditional rewrites (``((range n).map f)[i]! = f i`` needs ``i < n``) only fire once the
-              # bound variables and their hypotheses are in the context
-              f"(intros; simp_all [{simp}] <;> lib_grind) | "
               # backward chaining over the whole library (the closest thing here to the paper's prover searching its
               # library): split the conjunctions, bring the bound variables in, and chain library lemmas and hypotheses.
               # grind alone failed on he_009 because it rewrites `take (i + 1)` away from the form the lemmas state
@@ -174,8 +173,10 @@ def _cascade_groups(simp: str, helpers: str, defs_alt: str, pre: str) -> List[st
         f"lib_chain)",
         f"((try intros); (try split_ifs) <;> (try simp only [Refine.getElem_bang_append, Refine.getElem_bang_cons, "
         f"Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind)",
-        f"grind | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (lib_grind) | "
-        f"(simp_all [{simp}] <;> lib_grind) | (intros; simp_all [{simp}] <;> lib_grind)",
+        f"grind | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind)",
+        # the library for grind: here and in ``refine_portfolio`` only, where it costs nothing to the goals the cascade
+        # proves (he_010's loop exit: `grind` with the library, 3 s)
+        f"lib_grind | (simp_all [{simp}] <;> lib_grind)",
         "((try intros); (try casesm* _ ∧ _); (try simp only [Refine.take_succ_getElem?, List.filterMap_append, List.map_append, List.filter_append, List.flatMap_append] at *); (try subst_vars); (try split) <;> (simp_all; done))",
         f"(norm_num; done) | (simp_all [{simp}]; norm_num; done) | nlinarith | (aesop; done) | decide",
         defs_alt.lstrip(" |"),
@@ -197,7 +198,7 @@ LIB_MACROS = ('open Lean Elab Tactic in\n'
               '        pure true)\n'
               '    (fun e => if e.isRuntime then pure false else throw e)\n'
               '  unless ok do throwError "lib_budget: the heartbeat budget ran out"\n'
-              f'macro "lib_grind" : tactic => `(tactic| lib_budget 20 (grind [{LIBRARY_GRIND}]))\n'
+              f'macro "lib_grind" : tactic => `(tactic| lib_budget 40 (grind [{LIBRARY_GRIND}]))\n'
               f'macro "lib_chain" : tactic => `(tactic| lib_budget 40 (solve_by_elim (maxDepth := 6) [{LIBRARY}]))\n'
               f'macro "lib_apply" : tactic => `(tactic| first | {LIBRARY_APPLY.rstrip(" |")})\n'
               # the library's rewrites, for ``refine_portfolio``'s ``unfold_local; (try lib_simp); lib_apply`` (he_033)
