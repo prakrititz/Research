@@ -1040,6 +1040,118 @@ theorem mergeSort_le_nat' (l : List Nat) (i : Nat) (hi : i < l.length - 1) :
     (l.mergeSort (fun a b => decide (a ≤ b)))[i]! ≤ (l.mergeSort (fun a b => decide (a ≤ b)))[i + 1]! :=
   mergeSort_le_nat l i (by simpa using hi)
 
+-- a fold whose step keeps the larger (smaller) of two values, written as an `if`, is a fold of `max` (`min`): rewritten
+-- by `simp only` with these (the full simp set would first turn `a ≥ b` into `b ≤ a`), the `max` facts apply
+-- (o3-mini's he_035, verina_advanced_40: `foldl (fun a b => if a ≥ b then a else b) l.head! l`)
+theorem ite_ge_eq_max {α : Type} [LinearOrder α] (a b : α) : (if a ≥ b then a else b) = max a b := by
+  split_ifs with h
+  · exact (max_eq_left h).symm
+  · exact (max_eq_right (le_of_lt (not_le.mp h))).symm
+theorem ite_gt_eq_max {α : Type} [LinearOrder α] (a b : α) : (if a > b then a else b) = max a b := by
+  split_ifs with h
+  · exact (max_eq_left (le_of_lt h)).symm
+  · exact (max_eq_right (not_lt.mp h)).symm
+theorem ite_le_eq_max {α : Type} [LinearOrder α] (a b : α) : (if a ≤ b then b else a) = max a b := by
+  split_ifs with h
+  · exact (max_eq_right h).symm
+  · exact (max_eq_left (le_of_lt (not_le.mp h))).symm
+theorem ite_lt_eq_max {α : Type} [LinearOrder α] (a b : α) : (if a < b then b else a) = max a b := by
+  split_ifs with h
+  · exact (max_eq_right (le_of_lt h)).symm
+  · exact (max_eq_left (not_lt.mp h)).symm
+theorem ite_le_eq_min {α : Type} [LinearOrder α] (a b : α) : (if a ≤ b then a else b) = min a b := by
+  split_ifs with h
+  · exact (min_eq_left h).symm
+  · exact (min_eq_right (le_of_lt (not_le.mp h))).symm
+theorem ite_lt_eq_min {α : Type} [LinearOrder α] (a b : α) : (if a < b then a else b) = min a b := by
+  split_ifs with h
+  · exact (min_eq_left (le_of_lt h)).symm
+  · exact (min_eq_right (not_lt.mp h)).symm
+theorem ite_ge_eq_min {α : Type} [LinearOrder α] (a b : α) : (if a ≥ b then b else a) = min a b := by
+  split_ifs with h
+  · exact (min_eq_right h).symm
+  · exact (min_eq_left (le_of_lt (not_le.mp h))).symm
+theorem ite_gt_eq_min {α : Type} [LinearOrder α] (a b : α) : (if a > b then b else a) = min a b := by
+  split_ifs with h
+  · exact (min_eq_right (le_of_lt h)).symm
+  · exact (min_eq_left (not_lt.mp h)).symm
+
+theorem foldr_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α),
+    (List.foldr max m l = m ∨ List.foldr max m l ∈ l) ∧ m ≤ List.foldr max m l ∧ ∀ x ∈ l, x ≤ List.foldr max m l := by
+  induction l with
+  | nil => intro m; simp
+  | cons a t ih =>
+    intro m
+    obtain ⟨h1, h2, h3⟩ := ih m
+    simp only [List.foldr_cons, List.mem_cons]
+    refine ⟨?_, le_trans h2 (le_max_right _ _), ?_⟩
+    · rcases le_total a (List.foldr max m t) with h | h
+      · rw [max_eq_right h]; rcases h1 with h1 | h1
+        · exact Or.inl h1
+        · exact Or.inr (Or.inr h1)
+      · rw [max_eq_left h]; exact Or.inr (Or.inl rfl)
+    · intro x hx
+      rcases hx with rfl | hx
+      · exact le_max_left _ _
+      · exact le_trans (h3 x hx) (le_max_right _ _)
+
+theorem foldr_min_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α),
+    (List.foldr min m l = m ∨ List.foldr min m l ∈ l) ∧ List.foldr min m l ≤ m ∧ ∀ x ∈ l, List.foldr min m l ≤ x := by
+  induction l with
+  | nil => intro m; simp
+  | cons a t ih =>
+    intro m
+    obtain ⟨h1, h2, h3⟩ := ih m
+    simp only [List.foldr_cons, List.mem_cons]
+    refine ⟨?_, le_trans (min_le_right _ _) h2, ?_⟩
+    · rcases le_total a (List.foldr min m t) with h | h
+      · rw [min_eq_left h]; exact Or.inr (Or.inl rfl)
+      · rw [min_eq_right h]; rcases h1 with h1 | h1
+        · exact Or.inl h1
+        · exact Or.inr (Or.inr h1)
+    · intro x hx
+      rcases hx with rfl | hx
+      · exact min_le_left _ _
+      · exact le_trans (min_le_right _ _) (h3 x hx)
+
+-- started at the list's first element, the fold's result is a member of the list
+theorem foldl_max_head_mem {α : Type} [LinearOrder α] [Inhabited α] (l : List α) (h : l ≠ []) : List.foldl max l.head! l ∈ l := by
+  cases l with
+  | nil => contradiction
+  | cons a t => exact foldl_max_mem_of_mem _ _ (by simp)
+theorem foldl_min_head_mem {α : Type} [LinearOrder α] [Inhabited α] (l : List α) (h : l ≠ []) : List.foldl min l.head! l ∈ l := by
+  cases l with
+  | nil => contradiction
+  | cons a t => exact foldl_min_mem_of_mem _ _ (by simp)
+theorem foldr_max_head_mem {α : Type} [LinearOrder α] [Inhabited α] (l : List α) (h : l ≠ []) : List.foldr max l.head! l ∈ l := by
+  cases l with
+  | nil => contradiction
+  | cons a t =>
+    rcases (foldr_max_facts (a :: t) (a :: t).head!).1 with h1 | h1
+    · rw [h1]; simp
+    · exact h1
+theorem foldr_min_head_mem {α : Type} [LinearOrder α] [Inhabited α] (l : List α) (h : l ≠ []) : List.foldr min l.head! l ∈ l := by
+  cases l with
+  | nil => contradiction
+  | cons a t =>
+    rcases (foldr_min_facts (a :: t) (a :: t).head!).1 with h1 | h1
+    · rw [h1]; simp
+    · exact h1
+theorem le_foldr_max {α : Type} [LinearOrder α] (l : List α) (m x : α) (h : x ∈ l) : x ≤ List.foldr max m l :=
+  (foldr_max_facts l m).2.2 x h
+theorem foldr_min_le {α : Type} [LinearOrder α] (l : List α) (m x : α) (h : x ∈ l) : List.foldr min m l ≤ x :=
+  (foldr_min_facts l m).2.2 x h
+
+-- `List.foldl Int.add 0 l` is the sum (o3-mini's he_121)
+theorem foldl_int_add (l : List Int) (a : Int) : List.foldl Int.add a l = a + l.sum := by
+  induction l generalizing a with
+  | nil => simp
+  | cons x t ih =>
+    simp only [List.foldl_cons, List.sum_cons]
+    rw [ih]
+    show a + x + t.sum = a + (x + t.sum)
+    omega
+
 end Refine
 '''
 
@@ -1051,15 +1163,15 @@ SIMP_SET = ", ".join([f"Refine.{name}" for name in (
     "forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
     "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ",
     "take_string_length", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-    "exists_mem_array_iff_idx", "getElem_bang_map_range", "mem_dedup_mergeSort", "mergeSort_isPerm", "isPerm_mergeSort", "mem_mergeSort'", "length_filter_range_succ", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "gather_scatter2", "gather_scatter3", "map_toList_mk", "map_comp_toList_mk")] + ["String.length_toList", "List.range_succ", "-List.take_append_getElem", "-List.getElem!_eq_getElem?_getD"])
+    "exists_mem_array_iff_idx", "getElem_bang_map_range", "mem_dedup_mergeSort", "mergeSort_isPerm", "isPerm_mergeSort", "mem_mergeSort'", "length_filter_range_succ", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "gather_scatter2", "gather_scatter3", "map_toList_mk", "map_comp_toList_mk", "foldl_int_add")] + ["String.length_toList", "List.range_succ", "-List.take_append_getElem", "-List.getElem!_eq_getElem?_getD"])
 
 NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
          "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ", "take_string_length",
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "getElem_bang_map_range", "getElem_bang_append", "pairwise_le_nodup_lt", "dedup_mergeSort_strict", "mem_dedup_mergeSort", "foldl_max_mem_of_mem", "le_foldl_max", "start_le_foldl_max", "getElem_bang_zero_mem_take", "getElem_bang_zero_mem_take'", "getElem_bang_zero_mem_take_of_lt", "getElem_bang_cons", "getElem_bang_nil", "mergeSort_isPerm", "isPerm_mergeSort", "mergeSort_le_int", "mergeSort_ge_int", "mergeSort_le_nat", "mergeSort_key_le", "mergeSort_key_le_nat", "mergeSort_length'", "mem_mergeSort'", "mod_gcd_left", "mod_gcd_right", "mod_eq_zero_of_dvd'", "dvd_of_mod_eq_zero'", "le_of_dvd_pos", "mergeSort_ge_nat", "foldl_min_facts", "foldl_min_mem_of_mem", "foldl_min_le", "foldl_min_le_start", "le_gcd_of_mod_left", "le_gcd_of_mod_right", "mergeSort_perm'", "perm_mergeSort'", "filter_mergeSort_perm", "length_filter_range_succ", "count_take_succ", "countP_take_succ", "take_succ_getElem?", "pairwise_mergeSort_le_int", "pairwise_mergeSort_le_nat", "pairwise_mergeSort_ge_int", "pairwise_mergeSort_ge_nat", "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "digitChar_toNat", "mem_toDigits_lt", "toDigits_all_digit", "toDigits_idx_digit", "foldl_toDigits", "foldl_toDigits'", "toDigits_head_ne_zero", "toDigits_getElem_zero_ne_zero", "prime_of_min_divisor", "not_dvd_div_of_not_dvd", "div_one_or_ge_of_min_divisor", "sorted_append_ge", "map_toList_mk", "map_comp_toList_mk", "count_flatten_eq", "rest_nil_of_counts", "flatten_eq_of_balanced", "closed_group_balanced", "closed_group_prefix", "closed_group_minimal", "open_group_extend", "open_group_extend_at", "filter_range_mod2", "filter_range_mod3", "gather_scatter2", "gather_scatter3", "mergeSort_le_int'", "mergeSort_le_nat'")
+         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "getElem_bang_map_range", "getElem_bang_append", "pairwise_le_nodup_lt", "dedup_mergeSort_strict", "mem_dedup_mergeSort", "foldl_max_mem_of_mem", "le_foldl_max", "start_le_foldl_max", "getElem_bang_zero_mem_take", "getElem_bang_zero_mem_take'", "getElem_bang_zero_mem_take_of_lt", "getElem_bang_cons", "getElem_bang_nil", "mergeSort_isPerm", "isPerm_mergeSort", "mergeSort_le_int", "mergeSort_ge_int", "mergeSort_le_nat", "mergeSort_key_le", "mergeSort_key_le_nat", "mergeSort_length'", "mem_mergeSort'", "mod_gcd_left", "mod_gcd_right", "mod_eq_zero_of_dvd'", "dvd_of_mod_eq_zero'", "le_of_dvd_pos", "mergeSort_ge_nat", "foldl_min_facts", "foldl_min_mem_of_mem", "foldl_min_le", "foldl_min_le_start", "le_gcd_of_mod_left", "le_gcd_of_mod_right", "mergeSort_perm'", "perm_mergeSort'", "filter_mergeSort_perm", "length_filter_range_succ", "count_take_succ", "countP_take_succ", "take_succ_getElem?", "pairwise_mergeSort_le_int", "pairwise_mergeSort_le_nat", "pairwise_mergeSort_ge_int", "pairwise_mergeSort_ge_nat", "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "digitChar_toNat", "mem_toDigits_lt", "toDigits_all_digit", "toDigits_idx_digit", "foldl_toDigits", "foldl_toDigits'", "toDigits_head_ne_zero", "toDigits_getElem_zero_ne_zero", "prime_of_min_divisor", "not_dvd_div_of_not_dvd", "div_one_or_ge_of_min_divisor", "sorted_append_ge", "map_toList_mk", "map_comp_toList_mk", "count_flatten_eq", "rest_nil_of_counts", "flatten_eq_of_balanced", "closed_group_balanced", "closed_group_prefix", "closed_group_minimal", "open_group_extend", "open_group_extend_at", "filter_range_mod2", "filter_range_mod3", "gather_scatter2", "gather_scatter3", "mergeSort_le_int'", "mergeSort_le_nat'", "ite_ge_eq_max", "ite_gt_eq_max", "ite_le_eq_max", "ite_lt_eq_max", "ite_le_eq_min", "ite_lt_eq_min", "ite_ge_eq_min", "ite_gt_eq_min", "foldr_max_facts", "foldr_min_facts", "foldl_max_head_mem", "foldl_min_head_mem", "foldr_max_head_mem", "foldr_min_head_mem", "le_foldr_max", "foldr_min_le", "foldl_int_add")
 
 #: "Evaluation" rewrites only: an index into a construction becomes its value (``((range n).map f)[i]! = f i``). Unlike
 #: ``SIMP_SET`` they do not unfold ``take (i + 1)`` or turn ``∀ x ∈ l`` into the index form (right for loop steps, wrong for a
 #: closed-form value, where the library lemmas are stated over ``take (i + 1)`` and members): found on he_009, 2026-10-27.
 EVAL_SET = ", ".join(["Refine.getElem_bang_map_range", "Refine.getElem_bang_append", "Refine.getElem_bang_cons", "Refine.getElem_bang_nil", "Refine.mergeSort_isPerm", "Refine.isPerm_mergeSort", "Refine.mem_mergeSort'", "Refine.mergeSort_length'", "Refine.mem_dedup_mergeSort", "Refine.toList_getElem_bang",
-                      "Refine.string_toList_mk", "Refine.string_length_mk", "List.length_map", "List.length_range"])
+                      "Refine.string_toList_mk", "Refine.string_length_mk", "List.length_map", "List.length_range", "Refine.foldl_int_add"])

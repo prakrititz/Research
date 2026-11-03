@@ -315,6 +315,46 @@ def consOfNeNil : TacticM Unit := do
 syntax (name := consOfNeNilTac) "cons_of_ne_nil" : tactic
 @[tactic consOfNeNilTac] def evalConsOfNeNil : Tactic := fun _ => consOfNeNil
 
+/-- Every list the hypotheses show non-empty, however they say it (`l ≠ []`, `l.length > 0`, `0 < l.length`,
+`l.length ≠ 0`), written `x :: t`; then the goal by simplification (verina_advanced_39's loop start: `l.head! ∈ l.take 1`
+from `l.length > 0`). -/
+def consCases : TacticM Unit := do
+  let lists ← withMainContext do
+    return (← namedLocals).filterMap fun (l, t) => if t.isAppOfArity ``List 1 then some l else none
+  let mut written := 0
+  for l in lists do
+    let nonEmpty := s!"(show {l} ≠ [] by first | assumption | exact List.ne_nil_of_length_pos (by omega) | simp_all)"
+    if ← tryTactic (runText s!"obtain ⟨{l}_hd, {l}_tl, rfl⟩ := List.exists_cons_of_ne_nil {nonEmpty}") then
+      written := written + 1
+  if written == 0 then throwError "cons_cases: no list the hypotheses show non-empty"
+  runText "first | (simp_all; done) | grind | (simp_all <;> grind) | (simp_all <;> omega)"
+
+syntax (name := consCasesTac) "cons_cases" : tactic
+@[tactic consCasesTac] def evalConsCases : Tactic := fun _ => consCases
+
+/-- Natural numbers the hypotheses bound by numerals (`j ≤ 1`, `k < j`, `¬ m > 1`): every case (`interval_cases`), each
+closed by simplification, then a non-empty list as `x :: t` (he_114's loop start `∀ j ≤ 1, ∀ k < j, ...`; he_025's
+exit `m * p = n`, `¬ m > 1`, `n ≥ 1`). -/
+def smallCases : TacticM Unit := do
+  -- named, so that `interval_cases` can refer to them (`intros` leaves them inaccessible)
+  let mut i := 0
+  while (← whnfR (← instantiateMVars (← getMainTarget))).isForall do
+    runText s!"intro sc_{i}"
+    i := i + 1
+  let nats ← withMainContext do
+    return (← namedLocals).filterMap fun (n, t) => if t.isConstOf ``Nat then some n else none
+  let mut split := 0
+  for n in nats do
+    -- every case so far: `k < j` is bounded only once `j` is a numeral
+    let before ← getGoals
+    runText s!"all_goals (try interval_cases {n})"
+    if (← getGoals) != before then split := split + 1
+  if split == 0 then throwError "small_cases: no natural number bounded by numerals"
+  runText ("all_goals first | (simp_all; done) | omega | (cons_cases) | grind | (simp_all <;> omega)")
+
+syntax (name := smallCasesTac) "small_cases" : tactic
+@[tactic smallCasesTac] def evalSmallCases : Tactic := fun _ => smallCases
+
 /-- Natural-number divisions `x / y` by a variable (`omega` handles only numerals): name the quotient `q`, state
 `y * q + x % y = x`, and split on `q = 0` (he_025's `1 ≤ n2 / d` from `n2 % d = 0` and `1 < n2`). -/
 def divSplit : TacticM Unit := do
@@ -514,7 +554,7 @@ syntax (name := boolSplitTac) "bool_split" : tactic
 syntax (name := refinePortfolio) "refine_portfolio" (ppSpace "[" str,* "]")? : tactic
 
 @[tactic existsSmallTac] def evalExistsSmall : Tactic := fun _ =>
-  existsSmall (runText "first | grind | (simp_all; done) | omega | (cons_of_ne_nil; simp_all; done)")
+  existsSmall (runText "first | grind | (simp_all; done) | omega | (cons_of_ne_nil; simp_all; done) | cons_cases")
 @[tactic modSplitTac] def evalModSplit : Tactic := fun _ => modSplit
 @[tactic linHypsTac] def evalLinHyps : Tactic := fun _ => linHyps
 @[tactic boolSplitTac] def evalBoolSplit : Tactic := fun _ => boolSplit
@@ -523,7 +563,7 @@ syntax (name := refinePortfolio) "refine_portfolio" (ppSpace "[" str,* "]")? : t
 the task's cascade (a macro of the task file); where it is not defined, that alternative simply fails to parse. -/
 def portfolio : List (Nat × String) :=
   [(200, "auto_close"), (200, "bool_split"), (400, "lin_hyps"), (400, "mod_split; lin_hyps"), (400, "exists_small"),
-   (400, "fold_facts"), (400, "div_split"), (200, "mod_eq_split"), (400, "succ_pos"), (600, "task_induction"), (600, "unfold_local; auto_close"),
+   (400, "fold_facts"), (400, "div_split"), (200, "mod_eq_split"), (400, "succ_pos"), (300, "cons_cases"), (400, "small_cases"), (600, "task_induction"), (600, "unfold_local; auto_close"),
    (600, "(try unfold_local); (try lib_simp); lib_apply"),
    -- a member of `l ++ [d]`, `a :: l` or `l.map f`: split the cases / unpack the preimage, then each part by the library
    -- (he_025: `d` is prime; he_001: a group `String.mk g` has the properties of `g`)

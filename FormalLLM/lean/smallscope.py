@@ -118,9 +118,27 @@ class Domains:
         return "'" + c + "'"
 
 
+#: ``∀ k, A ∧ k < B → P`` (or ``k < B ∧ A``): the same proposition as ``∀ k, k < B → A → P``, which Lean decides
+#: (``Nat.decidableBallLT``); written the first way it has no ``Decidable`` instance and the falsifier gave up (he_024's
+#: ``∀ k, d < k ∧ k < n → n % k ≠ 0``)
+_BALL = [
+    (re.compile(r"∀\s*\(?(\w+)(\s*:\s*(?:ℕ|Nat))?\)?\s*,\s*\(?\s*([^∧→,()]+?)\s*∧\s*\1\s*<\s*([^→()∧]+?)\s*\)?\s*→"),
+     r"∀ \1\2, \1 < \4 → \3 →"),
+    (re.compile(r"∀\s*\(?(\w+)(\s*:\s*(?:ℕ|Nat))?\)?\s*,\s*\(?\s*\1\s*<\s*([^∧→,()]+?)\s*∧\s*([^→()]+?)\s*\)?\s*→"),
+     r"∀ \1\2, \1 < \3 → \4 →"),
+]
+
+
+def _decidable_form(text: str) -> str:
+    for pattern, replacement in _BALL:
+        text = pattern.sub(replacement, text)
+    return text
+
+
 def falsifier(binders: str, statement: str) -> Optional[str]:
     """A Lean command printing ``SMALLSCOPE: <assignment>`` for a combination that falsifies the obligation, or
     ``SMALLSCOPE: none``; ``None`` when the obligation's variables have no small domains."""
+    binders, statement = _decidable_form(binders), _decidable_form(statement)
     parsed = _binders(binders)
     if not parsed:
         return None

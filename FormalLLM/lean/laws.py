@@ -106,6 +106,16 @@ def _require(value: str, what: str):
         raise IllFormed(f"{what} is empty")
 
 
+def _balanced(text: str) -> bool:
+    """Every parenthesis of ``text`` is closed, and none closes before it opens."""
+    depth = 0
+    for ch in text:
+        depth += {"(": 1, ")": -1}.get(ch, 0)
+        if depth < 0:
+            return False
+    return depth == 0
+
+
 def _fresh_names(goal: Goal, names: List[str]):
     clash = [n for n in names if n in goal.names]
     if clash:
@@ -236,13 +246,20 @@ class Loop(Law):
 
     def _exit_bound(self) -> Optional[Tuple[str, str]]:
         """``(v, e)`` when the guard is ``v < e`` for a state variable ``v`` that ``e`` does not mention."""
-        found = re.fullmatch(r"\s*\(?\s*([A-Za-z_][\w']*)\s*<\s*(.+?)\s*\)?\s*", self.guard)
+        guard = self.guard.strip()
+        while guard.startswith("(") and guard.endswith(")") and _balanced(guard[1:-1]):
+            guard = guard[1:-1].strip()
+        found = re.fullmatch(r"([A-Za-z_][\w']*)\s*<\s*(.+)", guard)
         if not found:
             return None
         var, expr = found.group(1), found.group(2)
         if var not in [n for n, _ in self.state] or re.search(rf"(?<![\w']){re.escape(var)}(?![\w'])", expr):
             return None
-        return var, expr
+        # only a guard that is the comparison alone: in `i < a.size ∧ (p ∨ q)` the match took `a.size ∧ (p ∨ q` for the
+        # bound, unbalanced, and every proof of the exit failed to parse (verina_basic_24); nor does `¬ guard` give `v = e`
+        if not _balanced(expr) or re.search(r"[∧∨→↔¬<>≤≥]|&&|\|\|", expr):
+            return None
+        return var, expr.strip()
 
     def bounded(self) -> Optional["Loop"]:
         """The loop with ``v ≤ e`` added to its invariant, for a guard ``v < e`` whose invariant does not state the bound.
