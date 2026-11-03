@@ -1,0 +1,31 @@
+{
+    "id": "he_080_is_happy",
+    "signature": {
+        "name": "isHappy",
+        "parameters": [
+            {
+                "param_name": "s",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ (s.length ≥ 3 ∧ ∀ i, i < s.length - 2 → s.toList[i]! ≠ s.toList[i + 1]! ∧ s.toList[i]! ≠ s.toList[i + 2]! ∧\n    s.toList[i + 1]! ≠ s.toList[i + 2]!)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/80"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

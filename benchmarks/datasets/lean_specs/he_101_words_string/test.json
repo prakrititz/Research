@@ -1,0 +1,152 @@
+[
+    {
+        "input": {
+            "s": "\"Hi, my name is John\""
+        },
+        "expected": "[\"Hi\", \"my\", \"name\", \"is\", \"John\"]",
+        "unexpected": [
+            "[\"Hi\", \"my\", \"name\", \"is\"]",
+            "[\"Hi\", \"my\", \"name\", \"is\", \"John\", \"z\"]",
+            "[\"John\", \"is\", \"name\", \"my\", \"Hi\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"One, two, three, four, five, six\""
+        },
+        "expected": "[\"One\", \"two\", \"three\", \"four\", \"five\", \"six\"]",
+        "unexpected": [
+            "[\"One\", \"two\", \"three\", \"four\", \"five\"]",
+            "[\"One\", \"two\", \"three\", \"four\", \"five\", \"six\", \"z\"]",
+            "[\"six\", \"five\", \"four\", \"three\", \"two\", \"One\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"Hi, my name\""
+        },
+        "expected": "[\"Hi\", \"my\", \"name\"]",
+        "unexpected": [
+            "[\"Hi\", \"my\"]",
+            "[\"Hi\", \"my\", \"name\", \"z\"]",
+            "[\"name\", \"my\", \"Hi\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"One,, two, three, four, five, six,\""
+        },
+        "expected": "[\"One\", \"two\", \"three\", \"four\", \"five\", \"six\"]",
+        "unexpected": [
+            "[\"One\", \"two\", \"three\", \"four\", \"five\"]",
+            "[\"One\", \"two\", \"three\", \"four\", \"five\", \"six\", \"z\"]",
+            "[\"six\", \"five\", \"four\", \"three\", \"two\", \"One\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"ahmed     , gamal\""
+        },
+        "expected": "[\"ahmed\", \"gamal\"]",
+        "unexpected": [
+            "[\"ahmed\"]",
+            "[\"ahmed\", \"gamal\", \"z\"]",
+            "[\"gamal\", \"ahmed\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\",,,,\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"you?\""
+        },
+        "expected": "[\"you?\"]",
+        "unexpected": [
+            "[]",
+            "[\"you?\", \"z\"]",
+            "[\"you?\", \"you?\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"brown\""
+        },
+        "expected": "[\"brown\"]",
+        "unexpected": [
+            "[]",
+            "[\"brown\", \"z\"]",
+            "[\"brown\", \"brown\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"Mulluti\""
+        },
+        "expected": "[\"Mulluti\"]",
+        "unexpected": [
+            "[]",
+            "[\"Mulluti\", \"z\"]",
+            "[\"Mulluti\", \"Mulluti\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"lazy\""
+        },
+        "expected": "[\"lazy\"]",
+        "unexpected": [
+            "[]",
+            "[\"lazy\", \"z\"]",
+            "[\"lazy\", \"lazy\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"jHello,ust\""
+        },
+        "expected": "[\"jHello\", \"ust\"]",
+        "unexpected": [
+            "[\"jHello\"]",
+            "[\"jHello\", \"ust\", \"z\"]",
+            "[\"ust\", \"jHello\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"m\""
+        },
+        "expected": "[\"m\"]",
+        "unexpected": [
+            "[]",
+            "[\"m\", \"z\"]",
+            "[\"m\", \"m\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"mmy\""
+        },
+        "expected": "[\"mmy\"]",
+        "unexpected": [
+            "[]",
+            "[\"mmy\", \"z\"]",
+            "[\"mmy\", \"mmy\", \"z\"]"
+        ]
+    }
+]

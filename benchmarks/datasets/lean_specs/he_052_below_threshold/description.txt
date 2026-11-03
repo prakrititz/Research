@@ -1,0 +1,1 @@
+Decide whether all numbers of the list are below the threshold t.

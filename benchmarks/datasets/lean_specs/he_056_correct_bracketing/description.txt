@@ -1,0 +1,1 @@
+brackets is a string of "<" and ">". Return true if every opening bracket has a corresponding closing bracket.

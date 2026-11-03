@@ -1,0 +1,1 @@
+For a given list of input numbers, calculate the Mean Absolute Deviation around the mean of the dataset: the average absolute difference between each element and the mean.

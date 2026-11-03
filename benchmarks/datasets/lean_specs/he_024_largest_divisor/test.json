@@ -1,0 +1,145 @@
+[
+    {
+        "input": {
+            "n": "3"
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "n": "7"
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "n": "10"
+        },
+        "expected": 5,
+        "unexpected": [
+            6,
+            4,
+            13
+        ]
+    },
+    {
+        "input": {
+            "n": "100"
+        },
+        "expected": 50,
+        "unexpected": [
+            51,
+            49,
+            103
+        ]
+    },
+    {
+        "input": {
+            "n": "49"
+        },
+        "expected": 7,
+        "unexpected": [
+            8,
+            6,
+            17
+        ]
+    },
+    {
+        "input": {
+            "n": "2"
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "n": "23"
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "n": "57"
+        },
+        "expected": 19,
+        "unexpected": [
+            20,
+            18,
+            41
+        ]
+    },
+    {
+        "input": {
+            "n": "11"
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "n": "32"
+        },
+        "expected": 16,
+        "unexpected": [
+            17,
+            15,
+            35
+        ]
+    },
+    {
+        "input": {
+            "n": "61"
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "n": "126"
+        },
+        "expected": 63,
+        "unexpected": [
+            64,
+            62,
+            129
+        ]
+    },
+    {
+        "input": {
+            "n": "69"
+        },
+        "expected": 23,
+        "unexpected": [
+            24,
+            22,
+            49
+        ]
+    }
+]

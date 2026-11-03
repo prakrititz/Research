@@ -1,0 +1,1 @@
+Return the greatest common divisor of two positive integers a and b.

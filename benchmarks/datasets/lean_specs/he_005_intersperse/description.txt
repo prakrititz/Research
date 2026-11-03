@@ -1,0 +1,1 @@
+Insert the number `delimeter` between every two consecutive elements of the input list `numbers`.

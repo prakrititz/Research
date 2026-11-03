@@ -1,0 +1,36 @@
+{
+    "id": "he_067_fruit_distribution",
+    "signature": {
+        "name": "fruitDistribution",
+        "parameters": [
+            {
+                "param_name": "s",
+                "param_type": "String"
+            },
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "let w := s.splitOn \" \"\nw.length ≥ 4 ∧ w[0]! ≠ \"\" ∧ w[3]! ≠ \"\" ∧ w[0]!.all Char.isDigit = true ∧ w[3]!.all Char.isDigit = true ∧ w[0]!.toNat! + w[3]!.toNat! ≤ n",
+        "postconditions": "let w := s.splitOn \" \"\nresult = n - w[0]!.toNat! - w[3]!.toNat!"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/67"
+        },
+        "tags": [
+            "string",
+            "scalar",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

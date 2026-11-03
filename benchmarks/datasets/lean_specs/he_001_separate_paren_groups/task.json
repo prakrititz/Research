@@ -1,0 +1,32 @@
+{
+    "id": "he_001_separate_paren_groups",
+    "signature": {
+        "name": "separateParenGroups",
+        "parameters": [
+            {
+                "param_name": "paren_string",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "List String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "isBalanced (paren_string.toList.filter (fun c => c != ' ')) ∧ paren_string.toList.all (fun c => c == '(' || c == ')' || c == ' ')",
+        "postconditions": "(result.map String.toList).flatten = paren_string.toList.filter (fun c => c != ' ') ∧\n  ∀ g ∈ result, g.length > 0 ∧ isBalanced g.toList ∧ ∀ k, k < g.length → 0 < k → ¬ isBalanced (g.toList.take k)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/1"
+        },
+        "tags": [
+            "string",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

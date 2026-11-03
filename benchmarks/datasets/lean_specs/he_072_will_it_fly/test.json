@@ -1,0 +1,142 @@
+[
+    {
+        "input": {
+            "q": "[3, 2, 3]",
+            "w": "9"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "q": "[1, 2]",
+            "w": "5"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "q": "[3]",
+            "w": "5"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "q": "[3, 2, 3]",
+            "w": "1"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "q": "[1, 2, 3]",
+            "w": "6"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "q": "[5]",
+            "w": "5"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "q": "[0]",
+            "w": "0"
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "q": "[2, 3, 2]",
+            "w": "1"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "q": "[1, 2, 2, 1, 2, 3, 2, 1, 2, 3, 2, 2]",
+            "w": "17"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "q": "[14, 2, 3, 4, 5, 3]",
+            "w": "5"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "q": "[2, 3, 2, 1]",
+            "w": "0"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "q": "[1, 2, 1, 2, 1, 2, 3, 1, 2, 3, 2, 3]",
+            "w": "1"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "q": "[1, 4, 2, 5, 3, 2, 1, 1]",
+            "w": "15"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "q": "[2, 5, 2, 1, 0, 2, 2, 2, 2]",
+            "w": "0"
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    }
+]

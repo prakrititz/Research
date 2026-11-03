@@ -1,0 +1,145 @@
+[
+    {
+        "input": {
+            "S": "\"Hello world\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "S": "\"Is the sky blue?\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "S": "\"I love It !\""
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "S": "\"bIt\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "S": "\"I feel good today. I will be productive. will kill It\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "S": "\"You and I are going for a walk\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "S": "\"I am very happy today. I love spending time with my friends.\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "S": "\"opportbeachunity\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "S": "\"too\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "S": "\"laughed\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "S": "\"back.\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "S": "\"Who\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "S": "\"suburbs,\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "S": "\"laughewholed\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    }
+]

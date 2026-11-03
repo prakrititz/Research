@@ -1,0 +1,35 @@
+{
+    "id": "he_097_multiply",
+    "signature": {
+        "name": "multiply",
+        "parameters": [
+            {
+                "param_name": "a",
+                "param_type": "Int"
+            },
+            {
+                "param_name": "b",
+                "param_type": "Int"
+            }
+        ],
+        "return_type": "Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = ((a.natAbs % 10 : Nat) : Int) * ((b.natAbs % 10 : Nat) : Int)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/97"
+        },
+        "tags": [
+            "scalar",
+            "term"
+        ],
+        "note": "the unit digit is taken of the absolute value (EvalPlus' expected outputs), not Python's % on a negative number"
+    },
+    "test_file": "./test.json"
+}

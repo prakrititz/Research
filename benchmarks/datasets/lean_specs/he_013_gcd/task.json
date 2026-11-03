@@ -1,0 +1,35 @@
+{
+    "id": "he_013_gcd",
+    "signature": {
+        "name": "greatestCommonDivisor",
+        "parameters": [
+            {
+                "param_name": "a",
+                "param_type": "Nat"
+            },
+            {
+                "param_name": "b",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "a > 0 ∧ b > 0",
+        "postconditions": "result > 0 ∧ a % result = 0 ∧ b % result = 0 ∧ ∀ d, d < a + b + 1 → d > 0 → a % d = 0 → b % d = 0 → d ≤ result"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/13"
+        },
+        "tags": [
+            "scalar",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,40 @@
+{
+    "id": "he_092_any_int",
+    "signature": {
+        "name": "anyInt",
+        "parameters": [
+            {
+                "param_name": "x",
+                "param_type": "PyVal"
+            },
+            {
+                "param_name": "y",
+                "param_type": "PyVal"
+            },
+            {
+                "param_name": "z",
+                "param_type": "PyVal"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ (match x, y, z with\n  | PyVal.int a, PyVal.int b, PyVal.int c => a = b + c ∨ b = a + c ∨ c = b + a\n  | _, _, _ => False)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/92"
+        },
+        "tags": [
+            "scalar",
+            "any",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

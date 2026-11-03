@@ -1,0 +1,31 @@
+{
+    "id": "he_003_below_zero",
+    "signature": {
+        "name": "belowZero",
+        "parameters": [
+            {
+                "param_name": "operations",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ ∃ k, k ≤ operations.length ∧ (operations.take k).sum < 0"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/3"
+        },
+        "tags": [
+            "list",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

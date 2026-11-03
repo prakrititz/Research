@@ -1,0 +1,31 @@
+{
+    "id": "he_091_is_bored",
+    "signature": {
+        "name": "isBored",
+        "parameters": [
+            {
+                "param_name": "S",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "let sentences := (((S.replace \"?\" \".\").replace \"!\" \".\").splitOn \".\").map String.trim\nresult = (sentences.filter (fun t => t.startsWith \"I \")).length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/91"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

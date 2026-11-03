@@ -1,0 +1,32 @@
+{
+    "id": "he_106_f",
+    "signature": {
+        "name": "f106",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "List Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.length = n ∧ ∀ i, i < n → result[i]! = (if (i + 1) % 2 = 0 then (i + 1).factorial else (i + 1) * (i + 2) / 2)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/106"
+        },
+        "tags": [
+            "scalar",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

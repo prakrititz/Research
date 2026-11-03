@@ -1,0 +1,1 @@
+Take a value (a string) representing a number and return the closest integer to it. If the number is equidistant from two integers, round it away from zero.

@@ -1,0 +1,31 @@
+{
+    "id": "he_118_get_closest_vowel",
+    "signature": {
+        "name": "getClosestVowel",
+        "parameters": [
+            {
+                "param_name": "word",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "let w := word.toList\n(result = \"\" ↔ ∀ i, i < w.length → ¬ goodAt w i) ∧\n(result ≠ \"\" → ∃ i, i < w.length ∧ goodAt w i ∧ result = String.singleton w[i]! ∧ ∀ j, j < w.length → i < j → ¬ goodAt w j)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/118"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

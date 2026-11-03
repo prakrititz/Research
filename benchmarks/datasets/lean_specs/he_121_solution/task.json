@@ -1,0 +1,31 @@
+{
+    "id": "he_121_solution",
+    "signature": {
+        "name": "solution",
+        "parameters": [
+            {
+                "param_name": "lst",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "lst ≠ []",
+        "postconditions": "result = (((List.range lst.length).filter (fun i => i % 2 = 0 ∧ lst[i]! % 2 = 1)).map (fun i => lst[i]!)).sum"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/121"
+        },
+        "tags": [
+            "list",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

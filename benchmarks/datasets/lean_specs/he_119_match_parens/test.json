@@ -1,0 +1,178 @@
+[
+    {
+        "input": {
+            "lst": "[\"()(\", \")\"]"
+        },
+        "expected": "Yes",
+        "unexpected": [
+            "Yesx",
+            "Ye",
+            "seY"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\")\", \")\"]"
+        },
+        "expected": "No",
+        "unexpected": [
+            "Nox",
+            "N",
+            "oN"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"(()(())\", \"())())\"]"
+        },
+        "expected": "No",
+        "unexpected": [
+            "Nox",
+            "N",
+            "oN"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\")())\", \"(()()(\"]"
+        },
+        "expected": "Yes",
+        "unexpected": [
+            "Yesx",
+            "Ye",
+            "seY"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"(())))\", \"(()())((\"]"
+        },
+        "expected": "Yes",
+        "unexpected": [
+            "Yesx",
+            "Ye",
+            "seY"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"()\", \"())\"]"
+        },
+        "expected": "No",
+        "unexpected": [
+            "Nox",
+            "N",
+            "oN"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"(()(\", \"()))()\"]"
+        },
+        "expected": "Yes",
+        "unexpected": [
+            "Yesx",
+            "Ye",
+            "seY"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"((((\", \"((())\"]"
+        },
+        "expected": "No",
+        "unexpected": [
+            "Nox",
+            "N",
+            "oN"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\")(()\", \"(()(\"]"
+        },
+        "expected": "No",
+        "unexpected": [
+            "Nox",
+            "N",
+            "oN"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\")(\", \")(\"]"
+        },
+        "expected": "No",
+        "unexpected": [
+            "Nox",
+            "N",
+            "oN"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"(\", \")\"]"
+        },
+        "expected": "Yes",
+        "unexpected": [
+            "Yesx",
+            "Ye",
+            "seY"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\")\", \"(\"]"
+        },
+        "expected": "Yes",
+        "unexpected": [
+            "Yesx",
+            "Ye",
+            "seY"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"(\", \"(\"]"
+        },
+        "expected": "No",
+        "unexpected": [
+            "Nox",
+            "N",
+            "oN"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"(())\", \")))()))(\"]"
+        },
+        "expected": "No",
+        "unexpected": [
+            "Nox",
+            "N",
+            "oN"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\"(\", \")))))\"]"
+        },
+        "expected": "No",
+        "unexpected": [
+            "Nox",
+            "N",
+            "oN"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[\")))(()())))(\", \"))))\"]"
+        },
+        "expected": "No",
+        "unexpected": [
+            "Nox",
+            "N",
+            "oN"
+        ]
+    }
+]

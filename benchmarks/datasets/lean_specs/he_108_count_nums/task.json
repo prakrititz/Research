@@ -1,0 +1,31 @@
+{
+    "id": "he_108_count_nums",
+    "signature": {
+        "name": "countNums",
+        "parameters": [
+            {
+                "param_name": "arr",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = (arr.filter (fun x => signedDigitSum x > 0)).length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/108"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

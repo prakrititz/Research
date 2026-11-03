@@ -1,0 +1,31 @@
+{
+    "id": "he_036_fizz_buzz",
+    "signature": {
+        "name": "fizzBuzz",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = (((List.range n).filter (fun i => i % 11 = 0 ∨ i % 13 = 0)).map (fun i => (toString i).toList.count '7')).sum"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/36"
+        },
+        "tags": [
+            "scalar",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

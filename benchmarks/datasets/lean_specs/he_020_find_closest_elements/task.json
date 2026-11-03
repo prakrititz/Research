@@ -1,0 +1,32 @@
+{
+    "id": "he_020_find_closest_elements",
+    "signature": {
+        "name": "findClosestElements",
+        "parameters": [
+            {
+                "param_name": "numbers",
+                "param_type": "List ℚ"
+            }
+        ],
+        "return_type": "ℚ × ℚ"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "numbers.length ≥ 2",
+        "postconditions": "(∃ j, j < numbers.length ∧ ∃ i, i < j ∧\n    ((result.1 = numbers[i]! ∧ result.2 = numbers[j]!) ∨ (result.1 = numbers[j]! ∧ result.2 = numbers[i]!))) ∧\n  result.1 ≤ result.2 ∧\n  ∀ j, j < numbers.length → ∀ i, i < j → result.2 - result.1 ≤ |numbers[i]! - numbers[j]!|"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/20"
+        },
+        "tags": [
+            "list",
+            "float",
+            "declarative"
+        ],
+        "note": "any closest pair is accepted (the canonical solution returns the first in sorted order)"
+    },
+    "test_file": "./test.json"
+}

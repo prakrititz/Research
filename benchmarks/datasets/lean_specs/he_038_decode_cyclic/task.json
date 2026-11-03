@@ -1,0 +1,31 @@
+{
+    "id": "he_038_decode_cyclic",
+    "signature": {
+        "name": "decodeCyclic",
+        "parameters": [
+            {
+                "param_name": "s",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "encodeGroups result.toList = s.toList"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/38"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": "stated as the inverse of encode_cyclic: encoding the result gives back the input"
+    },
+    "test_file": "./test.json"
+}

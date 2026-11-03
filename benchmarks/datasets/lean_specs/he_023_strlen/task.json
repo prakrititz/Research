@@ -1,0 +1,31 @@
+{
+    "id": "he_023_strlen",
+    "signature": {
+        "name": "strlen",
+        "parameters": [
+            {
+                "param_name": "s",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = s.length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/23"
+        },
+        "tags": [
+            "string",
+            "term"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

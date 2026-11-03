@@ -1,0 +1,34 @@
+{
+    "id": "he_152_compare",
+    "signature": {
+        "name": "compareGuess",
+        "parameters": [
+            {
+                "param_name": "game",
+                "param_type": "List Int"
+            },
+            {
+                "param_name": "guess",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "List Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "game.length = guess.length",
+        "postconditions": "result.length = game.length ∧ ∀ i, i < game.length → result[i]! = ((game[i]! - guess[i]!).natAbs : Int)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/152"
+        },
+        "tags": [
+            "list"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

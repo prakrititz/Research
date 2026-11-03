@@ -1,0 +1,31 @@
+{
+    "id": "he_068_pluck",
+    "signature": {
+        "name": "pluck",
+        "parameters": [
+            {
+                "param_name": "arr",
+                "param_type": "List Nat"
+            }
+        ],
+        "return_type": "List Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "(result = [] ↔ ∀ x ∈ arr, x % 2 = 1) ∧\n  (result ≠ [] → result.length = 2 ∧ result[1]! < arr.length ∧ arr[result[1]!]! = result[0]! ∧ result[0]! % 2 = 0 ∧\n    (∀ x ∈ arr, x % 2 = 0 → result[0]! ≤ x) ∧ ∀ j, j < result[1]! → arr[j]! ≠ result[0]!)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/68"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

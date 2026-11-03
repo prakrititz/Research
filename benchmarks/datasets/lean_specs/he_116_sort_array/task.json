@@ -1,0 +1,31 @@
+{
+    "id": "he_116_sort_array",
+    "signature": {
+        "name": "sortArray116",
+        "parameters": [
+            {
+                "param_name": "arr",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "List Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.isPerm arr ∧ ∀ i, i < result.length - 1 → ones result[i]! < ones result[i + 1]! ∨ (ones result[i]! = ones result[i + 1]! ∧ result[i]! ≤ result[i + 1]!)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/116"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

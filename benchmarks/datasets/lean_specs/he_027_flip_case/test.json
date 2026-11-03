@@ -1,0 +1,123 @@
+[
+    {
+        "input": {
+            "string": "\"\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"Hello!\""
+        },
+        "expected": "hELLO!",
+        "unexpected": [
+            "hELLO!x",
+            "hELLO",
+            "!OLLEh"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"These violent delights have violent ends\""
+        },
+        "expected": "tHESE VIOLENT DELIGHTS HAVE VIOLENT ENDS",
+        "unexpected": [
+            "tHESE VIOLENT DELIGHTS HAVE VIOLENT ENDSx",
+            "tHESE VIOLENT DELIGHTS HAVE VIOLENT END",
+            "SDNE TNELOIV EVAH STHGILED TNELOIV ESEHt"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"123abc\""
+        },
+        "expected": "123ABC",
+        "unexpected": [
+            "123ABCx",
+            "123AB",
+            "CBA321"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"toGGlE e\""
+        },
+        "expected": "TOggLe E",
+        "unexpected": [
+            "TOggLe Ex",
+            "TOggLe ",
+            "E eLggOT"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"tgotgge me\""
+        },
+        "expected": "TGOTGGE ME",
+        "unexpected": [
+            "TGOTGGE MEx",
+            "TGOTGGE M",
+            "EM EGGTOGT"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"TogMle Me\""
+        },
+        "expected": "tOGmLE mE",
+        "unexpected": [
+            "tOGmLE mEx",
+            "tOGmLE m",
+            "Em ELmGOt"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"realmente\""
+        },
+        "expected": "REALMENTE",
+        "unexpected": [
+            "REALMENTEx",
+            "REALMENT",
+            "ETNEMLAER"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"xwjQ\""
+        },
+        "expected": "XWJq",
+        "unexpected": [
+            "XWJqx",
+            "XWJ",
+            "qJWX"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"DOG\""
+        },
+        "expected": "dog",
+        "unexpected": [
+            "dogx",
+            "do",
+            "god"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"tHe quIck bROwn fOXd vover the LAZY DOG\""
+        },
+        "expected": "ThE QUiCK BroWN FoxD VOVER THE lazy dog",
+        "unexpected": [
+            "ThE QUiCK BroWN FoxD VOVER THE lazy dogx",
+            "ThE QUiCK BroWN FoxD VOVER THE lazy do",
+            "god yzal EHT REVOV DxoF NWorB KCiUQ EhT"
+        ]
+    }
+]

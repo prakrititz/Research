@@ -1,0 +1,35 @@
+{
+    "id": "he_110_exchange",
+    "signature": {
+        "name": "exchange",
+        "parameters": [
+            {
+                "param_name": "lst1",
+                "param_type": "List Int"
+            },
+            {
+                "param_name": "lst2",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "(result = \"YES\" ∨ result = \"NO\") ∧ (result = \"YES\" ↔ (lst1.filter (fun x => x % 2 = 1)).length ≤ (lst2.filter (fun x => x % 2 = 0)).length)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/110"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

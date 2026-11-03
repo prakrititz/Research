@@ -1,0 +1,32 @@
+{
+    "id": "he_006_parse_nested_parens",
+    "signature": {
+        "name": "parseNestedParens",
+        "parameters": [
+            {
+                "param_name": "paren_string",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "List Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "paren_string.toList.all (fun c => c == '(' || c == ')' || c == ' ')",
+        "postconditions": "let groups := (paren_string.splitOn \" \").filter (fun g => g != \"\")\nresult.length = groups.length ∧ ∀ i, i < groups.length → result[i]! = maxDepth groups[i]!.toList"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/6"
+        },
+        "tags": [
+            "string",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,31 @@
+{
+    "id": "he_095_check_dict_case",
+    "signature": {
+        "name": "checkDictCase",
+        "parameters": [
+            {
+                "param_name": "keys",
+                "param_type": "List PyVal"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ (keys ≠ [] ∧ (keys.all lowerKey = true ∨ keys.all upperKey = true))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/95"
+        },
+        "tags": [
+            "any",
+            "declarative"
+        ],
+        "note": "only the keys matter; they are given as Python values because the problem allows non-string keys"
+    },
+    "test_file": "./test.json"
+}

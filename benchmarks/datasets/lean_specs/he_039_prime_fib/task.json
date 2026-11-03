@@ -1,0 +1,31 @@
+{
+    "id": "he_039_prime_fib",
+    "signature": {
+        "name": "primeFib",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "n ≥ 1",
+        "postconditions": "∃ k, k < 300 ∧ Nat.fib k = result ∧ Nat.Prime result ∧\n    (((List.range k).map Nat.fib).filter (fun m => decide (Nat.Prime m))).length = n - 1"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/39"
+        },
+        "tags": [
+            "scalar",
+            "declarative"
+        ],
+        "note": "the index of the Fibonacci number is searched below 300 (the 12th prime Fibonacci number has index 83)"
+    },
+    "test_file": "./test.json"
+}

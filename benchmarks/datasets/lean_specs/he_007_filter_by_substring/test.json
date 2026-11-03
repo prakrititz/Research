@@ -1,0 +1,142 @@
+[
+    {
+        "input": {
+            "strings": "[]",
+            "substring": "\"john\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"xxx\", \"asd\", \"xxy\", \"john doe\", \"xxxAAA\", \"xxx\"]",
+            "substring": "\"xxx\""
+        },
+        "expected": "[\"xxx\", \"xxxAAA\", \"xxx\"]",
+        "unexpected": [
+            "[\"xxx\", \"xxxAAA\"]",
+            "[\"xxx\", \"xxxAAA\", \"xxx\", \"z\"]",
+            "[\"xxx\", \"xxxAAA\", \"xxx\", \"xxx\", \"xxxAAA\", \"xxx\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"xxx\", \"asd\", \"aaaxxy\", \"john doe\", \"xxxAAA\", \"xxx\"]",
+            "substring": "\"xx\""
+        },
+        "expected": "[\"xxx\", \"aaaxxy\", \"xxxAAA\", \"xxx\"]",
+        "unexpected": [
+            "[\"xxx\", \"aaaxxy\", \"xxxAAA\"]",
+            "[\"xxx\", \"aaaxxy\", \"xxxAAA\", \"xxx\", \"z\"]",
+            "[\"xxx\", \"xxxAAA\", \"aaaxxy\", \"xxx\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"grunt\", \"trumpet\", \"prune\", \"gruesome\"]",
+            "substring": "\"run\""
+        },
+        "expected": "[\"grunt\", \"prune\"]",
+        "unexpected": [
+            "[\"grunt\"]",
+            "[\"grunt\", \"prune\", \"z\"]",
+            "[\"prune\", \"grunt\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"banana\", \"apple\", \"kiwi\", \"peach\"]",
+            "substring": "\"a\""
+        },
+        "expected": "[\"banana\", \"apple\", \"peach\"]",
+        "unexpected": [
+            "[\"banana\", \"apple\"]",
+            "[\"banana\", \"apple\", \"peach\", \"z\"]",
+            "[\"peach\", \"apple\", \"banana\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"a\", \"ab\", \"abc\", \"abcd\", \"abcde\", \"bcde\", \"cde\"]",
+            "substring": "\"cd\""
+        },
+        "expected": "[\"abcd\", \"abcde\", \"bcde\", \"cde\"]",
+        "unexpected": [
+            "[\"abcd\", \"abcde\", \"bcde\"]",
+            "[\"abcd\", \"abcde\", \"bcde\", \"cde\", \"z\"]",
+            "[\"cde\", \"bcde\", \"abcde\", \"abcd\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"hello\", \"world\", \"python\", \"numpy\", \"pandas\", \"numpy\"]",
+            "substring": "\"py\""
+        },
+        "expected": "[\"python\", \"numpy\", \"numpy\"]",
+        "unexpected": [
+            "[\"python\", \"numpy\"]",
+            "[\"python\", \"numpy\", \"numpy\", \"z\"]",
+            "[\"numpy\", \"numpy\", \"python\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"abc(d)e\", \"ba%cd\", \"cde\", \"array\", \"12345\"]",
+            "substring": "\"(d)\""
+        },
+        "expected": "[\"abc(d)e\"]",
+        "unexpected": [
+            "[]",
+            "[\"abc(d)e\", \"z\"]",
+            "[\"abc(d)e\", \"abc(d)e\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"\", \"\", \"\"]",
+            "substring": "\"\""
+        },
+        "expected": "[\"\", \"\", \"\"]",
+        "unexpected": [
+            "[\"\", \"\"]",
+            "[\"\", \"\", \"\", \"z\"]",
+            "[\"\", \"\", \"\", \"\", \"\", \"\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"abcdefg\"]",
+            "substring": "\"form\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"fom\", \"abcdefg\"]",
+            "substring": "\"fom\""
+        },
+        "expected": "[\"fom\"]",
+        "unexpected": [
+            "[]",
+            "[\"fom\", \"z\"]",
+            "[\"fom\", \"fom\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"abbcdefg\", \"fom\", \"abcdefg\", \"abbcdefg\"]",
+            "substring": "\"fom\""
+        },
+        "expected": "[\"fom\"]",
+        "unexpected": [
+            "[]",
+            "[\"fom\", \"z\"]",
+            "[\"fom\", \"fom\", \"z\"]"
+        ]
+    }
+]

@@ -1,0 +1,145 @@
+[
+    {
+        "input": {
+            "numbers": "\"\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"three\""
+        },
+        "expected": "three",
+        "unexpected": [
+            "threex",
+            "thre",
+            "eerht"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"three five nine\""
+        },
+        "expected": "three five nine",
+        "unexpected": [
+            "three five ninex",
+            "three five nin",
+            "enin evif eerht"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"five zero four seven nine eight\""
+        },
+        "expected": "zero four five seven eight nine",
+        "unexpected": [
+            "zero four five seven eight ninex",
+            "zero four five seven eight nin",
+            "enin thgie neves evif ruof orez"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"six five four three two one zero\""
+        },
+        "expected": "zero one two three four five six",
+        "unexpected": [
+            "zero one two three four five sixx",
+            "zero one two three four five si",
+            "xis evif ruof eerht owt eno orez"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"four eight two\""
+        },
+        "expected": "two four eight",
+        "unexpected": [
+            "two four eightx",
+            "two four eigh",
+            "thgie ruof owt"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"zero five four one seven\""
+        },
+        "expected": "zero one four five seven",
+        "unexpected": [
+            "zero one four five sevenx",
+            "zero one four five seve",
+            "neves evif ruof eno orez"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"two four five six\""
+        },
+        "expected": "two four five six",
+        "unexpected": [
+            "two four five sixx",
+            "two four five si",
+            "xis evif ruof owt"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"four five six\""
+        },
+        "expected": "four five six",
+        "unexpected": [
+            "four five sixx",
+            "four five si",
+            "xis evif ruof"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"nine one zero\""
+        },
+        "expected": "zero one nine",
+        "unexpected": [
+            "zero one ninex",
+            "zero one nin",
+            "enin eno orez"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"nine eight seven six\""
+        },
+        "expected": "six seven eight nine",
+        "unexpected": [
+            "six seven eight ninex",
+            "six seven eight nin",
+            "enin thgie neves xis"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"nine eight one zero\""
+        },
+        "expected": "zero one eight nine",
+        "unexpected": [
+            "zero one eight ninex",
+            "zero one eight nin",
+            "enin thgie eno orez"
+        ]
+    },
+    {
+        "input": {
+            "numbers": "\"four six nine eight five zero two three\""
+        },
+        "expected": "zero two three four five six eight nine",
+        "unexpected": [
+            "zero two three four five six eight ninex",
+            "zero two three four five six eight nin",
+            "enin thgie xis evif ruof eerht owt orez"
+        ]
+    }
+]

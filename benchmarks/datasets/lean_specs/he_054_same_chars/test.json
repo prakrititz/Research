@@ -1,0 +1,152 @@
+[
+    {
+        "input": {
+            "s0": "\"eabcdzzzz\"",
+            "s1": "\"dddzzzzzzzddeddabc\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"abcd\"",
+            "s1": "\"dddddddabc\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"dddddddabc\"",
+            "s1": "\"abcd\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"eabcd\"",
+            "s1": "\"dddddddabc\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"abcd\"",
+            "s1": "\"dddddddabcf\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"eabcdzzzz\"",
+            "s1": "\"dddzzzzzzzddddabc\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"aabb\"",
+            "s1": "\"aaccc\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"ab\"",
+            "s1": "\"cd\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"hlello\"",
+            "s1": "\"hlello\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"ZYXWVUTSMRQPONMLKJIGHGFEDCBA\"",
+            "s1": "\"ZYXWVUTSMRQPONMLKJIGHGFEDCBA\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"gazelle!\"",
+            "s1": "\"gazellae!\""
+        },
+        "expected": true,
+        "unexpected": [
+            false
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"12345cat678990catacoovenrcspecteratttaco\"",
+            "s1": "\"catacoovenrcspecteratttaco\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"may\"",
+            "s1": "\"09876541321\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"abccdefghijklmnopqrstuvwxyz\"",
+            "s1": "\"abcdpefghijklyourstuvwxyz\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    },
+    {
+        "input": {
+            "s0": "\"youaaeaaaee12345607890eThe\"",
+            "s1": "\"annd\""
+        },
+        "expected": false,
+        "unexpected": [
+            true
+        ]
+    }
+]

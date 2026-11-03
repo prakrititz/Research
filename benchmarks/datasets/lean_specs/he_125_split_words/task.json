@@ -1,0 +1,33 @@
+{
+    "id": "he_125_split_words",
+    "signature": {
+        "name": "splitWords",
+        "parameters": [
+            {
+                "param_name": "txt",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "List String ⊕ Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "let hasWhite := txt.toList.any (fun c => c == ' ' || c == '\\n' || c == '\\r' || c == '\\t')\nresult = (if hasWhite then Sum.inl (splitWhite txt)\n  else if txt.toList.contains ',' then Sum.inl (txt.splitOn \",\")\n  else Sum.inr ((txt.toList.filter (fun c => c.isLower && (c.toNat - 97) % 2 = 1)).length))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/125"
+        },
+        "tags": [
+            "string",
+            "list",
+            "sum",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

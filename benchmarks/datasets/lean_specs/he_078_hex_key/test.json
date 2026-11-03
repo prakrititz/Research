@@ -1,0 +1,154 @@
+[
+    {
+        "input": {
+            "num": "\"AB\""
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "num": "\"1077E\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "num": "\"ABED1A33\""
+        },
+        "expected": 4,
+        "unexpected": [
+            5,
+            3,
+            11
+        ]
+    },
+    {
+        "input": {
+            "num": "\"2020\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "num": "\"123456789ABCDEF0\""
+        },
+        "expected": 6,
+        "unexpected": [
+            7,
+            5,
+            15
+        ]
+    },
+    {
+        "input": {
+            "num": "\"112233445566778899AABBCCDDEEFF00\""
+        },
+        "expected": 12,
+        "unexpected": [
+            13,
+            11,
+            27
+        ]
+    },
+    {
+        "input": {
+            "num": "\"ABCDEF\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "num": "\"89899\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "num": "\"753BD\""
+        },
+        "expected": 5,
+        "unexpected": [
+            6,
+            4,
+            13
+        ]
+    },
+    {
+        "input": {
+            "num": "\"753BBDCEE7753BDCF0\""
+        },
+        "expected": 12,
+        "unexpected": [
+            13,
+            11,
+            27
+        ]
+    },
+    {
+        "input": {
+            "num": "\"753BDCE02067FE89ADBCDEF0\""
+        },
+        "expected": 10,
+        "unexpected": [
+            11,
+            9,
+            23
+        ]
+    },
+    {
+        "input": {
+            "num": "\"C753BDCDEDF0C753BDCDEDF0\""
+        },
+        "expected": 14,
+        "unexpected": [
+            15,
+            13,
+            31
+        ]
+    },
+    {
+        "input": {
+            "num": "\"75F3BDCEEFAD2020123456789CDEF0\""
+        },
+        "expected": 13,
+        "unexpected": [
+            14,
+            12,
+            29
+        ]
+    },
+    {
+        "input": {
+            "num": "\"CCEA\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    }
+]

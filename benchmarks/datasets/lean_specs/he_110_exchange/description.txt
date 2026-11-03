@@ -1,0 +1,1 @@
+Take two lists of numbers and determine whether it is possible to perform an exchange of elements between them to make lst1 a list of only even numbers; there is no limit on the number of exchanged elements. Return "YES" if it is possible, otherwise "NO".

@@ -1,0 +1,140 @@
+[
+    {
+        "input": {
+            "lst": "[1, 2, 3, 4, 5]"
+        },
+        "expected": "some (2)",
+        "unexpected": [
+            "none",
+            "some (3)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[5, 1, 4, 3, 2]"
+        },
+        "expected": "some (2)",
+        "unexpected": [
+            "none",
+            "some (3)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[]"
+        },
+        "expected": "none",
+        "unexpected": [
+            "some (7)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[1, 1]"
+        },
+        "expected": "none",
+        "unexpected": [
+            "some (7)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[1, 1, 1, 1, 0]"
+        },
+        "expected": "some (1)",
+        "unexpected": [
+            "none",
+            "some (2)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[-35, 34, 12, -45]"
+        },
+        "expected": "some (-35)",
+        "unexpected": [
+            "none",
+            "some (-34)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[1, 2, 3, 4, 5, 6]"
+        },
+        "expected": "some (2)",
+        "unexpected": [
+            "none",
+            "some (3)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[8, 14, -78, 7, 9, 7, 15, 7]"
+        },
+        "expected": "some (7)",
+        "unexpected": [
+            "none",
+            "some (8)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[-10, -20, -51, -69, -30, -40, -50, 10, -70, -80, -90, -100, -90]"
+        },
+        "expected": "some (-90)",
+        "unexpected": [
+            "none",
+            "some (-89)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[1, 1, 1, -1, 12, 2, 1]"
+        },
+        "expected": "some (1)",
+        "unexpected": [
+            "none",
+            "some (2)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[-1, 1, 2, 1, -2, 0, -2, -2, 0, 16, 2, 2]"
+        },
+        "expected": "some (-1)",
+        "unexpected": [
+            "none",
+            "some (0)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[-10, -10, -101, 8, -60, -80, -90, -100, 22]"
+        },
+        "expected": "some (-100)",
+        "unexpected": [
+            "none",
+            "some (-99)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[-20, 1, 1, 1, -1, 2]"
+        },
+        "expected": "some (-1)",
+        "unexpected": [
+            "none",
+            "some (0)"
+        ]
+    },
+    {
+        "input": {
+            "lst": "[5, 3, 7, 8, -10, 1, 9, 23, -10, 0, -30]"
+        },
+        "expected": "some (-10)",
+        "unexpected": [
+            "none",
+            "some (-9)"
+        ]
+    }
+]

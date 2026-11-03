@@ -1,0 +1,36 @@
+{
+    "id": "he_000_has_close_elements",
+    "signature": {
+        "name": "hasCloseElements",
+        "parameters": [
+            {
+                "param_name": "numbers",
+                "param_type": "List ℚ"
+            },
+            {
+                "param_name": "threshold",
+                "param_type": "ℚ"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ ∃ j, j < numbers.length ∧ ∃ i, i < j ∧ |numbers[i]! - numbers[j]!| < threshold"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/0"
+        },
+        "tags": [
+            "list",
+            "float",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

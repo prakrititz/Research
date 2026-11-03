@@ -1,0 +1,36 @@
+{
+    "id": "he_065_circular_shift",
+    "signature": {
+        "name": "circularShift",
+        "parameters": [
+            {
+                "param_name": "x",
+                "param_type": "Nat"
+            },
+            {
+                "param_name": "shift",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "let d := (toString x).toList\nlet n := d.length\nresult.toList = (if shift > n then d.reverse else d.drop (n - shift % n) ++ d.take (n - shift % n))"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/65"
+        },
+        "tags": [
+            "scalar",
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,39 @@
+{
+    "id": "he_157_right_angle_triangle",
+    "signature": {
+        "name": "rightAngleTriangle",
+        "parameters": [
+            {
+                "param_name": "a",
+                "param_type": "Nat"
+            },
+            {
+                "param_name": "b",
+                "param_type": "Nat"
+            },
+            {
+                "param_name": "c",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ (a * a + b * b = c * c ∨ a * a + c * c = b * b ∨ b * b + c * c = a * a)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/157"
+        },
+        "tags": [
+            "scalar",
+            "term"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

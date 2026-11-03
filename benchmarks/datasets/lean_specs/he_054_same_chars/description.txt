@@ -1,0 +1,1 @@
+Check if two words have the same characters (the same set of characters, regardless of how often each occurs).

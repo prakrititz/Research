@@ -1,0 +1,35 @@
+{
+    "id": "he_115_max_fill",
+    "signature": {
+        "name": "maxFill",
+        "parameters": [
+            {
+                "param_name": "grid",
+                "param_type": "List (List Nat)"
+            },
+            {
+                "param_name": "capacity",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "capacity ≥ 1",
+        "postconditions": "result = (grid.map (fun row => (row.sum + capacity - 1) / capacity)).sum"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/115"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

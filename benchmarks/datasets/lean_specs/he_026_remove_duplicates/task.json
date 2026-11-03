@@ -1,0 +1,31 @@
+{
+    "id": "he_026_remove_duplicates",
+    "signature": {
+        "name": "removeDuplicates",
+        "parameters": [
+            {
+                "param_name": "numbers",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "List Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = numbers.filter (fun x => numbers.count x = 1)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/26"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

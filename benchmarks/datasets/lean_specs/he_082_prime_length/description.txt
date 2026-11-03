@@ -1,0 +1,1 @@
+Take a string and return true if the string length is a prime number, false otherwise.

@@ -1,0 +1,123 @@
+[
+    {
+        "input": {
+            "strings": "[]"
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"x\", \"y\", \"z\"]"
+        },
+        "expected": "xyz",
+        "unexpected": [
+            "xyzx",
+            "xy",
+            "zyx"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"x\", \"y\", \"z\", \"w\", \"k\"]"
+        },
+        "expected": "xyzwk",
+        "unexpected": [
+            "xyzwkx",
+            "xyzw",
+            "kwzyx"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"apple\", \"banana\", \"orange\"]"
+        },
+        "expected": "applebananaorange",
+        "unexpected": [
+            "applebananaorangex",
+            "applebananaorang",
+            "egnaroananabelppa"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"\", \"Hello\", \"world\", \"\"]"
+        },
+        "expected": "Helloworld",
+        "unexpected": [
+            "Helloworldx",
+            "Helloworl",
+            "dlrowolleH"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"pythoon\", \"1323\", \"789\", \"pythoon\"]"
+        },
+        "expected": "pythoon1323789pythoon",
+        "unexpected": [
+            "pythoon1323789pythoonx",
+            "pythoon1323789pythoo",
+            "noohtyp9873231noohtyp"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"😀\", \"🌞\", \"this\", \"🧐\", \"spaces\", \"★has\", \"★\", \"!\"]"
+        },
+        "expected": "😀🌞this🧐spaces★has★!",
+        "unexpected": [
+            "😀🌞this🧐spaces★has★!x",
+            "😀🌞this🧐spaces★has★",
+            "!★sah★secaps🧐siht🌞😀"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"😀\", \"this\", \"🧐\", \"spaces\", \"★\", \"!\", \"spaces\", \"!\"]"
+        },
+        "expected": "😀this🧐spaces★!spaces!",
+        "unexpected": [
+            "😀this🧐spaces★!spaces!x",
+            "😀this🧐spaces★!spaces",
+            "!secaps!★secaps🧐siht😀"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"🌞\", \"this\", \"🧐\", \"spaces\", \"🐼🐼\", \"★\", \"!\", \"🌞\"]"
+        },
+        "expected": "🌞this🧐spaces🐼🐼★!🌞",
+        "unexpected": [
+            "🌞this🧐spaces🐼🐼★!🌞x",
+            "🌞this🧐spaces🐼🐼★!",
+            "🌞!★🐼🐼secaps🧐siht🌞"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\" \"]"
+        },
+        "expected": " ",
+        "unexpected": [
+            " x",
+            "",
+            " yy"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"single\", \"ab\", \"abcde\", \"abcdef\"]"
+        },
+        "expected": "singleababcdeabcdef",
+        "unexpected": [
+            "singleababcdeabcdefx",
+            "singleababcdeabcde",
+            "fedcbaedcbabaelgnis"
+        ]
+    }
+]

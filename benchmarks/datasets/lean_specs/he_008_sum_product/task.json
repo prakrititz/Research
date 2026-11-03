@@ -1,0 +1,31 @@
+{
+    "id": "he_008_sum_product",
+    "signature": {
+        "name": "sumProduct",
+        "parameters": [
+            {
+                "param_name": "numbers",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Int × Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.1 = numbers.sum ∧ result.2 = numbers.prod"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/8"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

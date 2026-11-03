@@ -1,0 +1,35 @@
+{
+    "id": "he_011_string_xor",
+    "signature": {
+        "name": "stringXor",
+        "parameters": [
+            {
+                "param_name": "a",
+                "param_type": "String"
+            },
+            {
+                "param_name": "b",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "a.length = b.length ∧ a.toList.all (fun c => c == '0' || c == '1') ∧ b.toList.all (fun c => c == '0' || c == '1')",
+        "postconditions": "result.length = a.length ∧ ∀ i, i < a.length → result.toList[i]! = (if a.toList[i]! = b.toList[i]! then '0' else '1')"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/11"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

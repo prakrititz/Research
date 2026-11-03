@@ -1,0 +1,178 @@
+[
+    {
+        "input": {
+            "s": "\"tantywccpjkimslotpzs\""
+        },
+        "expected": "oviotrxxkefdhngjokun",
+        "unexpected": [
+            "oviotrxxkefdhngjokunx",
+            "oviotrxxkefdhngjoku",
+            "nukojgnhdfekxxrtoivo"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"clknfxdnox\""
+        },
+        "expected": "xgfiasyijs",
+        "unexpected": [
+            "xgfiasyijsx",
+            "xgfiasyij",
+            "sjiysaifgx"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"dtzqyosaovdbafbg\""
+        },
+        "expected": "youltjnvjqywvawb",
+        "unexpected": [
+            "youltjnvjqywvawbx",
+            "youltjnvjqywvaw",
+            "bwavwyqjvnjtluoy"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"dffjvztknohzf\""
+        },
+        "expected": "yaaequofijcua",
+        "unexpected": [
+            "yaaequofijcuax",
+            "yaaequofijcu",
+            "aucjifouqeaay"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"brhkdngfwd\""
+        },
+        "expected": "wmcfyibary",
+        "unexpected": [
+            "wmcfyibaryx",
+            "wmcfyibar",
+            "yrabiyfcmw"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"amlcrporykmgbhzctpnh\""
+        },
+        "expected": "vhgxmkjmtfhbwcuxokic",
+        "unexpected": [
+            "vhgxmkjmtfhbwcuxokicx",
+            "vhgxmkjmtfhbwcuxoki",
+            "cikoxucwbhftmjkmxghv"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"ondbgojmipwoofzeyrh\""
+        },
+        "expected": "jiywbjehdkrjjauztmc",
+        "unexpected": [
+            "jiywbjehdkrjjauztmcx",
+            "jiywbjehdkrjjauztm",
+            "cmtzuajjrkdhejbwyij"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"atobiwyiitrvhuctz\""
+        },
+        "expected": "vojwdrtddomqcpxou",
+        "unexpected": [
+            "vojwdrtddomqcpxoux",
+            "vojwdrtddomqcpxo",
+            "uoxpcqmoddtrdwjov"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"kyrzjawonglfbsedmhmk\""
+        },
+        "expected": "ftmuevrjibgawnzyhchf",
+        "unexpected": [
+            "ftmuevrjibgawnzyhchfx",
+            "ftmuevrjibgawnzyhch",
+            "fhchyznwagbijrveumtf"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"esusgpgnaelf\""
+        },
+        "expected": "znpnbkbivzga",
+        "unexpected": [
+            "znpnbkbivzgax",
+            "znpnbkbivzg",
+            "agzvibkbnpnz"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"jbocbcqiuggvenbq\""
+        },
+        "expected": "ewjxwxldpbbqziwl",
+        "unexpected": [
+            "ewjxwxldpbbqziwlx",
+            "ewjxwxldpbbqziw",
+            "lwizqbbpdlxwxjwe"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"zmmcumljlx\""
+        },
+        "expected": "uhhxphgegs",
+        "unexpected": [
+            "uhhxphgegsx",
+            "uhhxphgeg",
+            "sgeghpxhhu"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"ibrcruwukgetv\""
+        },
+        "expected": "dwmxmprpfbzoq",
+        "unexpected": [
+            "dwmxmprpfbzoqx",
+            "dwmxmprpfbzo",
+            "qozbfprpmxmwd"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"ncbelcfjqcgxshtdiz\""
+        },
+        "expected": "ixwzgxaelxbsncoydu",
+        "unexpected": [
+            "ixwzgxaelxbsncoydux",
+            "ixwzgxaelxbsncoyd",
+            "udyocnsbxleaxgzwxi"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"xgcckzjdfp\""
+        },
+        "expected": "sbxxfueyak",
+        "unexpected": [
+            "sbxxfueyakx",
+            "sbxxfueya",
+            "kayeufxxbs"
+        ]
+    },
+    {
+        "input": {
+            "s": "\"gzlnmjjytxhydvy\""
+        },
+        "expected": "bugiheetosctyqt",
+        "unexpected": [
+            "bugiheetosctyqtx",
+            "bugiheetosctyq",
+            "tqytcsoteehigub"
+        ]
+    }
+]

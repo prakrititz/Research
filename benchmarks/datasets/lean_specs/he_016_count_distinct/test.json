@@ -1,0 +1,144 @@
+[
+    {
+        "input": {
+            "s": "\"\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\"abcde\""
+        },
+        "expected": 5,
+        "unexpected": [
+            6,
+            4,
+            13
+        ]
+    },
+    {
+        "input": {
+            "s": "\"abcdecadeCADE\""
+        },
+        "expected": 5,
+        "unexpected": [
+            6,
+            4,
+            13
+        ]
+    },
+    {
+        "input": {
+            "s": "\"aaaaAAAAaaaa\""
+        },
+        "expected": 1,
+        "unexpected": [
+            2,
+            0,
+            5
+        ]
+    },
+    {
+        "input": {
+            "s": "\"Jerry jERRY JeRRRY\""
+        },
+        "expected": 5,
+        "unexpected": [
+            6,
+            4,
+            13
+        ]
+    },
+    {
+        "input": {
+            "s": "\"AbCdEfG\""
+        },
+        "expected": 7,
+        "unexpected": [
+            8,
+            6,
+            17
+        ]
+    },
+    {
+        "input": {
+            "s": "\"The quick brown fox jumps ovy dog\""
+        },
+        "expected": 24,
+        "unexpected": [
+            25,
+            23,
+            51
+        ]
+    },
+    {
+        "input": {
+            "s": "\"!\\\"£$charas,%^&*()_+-={}[]|\\\\:;\\\"<>,.?/~`\""
+        },
+        "expected": 35,
+        "unexpected": [
+            36,
+            34,
+            73
+        ]
+    },
+    {
+        "input": {
+            "s": "\"lSJrRmZld\""
+        },
+        "expected": 7,
+        "unexpected": [
+            8,
+            6,
+            17
+        ]
+    },
+    {
+        "input": {
+            "s": "\"bronwn\""
+        },
+        "expected": 5,
+        "unexpected": [
+            6,
+            4,
+            13
+        ]
+    },
+    {
+        "input": {
+            "s": "\"iisss\""
+        },
+        "expected": 2,
+        "unexpected": [
+            3,
+            1,
+            7
+        ]
+    },
+    {
+        "input": {
+            "s": "\"\\\"I!@\""
+        },
+        "expected": 4,
+        "unexpected": [
+            5,
+            3,
+            11
+        ]
+    },
+    {
+        "input": {
+            "s": "\"The\""
+        },
+        "expected": 3,
+        "unexpected": [
+            4,
+            2,
+            9
+        ]
+    }
+]

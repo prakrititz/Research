@@ -1,0 +1,30 @@
+{
+    "id": "he_062_derivative",
+    "signature": {
+        "name": "derivative",
+        "parameters": [
+            {
+                "param_name": "xs",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "List Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.length = xs.length - 1 ∧ ∀ i, i < xs.length - 1 → result[i]! = xs[i + 1]! * ((i : Int) + 1)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/62"
+        },
+        "tags": [
+            "list"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,31 @@
+{
+    "id": "he_093_encode",
+    "signature": {
+        "name": "encode93",
+        "parameters": [
+            {
+                "param_name": "message",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.length = message.length ∧ ∀ i, i < message.length → result.toList[i]! = encChar message.toList[i]!"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/93"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

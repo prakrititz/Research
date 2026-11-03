@@ -1,0 +1,31 @@
+{
+    "id": "he_107_even_odd_palindrome",
+    "signature": {
+        "name": "evenOddPalindrome",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat × Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "n ≥ 1",
+        "postconditions": "result.1 = ((List.range (n + 1)).filter (fun i => 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 0)).length ∧\n  result.2 = ((List.range (n + 1)).filter (fun i => 1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 1)).length"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/107"
+        },
+        "tags": [
+            "scalar",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,194 @@
+[
+    {
+        "input": {
+            "x": "8",
+            "base": "3"
+        },
+        "expected": "22",
+        "unexpected": [
+            "22x",
+            "2",
+            "22yy"
+        ]
+    },
+    {
+        "input": {
+            "x": "9",
+            "base": "3"
+        },
+        "expected": "100",
+        "unexpected": [
+            "100x",
+            "10",
+            "001"
+        ]
+    },
+    {
+        "input": {
+            "x": "234",
+            "base": "2"
+        },
+        "expected": "11101010",
+        "unexpected": [
+            "11101010x",
+            "1110101",
+            "01010111"
+        ]
+    },
+    {
+        "input": {
+            "x": "16",
+            "base": "2"
+        },
+        "expected": "10000",
+        "unexpected": [
+            "10000x",
+            "1000",
+            "00001"
+        ]
+    },
+    {
+        "input": {
+            "x": "8",
+            "base": "2"
+        },
+        "expected": "1000",
+        "unexpected": [
+            "1000x",
+            "100",
+            "0001"
+        ]
+    },
+    {
+        "input": {
+            "x": "7",
+            "base": "2"
+        },
+        "expected": "111",
+        "unexpected": [
+            "111x",
+            "11",
+            "111yy"
+        ]
+    },
+    {
+        "input": {
+            "x": "2",
+            "base": "3"
+        },
+        "expected": "2",
+        "unexpected": [
+            "2x",
+            "",
+            "2yy"
+        ]
+    },
+    {
+        "input": {
+            "x": "3",
+            "base": "4"
+        },
+        "expected": "3",
+        "unexpected": [
+            "3x",
+            "",
+            "3yy"
+        ]
+    },
+    {
+        "input": {
+            "x": "4",
+            "base": "5"
+        },
+        "expected": "4",
+        "unexpected": [
+            "4x",
+            "",
+            "4yy"
+        ]
+    },
+    {
+        "input": {
+            "x": "5",
+            "base": "6"
+        },
+        "expected": "5",
+        "unexpected": [
+            "5x",
+            "",
+            "5yy"
+        ]
+    },
+    {
+        "input": {
+            "x": "6",
+            "base": "7"
+        },
+        "expected": "6",
+        "unexpected": [
+            "6x",
+            "",
+            "6yy"
+        ]
+    },
+    {
+        "input": {
+            "x": "7",
+            "base": "8"
+        },
+        "expected": "7",
+        "unexpected": [
+            "7x",
+            "",
+            "7yy"
+        ]
+    },
+    {
+        "input": {
+            "x": "10",
+            "base": "5"
+        },
+        "expected": "20",
+        "unexpected": [
+            "20x",
+            "2",
+            "02"
+        ]
+    },
+    {
+        "input": {
+            "x": "17",
+            "base": "7"
+        },
+        "expected": "23",
+        "unexpected": [
+            "23x",
+            "2",
+            "32"
+        ]
+    },
+    {
+        "input": {
+            "x": "46",
+            "base": "7"
+        },
+        "expected": "64",
+        "unexpected": [
+            "64x",
+            "6",
+            "46"
+        ]
+    },
+    {
+        "input": {
+            "x": "256",
+            "base": "9"
+        },
+        "expected": "314",
+        "unexpected": [
+            "314x",
+            "31",
+            "413"
+        ]
+    }
+]

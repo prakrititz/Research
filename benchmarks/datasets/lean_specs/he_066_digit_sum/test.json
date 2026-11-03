@@ -1,0 +1,174 @@
+[
+    {
+        "input": {
+            "s": "\"\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\"abAB\""
+        },
+        "expected": 131,
+        "unexpected": [
+            132,
+            130,
+            265
+        ]
+    },
+    {
+        "input": {
+            "s": "\"abcCd\""
+        },
+        "expected": 67,
+        "unexpected": [
+            68,
+            66,
+            137
+        ]
+    },
+    {
+        "input": {
+            "s": "\"helloE\""
+        },
+        "expected": 69,
+        "unexpected": [
+            70,
+            68,
+            141
+        ]
+    },
+    {
+        "input": {
+            "s": "\"woArBld\""
+        },
+        "expected": 131,
+        "unexpected": [
+            132,
+            130,
+            265
+        ]
+    },
+    {
+        "input": {
+            "s": "\"aAaaaXa\""
+        },
+        "expected": 153,
+        "unexpected": [
+            154,
+            152,
+            309
+        ]
+    },
+    {
+        "input": {
+            "s": "\" How are yOu?\""
+        },
+        "expected": 151,
+        "unexpected": [
+            152,
+            150,
+            305
+        ]
+    },
+    {
+        "input": {
+            "s": "\"You arE Very Smart\""
+        },
+        "expected": 327,
+        "unexpected": [
+            328,
+            326,
+            657
+        ]
+    },
+    {
+        "input": {
+            "s": "\"123\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\":;<=>?@[]\\\\]^_`{|}~\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\"HELL   A  C  D Oworld\""
+        },
+        "expected": 572,
+        "unexpected": [
+            573,
+            571,
+            1147
+        ]
+    },
+    {
+        "input": {
+            "s": "\"This\\nis\\ta\\ttest\\twith\\nnewleines\\tand\\ttabs\""
+        },
+        "expected": 84,
+        "unexpected": [
+            85,
+            83,
+            171
+        ]
+    },
+    {
+        "input": {
+            "s": "\"tabsLENTERS\""
+        },
+        "expected": 541,
+        "unexpected": [
+            542,
+            540,
+            1085
+        ]
+    },
+    {
+        "input": {
+            "s": "\"rTpaKnKTAnTG\""
+        },
+        "expected": 538,
+        "unexpected": [
+            539,
+            537,
+            1079
+        ]
+    },
+    {
+        "input": {
+            "s": "\"dgtm\""
+        },
+        "expected": 0,
+        "unexpected": [
+            1,
+            3
+        ]
+    },
+    {
+        "input": {
+            "s": "\"12345AHBCDEFGHJIJKLMN0OPQRSTUVWXYZY67890\""
+        },
+        "expected": 2250,
+        "unexpected": [
+            2251,
+            2249,
+            4503
+        ]
+    }
+]

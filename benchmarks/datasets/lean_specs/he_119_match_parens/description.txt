@@ -1,0 +1,1 @@
+You are given a list of two strings, both consisting of open parentheses '(' or close parentheses ')' only. Check if it is possible to concatenate the two strings in some order so that the resulting string is good: a string is good if and only if all its parentheses are balanced. Return 'Yes' if there is a way to make a good string, and 'No' otherwise.

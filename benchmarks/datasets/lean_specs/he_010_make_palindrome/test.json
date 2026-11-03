@@ -1,0 +1,145 @@
+[
+    {
+        "input": {
+            "string": "\"\""
+        },
+        "expected": "",
+        "unexpected": [
+            "x",
+            "a",
+            "yy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"x\""
+        },
+        "expected": "x",
+        "unexpected": [
+            "xx",
+            "",
+            "xyy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"xyz\""
+        },
+        "expected": "xyzyx",
+        "unexpected": [
+            "xyzyxx",
+            "xyzy",
+            "xyzyxyy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"xyx\""
+        },
+        "expected": "xyx",
+        "unexpected": [
+            "xyxx",
+            "xy",
+            "xyxyy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"jerry\""
+        },
+        "expected": "jerryrrej",
+        "unexpected": [
+            "jerryrrejx",
+            "jerryrre",
+            "jerryrrejyy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"race\""
+        },
+        "expected": "racecar",
+        "unexpected": [
+            "racecarx",
+            "raceca",
+            "racecaryy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"erradarrace\""
+        },
+        "expected": "erradarracecarradarre",
+        "unexpected": [
+            "erradarracecarradarrex",
+            "erradarracecarradarr",
+            "erradarracecarradarreyy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"babad\""
+        },
+        "expected": "babadabab",
+        "unexpected": [
+            "babadababx",
+            "babadaba",
+            "babadababyy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"abca\""
+        },
+        "expected": "abcacba",
+        "unexpected": [
+            "abcacbax",
+            "abcacb",
+            "abcacbayy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"rabaabecrar\""
+        },
+        "expected": "rabaabecrarcebaabar",
+        "unexpected": [
+            "rabaabecrarcebaabarx",
+            "rabaabecrarcebaaba",
+            "rabaabecrarcebaabaryy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"pnn\""
+        },
+        "expected": "pnnp",
+        "unexpected": [
+            "pnnpx",
+            "pnn",
+            "pnnpyy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"bunqzNWMJJ\""
+        },
+        "expected": "bunqzNWMJJMWNzqnub",
+        "unexpected": [
+            "bunqzNWMJJMWNzqnubx",
+            "bunqzNWMJJMWNzqnu",
+            "bunqzNWMJJMWNzqnubyy"
+        ]
+    },
+    {
+        "input": {
+            "string": "\"zzzazyabcz\""
+        },
+        "expected": "zzzazyabczcbayzazzz",
+        "unexpected": [
+            "zzzazyabczcbayzazzzx",
+            "zzzazyabczcbayzazz",
+            "zzzazyabczcbayzazzzyy"
+        ]
+    }
+]

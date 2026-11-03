@@ -1,0 +1,31 @@
+{
+    "id": "he_009_rolling_max",
+    "signature": {
+        "name": "rollingMax",
+        "parameters": [
+            {
+                "param_name": "numbers",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "List Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.length = numbers.length ∧\n  ∀ i, i < numbers.length → result[i]! ∈ numbers.take (i + 1) ∧ ∀ x ∈ numbers.take (i + 1), x ≤ result[i]!"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/9"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

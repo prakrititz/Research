@@ -1,0 +1,35 @@
+{
+    "id": "he_112_reverse_delete",
+    "signature": {
+        "name": "reverseDelete",
+        "parameters": [
+            {
+                "param_name": "s",
+                "param_type": "String"
+            },
+            {
+                "param_name": "c",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "String × Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.1.toList = s.toList.filter (fun ch => !(c.toList.contains ch)) ∧ (result.2 = true ↔ result.1.toList = result.1.toList.reverse)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/112"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

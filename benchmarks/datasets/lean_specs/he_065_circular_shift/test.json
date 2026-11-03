@@ -1,0 +1,158 @@
+[
+    {
+        "input": {
+            "x": "100",
+            "shift": "2"
+        },
+        "expected": "001",
+        "unexpected": [
+            "001x",
+            "00",
+            "100"
+        ]
+    },
+    {
+        "input": {
+            "x": "12",
+            "shift": "2"
+        },
+        "expected": "12",
+        "unexpected": [
+            "12x",
+            "1",
+            "21"
+        ]
+    },
+    {
+        "input": {
+            "x": "97",
+            "shift": "8"
+        },
+        "expected": "79",
+        "unexpected": [
+            "79x",
+            "7",
+            "97"
+        ]
+    },
+    {
+        "input": {
+            "x": "12",
+            "shift": "1"
+        },
+        "expected": "21",
+        "unexpected": [
+            "21x",
+            "2",
+            "12"
+        ]
+    },
+    {
+        "input": {
+            "x": "11",
+            "shift": "101"
+        },
+        "expected": "11",
+        "unexpected": [
+            "11x",
+            "1",
+            "11yy"
+        ]
+    },
+    {
+        "input": {
+            "x": "16",
+            "shift": "3"
+        },
+        "expected": "61",
+        "unexpected": [
+            "61x",
+            "6",
+            "16"
+        ]
+    },
+    {
+        "input": {
+            "x": "341208",
+            "shift": "345"
+        },
+        "expected": "802143",
+        "unexpected": [
+            "802143x",
+            "80214",
+            "341208"
+        ]
+    },
+    {
+        "input": {
+            "x": "28",
+            "shift": "55671"
+        },
+        "expected": "82",
+        "unexpected": [
+            "82x",
+            "8",
+            "28"
+        ]
+    },
+    {
+        "input": {
+            "x": "100",
+            "shift": "55673"
+        },
+        "expected": "001",
+        "unexpected": [
+            "001x",
+            "00",
+            "100"
+        ]
+    },
+    {
+        "input": {
+            "x": "26",
+            "shift": "0"
+        },
+        "expected": "26",
+        "unexpected": [
+            "26x",
+            "2",
+            "62"
+        ]
+    },
+    {
+        "input": {
+            "x": "199",
+            "shift": "12"
+        },
+        "expected": "991",
+        "unexpected": [
+            "991x",
+            "99",
+            "199"
+        ]
+    },
+    {
+        "input": {
+            "x": "5",
+            "shift": "5"
+        },
+        "expected": "5",
+        "unexpected": [
+            "5x",
+            "",
+            "5yy"
+        ]
+    },
+    {
+        "input": {
+            "x": "55671",
+            "shift": "11"
+        },
+        "expected": "17655",
+        "unexpected": [
+            "17655x",
+            "1765",
+            "55671"
+        ]
+    }
+]

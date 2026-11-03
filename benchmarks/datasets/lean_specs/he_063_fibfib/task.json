@@ -1,0 +1,32 @@
+{
+    "id": "he_063_fibfib",
+    "signature": {
+        "name": "fibfib",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = fibfibSpec n"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/63"
+        },
+        "tags": [
+            "scalar",
+            "recursive-spec",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,31 @@
+{
+    "id": "he_043_pairs_sum_to_zero",
+    "signature": {
+        "name": "pairsSumToZero",
+        "parameters": [
+            {
+                "param_name": "l",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ ∃ j, j < l.length ∧ ∃ i, i < j ∧ l[i]! + l[j]! = 0"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/43"
+        },
+        "tags": [
+            "list",
+            "loop"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

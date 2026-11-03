@@ -1,0 +1,1900 @@
+{
+ "summary": {
+  "mutants": 314,
+  "outcomes": {
+   "unproved_with_counterexample": 138,
+   "unproved": 174,
+   "survived_certified": 2
+  },
+  "killed": 312,
+  "kill_rate": 0.994,
+  "counterexample_share_of_killed": 0.442,
+  "seconds": 734.8
+ },
+ "rows": [
+  {
+   "task": "he_097_multiply",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := -10, b := 6"
+  },
+  {
+   "task": "he_138_is_equal_to_sum_even",
+   "mutation": "root:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 8"
+  },
+  {
+   "task": "he_138_is_equal_to_sum_even",
+   "mutation": "root:term.expr:ge->gt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 8"
+  },
+  {
+   "task": "he_138_is_equal_to_sum_even",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 11"
+  },
+  {
+   "task": "he_157_right_angle_triangle",
+   "mutation": "root:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := 9, b := 36, c := 0"
+  },
+  {
+   "task": "he_157_right_angle_triangle",
+   "mutation": "root:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "a := 0, b := 0, c := 1"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 3, i := 3, s := 4"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 3, i := 3, s := 3"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0, i := 0, s := 0"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2, i := 0, s := 0"
+  },
+  {
+   "task": "he_060_sum_to_n",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, i := 0, s := 0"
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1"
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, k := 0"
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1"
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_100_make_a_pile",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := []"
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [], k := 0"
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := []"
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := []"
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_042_incr_list",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "0:term.expr:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_052_below_threshold",
+   "mutation": "0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "root:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "root:bind.prop:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "root:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "root:bind.prop:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "root:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0:loop.variant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0/0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0/0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0/0:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "0/0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1:bind.prop:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1:bind.prop:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0:loop.variant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0/0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0/0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0/0:term.expr:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_057_monotonic",
+   "mutation": "1/0/0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := []"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0, -3, 1], j := 3, found := true"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [-7, 0, -7], j := 3, found := true"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [-2, 0], j := 2, found := true"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := []"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := []"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [], j := 0, found := false, hit := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0:bind.prop:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [-76,, j := 69, found := true, i := 69, seen := true"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0:bind.prop:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0], j := 0, found := false, i := 0, seen := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0:bind.prop:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0], j := 0, found := false, i := 0, seen := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0], j := 0, found := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.invariant:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [11, 38, 5, -23, 10, -1, 8, -8, 0, -25, -11, -38, -3, 28, -4, -8, 25, -42], j := 7, found := false, i := 7, seen := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0, 0, 1, 0, 2, 0, -1], j := 0, found := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [1], j := 0, found := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [-1], j := 0, found := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0], j := 0, found := false, i := 0, seen := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0/0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [-16, -7, 10, 0, 3, 22, -9, 18, -18, 11, -7, -1], j := 3, found := false, i := 2, seen := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0/0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [1, -1, 3, -1, 0, -8], j := 3, found := true, i := 2, seen := true"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/0/0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [-1, -1, 0, 6, -6, 10], j := 3, found := false, i := 2, seen := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/1:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [1], j := 0, found := false, hit := false"
+  },
+  {
+   "task": "he_043_pairs_sum_to_zero",
+   "mutation": "0/1:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0], j := 0, found := false, hit := false"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0]"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0]"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0]"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0]"
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_035_max_element",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "root:cases.cond:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "root:cases.cond:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2"
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.invariant:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1/0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1/0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_031_is_prime",
+   "mutation": "1/0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2"
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2"
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2"
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "root:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_024_largest_divisor",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := []"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [1, -4, -4], i := 3, acc := []"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := []"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := []"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [], i := 0, acc := []"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0], i := 0, acc := []"
+  },
+  {
+   "task": "he_030_get_positive",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "l := [0], i := 0, acc := []"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "xs := []"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "xs := [1, 1], m := 0"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "xs := []"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "xs := []"
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "root:loop.variant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_062_derivative",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "game := [], guess := []"
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "game := [-2], guess := [2], k := 0"
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "game := [], guess := []"
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "game := [], guess := []"
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_152_compare",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "operations := []"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "operations := [], i := 0, bal := 0, neg := false"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "operations := [-4, 4, -4, -3, -5, 6], i := 1, bal := -4, neg := true"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "operations := [3, 9, -3, 4, -10, 7], i := 2, bal := 12, neg := false"
+  },
+  {
+   "task": "he_003_below_zero",
+   "mutation": "0:term.expr:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [1]"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [0]"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [-2, -3], i := 1, s := 0"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [0]"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [0], i := 1, s := 0"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [1], i := 0, s := 0"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [4], i := 0, s := 0"
+  },
+  {
+   "task": "he_121_solution",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [2, 5, -1], i := 2, s := 0"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [0]"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [0], i := 0, s := 0"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [0]"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [0], i := 1, s := 0"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [-4, -3, -1], i := 2, s := 0"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [0], i := 0, s := 0"
+  },
+  {
+   "task": "he_085_add_even_at_odd",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "lst := [5, 5, -2], i := 2, s := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 3, i := 2, a := 1, b := 3"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0, i := 0, a := 0, b := 1"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 4, i := 0, a := 0, b := 1"
+  },
+  {
+   "task": "he_055_fib",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, i := 0, a := 0, b := 1"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "survived_certified",
+   "detail": null
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, i := 1, fact := 1, total := 2"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2, i := 1, fact := 1, total := 1"
+  },
+  {
+   "task": "he_139_special_factorial",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, i := 0, fact := 1, total := 1"
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_048_is_palindrome",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "root:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "root:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "root:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0/0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0/0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0/0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "0/0:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "1:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_072_will_it_fly",
+   "mutation": "1:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := []"
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := []"
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := []"
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := [], i := 0, acc := \"\""
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := [\"/\"], i := 0, acc := \"\""
+  },
+  {
+   "task": "he_028_concatenate",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := [\"\"], i := 0, acc := \"\""
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := [], prefix_ := \"\""
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := [], prefix_ := \"\""
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := [], prefix_ := \"\""
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := [], prefix_ := \"\", i := 0, acc := []"
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := [\"\"], prefix_ := \"`:\", i := 0, acc := []"
+  },
+  {
+   "task": "he_029_filter_by_prefix",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "strings := [\": \"], prefix_ := \":\", i := 0, acc := []"
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\""
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\""
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\""
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\""
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\\x00\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_066_digit_sum",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"c\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\""
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\""
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.invariant:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \" \\x02A\\x01\", i := 4, acc := 0"
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\""
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\""
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"c\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved_with_counterexample",
+   "detail": "s := \"B\", i := 0, acc := 0"
+  },
+  {
+   "task": "he_098_count_upper",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.invariant:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.result:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.result:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "root:loop.result:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "0:term.expr:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_061_correct_bracketing",
+   "mutation": "0:term.expr:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "root:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "root:bind.prop:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "root:bind.prop:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "root:bind.prop:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "root:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.invariant:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.guard:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0:loop.variant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0/0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0/0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0/0:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "0/0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1:bind.prop:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1:bind.prop:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1:bind.prop:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0/0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0/0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0/0:term.expr:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/0/0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_126_is_sorted",
+   "mutation": "1/1:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "root:bind.prop:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 0, x := 0, y := 0"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0:cases.cond:number+1",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2, x := -2, y := -1"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0:cases.cond:lt->le",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 2, x := 0, y := 0"
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.init:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.invariant:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.invariant:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.invariant:le->lt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.invariant:ge->gt",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.invariant:eq->ne",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1:loop.guard:lt->le",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1/0:term.expr:number+1",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1/0:term.expr:plus->minus",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "0/1/0:term.expr:and->or",
+   "outcome": "unproved",
+   "detail": null
+  },
+  {
+   "task": "he_150_x_or_y",
+   "mutation": "1:cases.cond:eq->ne",
+   "outcome": "unproved_with_counterexample",
+   "detail": "n := 1, x := -1, y := 1, p := false"
+  }
+ ]
+}

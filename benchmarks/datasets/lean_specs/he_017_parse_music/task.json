@@ -1,0 +1,32 @@
+{
+    "id": "he_017_parse_music",
+    "signature": {
+        "name": "parseMusic",
+        "parameters": [
+            {
+                "param_name": "music_string",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "List Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "music_string = \"\" ∨ ∀ n ∈ music_string.splitOn \" \", n = \"o\" ∨ n = \"o|\" ∨ n = \".|\"",
+        "postconditions": "let notes := if music_string = \"\" then [] else music_string.splitOn \" \"\nresult.length = notes.length ∧ ∀ i, i < notes.length → result[i]! = (if notes[i]! = \"o\" then 4 else if notes[i]! = \"o|\" then 2 else 1)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/17"
+        },
+        "tags": [
+            "string",
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

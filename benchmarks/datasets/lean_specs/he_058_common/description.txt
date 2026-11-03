@@ -1,0 +1,1 @@
+Return the sorted unique elements that are common to the two lists.

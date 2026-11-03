@@ -1,0 +1,31 @@
+{
+    "id": "he_109_move_one_ball",
+    "signature": {
+        "name": "moveOneBall",
+        "parameters": [
+            {
+                "param_name": "arr",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "Bool"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = true ↔ ∃ i, i < arr.length + 1 ∧ arr.drop i ++ arr.take i = arr.mergeSort (fun a b => a ≤ b)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/109"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,31 @@
+{
+    "id": "he_050_decode_shift",
+    "signature": {
+        "name": "decodeShift",
+        "parameters": [
+            {
+                "param_name": "s",
+                "param_type": "String"
+            }
+        ],
+        "return_type": "String"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "s.toList.all (fun c => c.isLower) = true",
+        "postconditions": "result.toList.all (fun c => c.isLower) = true ∧ result.toList.map shiftChar = s.toList"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/50"
+        },
+        "tags": [
+            "string",
+            "declarative"
+        ],
+        "note": "stated as the inverse of encode_shift on lowercase letters (the canonical solution also maps other characters, which no encoder produces)"
+    },
+    "test_file": "./test.json"
+}

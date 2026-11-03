@@ -1,0 +1,134 @@
+[
+    {
+        "input": {
+            "decimal": "0"
+        },
+        "expected": "db0db",
+        "unexpected": [
+            "db0dbx",
+            "db0d",
+            "bd0bd"
+        ]
+    },
+    {
+        "input": {
+            "decimal": "32"
+        },
+        "expected": "db100000db",
+        "unexpected": [
+            "db100000dbx",
+            "db100000d",
+            "bd000001bd"
+        ]
+    },
+    {
+        "input": {
+            "decimal": "103"
+        },
+        "expected": "db1100111db",
+        "unexpected": [
+            "db1100111dbx",
+            "db1100111d",
+            "bd1110011bd"
+        ]
+    },
+    {
+        "input": {
+            "decimal": "15"
+        },
+        "expected": "db1111db",
+        "unexpected": [
+            "db1111dbx",
+            "db1111d",
+            "bd1111bd"
+        ]
+    },
+    {
+        "input": {
+            "decimal": "100001"
+        },
+        "expected": "db11000011010100001db",
+        "unexpected": [
+            "db11000011010100001dbx",
+            "db11000011010100001d",
+            "bd10000101011000011bd"
+        ]
+    },
+    {
+        "input": {
+            "decimal": "1024"
+        },
+        "expected": "db10000000000db",
+        "unexpected": [
+            "db10000000000dbx",
+            "db10000000000d",
+            "bd00000000001bd"
+        ]
+    },
+    {
+        "input": {
+            "decimal": "44"
+        },
+        "expected": "db101100db",
+        "unexpected": [
+            "db101100dbx",
+            "db101100d",
+            "bd001101bd"
+        ]
+    },
+    {
+        "input": {
+            "decimal": "253"
+        },
+        "expected": "db11111101db",
+        "unexpected": [
+            "db11111101dbx",
+            "db11111101d",
+            "bd10111111bd"
+        ]
+    },
+    {
+        "input": {
+            "decimal": "99998"
+        },
+        "expected": "db11000011010011110db",
+        "unexpected": [
+            "db11000011010011110dbx",
+            "db11000011010011110d",
+            "bd01111001011000011bd"
+        ]
+    },
+    {
+        "input": {
+            "decimal": "1002"
+        },
+        "expected": "db1111101010db",
+        "unexpected": [
+            "db1111101010dbx",
+            "db1111101010d",
+            "bd0101011111bd"
+        ]
+    },
+    {
+        "input": {
+            "decimal": "263"
+        },
+        "expected": "db100000111db",
+        "unexpected": [
+            "db100000111dbx",
+            "db100000111d",
+            "bd111000001bd"
+        ]
+    },
+    {
+        "input": {
+            "decimal": "62"
+        },
+        "expected": "db111110db",
+        "unexpected": [
+            "db111110dbx",
+            "db111110d",
+            "bd011111bd"
+        ]
+    }
+]

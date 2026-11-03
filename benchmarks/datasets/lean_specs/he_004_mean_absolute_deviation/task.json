@@ -1,0 +1,31 @@
+{
+    "id": "he_004_mean_absolute_deviation",
+    "signature": {
+        "name": "meanAbsoluteDeviation",
+        "parameters": [
+            {
+                "param_name": "numbers",
+                "param_type": "List ℚ"
+            }
+        ],
+        "return_type": "ℚ"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "numbers ≠ []",
+        "postconditions": "|result - (numbers.map (fun x => |x - numbers.sum / (numbers.length : ℚ)|)).sum / (numbers.length : ℚ)| ≤ (1 / 1000000 : ℚ)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/4"
+        },
+        "tags": [
+            "list",
+            "float"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

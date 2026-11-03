@@ -1,0 +1,32 @@
+{
+    "id": "he_055_fib",
+    "signature": {
+        "name": "fib",
+        "parameters": [
+            {
+                "param_name": "n",
+                "param_type": "Nat"
+            }
+        ],
+        "return_type": "Nat"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result = fibSpec n"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/55"
+        },
+        "tags": [
+            "scalar",
+            "loop",
+            "recursive-spec"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

@@ -1,0 +1,110 @@
+[
+    {
+        "input": {
+            "strings": "[]",
+            "prefix_": "\"john\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"xxx\", \"asd\", \"xxy\", \"john doe\", \"xxxAAA\", \"xxx\"]",
+            "prefix_": "\"xxx\""
+        },
+        "expected": "[\"xxx\", \"xxxAAA\", \"xxx\"]",
+        "unexpected": [
+            "[\"xxx\", \"xxxAAA\"]",
+            "[\"xxx\", \"xxxAAA\", \"xxx\", \"z\"]",
+            "[\"xxx\", \"xxxAAA\", \"xxx\", \"xxx\", \"xxxAAA\", \"xxx\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[]",
+            "prefix_": "\"\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"apple\", \"banana\", \"orange\", \"apricot\", \"kiwi\"]",
+            "prefix_": "\"a\""
+        },
+        "expected": "[\"apple\", \"apricot\"]",
+        "unexpected": [
+            "[\"apple\"]",
+            "[\"apple\", \"apricot\", \"z\"]",
+            "[\"apricot\", \"apple\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"world\", \"house\"]",
+            "prefix_": "\"h\""
+        },
+        "expected": "[\"house\"]",
+        "unexpected": [
+            "[]",
+            "[\"house\", \"z\"]",
+            "[\"house\", \"house\", \"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"123\", \"abc\", \"ABC\", \"ab1c\", \"_abc\", \"alphabet\", \"abc1\", \"1abc\"]",
+            "prefix_": "\"a\""
+        },
+        "expected": "[\"abc\", \"ab1c\", \"alphabet\", \"abc1\"]",
+        "unexpected": [
+            "[\"abc\", \"ab1c\", \"alphabet\"]",
+            "[\"abc\", \"ab1c\", \"alphabet\", \"abc1\", \"z\"]",
+            "[\"abc1\", \"alphabet\", \"ab1c\", \"abc\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"water\", \"wine\", \"coffee\", \"tea\", \"beer\", \"wwine\", \"cocoa\", \"cocoa\"]",
+            "prefix_": "\"film\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"电影\", \"电子\", \"电话\", \"burdock\", \"电影\"]",
+            "prefix_": "\"fabric\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"\", \"21\", \"abc\", \"\", \"\", \"asdf\"]",
+            "prefix_": "\" \""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    },
+    {
+        "input": {
+            "strings": "[\"123\", \"abc\", \"ABC\", \"ab1c\", \"_abc\", \"abc_\", \"ab1\", \"1abc\"]",
+            "prefix_": "\"aa\""
+        },
+        "expected": "[]",
+        "unexpected": [
+            "[\"z\"]"
+        ]
+    }
+]

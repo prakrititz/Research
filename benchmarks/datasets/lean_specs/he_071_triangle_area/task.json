@@ -1,0 +1,40 @@
+{
+    "id": "he_071_triangle_area",
+    "signature": {
+        "name": "triangleArea71",
+        "parameters": [
+            {
+                "param_name": "a",
+                "param_type": "ℚ"
+            },
+            {
+                "param_name": "b",
+                "param_type": "ℚ"
+            },
+            {
+                "param_name": "c",
+                "param_type": "ℚ"
+            }
+        ],
+        "return_type": "ℚ"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "a > 0 ∧ b > 0 ∧ c > 0",
+        "postconditions": "(a + b ≤ c ∨ a + c ≤ b ∨ b + c ≤ a → result = -1) ∧\n  (¬ (a + b ≤ c ∨ a + c ≤ b ∨ b + c ≤ a) →\n    result ≥ 0 ∧ (result * 100).den = 1 ∧ (result < 1 / 200 ∨ (result - 1 / 200) ^ 2 ≤ area2 a b c) ∧\n      area2 a b c ≤ (result + 1 / 200) ^ 2)"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/71"
+        },
+        "tags": [
+            "scalar",
+            "float",
+            "declarative"
+        ],
+        "note": "the area is the root of a rational, so the postcondition says that the result is a multiple of 1/100 within 1/200 of it"
+    },
+    "test_file": "./test.json"
+}

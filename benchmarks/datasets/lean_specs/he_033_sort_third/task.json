@@ -1,0 +1,31 @@
+{
+    "id": "he_033_sort_third",
+    "signature": {
+        "name": "sortThird",
+        "parameters": [
+            {
+                "param_name": "l",
+                "param_type": "List Int"
+            }
+        ],
+        "return_type": "List Int"
+    },
+    "description_file": "./description.txt",
+    "lean_file": "./task.lean",
+    "specification": {
+        "preconditions": "True",
+        "postconditions": "result.length = l.length ∧ (∀ i, i < l.length → i % 3 ≠ 0 → result[i]! = l[i]!) ∧\n  (atMod 3 result).isPerm (atMod 3 l) ∧ ∀ i, i < (atMod 3 result).length - 1 → (atMod 3 result)[i]! ≤ (atMod 3 result)[i + 1]!"
+    },
+    "metadata": {
+        "upstream": {
+            "name": "HumanEval",
+            "task_id": "HumanEval/33"
+        },
+        "tags": [
+            "list",
+            "declarative"
+        ],
+        "note": ""
+    },
+    "test_file": "./test.json"
+}

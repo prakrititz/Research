@@ -1,0 +1,588 @@
+[
+ {
+  "id": "he_003_below_zero",
+  "source": "HumanEval/3",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 14,
+  "wrong_total": 14,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_013_gcd",
+  "source": "HumanEval/13",
+  "tags": [
+   "scalar",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 36,
+  "wrong_total": 36,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_016_count_distinct",
+  "source": "HumanEval/16",
+  "tags": [
+   "string"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 38,
+  "wrong_total": 38,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_023_strlen",
+  "source": "HumanEval/23",
+  "tags": [
+   "string",
+   "term"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 32,
+  "wrong_total": 32,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_024_largest_divisor",
+  "source": "HumanEval/24",
+  "tags": [
+   "scalar",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_028_concatenate",
+  "source": "HumanEval/28",
+  "tags": [
+   "string",
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 33,
+  "wrong_total": 33,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_029_filter_by_prefix",
+  "source": "HumanEval/29",
+  "tags": [
+   "string",
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 10,
+  "reference_passes": 10,
+  "accepts_expected": 10,
+  "rejects_wrong": 18,
+  "wrong_total": 18,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_030_get_positive",
+  "source": "HumanEval/30",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 30,
+  "wrong_total": 30,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_031_is_prime",
+  "source": "HumanEval/31",
+  "tags": [
+   "scalar",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_034_unique",
+  "source": "HumanEval/34",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 9,
+  "reference_passes": 9,
+  "accepts_expected": 9,
+  "rejects_wrong": 27,
+  "wrong_total": 27,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_035_max_element",
+  "source": "HumanEval/35",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 10,
+  "reference_passes": 10,
+  "accepts_expected": 10,
+  "rejects_wrong": 30,
+  "wrong_total": 30,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_041_car_race_collision",
+  "source": "HumanEval/41",
+  "tags": [
+   "scalar",
+   "term"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_042_incr_list",
+  "source": "HumanEval/42",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 11,
+  "reference_passes": 11,
+  "accepts_expected": 11,
+  "rejects_wrong": 31,
+  "wrong_total": 31,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_043_pairs_sum_to_zero",
+  "source": "HumanEval/43",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_048_is_palindrome",
+  "source": "HumanEval/48",
+  "tags": [
+   "string"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 15,
+  "wrong_total": 15,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_052_below_threshold",
+  "source": "HumanEval/52",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 14,
+  "wrong_total": 14,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_055_fib",
+  "source": "HumanEval/55",
+  "tags": [
+   "scalar",
+   "loop",
+   "recursive-spec"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 38,
+  "wrong_total": 38,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_057_monotonic",
+  "source": "HumanEval/57",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_058_common",
+  "source": "HumanEval/58",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 34,
+  "wrong_total": 34,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_060_sum_to_n",
+  "source": "HumanEval/60",
+  "tags": [
+   "scalar",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_061_correct_bracketing",
+  "source": "HumanEval/61",
+  "tags": [
+   "string",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_062_derivative",
+  "source": "HumanEval/62",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 37,
+  "wrong_total": 37,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_066_digit_sum",
+  "source": "HumanEval/66",
+  "tags": [
+   "string",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 44,
+  "wrong_total": 44,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_072_will_it_fly",
+  "source": "HumanEval/72",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 14,
+  "wrong_total": 14,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_085_add_even_at_odd",
+  "source": "HumanEval/85",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 36,
+  "wrong_total": 36,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_090_next_smallest",
+  "source": "HumanEval/90",
+  "tags": [
+   "list",
+   "option"
+  ],
+  "compiles": true,
+  "tests": 14,
+  "reference_passes": 14,
+  "accepts_expected": 14,
+  "rejects_wrong": 26,
+  "wrong_total": 26,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_097_multiply",
+  "source": "HumanEval/97",
+  "tags": [
+   "scalar",
+   "term"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_098_count_upper",
+  "source": "HumanEval/98",
+  "tags": [
+   "string",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_100_make_a_pile",
+  "source": "HumanEval/100",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 13,
+  "reference_passes": 13,
+  "accepts_expected": 13,
+  "rejects_wrong": 39,
+  "wrong_total": 39,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_121_solution",
+  "source": "HumanEval/121",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_126_is_sorted",
+  "source": "HumanEval/126",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_138_is_equal_to_sum_even",
+  "source": "HumanEval/138",
+  "tags": [
+   "scalar",
+   "term"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_139_special_factorial",
+  "source": "HumanEval/139",
+  "tags": [
+   "scalar",
+   "loop",
+   "recursive-spec"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 36,
+  "wrong_total": 36,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_150_x_or_y",
+  "source": "HumanEval/150",
+  "tags": [
+   "scalar",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 15,
+  "reference_passes": 15,
+  "accepts_expected": 15,
+  "rejects_wrong": 45,
+  "wrong_total": 45,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_152_compare",
+  "source": "HumanEval/152",
+  "tags": [
+   "list"
+  ],
+  "compiles": true,
+  "tests": 12,
+  "reference_passes": 12,
+  "accepts_expected": 12,
+  "rejects_wrong": 36,
+  "wrong_total": 36,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_157_right_angle_triangle",
+  "source": "HumanEval/157",
+  "tags": [
+   "scalar",
+   "term"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 16,
+  "wrong_total": 16,
+  "undecidable": 0,
+  "errors": []
+ },
+ {
+  "id": "he_114_min_sub_array_sum",
+  "source": "HumanEval/114",
+  "tags": [
+   "list",
+   "loop"
+  ],
+  "compiles": true,
+  "tests": 16,
+  "reference_passes": 16,
+  "accepts_expected": 16,
+  "rejects_wrong": 48,
+  "wrong_total": 48,
+  "undecidable": 0,
+  "errors": []
+ }
+]

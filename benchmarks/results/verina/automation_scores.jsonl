@@ -1,0 +1,189 @@
+{"task": "verina_advanced_1", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.2}
+{"task": "verina_advanced_10", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.6}
+{"task": "verina_advanced_11", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.1}
+{"task": "verina_advanced_12", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.4}
+{"task": "verina_advanced_13", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:"], "seconds": 15.1}
+{"task": "verina_advanced_14", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.3}
+{"task": "verina_advanced_15", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 4.8}
+{"task": "verina_advanced_16", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.1}
+{"task": "verina_advanced_17", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.2}
+{"task": "verina_advanced_18", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:"], "seconds": 1.2}
+{"task": "verina_advanced_19", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:"], "seconds": 0.1}
+{"task": "verina_advanced_2", "status": "NOT_PROVED", "errors": ["Unknown constant `Array.mkArray`", "Invalid field notation: Type of"], "seconds": 2.0}
+{"task": "verina_advanced_20", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.2}
+{"task": "verina_advanced_21", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:"], "seconds": 1.8}
+{"task": "verina_advanced_22", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:"], "seconds": 16.7}
+{"task": "verina_advanced_23", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.8}
+{"task": "verina_advanced_24", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.5}
+{"task": "verina_advanced_25", "status": "NOT_PROVED", "errors": ["Unknown constant `Array.mkArray`", "unsolved goals"], "seconds": 9.3}
+{"task": "verina_advanced_26", "status": "NOT_PROVED", "errors": ["maximum recursion depth has been reached"], "seconds": 5.5}
+{"task": "verina_advanced_27", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.4}
+{"task": "verina_advanced_28", "status": "NOT_PROVED", "errors": ["(deterministic) timeout at `isDefEq`, maximum number of heartbeats (200000) has been reached"], "seconds": 14.7}
+{"task": "verina_advanced_29", "status": "NOT_PROVED", "errors": ["(deterministic) timeout at `isDefEq`, maximum number of heartbeats (200000) has been reached"], "seconds": 17.9}
+{"task": "verina_advanced_3", "status": "NOT_PROVED", "errors": ["Unknown constant `Array.mkArray`", "Invalid field notation: Type of"], "seconds": 2.1}
+{"task": "verina_advanced_30", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:"], "seconds": 19.8}
+{"task": "verina_advanced_31", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.3}
+{"task": "verina_advanced_32", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.8}
+{"task": "verina_advanced_33", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.9}
+{"task": "verina_advanced_34", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 14.8}
+{"task": "verina_advanced_35", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.1}
+{"task": "verina_advanced_36", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.3}
+{"task": "verina_advanced_37", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.0}
+{"task": "verina_advanced_38", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 4.9}
+{"task": "verina_advanced_39", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.2}
+{"task": "verina_advanced_4", "status": "NOT_PROVED", "errors": ["Unknown constant `Array.mkArray`", "Expected type must not contain free variables"], "seconds": 1.4}
+{"task": "verina_advanced_40", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.2}
+{"task": "verina_advanced_41", "status": "PROVED", "errors": [], "seconds": 0.2}
+{"task": "verina_advanced_42", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 7.0}
+{"task": "verina_advanced_43", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 3.1}
+{"task": "verina_advanced_44", "status": "NOT_PROVED", "errors": ["Unknown constant `Array.mkArray`", "Invalid field notation: Type of"], "seconds": 17.3}
+{"task": "verina_advanced_45", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 3.2}
+{"task": "verina_advanced_46", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 7.3}
+{"task": "verina_advanced_47", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 5.4}
+{"task": "verina_advanced_48", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.3}
+{"task": "verina_advanced_49", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.6}
+{"task": "verina_advanced_5", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.2}
+{"task": "verina_advanced_50", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.2}
+{"task": "verina_advanced_51", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.8}
+{"task": "verina_advanced_52", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.2}
+{"task": "verina_advanced_53", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.3}
+{"task": "verina_advanced_54", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.4}
+{"task": "verina_advanced_55", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.5}
+{"task": "verina_advanced_56", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.4}
+{"task": "verina_advanced_57", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 4.5}
+{"task": "verina_advanced_58", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.8}
+{"task": "verina_advanced_59", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:"], "seconds": 3.1}
+{"task": "verina_advanced_6", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_advanced_60", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.6}
+{"task": "verina_advanced_61", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.5}
+{"task": "verina_advanced_62", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 5.2}
+{"task": "verina_advanced_63", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.5}
+{"task": "verina_advanced_64", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.8}
+{"task": "verina_advanced_65", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 4.2}
+{"task": "verina_advanced_66", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.0}
+{"task": "verina_advanced_67", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.0}
+{"task": "verina_advanced_68", "status": "NOT_PROVED", "errors": ["Invalid field notation: Type of", "stuck at solving universe constraint"], "seconds": 2.7}
+{"task": "verina_advanced_69", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.5}
+{"task": "verina_advanced_7", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.4}
+{"task": "verina_advanced_70", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 6.9}
+{"task": "verina_advanced_71", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:"], "seconds": 19.9}
+{"task": "verina_advanced_72", "status": "PROVED", "errors": [], "seconds": 9.7}
+{"task": "verina_advanced_73", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.4}
+{"task": "verina_advanced_74", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 3.5}
+{"task": "verina_advanced_75", "status": "NOT_PROVED", "errors": ["(deterministic) timeout at `isDefEq`, maximum number of heartbeats (200000) has been reached"], "seconds": 14.2}
+{"task": "verina_advanced_76", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.4}
+{"task": "verina_advanced_77", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 4.2}
+{"task": "verina_advanced_78", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.5}
+{"task": "verina_advanced_79", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.3}
+{"task": "verina_advanced_8", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 10.1}
+{"task": "verina_advanced_80", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.8}
+{"task": "verina_advanced_81", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.2}
+{"task": "verina_advanced_9", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.1}
+{"task": "verina_basic_1", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.9}
+{"task": "verina_basic_10", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_100", "status": "PROVED", "errors": [], "seconds": 0.2}
+{"task": "verina_basic_101", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_102", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 5.4}
+{"task": "verina_basic_103", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.8}
+{"task": "verina_basic_104", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.0}
+{"task": "verina_basic_105", "status": "NOT_PROVED", "errors": ["Unknown constant `Array.mkArray`", "unsolved goals"], "seconds": 2.3}
+{"task": "verina_basic_106", "status": "NOT_PROVED", "errors": ["Unknown constant `Array.mkArray`", "unsolved goals"], "seconds": 2.2}
+{"task": "verina_basic_107", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_108", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 3.1}
+{"task": "verina_basic_11", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_12", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_13", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_14", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_15", "status": "PROVED", "errors": [], "seconds": 0.7}
+{"task": "verina_basic_16", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 4.8}
+{"task": "verina_basic_17", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 7.3}
+{"task": "verina_basic_18", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.5}
+{"task": "verina_basic_19", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.6}
+{"task": "verina_basic_2", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.2}
+{"task": "verina_basic_20", "status": "NOT_PROVED", "errors": ["Unknown constant `Std.HashSet.empty`", "unsolved goals"], "seconds": 1.7}
+{"task": "verina_basic_21", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:"], "seconds": 0.3}
+{"task": "verina_basic_22", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.9}
+{"task": "verina_basic_23", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:", "Function expected at"], "seconds": 2.5}
+{"task": "verina_basic_24", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 3.2}
+{"task": "verina_basic_25", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.8}
+{"task": "verina_basic_26", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_27", "status": "NOT_PROVED", "errors": ["Unknown constant `Std.HashSet.empty`", "unsolved goals"], "seconds": 1.3}
+{"task": "verina_basic_28", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.7}
+{"task": "verina_basic_29", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.5}
+{"task": "verina_basic_3", "status": "PROVED", "errors": [], "seconds": 0.4}
+{"task": "verina_basic_30", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_31", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 5.4}
+{"task": "verina_basic_32", "status": "PROVED", "errors": [], "seconds": 1.1}
+{"task": "verina_basic_33", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.2}
+{"task": "verina_basic_34", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.7}
+{"task": "verina_basic_35", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.5}
+{"task": "verina_basic_36", "status": "NOT_PROVED", "errors": ["(deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached"], "seconds": 9.5}
+{"task": "verina_basic_37", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.3}
+{"task": "verina_basic_38", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.9}
+{"task": "verina_basic_39", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 5.0}
+{"task": "verina_basic_4", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.7}
+{"task": "verina_basic_40", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.8}
+{"task": "verina_basic_41", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.3}
+{"task": "verina_basic_42", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_43", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.6}
+{"task": "verina_basic_44", "status": "PROVED", "errors": [], "seconds": 0.4}
+{"task": "verina_basic_45", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_46", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.7}
+{"task": "verina_basic_47", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.3}
+{"task": "verina_basic_48", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.6}
+{"task": "verina_basic_49", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.7}
+{"task": "verina_basic_5", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_50", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_51", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.9}
+{"task": "verina_basic_52", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `bubbleInner`"], "seconds": 3.1}
+{"task": "verina_basic_53", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.2}
+{"task": "verina_basic_54", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 3.3}
+{"task": "verina_basic_55", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_56", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.1}
+{"task": "verina_basic_57", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `countLessThan`"], "seconds": 2.7}
+{"task": "verina_basic_58", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.2}
+{"task": "verina_basic_59", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_6", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_60", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.4}
+{"task": "verina_basic_61", "status": "NOT_PROVED", "errors": ["Invalid field notation: Function `String.Iterator.curr` does not have a usable parameter of type `String.Iterator` for which to substitute `it`", "Invalid field notation: Function `String.Iterator.next` does not have a usable parameter of type `String.Iterator` for which to substitute `it`"], "seconds": 0.3}
+{"task": "verina_basic_62", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.3}
+{"task": "verina_basic_63", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.3}
+{"task": "verina_basic_64", "status": "NOT_PROVED", "errors": ["Unknown constant `Array.mkArray`", "Expected type must not contain free variables"], "seconds": 0.1}
+{"task": "verina_basic_65", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.2}
+{"task": "verina_basic_66", "status": "PROVED", "errors": [], "seconds": 0.5}
+{"task": "verina_basic_67", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 4.9}
+{"task": "verina_basic_68", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 3.1}
+{"task": "verina_basic_69", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.2}
+{"task": "verina_basic_7", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.8}
+{"task": "verina_basic_70", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.3}
+{"task": "verina_basic_71", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.6}
+{"task": "verina_basic_72", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.7}
+{"task": "verina_basic_73", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.3}
+{"task": "verina_basic_74", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `maxArray_aux`"], "seconds": 5.0}
+{"task": "verina_basic_75", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `loop`"], "seconds": 4.4}
+{"task": "verina_basic_76", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_77", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.0}
+{"task": "verina_basic_78", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_79", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:", "Unknown identifier `findBest`"], "seconds": 4.3}
+{"task": "verina_basic_8", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_80", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.6}
+{"task": "verina_basic_81", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.5}
+{"task": "verina_basic_82", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.7}
+{"task": "verina_basic_83", "status": "NOT_PROVED", "errors": ["Unknown constant `Array.mkArray`", "unsolved goals"], "seconds": 2.0}
+{"task": "verina_basic_84", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 2.3}
+{"task": "verina_basic_85", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.5}
+{"task": "verina_basic_86", "status": "NOT_PROVED", "errors": ["Tactic `simp` failed with a nested error:", "Unknown constant `Array.mkArray`"], "seconds": 2.1}
+{"task": "verina_basic_87", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.1}
+{"task": "verina_basic_88", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_89", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.7}
+{"task": "verina_basic_9", "status": "PROVED", "errors": [], "seconds": 1.4}
+{"task": "verina_basic_90", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 4.0}
+{"task": "verina_basic_91", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_92", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_93", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 0.2}
+{"task": "verina_basic_94", "status": "NOT_PROVED", "errors": ["unsolved goals"], "seconds": 1.0}
+{"task": "verina_basic_95", "status": "PROVED", "errors": [], "seconds": 0.4}
+{"task": "verina_basic_96", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_97", "status": "PROVED", "errors": [], "seconds": 0.1}
+{"task": "verina_basic_98", "status": "PROVED", "errors": [], "seconds": 0.0}
+{"task": "verina_basic_99", "status": "PROVED", "errors": [], "seconds": 0.1}
