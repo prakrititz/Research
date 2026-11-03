@@ -194,6 +194,18 @@ def namedLocals : TacticM (Array (Name × Expr)) := withMainContext do
     if d.isImplementationDetail || d.userName.hasMacroScopes then return acc
     return acc.push (d.userName, ← instantiateMVars d.type)
 
+/-- Give the inaccessible local variables (`intros`' `j✝`) names, so that tactic text can refer to them: the engine's
+preparation introduces the goal's binders before the portfolio runs (he_114's `∀ j ≤ 1, ∀ k < j, ...`). -/
+def nameInaccessibles : TacticM Unit := do
+  let goal ← getMainGoal
+  let mut g := goal
+  let mut k := 0
+  for d in ← goal.withContext getLCtx do
+    if d.isImplementationDetail || !d.userName.hasMacroScopes then continue
+    g ← g.rename d.fvarId (Name.mkSimple s!"v_{k}")
+    k := k + 1
+  replaceMainGoal [g]
+
 /-- `∃ x < c, P x` (or `≤ c`) with a numeral bound `c ≤ 16`: try each witness, for nested quantifiers too, then `finish`
 (he_020's `∃ b < 2, ∃ a < b, ...` is `⟨1, 0, ...⟩`). -/
 partial def existsSmall (finish : TacticM Unit) : TacticM Unit := do
@@ -319,6 +331,7 @@ syntax (name := consOfNeNilTac) "cons_of_ne_nil" : tactic
 `l.length ≠ 0`), written `x :: t`; then the goal by simplification (verina_advanced_39's loop start: `l.head! ∈ l.take 1`
 from `l.length > 0`). -/
 def consCases : TacticM Unit := do
+  nameInaccessibles
   let lists ← withMainContext do
     return (← namedLocals).filterMap fun (l, t) => if t.isAppOfArity ``List 1 then some l else none
   let mut written := 0
@@ -337,6 +350,7 @@ closed by simplification, then a non-empty list as `x :: t` (he_114's loop start
 exit `m * p = n`, `¬ m > 1`, `n ≥ 1`). -/
 def smallCases : TacticM Unit := do
   -- named, so that `interval_cases` can refer to them (`intros` leaves them inaccessible)
+  nameInaccessibles
   let mut i := 0
   while (← whnfR (← instantiateMVars (← getMainTarget))).isForall do
     runText s!"intro sc_{i}"
@@ -563,7 +577,17 @@ syntax (name := refinePortfolio) "refine_portfolio" (ppSpace "[" str,* "]")? : t
 the task's cascade (a macro of the task file); where it is not defined, that alternative simply fails to parse. -/
 def portfolio : List (Nat × String) :=
   [(200, "auto_close"), (200, "bool_split"), (400, "lin_hyps"), (400, "mod_split; lin_hyps"), (400, "exists_small"),
-   (400, "fold_facts"), (400, "div_split"), (200, "mod_eq_split"), (400, "succ_pos"), (300, "cons_cases"), (400, "small_cases"), (600, "task_induction"), (600, "unfold_local; auto_close"),
+   (400, "fold_facts"), (400, "div_split"), (200, "mod_eq_split"), (400, "succ_pos"), (300, "cons_cases"), (400, "small_cases"),
+   -- a fold selecting with `if a ≥ b then a else b` is a fold of `max` (min likewise), which the library knows
+   -- (he_035, verina_advanced_40: `List.foldr (fun a b => if a ≥ b then a else b) l.head! l ∈ l`)
+   (400, "(simp only [Refine.ite_ge_eq_max, Refine.ite_gt_eq_max, Refine.ite_le_eq_max, Refine.ite_lt_eq_max, " ++
+     "Refine.ite_le_eq_min, Refine.ite_lt_eq_min, Refine.ite_ge_eq_min, Refine.ite_gt_eq_min] at *); (try intros); lib_apply"),
+   -- Bool `all` / `decide` as `∀` / `→` before anything simplifies them: `simp` turns `decide (p → q)` into a disjunction no
+   -- library lemma matches (verina_basic_34: "filter keeps the order" over `arr.all fun x => arr.all fun y => decide (...)`)
+   (400, "(simp only [← Array.all_toList, ← Array.any_toList, List.all_eq_true, List.any_eq_true, decide_eq_true_eq, " ++
+     "Refine.arr_foldl_push_filter] at *); (try intros); " ++
+     "first | (simp_all; done) | lib_apply | (simp_all [List.mem_filter, List.count_filter]; done) | grind"),
+   (600, "task_induction"), (600, "unfold_local; auto_close"),
    (600, "(try unfold_local); (try lib_simp); lib_apply"),
    -- a member of `l ++ [d]`, `a :: l` or `l.map f`: split the cases / unpack the preimage, then each part by the library
    -- (he_025: `d` is prime; he_001: a group `String.mk g` has the properties of `g`)

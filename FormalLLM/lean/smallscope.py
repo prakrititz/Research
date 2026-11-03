@@ -3,7 +3,7 @@
 ``plausible`` tests random values, and an obligation whose hypotheses are strong (a loop invariant over the processed part)
 is almost never met by random values: it reports nothing, and the step reads as "true but unproved". Most such steps are
 false on tiny inputs (o3-mini's loops whose invariant leaves ``i ≤ n`` out fail at ``n = 0, i = 1``). Here every
-combination of small values is tried: naturals up to 3, integers -1..2, strings and lists of length up to 2 over the
+combination of small values is tried: naturals up to 3, integers -2..2, strings and lists of length up to 2 over the
 characters and numbers the obligation itself mentions, and so on. A hypothesis is a ``Decidable`` proposition (``if h : P``),
 and the obligation is false on the first combination that meets all hypotheses but not the statement.
 
@@ -74,7 +74,8 @@ class Domains:
             chars.append("a")
         ints = {int(n) for n in re.findall(r"(?<![\w.])\d+(?![\w.])", text) if int(n) <= 5}
         self.nat = sorted({0, 1, 2} | ({3} if not small else set()) | (ints if not small else set()))
-        self.int = sorted({-1, 0, 1} | ({2} if not small else set()) | (ints if not small else set()))
+        # -2 as well as -1: a hypothesis `res ≠ -1` (the "not found" value) leaves -2 as the smallest negative (verina_basic_46)
+        self.int = sorted({-1, 0, 1} | ({-2, 2} if not small else set()) | (ints if not small else set()))
         self.chars = chars[:2] if small else chars
         self.small = small
 

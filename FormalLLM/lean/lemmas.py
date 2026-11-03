@@ -1152,6 +1152,150 @@ theorem foldl_int_add (l : List Int) (a : Int) : List.foldl Int.add a l = a + l.
     show a + x + t.sum = a + (x + t.sum)
     omega
 
+-- every element equal to the first: all pairs equal (verina_basic_41's exit `∀ j < a.size, a[j]! = a[0]!`)
+theorem pairwise_eq_of_all_eq_head {α : Type} [Inhabited α] (l : List α) (h : ∀ k, k < l.length → l[k]! = l[0]!) :
+    List.Pairwise (· = ·) l := by
+  apply List.pairwise_of_forall_mem_list
+  intro x hx y hy
+  obtain ⟨i, hi, rfl⟩ := (mem_iff_idx l x).mp hx
+  obtain ⟨j, hj, rfl⟩ := (mem_iff_idx l y).mp hy
+  rw [h i hi, h j hj]
+theorem pairwise_eq_of_all_eq_head_arr {α : Type} [Inhabited α] (a : Array α) (h : ∀ k, k < a.size → a[k]! = a[0]!) :
+    List.Pairwise (· = ·) a.toList := by
+  apply List.pairwise_of_forall_mem_list
+  intro x hx y hy
+  obtain ⟨i, hi, rfl⟩ := (mem_iff_idx a.toList x).mp hx
+  obtain ⟨j, hj, rfl⟩ := (mem_iff_idx a.toList y).mp hy
+  have hi' : i < a.size := by simpa using hi
+  have hj' : j < a.size := by simpa using hj
+  rw [toList_getElem_bang a i hi', toList_getElem_bang a j hj', h i hi', h j hj']
+
+-- the search for a square root went past it (verina_basic_48's exit: `∀ j < i, j * j ≠ n`, `¬ i * i ≤ n`)
+theorem not_exists_sq_of_bounds (n i : Nat) (h1 : ∀ j, j < i → j * j ≠ n) (h2 : n < i * i) : ¬ ∃ k, k * k = n := by
+  rintro ⟨k, hk⟩
+  by_cases hki : k < i
+  · exact h1 k hki hk
+  · have : i * i ≤ k * k := Nat.mul_self_le_mul_self (by omega)
+    omega
+theorem sq_search_exit (n i : Nat) (h1 : ∀ j, j < i → j * j ≠ n) (h2 : n < i * i) : (i * i = n ↔ ∃ k, k * k = n) := by
+  constructor
+  · intro h; omega
+  · intro h; exact absurd h (not_exists_sq_of_bounds n i h1 h2)
+theorem exists_sq_iff_of_bounds (n r : Nat) (h1 : r * r ≤ n) (h2 : n < (r + 1) * (r + 1)) :
+    (∃ i, i * i = n) ↔ r * r = n := by
+  constructor
+  · rintro ⟨i, hi⟩
+    rcases lt_trichotomy i r with hlt | heq | hgt
+    · exfalso; nlinarith
+    · subst heq; exact hi
+    · exfalso; nlinarith
+  · intro h; exact ⟨r, h⟩
+
+-- a sorted array: the prefix up to an element below `key` is below `key`, the suffix from one at least `key` is at least
+-- `key` (verina_basic_51's binary search)
+theorem sorted_take_succ_all_lt (a : Array Int) (key : Int) (m : Nat) (hm : m < a.size)
+    (hs : List.Pairwise (· ≤ ·) a.toList) (h : a[m] < key) : ((a.take (m + 1)).all fun x => decide (x < key)) = true := by
+  rw [arr_all_take_iff]
+  intro k hk hks
+  have := sorted_arr_le a hs k m (by omega) hm
+  rw [getElem!_pos a m hm] at this
+  simp only [decide_eq_true_eq]; omega
+theorem sorted_drop_all_ge (a : Array Int) (key : Int) (m : Nat) (hm : m < a.size)
+    (hs : List.Pairwise (· ≤ ·) a.toList) (h : key ≤ a[m]) : ((a.drop m).all fun x => decide (x ≥ key)) = true := by
+  rw [arr_all_drop_iff]
+  intro k hk hks
+  have := sorted_arr_le a hs m k hk hks
+  rw [getElem!_pos a m hm] at this
+  simp only [decide_eq_true_eq]; omega
+
+-- keeping the elements a test accepts by pushing them onto an array is `filter` (verina_basic_34)
+theorem foldl_push_filter {α : Type} (p : α → Bool) (l : List α) (init : Array α) :
+    (List.foldl (fun acc x => if p x = true then acc.push x else acc) init l).toList = init.toList ++ l.filter p := by
+  induction l generalizing init with
+  | nil => simp
+  | cons x t ih =>
+    simp only [List.foldl_cons, List.filter_cons]
+    split <;> simp_all
+theorem arr_foldl_push_filter {α : Type} (p : α → Bool) (a : Array α) :
+    (Array.foldl (fun acc x => if p x = true then acc.push x else acc) #[] a).toList = a.toList.filter p := by
+  rw [← Array.foldl_toList, foldl_push_filter]; simp
+-- `filter` keeps the order of what it keeps
+theorem idxOf_filter_le {α : Type} [BEq α] [LawfulBEq α] (p : α → Bool) (l : List α) (x y : α) (hx : p x = true)
+    (h : l.idxOf x ≤ l.idxOf y) : (l.filter p).idxOf x ≤ (l.filter p).idxOf y := by
+  induction l with
+  | nil => simp
+  | cons a t ih =>
+    by_cases hax : a = x
+    · subst hax; simp [List.filter_cons, hx, List.idxOf_cons]
+    · by_cases hay : a = y
+      · subst hay; simp [List.idxOf_cons, beq_iff_eq, hax] at h
+      · have h' : t.idxOf x ≤ t.idxOf y := by simp [List.idxOf_cons, beq_iff_eq, hax, hay] at h; omega
+        cases hpa : p a <;> simp [List.filter_cons, hpa, List.idxOf_cons, beq_iff_eq, hax, hay, ih h']
+
+-- moving the copies of `a` to the end (verina_basic_35)
+theorem idxOf_append_not_mem {α : Type} [BEq α] [LawfulBEq α] (a : α) (l₁ l₂ : List α) (h : a ∉ l₁) :
+    (l₁ ++ l₂).idxOf a = l₁.length + l₂.idxOf a := by
+  induction l₁ with
+  | nil => simp
+  | cons b t ih =>
+    simp only [List.mem_cons, not_or] at h
+    have hb : (b == a) = false := by simpa [beq_iff_eq] using Ne.symm h.1
+    simp [List.idxOf_cons, hb, ih h.2]; omega
+theorem idxOf_filter_ne_append {α : Type} [DecidableEq α] (a : α) (l : List α) :
+    (l.filter (fun x => !decide (x = a)) ++ l.filter (fun x => decide (x = a))).idxOf a =
+      (l.filter (fun x => !decide (x = a))).length := by
+  rw [idxOf_append_not_mem _ _ _ (by simp)]
+  cases h : l.filter (fun x => decide (x = a)) with
+  | nil => simp
+  | cons b t =>
+    have hb : b = a := by
+      have := (List.mem_filter.mp (h ▸ List.mem_cons_self : b ∈ l.filter (fun x => decide (x = a)))).2
+      simpa using this
+    subst hb; simp [List.idxOf_cons]
+theorem filter_ne_append_filter_eq_perm {α : Type} [DecidableEq α] (a : α) (l : List α) :
+    (l.filter (fun x => !decide (x = a)) ++ l.filter (fun x => decide (x = a))).isPerm l = true := by
+  rw [List.isPerm_iff]
+  have := List.filter_append_perm (fun x => !decide (x = a)) l
+  simpa using this
+-- `c * b^m = b^x` and `b ∤ c`: `c = 1` (the exit of a loop dividing out `b`: verina_advanced_14, verina_advanced_23)
+theorem eq_one_of_mul_pow_eq_pow (b c m x : Nat) (hb : 1 < b) (h : c * b ^ m = b ^ x) (hc : c % b ≠ 0) : c = 1 := by
+  have hbm : 0 < b ^ m := Nat.pow_pos (by omega)
+  rcases Nat.lt_or_ge x m with hx | hx
+  · exfalso
+    have hc0 : c ≠ 0 := by rintro rfl; simp at hc
+    have h1 : b ^ x < b ^ m := Nat.pow_lt_pow_right hb hx
+    have h2 : b ^ m ≤ c * b ^ m := Nat.le_mul_of_pos_left _ (by omega)
+    omega
+  · obtain ⟨k, rfl⟩ : ∃ k, x = m + k := ⟨x - m, by omega⟩
+    rw [pow_add, mul_comm (b ^ m)] at h
+    have hck : c = b ^ k := Nat.eq_of_mul_eq_mul_right hbm h
+    cases k with
+    | zero => simpa using hck
+    | succ k => exfalso; apply hc; rw [hck, pow_succ]; simp
+theorem pow_iff_of_factor (b n c : Nat) (hb : 1 < b) (h : ∃ m, n = c * b ^ m) (hc : c ≠ 1 → c % b ≠ 0) :
+    c = 1 ↔ ∃ x, n = b ^ x := by
+  obtain ⟨m, rfl⟩ := h
+  constructor
+  · rintro rfl; exact ⟨m, by simp⟩
+  · rintro ⟨x, hx⟩
+    by_contra hne
+    exact hne (eq_one_of_mul_pow_eq_pow b c m x hb hx (hc hne))
+
+-- the common divisors of `a` and `b` are the divisors of `g`: `g` is their greatest common divisor (he_013's Euclid exit)
+theorem mod_left_of_common_divisors (a b g c : Nat) (hg : g > 0)
+    (h : ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ g % d = 0 ∧ c % d = 0)) (hc : c = 0) : a % g = 0 :=
+  ((h g hg).mpr ⟨Nat.mod_self g, by simp [hc]⟩).1
+theorem mod_right_of_common_divisors (a b g c : Nat) (hg : g > 0)
+    (h : ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ g % d = 0 ∧ c % d = 0)) (hc : c = 0) : b % g = 0 :=
+  ((h g hg).mpr ⟨Nat.mod_self g, by simp [hc]⟩).2
+theorem le_of_common_divisors (a b g c : Nat) (P : Nat → Prop) (hg : g > 0)
+    (h : ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ g % d = 0 ∧ c % d = 0)) : ∀ d, P d → d > 0 → a % d = 0 → b % d = 0 → d ≤ g := by
+  intro d _ hd ha hb
+  exact Nat.le_of_dvd hg (Nat.dvd_of_mod_eq_zero ((h d hd).mp ⟨ha, hb⟩).1)
+theorem arr_all_foldl_push_filter {α : Type} (p q : α → Bool) (a : Array α) :
+    (Array.foldl (fun acc x => if p x = true then acc.push x else acc) #[] a).all q = (a.toList.filter p).all q := by
+  rw [← Array.all_toList, arr_foldl_push_filter]
+
 end Refine
 '''
 
@@ -1163,12 +1307,12 @@ SIMP_SET = ", ".join([f"Refine.{name}" for name in (
     "forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
     "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ",
     "take_string_length", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-    "exists_mem_array_iff_idx", "getElem_bang_map_range", "mem_dedup_mergeSort", "mergeSort_isPerm", "isPerm_mergeSort", "mem_mergeSort'", "length_filter_range_succ", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "gather_scatter2", "gather_scatter3", "map_toList_mk", "map_comp_toList_mk", "foldl_int_add")] + ["String.length_toList", "List.range_succ", "-List.take_append_getElem", "-List.getElem!_eq_getElem?_getD"])
+    "exists_mem_array_iff_idx", "getElem_bang_map_range", "mem_dedup_mergeSort", "mergeSort_isPerm", "isPerm_mergeSort", "mem_mergeSort'", "length_filter_range_succ", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "gather_scatter2", "gather_scatter3", "map_toList_mk", "map_comp_toList_mk", "foldl_int_add", "arr_foldl_push_filter", "arr_all_foldl_push_filter", "idxOf_filter_ne_append", "filter_ne_append_filter_eq_perm")] + ["String.length_toList", "List.range_succ", "-List.take_append_getElem", "-List.getElem!_eq_getElem?_getD"])
 
 NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getElem_bang_mem_take", "head_mem_take_one", "string_length_mk", "string_toList_mk", "filter_take_succ_bang", "sorted_filter_range", "mem_iff_idx", "take_succ_bang", "sum_take_succ_bang", "head_bang_eq",
          "getElem_bang_append_lt", "getElem_bang_append_length", "exists_le_succ", "forall_le_succ", "take_string_length",
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
-         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "getElem_bang_map_range", "getElem_bang_append", "pairwise_le_nodup_lt", "dedup_mergeSort_strict", "mem_dedup_mergeSort", "foldl_max_mem_of_mem", "le_foldl_max", "start_le_foldl_max", "getElem_bang_zero_mem_take", "getElem_bang_zero_mem_take'", "getElem_bang_zero_mem_take_of_lt", "getElem_bang_cons", "getElem_bang_nil", "mergeSort_isPerm", "isPerm_mergeSort", "mergeSort_le_int", "mergeSort_ge_int", "mergeSort_le_nat", "mergeSort_key_le", "mergeSort_key_le_nat", "mergeSort_length'", "mem_mergeSort'", "mod_gcd_left", "mod_gcd_right", "mod_eq_zero_of_dvd'", "dvd_of_mod_eq_zero'", "le_of_dvd_pos", "mergeSort_ge_nat", "foldl_min_facts", "foldl_min_mem_of_mem", "foldl_min_le", "foldl_min_le_start", "le_gcd_of_mod_left", "le_gcd_of_mod_right", "mergeSort_perm'", "perm_mergeSort'", "filter_mergeSort_perm", "length_filter_range_succ", "count_take_succ", "countP_take_succ", "take_succ_getElem?", "pairwise_mergeSort_le_int", "pairwise_mergeSort_le_nat", "pairwise_mergeSort_ge_int", "pairwise_mergeSort_ge_nat", "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "digitChar_toNat", "mem_toDigits_lt", "toDigits_all_digit", "toDigits_idx_digit", "foldl_toDigits", "foldl_toDigits'", "toDigits_head_ne_zero", "toDigits_getElem_zero_ne_zero", "prime_of_min_divisor", "not_dvd_div_of_not_dvd", "div_one_or_ge_of_min_divisor", "sorted_append_ge", "map_toList_mk", "map_comp_toList_mk", "count_flatten_eq", "rest_nil_of_counts", "flatten_eq_of_balanced", "closed_group_balanced", "closed_group_prefix", "closed_group_minimal", "open_group_extend", "open_group_extend_at", "filter_range_mod2", "filter_range_mod3", "gather_scatter2", "gather_scatter3", "mergeSort_le_int'", "mergeSort_le_nat'", "ite_ge_eq_max", "ite_gt_eq_max", "ite_le_eq_max", "ite_lt_eq_max", "ite_le_eq_min", "ite_lt_eq_min", "ite_ge_eq_min", "ite_gt_eq_min", "foldr_max_facts", "foldr_min_facts", "foldl_max_head_mem", "foldl_min_head_mem", "foldr_max_head_mem", "foldr_min_head_mem", "le_foldr_max", "foldr_min_le", "foldl_int_add")
+         "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "getElem_bang_map_range", "getElem_bang_append", "pairwise_le_nodup_lt", "dedup_mergeSort_strict", "mem_dedup_mergeSort", "foldl_max_mem_of_mem", "le_foldl_max", "start_le_foldl_max", "getElem_bang_zero_mem_take", "getElem_bang_zero_mem_take'", "getElem_bang_zero_mem_take_of_lt", "getElem_bang_cons", "getElem_bang_nil", "mergeSort_isPerm", "isPerm_mergeSort", "mergeSort_le_int", "mergeSort_ge_int", "mergeSort_le_nat", "mergeSort_key_le", "mergeSort_key_le_nat", "mergeSort_length'", "mem_mergeSort'", "mod_gcd_left", "mod_gcd_right", "mod_eq_zero_of_dvd'", "dvd_of_mod_eq_zero'", "le_of_dvd_pos", "mergeSort_ge_nat", "foldl_min_facts", "foldl_min_mem_of_mem", "foldl_min_le", "foldl_min_le_start", "le_gcd_of_mod_left", "le_gcd_of_mod_right", "mergeSort_perm'", "perm_mergeSort'", "filter_mergeSort_perm", "length_filter_range_succ", "count_take_succ", "countP_take_succ", "take_succ_getElem?", "pairwise_mergeSort_le_int", "pairwise_mergeSort_le_nat", "pairwise_mergeSort_ge_int", "pairwise_mergeSort_ge_nat", "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "digitChar_toNat", "mem_toDigits_lt", "toDigits_all_digit", "toDigits_idx_digit", "foldl_toDigits", "foldl_toDigits'", "toDigits_head_ne_zero", "toDigits_getElem_zero_ne_zero", "prime_of_min_divisor", "not_dvd_div_of_not_dvd", "div_one_or_ge_of_min_divisor", "sorted_append_ge", "map_toList_mk", "map_comp_toList_mk", "count_flatten_eq", "rest_nil_of_counts", "flatten_eq_of_balanced", "closed_group_balanced", "closed_group_prefix", "closed_group_minimal", "open_group_extend", "open_group_extend_at", "filter_range_mod2", "filter_range_mod3", "gather_scatter2", "gather_scatter3", "mergeSort_le_int'", "mergeSort_le_nat'", "ite_ge_eq_max", "ite_gt_eq_max", "ite_le_eq_max", "ite_lt_eq_max", "ite_le_eq_min", "ite_lt_eq_min", "ite_ge_eq_min", "ite_gt_eq_min", "foldr_max_facts", "foldr_min_facts", "foldl_max_head_mem", "foldl_min_head_mem", "foldr_max_head_mem", "foldr_min_head_mem", "le_foldr_max", "foldr_min_le", "foldl_int_add", "pairwise_eq_of_all_eq_head", "pairwise_eq_of_all_eq_head_arr", "not_exists_sq_of_bounds", "sq_search_exit", "exists_sq_iff_of_bounds", "sorted_take_succ_all_lt", "sorted_drop_all_ge", "foldl_push_filter", "arr_foldl_push_filter", "idxOf_filter_le", "idxOf_append_not_mem", "idxOf_filter_ne_append", "filter_ne_append_filter_eq_perm", "eq_one_of_mul_pow_eq_pow", "pow_iff_of_factor", "mod_left_of_common_divisors", "mod_right_of_common_divisors", "le_of_common_divisors", "arr_all_foldl_push_filter")
 
 #: "Evaluation" rewrites only: an index into a construction becomes its value (``((range n).map f)[i]! = f i``). Unlike
 #: ``SIMP_SET`` they do not unfold ``take (i + 1)`` or turn ``∀ x ∈ l`` into the index form (right for loop steps, wrong for a
