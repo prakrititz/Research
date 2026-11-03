@@ -60,7 +60,7 @@ NO_GRIND_PATTERN = {
     "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "mergeSort_key_le", "mergeSort_key_le_nat",
     "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat",
     "filter_ne_append_filter_eq_perm", "pow_iff_of_factor", "mod_left_of_common_divisors", "mod_right_of_common_divisors",
-    "le_of_common_divisors"}
+    "le_of_common_divisors", "mergeSort_key_then_le"}
 #: ... the rest, as ``grind`` arguments
 LIBRARY_GRIND = ", ".join(f"Refine.{n}" for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES
                           if n not in NO_GRIND_PATTERN)

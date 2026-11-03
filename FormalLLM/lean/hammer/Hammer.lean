@@ -369,6 +369,22 @@ def smallCases : TacticM Unit := do
 syntax (name := smallCasesTac) "small_cases" : tactic
 @[tactic smallCasesTac] def evalSmallCases : Tactic := fun _ => smallCases
 
+/-- Hypotheses `∀ k : ℕ, ...` instantiated at `0`, `1` and `2`, then arithmetic: the case that refutes a bad value is often a
+small one (he_024's `∀ k, d < k ∧ k < n → n % k ≠ 0` at `k = 1` rules out `d = 0`, so `d - 1 < d`). -/
+def specSmall : TacticM Unit := do
+  nameInaccessibles
+  let mut added := 0
+  for (h, t) in ← namedLocals do
+    let .forallE _ ty _ _ := t | continue
+    unless ty.isConstOf ``Nat do continue
+    for v in [0, 1, 2] do
+      if ← tryTactic (runText s!"have := {h} {v}") then added := added + 1
+  if added == 0 then throwError "spec_small: no hypothesis over all natural numbers"
+  runText "first | omega | (simp_all; done) | (simp_all; omega)"
+
+syntax (name := specSmallTac) "spec_small" : tactic
+@[tactic specSmallTac] def evalSpecSmall : Tactic := fun _ => specSmall
+
 /-- Natural-number divisions `x / y` by a variable (`omega` handles only numerals): name the quotient `q`, state
 `y * q + x % y = x`, and split on `q = 0` (he_025's `1 ≤ n2 / d` from `n2 % d = 0` and `1 < n2`). -/
 def divSplit : TacticM Unit := do
@@ -577,7 +593,7 @@ syntax (name := refinePortfolio) "refine_portfolio" (ppSpace "[" str,* "]")? : t
 the task's cascade (a macro of the task file); where it is not defined, that alternative simply fails to parse. -/
 def portfolio : List (Nat × String) :=
   [(200, "auto_close"), (200, "bool_split"), (400, "lin_hyps"), (400, "mod_split; lin_hyps"), (400, "exists_small"),
-   (400, "fold_facts"), (400, "div_split"), (200, "mod_eq_split"), (400, "succ_pos"), (300, "cons_cases"), (400, "small_cases"),
+   (400, "fold_facts"), (400, "div_split"), (200, "mod_eq_split"), (400, "succ_pos"), (300, "cons_cases"), (400, "small_cases"), (300, "spec_small"),
    -- a fold selecting with `if a ≥ b then a else b` is a fold of `max` (min likewise), which the library knows
    -- (he_035, verina_advanced_40: `List.foldr (fun a b => if a ≥ b then a else b) l.head! l ∈ l`)
    (400, "(simp only [Refine.ite_ge_eq_max, Refine.ite_gt_eq_max, Refine.ite_le_eq_max, Refine.ite_lt_eq_max, " ++
