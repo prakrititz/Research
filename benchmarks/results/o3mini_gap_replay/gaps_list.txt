@@ -1,0 +1,854 @@
+##### he_012_longest k=3 goal=3 orig=ill_formed 457.1s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["acc", "Nat"]], "init": ["1", "0"], "invariant": "i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length)", "guard": "i < strings.length", "variant": "strings.length - i", "result": "some strings[acc]!"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_012_longest k=4 goal=3 orig=ill_formed 224.6s
+REPLY: {"law": "term", "expr": "some (strings.foldl (fun acc s => if s.length > acc.length then s else acc) (strings.head!))"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_012_longest k=5 goal=3 orig=ill_formed 433.1s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["acc", "Nat"]], "init": ["1", "0"], "invariant": "i ≤ strings.length ∧ (∀ j, j < i → (strings[j]!).length ≤ (strings[acc]!).length) ∧ (∀ j, j < acc → (strings[j]!).length < (strings[acc]!).length)", "guard": "i < strings.length", "variant": "strings.length - i", "result": "some (strings[acc]!)", "lemmas": []}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_012_longest k=9 goal=8 orig=ill_formed 415.4s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["best", "Nat"]], "init": ["1", "0"], "invariant": "i ≤ strings.length ∧ (∀ j, j < best → (strings[j]!).length < (strings[best]!).length) ∧ (∀ j, j < i → (strings[j]!).length ≤ (strings[best]!).length)", "guard": "i < strings.length", "variant": "strings.length - i", "result": "some (strings[best]!)"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_012_longest k=10 goal=8 orig=ill_formed 484.9s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["best", "Nat"]], "init": ["1", "0"], "invariant": "i ≤ strings.length ∧ (∀ j, j < i → (strings[j]!).length ≤ (strings[best]!).length) ∧ (∀ j, j < best → (strings[j]!).length < (strings[best]!).length)", "guard": "i < strings.length", "variant": "strings.length - i", "result": "some (strings[best]!)", "lemmas": [], "body": {"law": "term", "expr": "if (strings[i]!).length > (strings[best]!).length then (i + 1, i) else (i + 1, best)"}}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_013_gcd k=0 goal=1 orig=unproved 253.8s
+REPLY: {"law": "loop", "state": [["x", "Nat"], ["y", "Nat"]], "init": ["a", "b"], "invariant": "x > 0 ∧ (∀ d, d > 0 → (a % d = 0 ∧ b % d = 0) ↔ (x % d = 0 ∧ y % d = 0))", "guard": "y ≠ 0", "variant": "y", "result": "x"}
+OPEN: ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: case right
+a b : ℕ
+h_precond : greatestCommonDivisor_precond a b
+⊢ ∀ (d : ℕ), d > 0 → a % d = 0 ∧ b % d = 0 ↔ a % d = 0 ∧ b % d = 0
+
+##### he_013_gcd k=1 goal=1 orig=unproved 235.1s
+REPLY: {"law": "loop", "state": [["a'", "Nat"], ["b'", "Nat"]], "init": ["a", "b"], "invariant": "a' > 0 ∧ ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ a' % d = 0 ∧ b' % d = 0)", "guard": "b' ≠ 0", "variant": "b'", "result": "a'"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `«tactic execution»`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_013_gcd k=2 goal=1 orig=unproved 194.6s
+REPLY: {"law": "loop", "state": [["a'", "Nat"], ["b'", "Nat"]], "init": ["a", "b"], "invariant": "a' > 0 ∧ (∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ a' % d = 0 ∧ b' % d = 0))", "guard": "b' ≠ 0", "variant": "b'", "result": "a'"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `«tactic execution»`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_013_gcd k=3 goal=1 orig=unproved 199.9s
+REPLY: {"law": "loop", "state": [["a'", "Nat"], ["b'", "Nat"]], "init": ["a", "b"], "invariant": "a' > 0 ∧ (∀ d, d > 0 → ((a % d = 0 ∧ b % d = 0) ↔ (a' % d = 0 ∧ b' % d = 0)))", "guard": "b' ≠ 0", "variant": "b'", "result": "a'"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `«tactic execution»`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_015_string_sequence k=0 goal=1 orig=unproved 105.5s
+REPLY: {"law": "term", "expr": "String.intercalate \" \" ((List.range (n + 1)).map toString)"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: n : ℕ
+h_precond : stringSequence_precond n
+⊢ stringSequence_postcond n (" ".intercalate (List.map toString (List.range (n + 1)))) h_precond
+
+##### he_015_string_sequence k=1 goal=1 orig=lemma_unproved 163.9s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["acc", "String"]], "init": ["0", "toString 0"], "invariant": "acc.splitOn \" \" = (List.range (i + 1)).map toString", "guard": "i < n", "variant": "n - i", "result": "acc", "lemmas": [{"name": "init_correct", "statement": "toString 0 = \"0\"", "proof": "by simp"}, {"name": "step_correct", "statement": "∀ i acc, acc.splitOn \" \" = (List.range (i + 1)).map toString → (acc ++ \" \" ++ toString (i+1)).splitOn \" \" = (List.range (i + 2)).map toString", "proo
+OPEN: ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: n : ℕ
+h_precond : stringSequence_precond n
+⊢ (toString 0).splitOn = List.map toString (List.range (0 + 1))
+GOAL: n i : ℕ
+acc : String
+h_precond : stringSequence_precond n
+h1i : acc.splitOn = List.map toString (List.range (i + 1))
+h1g : ¬i < n
+⊢ stringSequence_postcond n acc h_precond
+
+##### he_015_string_sequence k=2 goal=1 orig=unproved 162.3s
+REPLY: {"law": "loop", "state": [["i","Nat"], ["acc","String"]], "init": ["0", "\"0\""], "invariant": "acc.splitOn \" \" = (List.range (i + 1)).map toString", "guard": "i < n", "variant": "n - i", "result": "acc"}
+OPEN: ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: n : ℕ
+h_precond : stringSequence_precond n
+⊢ "0".splitOn = List.map toString (List.range (0 + 1))
+GOAL: n i : ℕ
+acc : String
+h_precond : stringSequence_precond n
+h1i : acc.splitOn = List.map toString (List.range (i + 1))
+h1g : ¬i < n
+⊢ stringSequence_postcond n acc h_precond
+
+##### he_024_largest_divisor k=1 goal=2 orig=unproved 35.5s
+REPLY: {"law": "term", "expr": "d - 1"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case right
+n d : ℕ
+h_precond : largestDivisor_precond n
+h1i : d < n ∧ ∀ (k : ℕ), d < k ∧ k < n → n % k ≠ 0
+h1g : n % d ≠ 0
+⊢ d - 1 < d
+
+##### he_024_largest_divisor k=4 goal=4 orig=unproved 29.1s
+REPLY: {"law": "term", "expr": "d - 1"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case right
+n d : ℕ
+h_precond : largestDivisor_precond n
+h1i : d < n ∧ ∀ (k : ℕ), d < k ∧ k < n → n % k ≠ 0
+h1g : n % d ≠ 0
+h2 : ¬d = 1
+⊢ d - 1 < d
+
+##### he_025_factorize k=0 goal=1 orig=lemma_unproved 103.1s
+REPLY: {"law": "loop", "state": [["m", "Nat"], ["acc", "List Nat"]], "init": ["n", "[]"], "invariant": "m * acc.prod = n ∧ (∀ p ∈ acc, Nat.Prime p) ∧ (acc = [] ∨ ∀ i, i < acc.length - 1 → acc[i]! ≤ acc[i+1]!)", "guard": "m > 1", "variant": "m", "result": "acc", "lemmas": [{"name": "div_decreases", "statement": "∀ m d, Nat.Prime d → d ≤ m → 1 < d → m / d < m", "proof": "by intros; apply Nat.div_lt_self; auto"}]}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+n m : ℕ
+acc : List ℕ
+h_precond : factorize_precond n
+h1i : m * acc.prod = n ∧ (∀ p ∈ acc, Nat.Prime p) ∧ (acc = [] ∨ ∀ i < acc.length - 1, acc[i]! ≤ acc[i + 1]!)
+h1g : ¬m > 1
+⊢ acc.prod = n
+
+##### he_027_flip_case k=0 goal=1 orig=ill_formed 606.9s
+REPLY: {"law": "term", "expr": "string.toList.map flipChar |>.asString"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_027_flip_case k=7 goal=4 orig=unproved 279.0s
+REPLY: {"law": "term", "expr": "(i + 1, acc ++ String.mk [c])"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_031_is_prime k=3 goal=3 orig=unproved 128.4s
+REPLY: {"law": "loop", "state": [["d", "Nat"], ["acc", "Bool"]], "init": ["2", "true"], "invariant": "acc = true ↔ (∀ k, 2 ≤ k ∧ k < d → n % k ≠ 0) ∧ d ≤ n", "guard": "d < n", "variant": "n - d", "result": "acc", "lemmas": []}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: n d : ℕ
+acc : Bool
+h_precond : isPrime_precond n
+h1 : ¬n < 2
+h3i : acc = true ↔ (∀ (k : ℕ), 2 ≤ k ∧ k < d → n % k ≠ 0) ∧ d ≤ n
+h3g : ¬d < n
+⊢ isPrime_postcond n acc h_precond
+
+##### he_035_max_element k=2 goal=1 orig=unproved 157.7s
+REPLY: {"law": "loop", "state": [["xs", "List Int"], ["m", "Int"]], "init": ["l.tail", "l.head!"], "invariant": "∃ (processed : List Int), l = processed ++ xs ∧ processed ≠ [] ∧ (∀ x, x ∈ processed → x ≤ m)", "guard": "xs ≠ []", "variant": "xs.length", "result": "m"}
+OPEN: ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: l : List ℤ
+h_precond : maxElement_precond l
+⊢ ∃ processed, l = processed ++ l.tail ∧ processed ≠ [] ∧ ∀ x ∈ processed, x ≤ l.head!
+GOAL: case left
+l xs : List ℤ
+m : ℤ
+h_precond : maxElement_precond l
+h1i : ∃ processed, l = processed ++ xs ∧ processed ≠ [] ∧ ∀ x ∈ processed, x ≤ m
+h1g : ¬xs ≠ []
+⊢ m ∈ l
+
+##### he_035_max_element k=3 goal=1 orig=unproved 79.7s
+REPLY: {"law": "term", "expr": "List.foldr (fun a b => if a ≥ b then a else b) (l.head!) l"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+l : List ℤ
+h_precond : maxElement_precond l
+⊢ List.foldr (fun a b => if a ≥ b then a else b) l.head! l ∈ l
+GOAL: case right
+l : List ℤ
+h_precond : maxElement_precond l
+⊢ ∀ x ∈ l, x ≤ List.foldr (fun a b => if a ≥ b then a else b) l.head! l
+
+##### he_044_change_base k=6 goal=5 orig=ill_formed 821.1s
+REPLY: {"law": "term", "expr": "(n / base, (String.mk [(Char.ofNat ((n % base) + '0'.toNat))]) ++ acc)"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `«tactic execution»`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_044_change_base k=8 goal=5 orig=ill_formed 831.0s
+REPLY: {"law": "term", "expr": "(n / base, (String.mk [Char.ofNat ((n % base) + '0'.toNat)]) ++ acc)"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `«tactic execution»`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_050_decode_shift k=0 goal=1 orig=ill_formed 203.7s
+REPLY: {"law": "term", "expr": "String.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)) s"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: the automation hit a Lean resource limit (maximum recursion depth has been reached); the statement itself is well-formed
+
+##### he_050_decode_shift k=2 goal=1 orig=ill_formed 755.1s
+REPLY: {"law": "term", "expr": "String.mk (s.toList.map (fun c => Char.ofNat ((c.toNat - 97 + 21) % 26 + 97)))"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_069_search k=6 goal=5 orig=unproved 328.5s
+REPLY: {"law": "term", "expr": "Int.ofNat (List.foldr max 0 (List.filter (fun x => (lst.count x) ≥ x) lst))"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: lst : List ℕ
+h_precond : search_precond lst
+h1 : ¬List.filter (fun x => decide (List.count x lst ≥ x)) lst = []
+⊢ search_postcond lst (Int.ofNat (List.foldr max 0 (List.filter (fun x => decide (List.count x lst ≥ x)) lst)))
+    h_precond
+
+##### he_079_decimal_to_binary k=1 goal=1 orig=ill_formed 604.1s
+REPLY: {"law": "loop", "state": [["a", "Nat"], ["acc", "List Char"]], "init": ["decimal", "[]"], "invariant": "∃ v, isBinary (if acc = [] then ['0'] else acc.reverse) v ∧ decimal = v + (2^(acc.length))*a", "guard": "a > 0", "variant": "a", "result": "String.mk (['d','b'] ++ (if acc = [] then ['0'] else acc.reverse) ++ ['d','b'])"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `«tactic execution»`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_093_encode k=0 goal=1 orig=ill_formed 614.8s
+REPLY: {"law": "term", "expr": "message.toList.map encChar |>.asString"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### he_099_closest_integer k=1 goal=2 orig=unproved 101.0s
+REPLY: {"law": "term", "expr": "Int.floor (parseDec value + 1/2)"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: value : String
+h_precond : closestInteger_precond value
+h1 : parseDec value ≥ 0
+⊢ closestInteger_postcond value ⌊parseDec value + 1 / 2⌋ h_precond
+
+##### he_107_even_odd_palindrome k=0 goal=1 orig=unproved 194.1s
+REPLY: {"law": "term", "expr": "((List.range (n + 1)).foldl (fun acc i => if 1 ≤ i ∧ isPal (toString i).toList then if i % 2 = 0 then (acc.1 + 1, acc.2) else (acc.1, acc.2 + 1) else acc) (0, 0))"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+n : ℕ
+h_precond : evenOddPalindrome_precond n
+⊢ (List.foldl
+        (fun acc i =>
+          if 1 ≤ i ∧ isPal (toString i).toList then if i % 2 = 0 then (acc.1 + 1, acc.2) else (acc.1, acc.2 + 1)
+          else acc)
+        (0, 0) (List.range (n + 1))).1 =
+    (List.filter (fun i => decide (1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 0)) (List.range (n + 1))).length
+GOAL: case right
+n : ℕ
+h_precond : evenOddPalindrome_precond n
+⊢ (List.foldl
+        (fun acc i =>
+          if 1 ≤ i ∧ isPal (toString i).toList then if i % 2 = 0 then (acc.1 + 1, acc.2) else (acc.1, acc.2 + 1)
+          else acc)
+        (0, 0) (List.range (n + 1))).2 =
+    (List.filter (fun i => decide (1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 1)) (List.range (n + 1))).length
+
+##### he_114_min_sub_array_sum k=0 goal=1 orig=lemma_unproved 113.8s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["current", "Int"], ["best", "Int"]], "init": ["1", "nums.head!", "nums.head!"], "invariant": "i ≤ nums.length ∧ (∃ j, j ≤ i ∧ ∃ k, k < j ∧ ((nums.drop k).take (j - k)).sum = best) ∧ (∀ j, j ≤ i → ∀ k, k < j → best ≤ ((nums.drop k).take (j - k)).sum)", "guard": "i < nums.length", "variant": "nums.length - i", "result": "best", "lemmas": [{"name": "min_of_two", "statement": "∀ a b : Int, min a b ≤ a ∧ min a b ≤ b", "proof": "by intros; apply Int.lt_or_eq_ca
+OPEN: ['the invariant holds before the first iteration']
+MSG: no tactic of the cascade closes this
+GOAL: case right.left
+nums : List ℤ
+h_precond : minSubArraySum_precond nums
+⊢ ∃ j ≤ 1, ∃ k < j, (List.take (j - k) (List.drop k nums)).sum = nums.head!
+GOAL: case right.right
+nums : List ℤ
+h_precond : minSubArraySum_precond nums
+⊢ ∀ j ≤ 1, ∀ k < j, nums.head! ≤ (List.take (j - k) (List.drop k nums)).sum
+
+##### he_114_min_sub_array_sum k=2 goal=1 orig=lemma_unproved 96.2s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["current", "Int"], ["best", "Int"]], "init": ["1", "nums.head!", "nums.head!"], "invariant": "i ≤ nums.length ∧ (∃ j, j ≤ i ∧ (∃ k, k < j ∧ ((nums.drop k).take (j - k)).sum = best)) ∧ (∀ j, j ≤ i → ∀ k, k < j → best ≤ ((nums.drop k).take (j - k)).sum)", "guard": "i < nums.length", "variant": "nums.length - i", "result": "best", "lemmas": [{"name": "min_of_two", "statement": "∀ a b : Int, Int.min a b ≤ a ∧ Int.min a b ≤ b", "proof": "by intros; apply Int.m
+OPEN: ['the invariant holds before the first iteration']
+MSG: no tactic of the cascade closes this
+GOAL: case right.left
+nums : List ℤ
+h_precond : minSubArraySum_precond nums
+⊢ ∃ j ≤ 1, ∃ k < j, (List.take (j - k) (List.drop k nums)).sum = nums.head!
+GOAL: case right.right
+nums : List ℤ
+h_precond : minSubArraySum_precond nums
+⊢ ∀ j ≤ 1, ∀ k < j, nums.head! ≤ (List.take (j - k) (List.drop k nums)).sum
+
+##### he_114_min_sub_array_sum k=3 goal=1 orig=unproved 92.9s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["best", "Int"]], "init": ["1", "nums.head!"], "invariant": "i ≤ nums.length ∧ (∃ j, j ≤ i ∧ ∃ k, k < j ∧ ((nums.drop k).take (j - k)).sum = best) ∧ ∀ j, j ≤ i → ∀ k, k < j → best ≤ ((nums.drop k).take (j - k)).sum", "guard": "i < nums.length", "variant": "nums.length - i", "result": "best"}
+OPEN: ['the invariant holds before the first iteration']
+MSG: no tactic of the cascade closes this
+GOAL: case right.left
+nums : List ℤ
+h_precond : minSubArraySum_precond nums
+⊢ ∃ j ≤ 1, ∃ k < j, (List.take (j - k) (List.drop k nums)).sum = nums.head!
+GOAL: case right.right
+nums : List ℤ
+h_precond : minSubArraySum_precond nums
+⊢ ∀ j ≤ 1, ∀ k < j, nums.head! ≤ (List.take (j - k) (List.drop k nums)).sum
+
+##### he_120_maximum k=0 goal=1 orig=unproved 106.0s
+REPLY: {"law": "term", "expr": "(arr.mergeSort (fun a b => a ≥ b)).take k |>.reverse"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse.isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+GOAL: case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse.length - 1,
+    (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse[i]! ≤
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse[i + 1]!
+
+##### he_120_maximum k=2 goal=1 orig=lemma_unproved 90.8s
+REPLY: {"law": "term", "expr": "((arr.mergeSort (fun a b => decide (a ≥ b))).take k).reverse", "lemmas": [{"name": "sort_reverse_perm", "statement": "∀ (l : List Int), l.isSorted (fun a b => a ≥ b) → l.reverse.isPerm l", "proof": "by intros l hsorted; exact (l.reverse_is_perm_of_sorted hsorted)"}, {"name": "reverse_sorted", "statement": "∀ (l : List Int), l.isSorted (fun a b => a ≥ b) → (l.reverse).isSorted (fun a b => a ≤ b)", "proof": "by intros l hsorted; exact (l.reverse_sorted_of_sorted hsorted)"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse.isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+GOAL: case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse.length - 1,
+    (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse[i]! ≤
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse[i + 1]!
+
+##### he_121_solution k=1 goal=1 orig=unproved 93.7s
+REPLY: {"law": "term", "expr": "List.foldl Int.add 0 (((List.range lst.length).filter (fun i => i % 2 = 0 ∧ lst[i]! % 2 = 1)).map (fun i => lst[i]!))"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: lst : List ℤ
+h_precond : solution_precond lst
+⊢ solution_postcond lst
+    (List.foldl Int.add 0
+      (List.map (fun i => lst[i]!)
+        (List.filter (fun i => decide (i % 2 = 0 ∧ lst[i]! % 2 = 1)) (List.range lst.length))))
+    h_precond
+
+##### he_121_solution k=2 goal=1 orig=unproved 83.4s
+REPLY: {"law": "term", "expr": "List.foldl Int.add 0 (List.map (fun i => lst[i]!) (List.filter (fun i => i % 2 = 0 ∧ lst[i]! % 2 = 1) (List.range lst.length)))"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: lst : List ℤ
+h_precond : solution_precond lst
+⊢ solution_postcond lst
+    (List.foldl Int.add 0
+      (List.map (fun i => lst[i]!)
+        (List.filter (fun i => decide (i % 2 = 0 ∧ lst[i]! % 2 = 1)) (List.range lst.length))))
+    h_precond
+
+##### verina_advanced_1 k=3 goal=1 orig=unproved 220.5s
+REPLY: {"law": "term", "expr": "2 * (nums.toFinset.sum id) - nums.sum"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case right.left
+nums : List ℤ
+h_precond : FindSingleNumber_precond nums
+⊢ (filterlist (2 * nums.toFinset.sum id - nums.sum) nums).length = 1
+GOAL: case right.right
+nums : List ℤ
+h_precond : FindSingleNumber_precond nums
+⊢ ∀ x ∈ nums, x = 2 * nums.toFinset.sum id - nums.sum ∨ (filterlist x nums).length = 2
+
+##### verina_advanced_14 k=5 goal=3 orig=lemma_unproved 170.3s
+REPLY: {"law": "loop", "state": [["curr", "Nat"], ["m", "Nat"]], "init": ["n", "0"], "invariant": "n = curr * 4^m", "guard": "curr ≠ 1 ∧ curr % 4 = 0", "variant": "curr", "result": "curr = 1", "lemmas": [{"name": "power_of_four_mod", "statement": "∀ m : Nat, (m = 0 ∧ 4^m = 1) ∨ (m > 0 ∧ 4^m % 4 = 0)", "proof": "by { intro m, cases m; simp [Nat.pow, Nat.zero_eq, Nat.one_eq] }"}]}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: n curr m : ℕ
+h_precond : ifPowerOfFour_precond n
+h1 : ¬n = 0
+h3i : n = curr * 4 ^ m
+h3g : ¬(curr ≠ 1 ∧ curr % 4 = 0)
+⊢ ifPowerOfFour_postcond n (decide (curr = 1)) h_precond
+
+##### verina_advanced_14 k=6 goal=3 orig=unproved 102.0s
+REPLY: {"law": "loop", "state": [["curr", "Nat"]], "init": ["n"], "invariant": "∃ m : Nat, n = curr * 4^m", "guard": "curr ≠ 1 ∧ curr % 4 = 0", "variant": "curr", "result": "curr = 1"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: n curr : ℕ
+h_precond : ifPowerOfFour_precond n
+h1 : ¬n = 0
+h3i : ∃ m, n = curr * 4 ^ m
+h3g : ¬(curr ≠ 1 ∧ curr % 4 = 0)
+⊢ ifPowerOfFour_postcond n (decide (curr = 1)) h_precond
+
+##### verina_advanced_23 k=3 goal=2 orig=unproved 71.4s
+REPLY: {"law": "loop", "state": [["m", "Int"], ["k", "Nat"]], "init": ["n", "0"], "invariant": "n = pow 2 k * m ∧ m > 0", "guard": "m ≠ 1 ∧ m % 2 = 0", "variant": "m.natAbs", "result": "if m = 1 then true else false"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: n m : ℤ
+k : ℕ
+h_precond : isPowerOfTwo_precond n
+h1 : n > 0
+h2i : n = pow 2 k * m ∧ m > 0
+h2g : ¬(m ≠ 1 ∧ m % 2 = 0)
+⊢ isPowerOfTwo_postcond n (if m = 1 then true else false) h_precond
+
+##### verina_advanced_23 k=7 goal=7 orig=lemma_unproved 142.6s
+REPLY: {"law": "loop", "state": [["m", "Int"]], "init": ["n"], "invariant": "m > 0", "guard": "m ≠ 1 ∧ m % 2 = 0", "variant": "m.toNat", "result": "if m = 1 then true else false", "lemmas": [{"name": "div_decreases", "statement": "∀ (m : Int), m > 1 ∧ m % 2 = 0 → (m / 2).toNat < m.toNat", "proof": "by intro m; intros h; cases m; simp at h; admit"}]}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: n m : ℤ
+h_precond : isPowerOfTwo_precond n
+h1 h2 : n > 0
+h7i : m > 0
+h7g : ¬(m ≠ 1 ∧ m % 2 = 0)
+⊢ isPowerOfTwo_postcond n (if m = 1 then true else false) h_precond
+
+##### verina_advanced_24 k=3 goal=1 orig=unproved 109.5s
+REPLY: {"law": "term", "expr": "let rec isStrictlyIncreasing (l : List Int) : Bool :=\n  match l with\n  | [] => true\n  | [_] => true\n  | x :: y :: xs => (x < y) && isStrictlyIncreasing (y :: xs)\n\nlet rec subsequences (xs : List Int) : List (List Int) :=\n  match xs with\n  | [] => [ [] ]\n  | x :: xs' =>\n      let rest := subsequences xs'\n      rest ++ (List.map (fun r => x :: r) rest)\n\nlet allInc := List.filter isStrictlyIncreasing (subsequences nums)\n\nlet best := List.foldl (fun m l => if 
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+nums : List ℤ
+h_precond : lengthOfLIS_precond nums
+⊢ ((List.filter (fun l => lengthOfLIS_postcond.isStrictlyIncreasing l) (lengthOfLIS_postcond.subsequences nums)).any
+      fun l =>
+      decide
+        (↑l.length =
+          List.foldl (fun m l => if m < ↑l.length then ↑l.length else m) 0
+            (List.filter ?m.1 (?m.110 nums h_precond ?m.1 nums)))) =
+    true
+GOAL: case right
+nums : List ℤ
+h_precond : lengthOfLIS_precond nums
+⊢ ((List.filter (fun l => lengthOfLIS_postcond.isStrictlyIncreasing l) (lengthOfLIS_postcond.subsequences nums)).all
+      fun l =>
+      decide
+        (↑l.length ≤
+          List.foldl (fun m l => if m < ↑l.length then ↑l.length else m) 0
+            (List.filter ?m.1 (?m.110 nums h_precond ?m.1 nums)))) =
+    true
+
+##### verina_advanced_34 k=0 goal=1 orig=unproved 325.8s
+REPLY: {"law": "term", "expr": "Int.ofNat ( (nums.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse |>.filter (fun l => List.Pairwise (fun a b => a < b) l) |>.map List.length).foldl Nat.max 0 )"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+nums : List ℤ
+h_precond : longestIncreasingSubsequence_precond nums
+⊢ (List.map (fun x => ↑x.length)
+          (List.filter (fun l => decide (List.Pairwise (fun x1 x2 => x1 < x2) l))
+            (List.map List.reverse
+              ((fun init => List.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) init nums)
+                [[]])))).contains
+      (Int.ofNat
+        (List.foldl Nat.max 0
+          (List.map List.length
+            (List.filter (fun l => decide (List.Pairwise (fun a b => a < b) l))
+              (List.map List.reverse
+                (List.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) [[]] nums)))))) =
+    true
+GOAL: case right
+nums : List ℤ
+h_precond : longestIncreasingSubsequence_precond nums
+⊢ ((List.map (fun x => ↑x.length)
+          (List.filter (fun l => decide (List.Pairwise (fun x1 x2 => x1 < x2) l))
+            (List.map List.reverse
+              ((fun init => List.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) init nums) [[]])))).all
+      fun x =>
+      decide
+        (x ≤
+          Int.ofNat
+            (List.foldl Nat.max 0
+              (List.map List.length
+                (List.filter (fun l => decide (List.Pairwise (fun a b => a < b) l))
+                  (List.map List.reverse
+                    (List.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) [[]] 
+
+##### verina_advanced_34 k=1 goal=1 orig=unproved 306.3s
+REPLY: {"law": "term", "expr": "Int.ofNat ((nums.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse |>.filter (fun l => List.Pairwise (· < ·) l) |>.map List.length).foldl Nat.max 0)"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+nums : List ℤ
+h_precond : longestIncreasingSubsequence_precond nums
+⊢ (List.map (fun x => ↑x.length)
+          (List.filter (fun l => decide (List.Pairwise (fun x1 x2 => x1 < x2) l))
+            (List.map List.reverse
+              ((fun init => List.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) init nums)
+                [[]])))).contains
+      (Int.ofNat
+        (List.foldl Nat.max 0
+          (List.map List.length
+            (List.filter (fun l => decide (List.Pairwise (fun x1 x2 => x1 < x2) l))
+              (List.map List.reverse
+                (List.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) [[]] nums)))))) =
+    true
+GOAL: case right
+nums : List ℤ
+h_precond : longestIncreasingSubsequence_precond nums
+⊢ ((List.map (fun x => ↑x.length)
+          (List.filter (fun l => decide (List.Pairwise (fun x1 x2 => x1 < x2) l))
+            (List.map List.reverse
+              ((fun init => List.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) init nums) [[]])))).all
+      fun x =>
+      decide
+        (x ≤
+          Int.ofNat
+            (List.foldl Nat.max 0
+              (List.map List.length
+                (List.filter (fun l => decide (List.Pairwise (fun x1 x2 => x1 < x2) l))
+                  (List.map List.reverse
+                    (List.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) [
+
+##### verina_advanced_36 k=3 goal=1 orig=unproved 80.2s
+REPLY: {"law": "term", "expr": "(xs.foldl (fun (cand_cnt : Nat × Int) x => if cand_cnt.2 = 0 then (x, 1) else if cand_cnt.1 = x then (x, cand_cnt.2 + 1) else (cand_cnt.1, cand_cnt.2 - 1)) (xs.head!, 0)).1"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: xs : List ℕ
+h_precond : majorityElement_precond xs
+⊢ majorityElement_postcond xs
+    (List.foldl
+        (fun cand_cnt x =>
+          if cand_cnt.2 = 0 then (x, 1)
+          else if cand_cnt.1 = x then (x, cand_cnt.2 + 1) else (cand_cnt.1, cand_cnt.2 - 1))
+        (xs.head!, 0) xs).1
+    h_precond
+
+##### verina_advanced_37 k=0 goal=1 orig=unproved 165.9s
+REPLY: {"law": "term", "expr": "(nums.foldl (fun (candCount : Int × Int) x => if candCount.snd = 0 then (x, 1) else if candCount.fst = x then (candCount.fst, candCount.snd + 1) else (candCount.fst, candCount.snd - 1)) (nums.head!, 0)).fst"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+nums : List ℤ
+h_precond : majorityElement_precond nums
+⊢ List.count
+      (List.foldl
+          (fun candCount x =>
+            if candCount.2 = 0 then (x, 1)
+            else if candCount.1 = x then (candCount.1, candCount.2 + 1) else (candCount.1, candCount.2 - 1))
+          (nums.head!, 0) nums).1
+      nums >
+    nums.length / 2
+GOAL: case right
+nums : List ℤ
+h_precond : majorityElement_precond nums
+⊢ (nums.all fun x =>
+      decide
+        (x =
+            (List.foldl
+                (fun candCount x =>
+                  if candCount.2 = 0 then (x, 1)
+                  else if candCount.1 = x then (candCount.1, candCount.2 + 1) else (candCount.1, candCount.2 - 1))
+                (nums.head!, 0) nums).1 ∨
+          List.count x nums ≤ nums.length / 2)) =
+    true
+
+##### verina_advanced_37 k=1 goal=1 orig=unproved 149.7s
+REPLY: {"law": "term", "expr": "(nums.foldl (fun (candCount : Int × Int) x => if candCount.2 = 0 then (x, 1) else if candCount.1 = x then (candCount.1, candCount.2 + 1) else (candCount.1, candCount.2 - 1)) (nums.head!, 0)).1"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+nums : List ℤ
+h_precond : majorityElement_precond nums
+⊢ List.count
+      (List.foldl
+          (fun candCount x =>
+            if candCount.2 = 0 then (x, 1)
+            else if candCount.1 = x then (candCount.1, candCount.2 + 1) else (candCount.1, candCount.2 - 1))
+          (nums.head!, 0) nums).1
+      nums >
+    nums.length / 2
+GOAL: case right
+nums : List ℤ
+h_precond : majorityElement_precond nums
+⊢ (nums.all fun x =>
+      decide
+        (x =
+            (List.foldl
+                (fun candCount x =>
+                  if candCount.2 = 0 then (x, 1)
+                  else if candCount.1 = x then (candCount.1, candCount.2 + 1) else (candCount.1, candCount.2 - 1))
+                (nums.head!, 0) nums).1 ∨
+          List.count x nums ≤ nums.length / 2)) =
+    true
+
+##### verina_advanced_37 k=3 goal=1 orig=unproved 166.9s
+REPLY: {"law": "term", "expr": "((nums.foldl (fun (candCount : Int × Int) x => if candCount.2 = 0 then (x, 1) else if candCount.1 = x then (candCount.1, candCount.2 + 1) else (candCount.1, candCount.2 - 1))) (nums.head!, 0)).1"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+nums : List ℤ
+h_precond : majorityElement_precond nums
+⊢ List.count
+      (List.foldl
+          (fun candCount x =>
+            if candCount.2 = 0 then (x, 1)
+            else if candCount.1 = x then (candCount.1, candCount.2 + 1) else (candCount.1, candCount.2 - 1))
+          (nums.head!, 0) nums).1
+      nums >
+    nums.length / 2
+GOAL: case right
+nums : List ℤ
+h_precond : majorityElement_precond nums
+⊢ (nums.all fun x =>
+      decide
+        (x =
+            (List.foldl
+                (fun candCount x =>
+                  if candCount.2 = 0 then (x, 1)
+                  else if candCount.1 = x then (candCount.1, candCount.2 + 1) else (candCount.1, candCount.2 - 1))
+                (nums.head!, 0) nums).1 ∨
+          List.count x nums ≤ nums.length / 2)) =
+    true
+
+##### verina_advanced_39 k=0 goal=1 orig=unproved 79.9s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["acc", "Nat"]], "init": ["1", "lst.head!"], "invariant": "i > 0 ∧ i ≤ lst.length ∧ (acc ∈ lst.take i) ∧ (∀ x ∈ lst.take i, x ≤ acc)", "guard": "i < lst.length", "variant": "lst.length - i", "result": "acc"}
+OPEN: ['the invariant holds before the first iteration']
+MSG: no tactic of the cascade closes this
+GOAL: case right.right.left
+lst : List ℕ
+h_precond : maxOfList_precond lst
+⊢ lst.head! ∈ List.take 1 lst
+GOAL: case right.right.right
+lst : List ℕ
+h_precond : maxOfList_precond lst
+⊢ ∀ x ∈ List.take 1 lst, x ≤ lst.head!
+
+##### verina_advanced_39 k=2 goal=1 orig=unproved 73.6s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["acc", "Nat"]], "init": ["1", "lst.head!"], "invariant": "i > 0 ∧ i ≤ lst.length ∧ (acc ∈ lst.take i) ∧ (∀ x, x ∈ lst.take i → x ≤ acc)", "guard": "i < lst.length", "variant": "lst.length - i", "result": "acc"}
+OPEN: ['the invariant holds before the first iteration']
+MSG: no tactic of the cascade closes this
+GOAL: case right.right.left
+lst : List ℕ
+h_precond : maxOfList_precond lst
+⊢ lst.head! ∈ List.take 1 lst
+GOAL: case right.right.right
+lst : List ℕ
+h_precond : maxOfList_precond lst
+⊢ ∀ x ∈ List.take 1 lst, x ≤ lst.head!
+
+##### verina_advanced_4 k=0 goal=1 orig=unproved 408.8s
+REPLY: {"law": "term", "expr": "((a.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse).filter (fun l => List.Pairwise (· < ·) l) |>.foldl (fun m l => max m l.length) 0"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+a : Array ℤ
+h_precond : LongestIncreasingSubsequence_precond a
+⊢ (List.map (fun x => ↑x.length)
+          (List.filter (fun l => decide (List.Pairwise (fun x1 x2 => x1 < x2) l))
+            (List.map List.reverse
+              ((fun init => Array.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) init a)
+                [[]])))).contains
+      (List.foldl (fun m l => max m ↑l.length) 0
+        (List.filter (fun l => decide (List.Pairwise (fun x1 x2 => x1 < x2) l))
+          (List.map List.reverse (Array.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) [[]] a)))) =
+    true
+GOAL: case right
+a : Array ℤ
+h_precond : LongestIncreasingSubsequence_precond a
+⊢ ((List.map (fun x => ↑x.length)
+          (List.filter (fun l => decide (List.Pairwise (fun x1 x2 => x1 < x2) l))
+            (List.map List.reverse
+              ((fun init => Array.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) init a) [[]])))).all
+      fun x =>
+      decide
+        (x ≤
+          List.foldl (fun m l => max m ↑l.length) 0
+            (List.filter (fun l => decide (List.Pairwise (fun x1 x2 => x1 < x2) l))
+              (List.map List.reverse (Array.foldl (fun acc x => acc ++ List.map (fun sub => x :: sub) acc) [[]] a))))) =
+    true
+
+##### verina_advanced_40 k=3 goal=1 orig=unproved 125.3s
+REPLY: {"law": "term", "expr": "lst.foldl (fun a b => if a ≥ b then a else b) lst.head!"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+lst : List ℕ
+h_precond : maxOfList_precond lst
+⊢ List.foldl (fun a b => if a ≥ b then a else b) lst.head! lst ∈ lst
+GOAL: case right
+lst : List ℕ
+h_precond : maxOfList_precond lst
+⊢ ∀ x ∈ lst, x ≤ List.foldl (fun a b => if a ≥ b then a else b) lst.head! lst
+
+##### verina_advanced_46 k=3 goal=1 orig=unproved 131.7s
+REPLY: {"law": "term", "expr": "(numbers.foldl (fun (acc : Int × Int) (x : Int) => let c := acc.1 + x; let current := if c < 0 then 0 else c; let best := if current < acc.2 then acc.2 else current; (current, best)) (0, 0)).2"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+numbers : List ℤ
+h_precond : maxSubarraySum_precond numbers
+⊢ (List.flatMap
+          (fun start =>
+            List.map (fun len => (List.take len (List.drop start numbers)).sum)
+              (List.range (numbers.length - start + 1)))
+          (List.range (numbers.length + 1))).contains
+      (List.foldl
+          (fun acc x =>
+            (if acc.1 + x < 0 then 0 else acc.1 + x,
+              if (if acc.1 + x < 0 then 0 else acc.1 + x) < acc.2 then acc.2
+              else if acc.1 + x < 0 then 0 else acc.1 + x))
+          (0, 0) numbers).2 =
+    true
+GOAL: case right
+numbers : List ℤ
+h_precond : maxSubarraySum_precond numbers
+⊢ ((List.flatMap
+          (fun start =>
+            List.map (fun len => (List.take len (List.drop start numbers)).sum)
+              (List.range (numbers.length - start + 1)))
+          (List.range (numbers.length + 1))).all
+      fun x =>
+      decide
+        (x ≤
+          (List.foldl
+              (fun acc x =>
+                (if acc.1 + x < 0 then 0 else acc.1 + x,
+                  if (if acc.1 + x < 0 then 0 else acc.1 + x) < acc.2 then acc.2
+                  else if acc.1 + x < 0 then 0 else acc.1 + x))
+              (0, 0) numbers).2)) =
+    true
+
+##### verina_advanced_54 k=0 goal=1 orig=unproved 202.7s
+REPLY: {"law": "term", "expr": "let n := nums.length; (n * (n + 1) / 2) - nums.sum"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+nums : List ℕ
+h_precond : missingNumber_precond nums
+⊢ nums.length * (nums.length + 1) / 2 - nums.sum ∈ List.range (nums.length + 1)
+GOAL: case right.left
+nums : List ℕ
+h_precond : missingNumber_precond nums
+⊢ nums.length * (nums.length + 1) / 2 - nums.sum ∉ nums
+GOAL: case right.right
+nums : List ℕ
+h_precond : missingNumber_precond nums
+⊢ ∀ x ∈ List.range (nums.length + 1), x ≠ nums.length * (nums.length + 1) / 2 - nums.sum → x ∈ nums
+
+##### verina_advanced_56 k=0 goal=1 orig=unproved 344.3s
+REPLY: {"law": "term", "expr": "xs.filter (fun x => x ≠ 0) ++ List.replicate (countVal 0 xs) 0"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+xs : List ℤ
+h_precond : moveZeroes_precond xs
+⊢ isSubsequence (List.filter (fun x => decide (x ≠ 0)) xs)
+      (List.filter (fun x => decide (x ≠ 0)) xs ++ List.replicate (countVal 0 xs) 0) =
+    true
+GOAL: case right.right.left
+xs : List ℤ
+h_precond : moveZeroes_precond xs
+⊢ countVal 0 xs = countVal 0 (List.filter (fun x => decide (x ≠ 0)) xs ++ List.replicate (countVal 0 xs) 0)
+GOAL: case right.right.right
+xs : List ℤ
+h_precond : moveZeroes_precond xs
+⊢ xs.length = (List.filter (fun x => decide (x ≠ 0)) xs ++ List.replicate (countVal 0 xs) 0).length
+
+##### verina_advanced_67 k=0 goal=1 orig=lemma_unproved 346.3s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["acc", "List (Char × Nat)"]], "init": ["0", "[]"], "invariant": "(decodeRLE acc = s.take i) ∧ (∀ pair ∈ acc, pair.snd > 0) ∧ (∀ j, j < acc.length - 1 → (acc[j]!).fst ≠ (acc[j+1]!).fst)", "guard": "i < s.length", "variant": "s.length - i", "result": "acc", "lemmas": [{"name": "loopCorrectness", "statement": "∀ i acc, (decodeRLE acc = s.take i) → (i = s.length → decodeRLE acc = s)", "proof": "by simp [String.take, decodeRLE]"}]}
+OPEN: ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: case left
+s : String
+h_precond : runLengthEncode_precond s
+⊢ (decodeRLE []).toSlice = s.take 0
+GOAL: case right.right
+s : String
+i : ℕ
+acc : List (Char × ℕ)
+h_precond : runLengthEncode_precond s
+h1i : (decodeRLE acc).toSlice = s.take i ∧ (∀ pair ∈ acc, pair.2 > 0) ∧ ∀ j < acc.length - 1, acc[j]!.1 ≠ acc[j + 1]!.1
+h1g : ¬i < s.length
+⊢ decodeRLE acc = s
+
+##### verina_advanced_8 k=1 goal=2 orig=ill_formed 320.7s
+REPLY: {"law": "term", "expr": "-1"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `isDefEq`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### verina_basic_24 k=0 goal=1 orig=ill_formed 1.6s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["even", "Option Nat"], ["odd", "Option Nat"]], "init": ["0", "none", "none"], "invariant": "i ≤ a.size ∧ (even = none ∨ (∃ i₀, even = some i₀ ∧ ∀ k, k < i₀ → ¬isEven (a[k]!))) ∧ (odd = none ∨ (∃ j₀, odd = some j₀ ∧ ∀ k, k < j₀ → ¬isOdd (a[k]!)))", "guard": "i < a.size ∧ (even = none ∨ odd = none)", "variant": "a.size - i", "result": "match (even, odd) with | (some i_e, some i_o) => a[i_e]! - a[i_o]! | _ => 0"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation's proof failed (unexpected token ':='; expected ')', ',' or ':'); the statement itself is well-formed
+
+##### verina_basic_24 k=1 goal=1 orig=ill_formed 1.6s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["even", "Option Nat"], ["odd", "Option Nat"]], "init": ["0", "none", "none"], "invariant": "i ≤ a.size ∧ (even = none ∨ (∃ i₀, even = some i₀ ∧ ∀ k, k < i₀ → ¬ isEven (a[k]!))) ∧ (odd = none ∨ (∃ j₀, odd = some j₀ ∧ ∀ k, k < j₀ → ¬ isOdd (a[k]!)))", "guard": "i < a.size ∧ (even = none ∨ odd = none)", "variant": "a.size - i", "result": "match (even, odd) with | (some i_e, some i_o) => a[i_e]! - a[i_o]! | _ => 0"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation's proof failed (unexpected token ':='; expected ')', ',' or ':'); the statement itself is well-formed
+
+##### verina_basic_24 k=2 goal=1 orig=ill_formed 437.4s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["even", "Option Nat"], ["odd", "Option Nat"]], "init": ["0", "none", "none"], "invariant": "i ≤ a.size ∧ (even = none ∨ (∃ i₀, even = some i₀ ∧ ∀ k, k < i₀ → ¬isEven (a[k]!))) ∧ (odd = none ∨ (∃ j₀, odd = some j₀ ∧ ∀ k, k < j₀ → ¬isOdd (a[k]!)))", "guard": "(even = none ∨ odd = none) ∧ i < a.size", "variant": "a.size - i", "result": "match (even, odd) with | (some i_e, some i_o) => a[i_e]! - a[i_o]! | _ => 0"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### verina_basic_24 k=3 goal=1 orig=ill_formed 400.9s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["even", "Option Nat"], ["odd", "Option Nat"]], "init": ["0", "none", "none"], "invariant": "i ≤ a.size ∧ (even = none ∨ ∃ i_e, even = some i_e ∧ ∀ k, k < i_e → ¬ isEven (a[k]!)) ∧ (odd = none ∨ ∃ i_o, odd = some i_o ∧ ∀ k, k < i_o → ¬ isOdd (a[k]!))", "guard": "(even = none ∨ odd = none) ∧ i < a.size", "variant": "a.size - i", "result": "match (even, odd) with | (some i_e, some i_o) => a[i_e]! - a[i_o]! | _ => 0"}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached); the statement itself is well-formed
+
+##### verina_basic_25 k=0 goal=1 orig=unproved 73.4s
+REPLY: {"law": "term", "expr": "(n * (n + 1) / 2, ((n * (n + 1) / 2).toFloat) / (n.toFloat))"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case right
+n : ℕ
+h_precond : sumAndAverage_precond n
+⊢ n > 0 →
+    ((↑n * (↑n + 1) / 2, (n * (n + 1) / 2).toFloat / n.toFloat).1 == ↑n * (↑n + 1) / 2) = true ∧
+      ((↑n * (↑n + 1) / 2, (n * (n + 1) / 2).toFloat / n.toFloat).2 == (n * (n + 1) / 2).toFloat / n.toFloat) = true
+
+##### verina_basic_25 k=3 goal=3 orig=unproved 49.9s
+REPLY: {"law": "term", "expr": "(s, s.toFloat / n.toFloat)"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case right
+n : ℕ
+s : ℤ
+h_precond : sumAndAverage_precond n
+h1 : s = ↑n * (↑n + 1) / 2
+⊢ n > 0 →
+    ((s, s.toFloat / n.toFloat).1 == ↑n * (↑n + 1) / 2) = true ∧
+      ((s, s.toFloat / n.toFloat).2 == (n * (n + 1) / 2).toFloat / n.toFloat) = true
+
+##### verina_basic_25 k=8 goal=5 orig=unproved 55.4s
+REPLY: {"law": "term", "expr": "(sum, (sum.toFloat) / n.toFloat)"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case right
+n : ℕ
+s sum : ℤ
+h_precond : sumAndAverage_precond n
+h1 : s = ↑n * (↑n + 1) / 2
+h3 : sum = ↑n * (↑n + 1) / 2
+⊢ n > 0 →
+    ((sum, sum.toFloat / n.toFloat).1 == ↑n * (↑n + 1) / 2) = true ∧
+      ((sum, sum.toFloat / n.toFloat).2 == (n * (n + 1) / 2).toFloat / n.toFloat) = true
+
+##### verina_basic_25 k=14 goal=7 orig=unproved 147.5s
+REPLY: {"law": "term", "expr": "(Int.ofNat n * (Int.ofNat n + 1) / 2, (Int.ofNat n * (Int.ofNat n + 1) / 2).toFloat / n.toFloat)"}
+OPEN: ['the value satisfies the postcondition under the hypotheses']
+MSG: no tactic of the cascade closes this
+GOAL: case right
+n : ℕ
+s sum total : ℤ
+h_precond : sumAndAverage_precond n
+h1 : s = ↑n * (↑n + 1) / 2
+h3 : sum = ↑n * (↑n + 1) / 2
+h5 : total = ↑n * (↑n + 1) / 2
+⊢ n > 0 →
+    ((Int.ofNat n * (Int.ofNat n + 1) / 2, (Int.ofNat n * (Int.ofNat n + 1) / 2).toFloat / n.toFloat).1 ==
+          ↑n * (↑n + 1) / 2) =
+        true ∧
+      ((Int.ofNat n * (Int.ofNat n + 1) / 2, (Int.ofNat n * (Int.ofNat n + 1) / 2).toFloat / n.toFloat).2 ==
+          (n * (n + 1) / 2).toFloat / n.toFloat) =
+        true
+
+##### verina_basic_28 k=1 goal=1 orig=lemma_unproved 183.4s
+REPLY: {"law": "loop", "state": [["i", "Nat"], ["prime", "Bool"]], "init": ["2", "true"], "invariant": "prime = ∀ k, 2 ≤ k ∧ k < i → n % k ≠ 0 ∧ i ≤ n", "guard": "i < n", "variant": "n - i", "result": "prime", "lemmas": [{"name": "range'_interpretation", "statement": "(List.range' 2 (n - 2)).all (λ k, n % k ≠ 0) ↔ (∀ k, 2 ≤ k ∧ k < n → n % k ≠ 0)", "proof": "sorry"}]}
+OPEN: ['on exit the invariant and the negated guard imply the postcondition']
+MSG: no tactic of the cascade closes this
+GOAL: case right
+n i : ℕ
+prime : Bool
+h_precond : isPrime_precond n
+h1i : (prime = true) = ∀ (k : ℕ), 2 ≤ k ∧ k < i → n % k ≠ 0 ∧ i ≤ n
+h1g : ¬i < n
+⊢ ¬prime = true → ((List.range' 2 (n - 2)).any fun k => decide (n % k = 0)) = true
+

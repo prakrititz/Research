@@ -1,0 +1,2 @@
+1 derivations that needed helper lemmas
+classic_sort_list                    alone=True  with_search=False   285.7s

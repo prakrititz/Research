@@ -1,0 +1,23 @@
+20 derivations that needed helper lemmas
+verina_advanced_16                   alone=True  with_search=False    47.9s
+verina_advanced_17                   alone=True  with_search=False    57.6s
+verina_advanced_25                   alone=False with_search=False unproved   17.1s
+verina_advanced_31                   alone=False with_search=False unproved   16.7s
+verina_advanced_32                   alone=False with_search=False unproved   17.0s
+verina_advanced_33                   alone=False with_search=False unproved   16.8s
+verina_advanced_34                   alone=False with_search=False unproved   17.7s
+verina_advanced_4                    alone=False with_search=False unproved   18.8s
+verina_advanced_48                   alone=True  with_search=False    49.1s
+verina_advanced_49                   alone=True  with_search=False    47.4s
+verina_advanced_50                   alone=True  with_search=False    48.1s
+verina_advanced_51                   alone=True  with_search=False    48.1s
+verina_advanced_76                   alone=False with_search=False unproved   19.5s
+verina_advanced_81                   alone=True  with_search=False    48.4s
+verina_basic_104                     alone=False with_search=False unproved   27.5s
+verina_basic_22                      alone=False with_search=False unproved   25.5s
+verina_basic_35                      alone=False with_search=False unproved   21.3s
+verina_basic_41                      alone=False with_search=False unproved   18.7s
+verina_basic_87                      alone=True  with_search=False    48.0s
+verina_basic_89                      alone=False with_search=False unproved   16.0s
+1 derivations that needed helper lemmas
+he_022_filter_integers               alone=True  with_search=False    60.3s

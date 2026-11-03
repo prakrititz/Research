@@ -1,0 +1,59 @@
+-- the positions `i % m = 0` below `n` (m = 2, 3) are `m * k` for `k < (n + m - 1) / m`
+theorem filter_range_mod2 (n : Nat) :
+    (List.range n).filter (fun i => decide (i % 2 = 0)) = (List.range ((n + 1) / 2)).map (fun k => 2 * k) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [List.range_succ, List.filter_append, ih]
+    by_cases h : n % 2 = 0
+    · have e : (n + 1 + 1) / 2 = (n + 1) / 2 + 1 := by omega
+      rw [e, List.range_succ, List.map_append]
+      simp [h]; omega
+    · have e : (n + 1 + 1) / 2 = (n + 1) / 2 := by omega
+      rw [e]; simp [h]
+theorem filter_range_mod3 (n : Nat) :
+    (List.range n).filter (fun i => decide (i % 3 = 0)) = (List.range ((n + 2) / 3)).map (fun k => 3 * k) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [List.range_succ, List.filter_append, ih]
+    by_cases h : n % 3 = 0
+    · have e : (n + 1 + 2) / 3 = (n + 2) / 3 + 1 := by omega
+      rw [e, List.range_succ, List.map_append]
+      simp [h]; omega
+    · have e : (n + 1 + 2) / 3 = (n + 2) / 3 := by omega
+      rw [e]; simp [h]
+-- writing `s` into the positions `i % m = 0` and reading those positions back gives `s` (he_033, he_037: sort every
+-- third / every second element in place)
+theorem gather_scatter2 (l s : List Int)
+    (hs : s.length = ((List.range l.length).filter (fun i => decide (i % 2 = 0))).length) :
+    ((List.range l.length).filter (fun i => decide (i % 2 = 0))).map
+      (fun i => ((List.range l.length).map (fun i => if i % 2 = 0 then s[i / 2]! else l[i]!))[i]!) = s := by
+  rw [filter_range_mod2] at hs ⊢
+  simp only [List.length_map, List.length_range] at hs
+  apply List.ext_getElem (by simp [hs])
+  intro k h1 h2
+  simp only [List.getElem_map, List.getElem_range]
+  have hk : 2 * k < l.length := by simp at h1; omega
+  rw [getElem!_pos _ _ (by simpa using hk)]
+  simp [Nat.mul_mod_right, List.getElem?_eq_getElem h2]
+theorem gather_scatter3 (l s : List Int)
+    (hs : s.length = ((List.range l.length).filter (fun i => decide (i % 3 = 0))).length) :
+    ((List.range l.length).filter (fun i => decide (i % 3 = 0))).map
+      (fun i => ((List.range l.length).map (fun i => if i % 3 = 0 then s[i / 3]! else l[i]!))[i]!) = s := by
+  rw [filter_range_mod3] at hs ⊢
+  simp only [List.length_map, List.length_range] at hs
+  apply List.ext_getElem (by simp [hs])
+  intro k h1 h2
+  simp only [List.getElem_map, List.getElem_range]
+  have hk : 3 * k < l.length := by simp at h1; omega
+  rw [getElem!_pos _ _ (by simpa using hk)]
+  simp [Nat.mul_mod_right, List.getElem?_eq_getElem h2]
+-- sortedness by index with the bound as a hypothesis (`apply` leaves `i < l.length - 1`, which `simp_all` then sees in
+-- whatever form the simplifier gave the length)
+theorem mergeSort_le_int' (l : List Int) (i : Nat) (hi : i < l.length - 1) :
+    (l.mergeSort (fun a b => decide (a ≤ b)))[i]! ≤ (l.mergeSort (fun a b => decide (a ≤ b)))[i + 1]! :=
+  mergeSort_le_int l i (by simpa using hi)
+theorem mergeSort_le_nat' (l : List Nat) (i : Nat) (hi : i < l.length - 1) :
+    (l.mergeSort (fun a b => decide (a ≤ b)))[i]! ≤ (l.mergeSort (fun a b => decide (a ≤ b)))[i + 1]! :=
+  mergeSort_le_nat l i (by simpa using hi)

@@ -1,0 +1,5 @@
+{"task": "he_009_rolling_max", "lemmas_removed": 2, "automation_alone": true, "steps_accepted": true, "failed_status": "", "open_obligations": [], "unsolved": [], "search_closes_all": false, "seconds": 59.5}
+{"task": "he_012_longest", "lemmas_removed": 1, "automation_alone": true, "steps_accepted": true, "failed_status": "", "open_obligations": [], "unsolved": [], "search_closes_all": false, "seconds": 75.4}
+{"task": "he_034_unique", "lemmas_removed": 1, "automation_alone": true, "steps_accepted": true, "failed_status": "", "open_obligations": [], "unsolved": [], "search_closes_all": false, "seconds": 53.4}
+{"task": "he_046_fib4", "lemmas_removed": 2, "automation_alone": true, "steps_accepted": true, "failed_status": "", "open_obligations": [], "unsolved": [], "search_closes_all": false, "seconds": 66.4}
+{"task": "he_092_any_int", "lemmas_removed": 1, "automation_alone": true, "steps_accepted": true, "failed_status": "", "open_obligations": [], "unsolved": [], "search_closes_all": false, "seconds": 59.4}

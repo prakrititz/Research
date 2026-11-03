@@ -1,0 +1,584 @@
+import Mathlib
+import Duper
+import Duper.TPTP
+
+/-!
+# `refine_hammer`: a CoqHammer-style hammer for proof obligations
+
+1. premise selection: Lean's library-suggestions engine (Sine Qua Non), re-ranked by symbol overlap with the goal;
+2. external prover: lean-auto translates goal + hypotheses + premises to TPTP and Zipperposition searches for a
+   proof; its proof names the facts it used;
+3. reconstruction: Duper (else `grind`) re-proves the original goal from just those facts inside Lean, so the
+   kernel checks every proof. Nothing from the external prover is trusted.
+
+This is LeanHammer's design (Zipperposition for the search, Duper for the proof); `duper_hammer` skips step 2.
+-/
+
+open Lean Elab Tactic Meta
+
+namespace Refine
+
+/-- The library facts behind the last facts lean-auto handed to its native prover. -/
+initialize usedFacts : IO.Ref (Option (Array String)) ← IO.mkRef none
+
+/-- The library names in a lean-auto derivation (user facts are recorded as leaves `❰name❱`). -/
+partial def factNames : Auto.DTr → Array String
+  | .leaf s =>
+    -- lean-auto prints an identifier hint as syntax, with a leading backtick
+    if s.startsWith "❰" && s.endsWith "❱" then #[String.ofList (((s.toList.drop 1).dropLast).dropWhile (· == '`'))]
+    else #[]
+  | .node _ children => children.foldl (fun acc c => acc ++ factNames c) #[]
+
+end Refine
+
+/-- lean-auto's native prover, rebound: after Zipperposition's search it receives the facts the proof used (premise
+selection by unsat core); record their names and stop, so that the proof is rebuilt on the original goal. -/
+@[rebind Auto.Native.solverFunc]
+def Refine.recordUsedFacts (lemmas _inhLemmas : Array Auto.Lemma) : MetaM Expr := do
+  let names := lemmas.foldl (fun acc l => acc ++ (Refine.factNames l.deriv).filter (!acc.contains ·)) #[]
+  Refine.usedFacts.set (some names)
+  throwError "refine_hammer: facts recorded"
+
+namespace Refine
+
+/-- A statement lean-auto can use: no induction motive and no quantifier over `Sort u` (which includes `Prop`);
+type variables `α : Type u` and predicates `p : α → Prop` are fine (lean-auto instantiates and translates them). -/
+def firstOrder (type : Expr) : MetaM Bool :=
+  forallTelescopeReducing type fun xs _ => xs.allM fun x => do
+    let t ← inferType x
+    if (← x.fvarId!.getUserName).toString.startsWith "motive" then return false
+    match (← whnf t) with
+    | .sort u => return u.dec.isSome
+    | _ => return true
+
+/-- Run tactic text: one tactic, or a sequence (`t₁; t₂`), as written after `by`. -/
+def runText (text : String) : TacticM Unit := do
+  match Parser.runParserCategory (← getEnv) `tactic s!"({text})" with
+  | .ok stx => evalTactic stx
+  | .error e => throwError "refine_hammer: could not parse {text}: {e}"
+
+/-- Whether a proof term rests on Duper's skolem placeholder `Duper.skSorryAx`. Duper means to remove it during
+reconstruction but sometimes leaves it in; such a proof would not pass `#print axioms`. Constants from imported modules
+cannot mention it, so only the ones this file declared (e.g. Duper's `skS` constants) are unfolded. -/
+partial def usesSkolemSorry (proof : Expr) : MetaM Bool := do
+  let env ← getEnv
+  let rec go (todo : List Name) (seen : NameSet) : Bool :=
+    match todo with
+    | [] => false
+    | c :: rest =>
+      if c == ``Duper.skSorryAx then true
+      else if seen.contains c || (env.getModuleIdxFor? c).isSome then go rest seen
+      else
+        let more := match env.find? c with
+          | some info => (info.type.getUsedConstants ++ ((info.value? (allowOpaque := true)).map (·.getUsedConstants)).getD #[]).toList
+          | none => []
+        go (more ++ rest) (seen.insert c)
+  return go (← instantiateMVars proof).getUsedConstants.toList {}
+
+/-- Run a closing tactic; keep its proof only if it does not rest on `Duper.skSorryAx`. -/
+def runSound (text : String) : TacticM Unit := do
+  let goal ← getMainGoal
+  let saved ← saveState
+  runText text
+  if ← usesSkolemSorry (.mvar goal) then
+    saved.restore
+    throwError "refine_hammer: the reconstructed proof uses Duper's skolem placeholder"
+
+/-- Premises already checked in this session: `true` when lean-auto's preprocessing accepts them. -/
+initialize translatableCache : IO.Ref (NameMap Bool) ← IO.mkRef {}
+
+/-- Whether lean-auto can translate this premise (some statements, e.g. with `∃ x ∈ l` binders or an induction motive,
+fail its monomorphisation, and one such premise sinks the whole call). Checked once, with no prover run. -/
+def translatable (name : Name) : TacticM Bool := do
+  if let some ok := (← translatableCache.get).find? name then return ok
+  let saved ← saveState
+  let ok ← try
+      runText s!"set_option auto.tptp false in set_option auto.native false in auto [{name}]"
+      pure true
+    catch e => pure ((← e.toMessageData.toString).startsWith "Auto failed")
+  saved.restore
+  translatableCache.modify (·.insert name ok)
+  return ok
+
+/-- The names of the `n` library facts most relevant to the main goal, as hint text. -/
+def premiseHints (n : Nat) : TacticM String := do
+  let goal ← getMainGoal
+  -- Sine Qua Non is fast but ranks hundreds of candidates equally (then by name), so the pool is taken wide and re-ranked
+  let suggestions ← Lean.LibrarySuggestions.select goal { maxSuggestions := 1500 }
+  let self? ← Term.getDeclName?
+  -- the symbols of the goal and its hypotheses
+  let mut wanted : NameSet := (← instantiateMVars (← goal.getType)).getUsedConstantsAsSet
+  for d in (← getLCtx) do
+    if !d.isImplementationDetail then
+      wanted := wanted.append (← instantiateMVars d.type).getUsedConstantsAsSet
+  -- only theorems, whose statements lean-auto can translate; one recursor or definition in the list sinks the whole call
+  let mut scored : Array (Float × Name) := #[]
+  for s in suggestions do
+    if self? == some s.name || s.name.isInternalDetail then continue
+    let some (.thmInfo info) := (← getEnv).find? s.name | continue
+    unless ← firstOrder info.type do continue
+    -- relevance: shared symbols, discounted by symbols the goal does not mention (Sledgehammer's MePo idea)
+    let used := info.type.getUsedConstants
+    let shared := (used.filter wanted.contains).size.toFloat
+    let foreign := (used.filter (!wanted.contains ·)).size.toFloat
+    scored := scored.push (shared / (1.0 + foreign), s.name)
+  let ranked := scored.qsort (fun a b => a.1 > b.1)
+  let mut chosen : Array Name := #[]
+  for (_, name) in ranked do
+    if chosen.size ≥ n then break
+    if !chosen.contains name && (← translatable name) then
+      chosen := chosen.push name
+  return ", ".intercalate (chosen.toList.map toString)
+
+
+/-- `zipwrap` (this project's `ZipWrap.lean`): Zipperposition under a time limit that also works on Windows. -/
+def zipwrap : IO String := do
+  let exe := if System.Platform.isWindows then "zipwrap.exe" else "zipwrap"
+  return ((← IO.currentDir) / ".lake" / "build" / "bin" / exe).toString.replace "\\" "/"
+
+def hintList (hints : String) : String :=
+  if hints.isEmpty then "*" else s!"*, {hints}"
+
+syntax (name := refineHammer) "refine_hammer" (ppSpace num)? : tactic
+syntax (name := duperHammer) "duper_hammer" (ppSpace num)? : tactic
+
+/-- Whether Zipperposition reported a proof in the traces collected since `start`. -/
+def provedSince (start : Nat) : CoreM Bool := do
+  let traces := (← getTraceState).traces.toArray
+  traces[start:].toArray.anyM fun t => return ((← t.msg.toString).splitOn "SZS status Unsatisfiable").length ≥ 2
+
+@[tactic refineHammer] def evalRefineHammer : Tactic := fun stx => withMainContext do
+  let n := (stx[1].getOptional?.map (·.isNatLit?.getD 16)).getD 16
+  let hints ← premiseHints n
+  usedFacts.set none
+  let saved ← saveState
+  let oldTraces ← getTraceState
+  let start := oldTraces.traces.size
+  try
+    runText s!"set_option auto.tptp true in set_option auto.tptp.premiseSelection true in       set_option auto.tptp.zipperposition.useDefault false in       set_option auto.tptp.zipperposition.customPath \"{← zipwrap}\" in       set_option trace.auto.tptp.result true in       set_option auto.native true in set_option auto.tptp.timeout 10 in auto [{hintList hints}]"
+  catch _ => pure ()
+  let proved ← provedSince start
+  saved.restore
+  modifyTraceState fun _ => oldTraces
+  let some used ← usedFacts.get | throwError "refine_hammer: lean-auto could not translate the goal"
+  unless proved do throwError "refine_hammer: Zipperposition found no proof"
+  let facts := ", ".intercalate used.toList
+  let grind := if used.isEmpty then "grind" else s!"grind [{facts}]"
+  try runSound s!"duper [{hintList facts}]" catch _ => runText grind
+
+@[tactic duperHammer] def evalDuperHammer : Tactic := fun stx => withMainContext do
+  let n := (stx[1].getOptional?.map (·.isNatLit?.getD 16)).getD 16
+  let hints ← premiseHints n
+  runSound s!"duper [{hintList hints}]"
+
+/-! ## Generic closers and the per-goal portfolio
+
+Each closer handles a goal shape the cascade and the hammers leave open; `refine_portfolio` runs them, with the cascade and
+the hammers, on each goal separately. -/
+
+/-- Run `tac` on the main goal within `budget` thousand heartbeats; it must close the goal. An error, the heartbeat budget or
+the recursion limit is a failure (`first` cannot catch the last two) and leaves the state as it was. -/
+def closeWithin (budget : Nat) (tac : TacticM Unit) : TacticM Bool := do
+  let saved ← saveState
+  tryCatchRuntimeEx
+    (do
+      -- `Core.Context.maxHeartbeats` counts raw heartbeats, 1000 per unit of the `maxHeartbeats` option
+      withCurrHeartbeats <| withTheReader Core.Context (fun c => { c with maxHeartbeats := budget * 1000 * 1000 }) <|
+        focusAndDone tac
+      return true)
+    (fun _ => do saved.restore; return false)
+
+/-- The local variables of the main goal a tactic can name, with their types. -/
+def namedLocals : TacticM (Array (Name × Expr)) := withMainContext do
+  (← getLCtx).foldlM (init := #[]) fun acc d => do
+    if d.isImplementationDetail || d.userName.hasMacroScopes then return acc
+    return acc.push (d.userName, ← instantiateMVars d.type)
+
+/-- `∃ x < c, P x` (or `≤ c`) with a numeral bound `c ≤ 16`: try each witness, for nested quantifiers too, then `finish`
+(he_020's `∃ b < 2, ∃ a < b, ...` is `⟨1, 0, ...⟩`). -/
+partial def existsSmall (finish : TacticM Unit) : TacticM Unit := do
+  let type ← whnfR (← instantiateMVars (← getMainTarget))
+  let some (_, body) := type.app2? ``Exists | finish
+  let bound? : Option Nat ← withMainContext <| lambdaTelescope body fun xs b => do
+    let some (cond, _) := b.and? | return none
+    let x := xs[0]!
+    let (strict, lhs, c) ← match cond.app4? ``LT.lt, cond.app4? ``LE.le with
+      | some (_, _, l, c), _ => pure (true, l, c)
+      | _, some (_, _, l, c) => pure (false, l, c)
+      | _, _ => return none
+    if lhs != x || c.containsFVar x.fvarId! then return none
+    -- a bound that is not a numeral (`∃ j ≤ nums.length`): the smallest witnesses, if the context shows them in range
+    let some n ← (evalNat (← instantiateMVars c)).run | return some 3
+    return some (if strict then n else n + 1)
+  let some n := bound? | throwError "exists_small: not `∃ x < c, ...`"
+  unless n ≤ 16 do throwError "exists_small: bound {n} too large"
+  for v in List.range n do
+    let saved ← saveState
+    try
+      runText s!"refine ⟨{v}, (by first | omega | (simp_all; omega) | grind), ?_⟩"
+      existsSmall finish
+      return
+    catch _ => saved.restore
+  throwError "exists_small: no witness below {n}"
+
+/-- Hypotheses `x % c = r` about a natural-number variable `x`: name `x / c` and write `x = c * q + r`, so that `ring`
+sees one atom (fast_power's `acc * base * (base * base) ^ (k / 2)` with `k % 2 = 1`). -/
+def modSplit : TacticM Unit := do
+  let found ← withMainContext do
+    let mut found := #[]
+    for (_, t) in ← namedLocals do
+      -- `¬ x % 2 = r` is `x % 2 = 1 - r` (the other branch of a parity test)
+      let (negated, t) := match t.not? with | some t => (true, t) | none => (false, t)
+      let some (_, lhs, r) := t.eq? | continue
+      unless lhs.isAppOfArity ``HMod.hMod 6 do continue
+      let x := lhs.getArg! 4
+      let c := lhs.getArg! 5
+      unless x.isFVar && (← inferType x).isConstOf ``Nat do continue
+      let some c ← (evalNat c).run | continue
+      let some r ← (evalNat r).run | continue
+      if negated && !(c == 2 && r ≤ 1) then continue
+      let r := if negated then 1 - r else r
+      let name ← x.fvarId!.getUserName
+      unless name.hasMacroScopes || found.any (·.1 == name) do found := found.push (name, c, r)
+    return found
+  if found.isEmpty then throwError "mod_split: no hypothesis `x % c = r`"
+  for (x, c, r) in found do
+    runText s!"generalize hq_{x} : {x} / {c} = q_{x} at *"
+    runText s!"obtain rfl : {x} = {c} * q_{x} + {r} := by omega"
+
+/-- An equation that is a ring consequence of one hypothesis equation: `linear_combination h`. -/
+def linHyps : TacticM Unit := do
+  unless (← whnfR (← getMainTarget)).isAppOfArity ``Eq 3 do throwError "lin_hyps: not an equation"
+  for (h, t) in ← namedLocals do
+    if t.isAppOfArity ``Eq 3 && (← closeWithin 200 (runText s!"linear_combination {h}")) then return
+  throwError "lin_hyps: no hypothesis gives the goal"
+
+/-- Case-split the Boolean variables (after splitting pairs, he_090's `p : Bool × ℤ`), then let members and indices meet
+(he_136: `if f = true then some m else none` against an invariant stated over `lst[k]!`). -/
+def boolSplit : TacticM Unit := do
+  for (p, t) in ← namedLocals do
+    if t.isAppOfArity ``Prod 2 then runText s!"rcases {p} with ⟨{p}_1, {p}_2⟩"
+  let bools := (← namedLocals).filterMap fun (b, t) => if t.isConstOf ``Bool then some b else none
+  if bools.isEmpty || bools.size > 3 then throwError "bool_split: {bools.size} Boolean variables"
+  let split := " <;> ".intercalate (bools.toList.map (s!"cases {·}"))
+  let idx := "Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx"
+  runText s!"{split} <;> first | (simp_all; done) | (simp_all [{idx}]; done) | (simp_all [{idx}] <;> grind) | grind"
+
+/-- The subterms of an expression that satisfy `p` and have no loose bound variables, outermost first. -/
+partial def subterms (p : Expr → Bool) (e : Expr) : Array Expr :=
+  let here := if p e && !e.hasLooseBVars then #[e] else #[]
+  match e with
+  | .app f a => here ++ subterms p f ++ subterms p a
+  | .lam _ t b _ | .forallE _ t b _ => here ++ subterms p t ++ subterms p b
+  | .letE _ t v b _ => here ++ subterms p t ++ subterms p v ++ subterms p b
+  | .mdata _ b | .proj _ _ b => here ++ subterms p b
+  | _ => here
+
+/-- The subterms `List.foldl f a l` of an expression. -/
+def foldTerms : Expr → Array Expr := subterms (·.isAppOfArity ``List.foldl 5)
+
+/-- A minimum or maximum computed by a fold (`List.foldl min a l`): state what it is (`a` or a member of `l`) and how it
+compares (below / above `a` and every member), with the library's `foldl_min_facts` / `foldl_max_facts`, then let the
+membership in `l` unfold (he_114: the minimum over all sub-array sums is one of them, and below each of them). -/
+def foldFacts : TacticM Unit := withMainContext do
+  let terms := foldTerms (← instantiateMVars (← getMainTarget))
+  let mut added := 0
+  for t in terms do
+    let f := t.getArg! 2
+    let fact := if f.isAppOf ``Min.min then `Refine.foldl_min_facts
+      else if f.isAppOf ``Max.max then `Refine.foldl_max_facts else Name.anonymous
+    unless (← getEnv).contains fact do continue
+    let proof ← try mkAppM fact #[t.getArg! 4, t.getArg! 3] catch _ => continue
+    let goal ← getMainGoal
+    let (_, goal) ← (← goal.assert (Name.mkSimple s!"hfold{added}") (← inferType proof) proof).intro1P
+    replaceMainGoal [goal]
+    added := added + 1
+  if added == 0 then throwError "fold_facts: no `List.foldl min/max` in the goal"
+  runText "simp only [List.mem_flatMap, List.mem_map, List.mem_range, List.mem_cons] at *"
+  -- an `∃` goal: the extremum is the start value (then a small witness may give it) or a member (then that member does)
+  runText ("first | grind | (simp_all; done) | (simp_all <;> grind) | " ++
+    "(rcases hfold0 with ⟨h | h, -⟩ <;> first | assumption | (simp_all; done) | exists_small)")
+
+/-- Write every list variable `l` with a hypothesis `l ≠ []` (or `¬ l = []`) as `a :: t`, so that `l[0]!`, `l.take 1`,
+`l.head!` evaluate. -/
+def consOfNeNil : TacticM Unit := do
+  let lists ← withMainContext do
+    let mut lists := #[]
+    for (h, t) in ← namedLocals do
+      let some (l, nil) := (if t.isAppOfArity ``Ne 3 then some (t.getArg! 1, t.getArg! 2) else
+        t.not?.bind fun e => e.eq?.map fun (_, a, b) => (a, b)) | continue
+      if l.isFVar && nil.isAppOf ``List.nil then lists := lists.push h
+    return lists
+  if lists.isEmpty then throwError "cons_of_ne_nil: no hypothesis `l ≠ []`"
+  for h in lists do runText s!"obtain ⟨_, _, rfl⟩ := List.exists_cons_of_ne_nil {h}"
+
+syntax (name := consOfNeNilTac) "cons_of_ne_nil" : tactic
+@[tactic consOfNeNilTac] def evalConsOfNeNil : Tactic := fun _ => consOfNeNil
+
+/-- Natural-number divisions `x / y` by a variable (`omega` handles only numerals): name the quotient `q`, state
+`y * q + x % y = x`, and split on `q = 0` (he_025's `1 ≤ n2 / d` from `n2 % d = 0` and `1 < n2`). -/
+def divSplit : TacticM Unit := do
+  let pairs ← withMainContext do
+    let mut pairs : Array (Name × Name) := #[]
+    let mut exprs := #[← instantiateMVars (← getMainTarget)]
+    for (_, t) in ← namedLocals do exprs := exprs.push t
+    for e in exprs do
+      for d in subterms (fun s => s.isAppOfArity ``HDiv.hDiv 6 && (s.getArg! 4).isFVar && (s.getArg! 5).isFVar) e do
+        let x ← (d.getArg! 4).fvarId!.getUserName
+        let y ← (d.getArg! 5).fvarId!.getUserName
+        unless !(← inferType d).isConstOf ``Nat || x.hasMacroScopes || y.hasMacroScopes || pairs.contains (x, y) do
+          pairs := pairs.push (x, y)
+    return pairs
+  if pairs.isEmpty then throwError "div_split: no division of a natural-number variable by a variable"
+  for (x, y) in pairs do
+    runText s!"have hdm_{x}_{y} := Nat.div_add_mod {x} {y}"
+    runText s!"generalize hq_{x}_{y} : {x} / {y} = q_{x}_{y} at *"
+    -- an exact division (`x % y = 0`): `x` is `y * q` everywhere
+    runText (s!"try (have hz : {x} % {y} = 0 := (by assumption); " ++
+      s!"rw [hz, Nat.add_zero] at hdm_{x}_{y}; subst hdm_{x}_{y})")
+  let q := s!"q_{pairs[0]!.1}_{pairs[0]!.2}"
+  runText (s!"first | omega | (prod_bounds; omega) | nlinarith | " ++
+    "(simp_all [List.prod_append]; done) | (simp_all [List.prod_append] <;> ring_nf at * <;> linarith) | " ++
+    s!"(rcases Nat.eq_zero_or_pos {q} with h0 | h0 <;> (try subst h0) <;> " ++
+    "first | omega | (simp_all; done) | (simp_all <;> omega) | (prod_bounds; omega) | nlinarith)")
+
+/-- For each hypothesis `c ≤ v` (`c` a numeral, `v` a natural-number variable) and each product `v * w` / `w * v` in the
+goal: add `c * w ≤ v * w`. `omega` treats a product of variables as an atom; these facts relate the atom to its factors
+(he_025's variant `q + q - d < d * q + d * q - d` from `2 ≤ d`). -/
+def prodBounds : TacticM Unit := withMainContext do
+  let target ← instantiateMVars (← getMainTarget)
+  let prods := subterms (fun s => s.isAppOfArity ``HMul.hMul 6 && (s.getArg! 4).isFVar && (s.getArg! 5).isFVar) target
+  let mut facts : Array Expr := #[]
+  -- every hypothesis, named or not (the loop's invariant parts are inaccessible after `casesm`)
+  for d in ← getLCtx do
+    if d.isImplementationDetail then continue
+    let t ← whnfR (← instantiateMVars d.type)          -- `v > c` / `v ≥ c` are `c < v` / `c ≤ v`
+    -- `c ≤ v`, or `c < v` used as `c + 1 ≤ v`
+    let some (c, v, bound) ← (match t.le?, t.lt? with
+      | some (_, c, v), _ => pure (some (c, v, d.toExpr))
+      | _, some (_, c, v) => do pure (some (c, v, ← mkAppM ``Nat.succ_le_of_lt #[d.toExpr]))
+      | _, _ => pure none) | continue
+    unless v.isFVar && (← inferType v).isConstOf ``Nat && (← (evalNat c).run).isSome do continue
+    for p in prods do
+      let (a, b) := (p.getArg! 4, p.getArg! 5)
+      if a == v then facts := facts.push (← mkAppM ``Nat.mul_le_mul_right #[b, bound])
+      if b == v then facts := facts.push (← mkAppM ``Nat.mul_le_mul_left #[a, bound])
+  if facts.isEmpty then throwError "prod_bounds: no bound on a factor of a product"
+  let mut goal ← getMainGoal
+  let mut seen : Array Expr := #[]
+  for (f, k) in facts.toList.zip (List.range facts.size) do
+    let type ← instantiateMVars (← inferType f)
+    if seen.contains type then continue
+    seen := seen.push type
+    let (_, g) ← (← goal.assert (Name.mkSimple s!"hpb{k}") type f).intro1P
+    goal := g
+  replaceMainGoal [goal]
+
+/-- A remainder `x % y` of two variables: split on `x = y` (then it is `0`, which `omega` does not know) and finish by
+arithmetic (he_025: `d ≤ n2` and `n2 % d ≠ 0` give `d + 1 ≤ n2`). -/
+def modEqSplit : TacticM Unit := do
+  let pairs ← withMainContext do
+    let mut exprs := #[← instantiateMVars (← getMainTarget)]
+    for (_, t) in ← namedLocals do exprs := exprs.push t
+    for d in ← getLCtx do
+      unless d.isImplementationDetail do exprs := exprs.push (← instantiateMVars d.type)
+    let mut pairs : Array (Name × Name) := #[]
+    for e in exprs do
+      for m in subterms (fun s => s.isAppOfArity ``HMod.hMod 6 && (s.getArg! 4).isFVar && (s.getArg! 5).isFVar) e do
+        let x ← (m.getArg! 4).fvarId!.getUserName
+        let y ← (m.getArg! 5).fvarId!.getUserName
+        unless x.hasMacroScopes || y.hasMacroScopes || pairs.contains (x, y) do pairs := pairs.push (x, y)
+    return pairs
+  let some (x, y) := pairs[0]? | throwError "mod_eq_split: no remainder of two variables"
+  runText (s!"by_cases hme : {x} = {y} <;> (try subst hme) <;> " ++
+    "first | omega | (simp_all; done) | (simp_all <;> omega)")
+
+syntax (name := modEqSplitTac) "mod_eq_split" : tactic
+@[tactic modEqSplitTac] def evalModEqSplit : Tactic := fun _ => modEqSplit
+
+/-- A natural number `n` that the hypotheses show positive, whose predecessor `n - 1` occurs: write it `k + 1` (so that
+`a ^ n = a * a ^ k` and `n - 1 = k` are plain rewriting) and finish with `grind` (classic_fast_power, a loop counting
+down: `r * a * a ^ (e' - 1) = b ^ e` from `r * a ^ e' = b ^ e` and `e' > 0`). -/
+def succPos : TacticM Unit := do
+  let text := toString (← withMainContext do Meta.ppGoal (← getMainGoal))
+  let mut written := 0
+  for (n, t) in ← namedLocals do
+    if t.isConstOf ``Nat && (text.splitOn s!"{n} - 1").length > 1 then
+      if ← tryTactic (runText s!"obtain ⟨{n}_pred, rfl⟩ : ∃ k, {n} = k + 1 := ⟨{n} - 1, by omega⟩") then
+        written := written + 1
+  if written == 0 then throwError "succ_pos: no positive natural number whose predecessor occurs"
+  runText "(try simp only [Nat.add_sub_cancel] at *); first | grind | (simp_all; done) | (simp_all <;> grind)"
+
+syntax (name := succPosTac) "succ_pos" : tactic
+@[tactic succPosTac] def evalSuccPos : Tactic := fun _ => succPos
+
+/-- An existential goal whose witness a hypothesis already has (`∃ b < j, P b` for the goal `∃ b < j + 1, P b`, he_020's
+inner loop starting from the outer one): take that witness, then the rest from the hypothesis and arithmetic. -/
+def existsHyp : TacticM Unit := do
+  let goal ← getMainGoal
+  unless (← whnfR (← instantiateMVars (← goal.getType))).isAppOf ``Exists do throwError "exists_hyp: not `∃`"
+  -- name the existential hypotheses (they are often inaccessible after `casesm`)
+  let (names, goal) ← goal.withContext do
+    let mut goal := goal
+    let mut names := #[]
+    for d in ← getLCtx do
+      if d.isImplementationDetail then continue
+      if (← whnfR (← instantiateMVars d.type)).isAppOf ``Exists then
+        let name := Name.mkSimple s!"hex{names.size}"
+        goal ← goal.rename d.fvarId name
+        names := names.push name
+    return (names, goal)
+  replaceMainGoal [goal]
+  for h in names do
+    let saved ← saveState
+    try
+      runText s!"obtain ⟨w_, hw_⟩ := {h}"
+      runText "refine ⟨w_, ?_⟩"
+      runText ("first | (exact ⟨by omega, hw_.2⟩) | (exact ⟨by omega, hw_.2.1, hw_.2.2⟩) | (simp_all; done) | " ++
+        "(constructor <;> first | omega | assumption | (simp_all; done)) | grind")
+      return
+    catch _ => saved.restore
+  throwError "exists_hyp: no hypothesis gives a witness"
+
+syntax (name := existsHypTac) "exists_hyp" : tactic
+@[tactic existsHypTac] def evalExistsHyp : Tactic := fun _ => existsHyp
+
+syntax (name := prodBoundsTac) "prod_bounds" : tactic
+@[tactic prodBoundsTac] def evalProdBounds : Tactic := fun _ => prodBounds
+
+/-- Induction that follows the recursion of a function of this file (the task's own definitions): for an application
+`f a` in the goal (innermost first), generalize `a` and use `fun_induction f`, then simplify with `f`'s equations
+(he_038: `encodeGroups (encodeGroups (encodeGroups l)) = l`, one case per three characters). -/
+def taskInduction : TacticM Unit := do
+  -- `(String.mk l).toList` hides the list the recursion runs over (`String.mk` is an alias the simp set lacks)
+  runText "try simp only [Refine.string_toList_mk, String.toList_ofList] at *"
+  let env ← getEnv
+  let apps ← withMainContext do
+    let target ← instantiateMVars (← getMainTarget)
+    let ofThisFile (s : Expr) : Bool := match s.getAppFn with
+      | .const f _ => (env.getModuleIdxFor? f).isNone && !f.isInternalDetail && s.getAppNumArgs ≥ 1 &&
+          (env.find? f).any (·.isDefinition)
+      | _ => false
+    let found := (subterms ofThisFile target).map fun s => (s.getAppFn.constName!, s.getArg! (s.getAppNumArgs - 1))
+    -- innermost applications first (the argument that is not itself an application of `f`)
+    return found.reverse
+  if apps.isEmpty then throwError "task_induction: no function of this file in the goal"
+  for (f, arg) in apps do
+    let saved ← saveState
+    try
+      let var ← withMainContext do
+        if arg.isFVar then pure (← arg.fvarId!.getUserName) else
+          let goal ← getMainGoal
+          let (fvars, goal) ← goal.generalize #[{ expr := arg, xName? := `xs }]
+          replaceMainGoal [goal]
+          pure (← goal.withContext (fvars[0]!.getUserName))
+      runText s!"fun_induction {f} {var} <;> first | (simp_all [{f}]; done) | (simp_all [{f}] <;> grind) | grind [{f}]"
+      return
+    catch _ => saved.restore
+  throwError "task_induction: no induction closes the goal"
+
+/-- Unfold the definitions of this file (the task's helper functions, e.g. `atMod`) wherever they occur in the goal
+or the hypotheses: the library states its facts over what they unfold to (he_033's `gather_scatter3`). -/
+def unfoldLocal : TacticM Unit := do
+  let env ← getEnv
+  let ofThisFile (s : Expr) : Bool := match s.getAppFn with
+    | .const f _ => (env.getModuleIdxFor? f).isNone && !f.isInternalDetail && (env.find? f).any (·.isDefinition)
+    | _ => false
+  let names ← withMainContext do
+    let mut exprs := #[← instantiateMVars (← getMainTarget)]
+    for (_, t) in ← namedLocals do exprs := exprs.push t
+    let mut names : Array Name := #[]
+    for e in exprs do
+      for s in subterms ofThisFile e do
+        let f := s.getAppFn.constName!
+        unless names.contains f do names := names.push f
+    return names
+  if names.isEmpty then throwError "unfold_local: no definition of this file occurs"
+  runText s!"simp only [{", ".intercalate (names.toList.map toString)}] at *"
+
+syntax (name := unfoldLocalTac) "unfold_local" : tactic
+@[tactic unfoldLocalTac] def evalUnfoldLocal : Tactic := fun _ => unfoldLocal
+
+syntax (name := divSplitTac) "div_split" : tactic
+@[tactic divSplitTac] def evalDivSplit : Tactic := fun _ => divSplit
+syntax (name := taskInductionTac) "task_induction" : tactic
+@[tactic taskInductionTac] def evalTaskInduction : Tactic := fun _ => taskInduction
+
+syntax (name := foldFactsTac) "fold_facts" : tactic
+@[tactic foldFactsTac] def evalFoldFacts : Tactic := fun _ => foldFacts
+
+syntax (name := existsSmallTac) "exists_small" : tactic
+syntax (name := modSplitTac) "mod_split" : tactic
+syntax (name := linHypsTac) "lin_hyps" : tactic
+syntax (name := boolSplitTac) "bool_split" : tactic
+syntax (name := refinePortfolio) "refine_portfolio" (ppSpace "[" str,* "]")? : tactic
+
+@[tactic existsSmallTac] def evalExistsSmall : Tactic := fun _ =>
+  existsSmall (runText "first | grind | (simp_all; done) | omega | (cons_of_ne_nil; simp_all; done)")
+@[tactic modSplitTac] def evalModSplit : Tactic := fun _ => modSplit
+@[tactic linHypsTac] def evalLinHyps : Tactic := fun _ => linHyps
+@[tactic boolSplitTac] def evalBoolSplit : Tactic := fun _ => boolSplit
+
+/-- The alternatives of `refine_portfolio`, cheapest first, each with its budget in thousands of heartbeats. `auto_close` is
+the task's cascade (a macro of the task file); where it is not defined, that alternative simply fails to parse. -/
+def portfolio : List (Nat × String) :=
+  [(200, "auto_close"), (200, "bool_split"), (400, "lin_hyps"), (400, "mod_split; lin_hyps"), (400, "exists_small"),
+   (400, "fold_facts"), (400, "div_split"), (200, "mod_eq_split"), (400, "succ_pos"), (600, "task_induction"), (600, "unfold_local; auto_close"),
+   (600, "(try unfold_local); (try lib_simp); lib_apply"),
+   -- a member of `l ++ [d]`, `a :: l` or `l.map f`: split the cases / unpack the preimage, then each part by the library
+   -- (he_025: `d` is prime; he_001: a group `String.mk g` has the properties of `g`)
+   (400, "(simp only [List.mem_append, List.mem_singleton, List.mem_cons, List.mem_map] at *); " ++
+     "(casesm* _ ∨ _, _ ∧ _, Exists _) <;> (try subst_vars) <;> " ++
+     -- name the member's index, for hypotheses the simp set states by index
+     "(try obtain ⟨_, _, rfl⟩ := List.getElem_of_mem ‹_ ∈ _›) <;> (try lib_simp) <;> (repeat' apply And.intro) <;> " ++
+     "first | (simp_all; done) | omega | lib_apply | grind"),
+   -- the same without the simp set, whose rewriting would hide a definition (`isBalanced`) the library's facts
+   -- unfold to (he_001: a closed group is balanced)
+   (400, "(simp only [List.mem_append, List.mem_singleton, List.mem_cons, List.mem_map] at *); " ++
+     "(casesm* _ ∨ _, _ ∧ _, Exists _) <;> (try subst_vars) <;> (repeat' apply And.intro) <;> " ++
+     "first | (simp_all; done) | omega | lib_apply_grind | grind"),
+   (200, "exists_hyp"),
+   -- members and list quantifiers in index form (`x ∈ l` ↦ `∃ k < l.length, l[k]! = x`), the form loop invariants state
+   -- facts in; then `grind` chains them (he_090: a member above the minimum is above the next smallest)
+   (400, "(try simp only [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.mem_iff_idx] at *); grind"),
+   -- `grind` with the whole library (a macro of the task file; he_010's loop exit)
+   (400, "lib_grind"),
+   (600, "(try unfold_local); (try lib_simp); lib_apply_grind"),
+   (200, "solve_by_elim +suggestions"), (200, "exact?"), (200, "grind +suggestions"), (200, "(simp_all; grind +suggestions)"),
+   (400, "try?"), (400, "refine_hammer")]
+
+/-- Prove each goal on its own: the first alternative of `portfolio` that closes it, under its own budget. One goal's
+proof never has to come from the tactic that proves the others (he_033: the cascade proves most conjuncts, not one).
+Each success is logged (`refine_portfolio: <tactic>`), so that a proof can be replayed with only the alternatives that
+worked: `refine_portfolio ["t₁", "t₂"]`. -/
+def runPortfolio (alternatives : List (Nat × String)) (debug : Bool) : TacticM Unit := do
+  for goal in ← getGoals do
+    setGoals [goal]
+    let mut closed := false
+    for (budget, tac) in alternatives do
+      if ← closeWithin budget (runText tac) then
+        logInfo m!"refine_portfolio: {tac}"
+        closed := true
+        break
+    unless closed do
+      if debug then
+        -- report the goal and go on with the others (for finding what the prover is missing)
+        logWarning m!"refine_portfolio: open goal{indentD (MessageData.ofGoal goal)}"
+        goal.admit
+      else throwError "refine_portfolio: no alternative closes{indentExpr (← goal.getType)}"
+  setGoals []
+
+@[tactic refinePortfolio] def evalRefinePortfolio : Tactic := fun stx => do
+  -- the optional `[ ... ]` is one node with three children (`getOptional?` expects one)
+  let alternatives := if stx[1].getNumArgs == 0 then portfolio else
+    stx[1][1].getSepArgs.toList.filterMap fun (s : Syntax) => s.isStrLit?.map (400, ·)
+  runPortfolio alternatives false
+
+syntax (name := refinePortfolioDebug) "refine_portfolio_debug" : tactic
+
+/-- The portfolio without `try?` and the external hammer (the slow alternatives); every goal it cannot close is reported
+and admitted. A diagnostic, never part of a proof. -/
+@[tactic refinePortfolioDebug] def evalRefinePortfolioDebug : Tactic := fun _ =>
+  runPortfolio (portfolio.filter fun (_, t) => t != "try?" && t != "refine_hammer") true
+
+end Refine

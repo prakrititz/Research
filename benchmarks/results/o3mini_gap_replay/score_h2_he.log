@@ -1,0 +1,29 @@
+28 derivations that needed helper lemmas
+he_001_separate_paren_groups         alone=False with_search=False  1367.4s
+he_020_find_closest_elements         alone=False with_search=False unproved  741.4s
+he_025_factorize                     alone=False with_search=False   458.1s
+he_033_sort_third                    alone=False with_search=False unproved   88.6s
+he_037_sort_even                     alone=False with_search=False unproved   89.9s
+he_038_decode_cyclic                 alone=False with_search=False unproved  363.2s
+he_044_change_base                   alone=False with_search=False   138.3s
+he_050_decode_shift                  alone=False with_search=False unproved  192.3s
+he_059_largest_prime_factor          alone=False with_search=False   300.8s
+he_071_triangle_area                 alone=False with_search=False   111.6s
+he_079_decimal_to_binary             alone=False with_search=False   389.4s
+he_084_solve                         alone=False with_search=False unproved  130.8s
+he_087_get_row                       alone=False with_search=False   345.7s
+he_090_next_smallest                 alone=False with_search=False   219.1s
+he_094_skjkasdkd                     alone=False with_search=False unproved  371.7s
+he_099_closest_integer               alone=False with_search=False unproved   43.8s
+he_103_rounded_avg                   alone=False with_search=False   235.8s
+he_111_histogram                     alone=False with_search=False   422.3s
+he_114_min_sub_array_sum             alone=False with_search=False unproved  105.7s
+he_118_get_closest_vowel             alone=False with_search=False   647.3s
+he_129_min_path                      alone=False with_search=False   252.4s
+he_135_can_arrange                   alone=False with_search=False unproved  101.7s
+he_136_largest_smallest_integers     alone=False with_search=False unproved   96.6s
+he_145_order_by_points               alone=False with_search=False unproved   73.0s
+he_148_bf                            alone=False with_search=False unproved  366.6s
+he_149_sorted_list_sum               alone=False with_search=False   102.2s
+classic_fast_power                   alone=False with_search=False unproved  354.9s
+classic_sqrt_approx                  alone=False with_search=False   110.0s

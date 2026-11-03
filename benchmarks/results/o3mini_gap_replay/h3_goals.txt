@@ -1,0 +1,149 @@
+===== he_001_separate_paren_groups ['on exit the invariant and the negated guard imply the postcondition']
+===== he_020_find_closest_elements ['the invariant holds before the first iteration']
+case left.right.left
+numbers : List ℚ
+h_precond : findClosestElements_precond numbers
+⊢ ∃ b < 2,
+    ∃ a < b,
+      min numbers[0]! numbers[1]! = numbers[a]! ∧ max numbers[0]! numbers[1]! = numbers[b]! ∨
+        min numbers[0]! numbers[1]! = numbers[b]! ∧ max numbers[0]! numbers[1]! = numbers[a]!
+===== he_025_factorize ['the value satisfies the postcondition under the hypotheses']
+===== he_033_sort_third ['the value satisfies the postcondition under the hypotheses']
+case right.right.left
+l : List ℤ
+h_precond : sortThird_precond l
+⊢ (atMod 3
+          (List.map (fun i => if i % 3 = 0 then ((atMod 3 l).mergeSort fun a b => decide (a ≤ b))[i / 3]! else l[i]!)
+            (List.range l.length))).isPerm
+      (atMod 3 l) =
+    true
+===== he_037_sort_even ['the value satisfies the postcondition under the hypotheses']
+case right.right.left
+l : List ℤ
+h_precond : sortEven_precond l
+⊢ (atMod 2
+          (List.map (fun i => if i % 2 = 0 then ((atMod 2 l).mergeSort fun a b => decide (a ≤ b))[i / 2]! else l[i]!)
+            (List.range l.length))).isPerm
+      (atMod 2 l) =
+    true
+===== he_038_decode_cyclic ['the value satisfies the postcondition under the hypotheses']
+===== he_044_change_base ['the value satisfies the postcondition under the hypotheses']
+===== he_050_decode_shift ['the value satisfies the postcondition under the hypotheses']
+===== he_059_largest_prime_factor ['on exit the invariant and the negated guard imply the postcondition']
+===== he_071_triangle_area ['the value satisfies the postcondition under the hypotheses']
+case right
+a b c : ℚ
+h_precond : triangleArea71_precond a b c
+h1 : ¬(a + b ≤ c ∨ a + c ≤ b ∨ b + c ≤ a)
+⊢ ¬(a + b ≤ c ∨ a + c ≤ b ∨ b + c ≤ a) →
+    ↑((⌊40000 * area2 a b c⌋₊.sqrt + 1) / 2) / 100 ≥ 0 ∧
+      (↑((⌊40000 * area2 a b c⌋₊.sqrt + 1) / 2) / 100 * 100).den = 1 ∧
+        (↑((⌊40000 * area2 a b c⌋₊.sqrt + 1) / 2) / 100 < 1 / 200 ∨
+            (↑((⌊40000 * area2 a b c⌋₊.sqrt + 1) / 2) / 100 - 1 / 200) ^ 2 ≤ area2 a b c) ∧
+          area2 a b c ≤ (↑((⌊40000 * area2 a b c⌋₊.sqrt + 1) / 2) /
+===== he_079_decimal_to_binary ['the value satisfies the postcondition under the hypotheses']
+===== he_084_solve ['the value satisfies the postcondition under the hypotheses']
+===== he_087_get_row ['the value satisfies the postcondition under the hypotheses']
+===== he_090_next_smallest ['the value satisfies the postcondition under the hypotheses']
+lst : List ℤ
+m : ℤ
+p : Bool × ℤ
+h_precond : nextSmallest_precond lst
+h1 : ¬lst = []
+h3 : (∃ k < lst.length, lst[k]! = m) ∧ ∀ k < lst.length, m ≤ lst[k]!
+h5 :
+  (p.1 = true ↔ ∃ k < lst.length, m < lst[k]!) ∧
+    (p.1 = true → (∃ k < lst.length, lst[k]! = p.2 ∧ m < p.2) ∧ ∀ k < lst.length, m < lst[k]! → p.2 ≤ lst[k]!)
+h8 : ¬p.1 = true
+⊢ nextSmallest_postcond lst none h_precond
+===== he_094_skjkasdkd ['on exit the invariant and the negated guard imply the postcondition']
+lst : List ℕ
+best : ℕ
+h_precond : skjkasdkd_precond lst
+h1i :
+  lst.length ≤ lst.length ∧
+    (best = 0 ∨ ∃ k < lst.length, lst[k]! = best ∧ Nat.Prime best) ∧
+      ∀ k < lst.length, Nat.Prime lst[k]! → lst[k]! ≤ best
+h1g : ¬lst.length < lst.length
+⊢ skjkasdkd_postcond lst (List.map (fun c => c.toNat - '0'.toNat) (toString best).toList).sum h_precond
+===== he_099_closest_integer ['the value satisfies the postcondition under the hypotheses']
+value : String
+h_precond : closestInteger_precond value
+⊢ closestInteger_postcond value (if parseDec value ≥ 0 then ⌊parseDec value + 1 / 2⌋ else -⌊-parseDec value + 1 / 2⌋)
+    h_precond
+===== he_103_rounded_avg ['the value satisfies the postcondition under the hypotheses']
+===== he_111_histogram ['the value satisfies the postcondition under the hypotheses']
+===== he_114_min_sub_array_sum ['the value satisfies the postcondition under the hypotheses']
+case left
+nums : List ℤ
+h_precond : minSubArraySum_precond nums
+⊢ ∃ j ≤ nums.length,
+    ∃ i < j,
+      (List.take (j - i) (List.drop i nums)).sum =
+        List.foldl min nums[0]!
+          (List.flatMap (fun j => List.map (fun i => (List.take (j - i) (List.drop i nums)).sum) (List.range j))
+            (List.range (nums.length + 1)))
+===== he_118_get_closest_vowel ['the value satisfies the postcondition under the hypotheses']
+===== he_129_min_path ['the value satisfies the postcondition under the hypotheses']
+case left
+grid : List (List ℕ)
+k : ℕ
+h_precond : minPath_precond grid k
+⊢ ∃ w ∈ walksOf grid.length k,
+    List.map (cellAt grid) w =
+      List.foldl (fun b c => if c < b then c else b)
+        (List.map (fun w => List.map (cellAt grid) w) (walksOf grid.length k)).head!
+        (List.map (fun w => List.map (cellAt grid) w) (walksOf grid.length k))
+===== he_135_can_arrange ['on exit the invariant and the negated guard imply the postcondition']
+===== he_136_largest_smallest_integers ['on exit the invariant and the negated guard imply the postcondition']
+lst : List ℤ
+m : ℤ
+f : Bool
+h_precond : largestSmallestIntegers_precond lst
+h2i :
+  lst.length ≤ lst.length ∧
+    (f = true ↔ ∃ k < lst.length, lst[k]! < 0) ∧
+      (f = true → (∃ k < lst.length, lst[k]! = m) ∧ m < 0 ∧ ∀ k < lst.length, lst[k]! < 0 → lst[k]! ≤ m)
+h2g : ¬lst.length < lst.length
+⊢ ((if f = true then some m else none) = none ∧ ∀ x ∈ lst, x ≥ 0) ∨
+    ∃ y ∈ lst, (if f = true then some m else none) = some y ∧ y < 0 ∧ ∀ x ∈ lst, x < 0 → x ≤ y
+===== he_145_order_by_points ['the value satisfies the postcondition under the hypotheses']
+case right.right
+nums : List ℤ
+h_precond : orderByPoints_precond nums
+⊢ ∀ x ∈ nums,
+    List.filter (fun y => digitWeight y == digitWeight x)
+        (nums.mergeSort fun a b => decide (digitWeight a ≤ digitWeight b)) =
+      List.filter (fun y => digitWeight y == digitWeight x) nums
+===== he_148_bf ['the value satisfies the postcondition under the hypotheses']
+===== he_149_sorted_list_sum ['the value satisfies the postcondition under the hypotheses']
+case right
+lst : List String
+h_precond : sortedListSum_precond lst
+⊢ ∀
+    i <
+      ((List.filter (fun s => decide (s.length % 2 = 0)) lst).mergeSort fun a b =>
+            decide (a.length < b.length) || a.length == b.length && !decide (b < a)).length -
+        1,
+    ((List.filter (fun s => decide (s.length % 2 = 0)) lst).mergeSort fun a b =>
+              decide (a.length < b.length) || a.length == b.length && !decide (b < a))[i]!.length <
+        ((List.filter (fun s => decide (s.length % 2
+===== classic_fast_power ['the value satisfies the postcondition under the hypotheses']
+case left
+b : ℤ
+e : ℕ
+acc base : ℤ
+k : ℕ
+h_precond : fastPower_precond b e
+h1i : acc * base ^ k = b ^ e
+h1g : k > 0
+h2 : k % 2 = 1
+⊢ acc * base * (base * base) ^ (k / 2) = b ^ e
+===== classic_sqrt_approx ['the value satisfies the postcondition under the hypotheses']
+case right
+N e : ℚ
+k : ℕ
+h_precond : sqrtApprox_precond N e
+h1i : ↑k * e * (↑k * e) ≤ N
+h1g : (↑k + 1) * e * ((↑k + 1) * e) ≤ N
+⊢ ⌊(N + 1) / e⌋₊ + 1 - (k + 1) < ⌊(N + 1) / e⌋₊ + 1 - k

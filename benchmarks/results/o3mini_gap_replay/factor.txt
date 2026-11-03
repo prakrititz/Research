@@ -1,0 +1,36 @@
+-- trial division: the least divisor `d ≥ 2` of `n` is prime; what is left, `n / d`, has no smaller divisor either, and is 1
+-- or at least `d` (he_025; he_059)
+theorem prime_of_min_divisor (d n : Nat) (hd : 2 ≤ d) (hdvd : n % d = 0) (hmin : ∀ k, 2 ≤ k → k < d → ¬ k ∣ n) :
+    Nat.Prime d := by
+  refine Nat.prime_def.mpr ⟨hd, fun m hm => ?_⟩
+  by_contra h
+  push_neg at h
+  have hm0 : 0 < m := Nat.pos_of_dvd_of_pos hm (by omega)
+  have hle : m ≤ d := Nat.le_of_dvd (by omega) hm
+  exact hmin m (by omega) (by omega) (Nat.dvd_trans hm (Nat.dvd_of_mod_eq_zero hdvd))
+theorem not_dvd_div_of_not_dvd (k d n : Nat) (hdvd : n % d = 0) (h : ¬ k ∣ n) : ¬ k ∣ n / d :=
+  fun hk => h (Nat.dvd_trans hk (Nat.div_dvd_of_dvd (Nat.dvd_of_mod_eq_zero hdvd)))
+theorem div_one_or_ge_of_min_divisor (d n : Nat) (hd : 2 ≤ d) (hn : 0 < n) (hdvd : n % d = 0)
+    (hmin : ∀ k, 2 ≤ k → k < d → ¬ k ∣ n) : n / d = 1 ∨ d ≤ n / d := by
+  have hq : 0 < n / d := Nat.div_pos (Nat.le_of_dvd hn (Nat.dvd_of_mod_eq_zero hdvd)) (by omega)
+  by_cases h1 : n / d = 1
+  · exact Or.inl h1
+  · right
+    by_contra hlt
+    exact hmin (n / d) (by omega) (by omega) (Nat.div_dvd_of_dvd (Nat.dvd_of_mod_eq_zero hdvd))
+-- a list sorted by index stays sorted after appending an element at least as large as every member
+theorem sorted_append_ge {α : Type} [LinearOrder α] [Inhabited α] (l : List α) (d : α)
+    (hs : ∀ i, i < l.length - 1 → l[i]! ≤ l[i + 1]!) (hd : ∀ p ∈ l, p ≤ d) :
+    ∀ i, i < (l ++ [d]).length - 1 → (l ++ [d])[i]! ≤ (l ++ [d])[i + 1]! := by
+  intro i hi
+  simp only [List.length_append, List.length_singleton] at hi
+  have hi1 : i < l.length := by omega
+  rw [getElem!_pos (l ++ [d]) i (by simp; omega), getElem!_pos (l ++ [d]) (i + 1) (by simp; omega),
+    List.getElem_append_left hi1]
+  by_cases h : i + 1 < l.length
+  · rw [List.getElem_append_left h]
+    have := hs i (by omega)
+    rwa [getElem!_pos l i hi1, getElem!_pos l (i + 1) h] at this
+  · have e : i + 1 = l.length := by omega
+    simp only [e, List.getElem_append_right (Nat.le_refl _), Nat.sub_self, List.getElem_singleton]
+    exact hd _ (List.getElem_mem hi1)

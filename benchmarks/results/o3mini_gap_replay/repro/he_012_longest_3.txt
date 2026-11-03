@@ -1,0 +1,399 @@
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_2 (strings : List String) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) :
+    (fun (i : Nat) (acc : Nat) => i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length)) (1) (0) := by
+  first | (apply auto_0_obl3_3_s0; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (refine And.intro ?_ ?_ <;> first | (apply auto_0_obl3_3_s0; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | omega | grind | (simp_all; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; omega) | (simp_all; omega) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0, Nat.mul_comm]; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0, mul_assoc]; done) | (split <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; done) | (split_ifs <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> omega) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0, Nat.mul_comm, Nat.mul_left_comm]; done) | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (apply auto_0_obl3_3_s0 <;> simp_all; done) | (grind [auto_0_obl3_3_s0]) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> grind [auto_0_obl3_3_s0]) | (norm_num; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; norm_num; done) | lib_apply | ((try intros); (try unfold longest_precond at *); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> first | omega | lib_chain) | ((try intros); (try simp_all only [Refine.getElem_bang_map_range, Refine.getElem_bang_append, Refine.getElem_bang_cons, Refine.getElem_bang_nil, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.mergeSort_length', Refine.mem_dedup_mergeSort, Refine.toList_getElem_bang, Refine.string_toList_mk, Refine.string_length_mk, List.length_map, List.length_range]); (repeat' apply And.intro) <;> (try intros) <;> lib_chain) | ((try intros); (try split_ifs) <;> (try simp only [Refine.getElem_bang_append, Refine.getElem_bang_cons, Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind) | ((try intros); (try casesm* _ ∧ _); (try simp only [Refine.take_succ_getElem?, List.filterMap_append, List.map_append, List.filter_append, List.flatMap_append] at *); (try subst_vars); (try split) <;> (simp_all; done)) | nlinarith | (aesop; done) | decide | sorry))
+
+--- errors:
+
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3 (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; first | (apply auto_0_obl3_3_s0; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (refine And.intro ?_ ?_ <;> first | (apply auto_0_obl3_3_s0; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | omega | grind | (simp_all; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; omega) | (simp_all; omega) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0, Nat.mul_comm]; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0, mul_assoc]; done) | (split <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; done) | (split_ifs <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> omega) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0, Nat.mul_comm, Nat.mul_left_comm]; done) | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (apply auto_0_obl3_3_s0 <;> simp_all; done) | (grind [auto_0_obl3_3_s0]) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> grind [auto_0_obl3_3_s0]) | (norm_num; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; norm_num; done) | lib_apply | ((try intros); (try unfold longest_precond at *); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> first | omega | lib_chain) | ((try intros); (try simp_all only [Refine.getElem_bang_map_range, Refine.getElem_bang_append, Refine.getElem_bang_cons, Refine.getElem_bang_nil, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.mergeSort_length', Refine.mem_dedup_mergeSort, Refine.toList_getElem_bang, Refine.string_toList_mk, Refine.string_length_mk, List.length_map, List.length_range]); (repeat' apply And.intro) <;> (try intros) <;> lib_chain) | ((try intros); (try split_ifs) <;> (try simp only [Refine.getElem_bang_append, Refine.getElem_bang_cons, Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind) | ((try intros); (try casesm* _ ∧ _); (try simp only [Refine.take_succ_getElem?, List.filterMap_append, List.map_append, List.filter_append, List.flatMap_append] at *); (try subst_vars); (try split) <;> (simp_all; done)) | nlinarith | (aesop; done) | decide | sorry))) | (first | (apply auto_0_obl3_3_s0; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (refine And.intro ?_ ?_ <;> first | (apply auto_0_obl3_3_s0; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | omega | grind | (simp_all; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; omega) | (simp_all; omega) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0, Nat.mul_comm]; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0, mul_assoc]; done) | (split <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; done) | (split_ifs <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> omega) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0, Nat.mul_comm, Nat.mul_left_comm]; done) | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (apply auto_0_obl3_3_s0 <;> simp_all; done) | (grind [auto_0_obl3_3_s0]) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> grind [auto_0_obl3_3_s0]) | (norm_num; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; norm_num; done) | lib_apply | ((try intros); (try unfold longest_precond at *); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> first | omega | lib_chain) | ((try intros); (try simp_all only [Refine.getElem_bang_map_range, Refine.getElem_bang_append, Refine.getElem_bang_cons, Refine.getElem_bang_nil, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.mergeSort_length', Refine.mem_dedup_mergeSort, Refine.toList_getElem_bang, Refine.string_toList_mk, Refine.string_length_mk, List.length_map, List.length_range]); (repeat' apply And.intro) <;> (try intros) <;> lib_chain) | ((try intros); (try split_ifs) <;> (try simp only [Refine.getElem_bang_append, Refine.getElem_bang_cons, Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind) | ((try intros); (try casesm* _ ∧ _); (try simp only [Refine.take_succ_getElem?, List.filterMap_append, List.map_append, List.filter_append, List.flatMap_append] at *); (try subst_vars); (try split) <;> (simp_all; done)) | nlinarith | (aesop; done) | decide | sorry)))
+
+--- errors:
+(deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+====================================================================================================
+example (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  sorry
+
+--- errors:
+
+====================================================================================================
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 0 in
+#eval show IO Unit from do
+  let found : Option String := Id.run do
+    for strings in ([([] : List (String)), [""], ["a"], ["aa"], ["", ""], ["", "a"], ["", "aa"], ["a", ""], ["a", "a"], ["a", "aa"], ["aa", ""], ["aa", "a"], ["aa", "aa"]] : List (List String)) do
+      for i in ([0, 1, 2, 3] : List (Nat)) do
+        for acc in ([0, 1, 2, 3] : List (Nat)) do
+          if h_precond : (longest_precond strings) then
+            if h1 : (¬ (strings = [])) then
+              if h3i : ((i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) then
+                if h3g : (¬ (i < strings.length)) then
+                  if !(decide (longest_postcond strings (some strings[acc]!) h_precond)) then
+                    return some ("strings := " ++ toString (repr strings) ++ ", " ++ "i := " ++ toString (repr i) ++ ", " ++ "acc := " ++ toString (repr acc))
+    return none
+  IO.println ("SMALLSCOPE: " ++ found.getD "none")
+
+--- errors:
+
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3_s0_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; first | ((try unfold longest_postcond at *); (try simp only [longest_postcond] at *); refine ⟨acc, ?_⟩; (repeat' apply And.intro) <;> (first | omega | rfl | (simp_all; done) | (rw [Refine.forall_mem_iff_idx]; intros; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (intros; grind))) | ((try unfold longest_postcond at *); (try simp only [longest_postcond] at *); refine ⟨i, ?_⟩; (repeat' apply And.intro) <;> (first | omega | rfl | (simp_all; done) | (rw [Refine.forall_mem_iff_idx]; intros; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (intros; grind)))) | (first | ((try unfold longest_postcond at *); (try simp only [longest_postcond] at *); refine ⟨acc, ?_⟩; (repeat' apply And.intro) <;> (first | omega | rfl | (simp_all; done) | (rw [Refine.forall_mem_iff_idx]; intros; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (intros; grind))) | ((try unfold longest_postcond at *); (try simp only [longest_postcond] at *); refine ⟨i, ?_⟩; (repeat' apply And.intro) <;> (first | omega | rfl | (simp_all; done) | (rw [Refine.forall_mem_iff_idx]; intros; grind) | (rw [Refine.exists_mem_iff_idx]; grind) | (intros; grind))))
+
+--- errors:
+`grind` failed
+case grind.1
+strings : List String
+i acc : ℕ
+h_precond : longest_precond strings
+h1 : ¬strings = []
+h3i :
+  i ≤ strings.length ∧
+    (∀ j < i, strings[j]!.length ≤ strings[acc]!.length) ∧ ∀ j < acc, strings[j]!.length < strings[acc]!.length
+h3g : ¬i < strings.length
+h : strings.length ≤ i
+h_1 : acc + 1 ≤ strings.length
+⊢ False
+[grind] Goal diagnostics
+  [facts] Asserted facts
+    [prop] ¬strings = []
+    [prop] i ≤ strings.length ∧
+          (∀ (j : ℕ), j + 1 ≤ i → strings[j]!.length ≤ strings[acc]!.length) ∧
+            ∀ (j : ℕ), j + 1 ≤ acc → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings.length ≤ i
+    [prop] strings.length ≤ i
+    [prop] strings[acc]! = strings[acc]?.getD default
+    [prop] strings.length ≤ acc → strings[acc]! = default
+    [prop] ∀ (h : acc + 1 ≤ strings.length), strings[acc]! = strings[acc]
+    [prop] strings.length ≤ acc → strings[acc]? = none
+    [prop] ∀ (h : acc + 1 ≤ strings.length), strings[acc]? = some strings[acc]
+    [prop] acc + 1 ≤ strings.length
+    [prop] (some strings[acc]).getD default = strings[acc]
+  [eqc] True propositions
+    [prop] i ≤ strings.length ∧
+          (∀ (j : ℕ), j + 1 ≤ i → strings[j]!.length ≤ strings[acc]!.length) ∧
+            ∀ (j : ℕ), j + 1 ≤ acc → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] (∀ (j : ℕ), j + 1 ≤ i → strings[j]!.length ≤ strings[acc]!.length) ∧
+          ∀ (j : ℕ), j + 1 ≤ acc → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] i ≤ strings.length
+    [prop] strings.length ≤ i
+    [prop] ∀ (j : ℕ), j + 1 ≤ i → strings[j]!.length ≤ strings[acc]!.length
+    [prop] ∀ (j : ℕ), j + 1 ≤ acc → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings[acc]! = strings[acc]
+    [prop] acc + 1 ≤ strings.length
+    [prop] strings.length ≤ acc → strings[acc]! = default
+    [prop] ∀ (h : acc + 1 ≤ strings.length), strings[acc]! = strings[acc]
+    [prop] strings[acc]? = some strings[acc]
+    [prop] acc < strings.length
+    [prop] strings.length ≤ acc → strings[acc]? = none
+    [prop] ∀ (h : acc + 1 ≤ strings.length), strings[acc]? = some strings[acc]
+  [eqc] False propositions
+    [prop] strings = []
+    [prop] strings.length ≤ acc
+    [prop] strings[acc]? = none
+  [eqc] Equivalence classes
+    [eqc] {i, strings.length}
+    [eqc] {strings[acc]!, strings[acc]?.getD default, strings[acc], (some strings[acc]).getD default}
+    [eqc] {strings[acc]?, some strings[acc]}
+    [eqc] others
+      [eqc] {↑i, ↑strings.length}
+  [cases] Case analyses
+    [cases] [1/2]: acc + 1 ≤ strings.length
+      [cases] source: E-matching `getElem?_pos`
+  [ematch] E-matching patterns
+    [thm] Set.subset_def: [@LE.le _ _ #1 #0]
+    [thm] List.eq_nil_of_length_eq_zero: [@List.length #2 #1]
+    [thm] List.length_nil: [@List.length #0 (@List.nil _)]
+    [thm] local_0: [@LE.le `[ℕ] `[instLENat] (@HAdd.hAdd `[ℕ] `[ℕ] `[ℕ] `[instHAdd] #1 `[1]) `[acc]]
+    [thm] List.getElem!_eq_getElem?_getD: [@getElem! (List #3) `[ℕ] _ _ _ #2 #1 #0]
+    [thm] getElem!_neg: [
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3_g0_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; first | (apply auto_0_obl3_3_s0; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (refine And.intro ?_ ?_ <;> first | (apply auto_0_obl3_3_s0; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega)) | (first | (apply auto_0_obl3_3_s0; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (refine And.intro ?_ ?_ <;> first | (apply auto_0_obl3_3_s0; all_goals first | done | assumption | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega))
+
+--- errors:
+Type mismatch
+  ⟨?m.53, ?m.54⟩
+has type
+  ?m.51 ∧ ?m.52
+but is expected to have type
+  longest_postcond strings (some strings[acc]!) h_precond
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3_g1_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; (try dsimp only at *); (repeat' apply And.intro); all_goals (first | omega | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; omega) | (simp_all; omega) | (simp_all; done) | (split_ifs <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> omega) | (split <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; done))) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | omega | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; omega) | (simp_all; omega) | (simp_all; done) | (split_ifs <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> omega) | (split <;> simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; done)))
+
+--- errors:
+Tactic `split` failed: Could not split an `if` or `match` expression in the goal
+
+Hint: Use `set_option trace.split.failure true` to display additional diagnostic information
+
+strings : List String
+i acc : ℕ
+h_precond : longest_precond strings
+h1 : ¬strings = []
+h3i :
+  i ≤ strings.length ∧
+    (∀ j < i, strings[j]!.length ≤ strings[acc]!.length) ∧ ∀ j < acc, strings[j]!.length < strings[acc]!.length
+h3g : ¬i < strings.length
+⊢ longest_postcond strings (some strings[acc]!) h_precond
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3_g2_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; (try dsimp only at *); (repeat' apply And.intro); all_goals (first | (apply auto_0_obl3_3_s0 <;> simp_all; done) | (grind [auto_0_obl3_3_s0]) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> grind [auto_0_obl3_3_s0]))) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | (apply auto_0_obl3_3_s0 <;> simp_all; done) | (grind [auto_0_obl3_3_s0]) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> grind [auto_0_obl3_3_s0])))
+
+--- errors:
+`grind` failed
+case grind.2
+strings : List String
+i acc : ℕ
+h_precond : longest_precond strings
+h1 : ¬strings = []
+h3i :
+  i ≤ strings.length ∧
+    (∀ j < i, strings[j]!.length ≤ strings[acc]!.length) ∧ ∀ j < acc, strings[j]!.length < strings[acc]!.length
+h3g : strings.length ≤ i
+h :
+  ∀ (a : ℕ),
+    strings.length ≤ a ∨
+      ¬strings[a]! = strings[acc]! ∨
+        (¬∀ (k : ℕ) (a : k + 1 ≤ strings.length), strings[k].length ≤ strings[acc]!.length) ∨
+          ¬∀ (j : ℕ), j + 1 ≤ a → strings[j]!.length + 1 ≤ strings[acc]!.length
+h_1 : ¬acc + 1 ≤ strings.length
+⊢ False
+[grind] Goal diagnostics
+  [facts] Asserted facts
+    [prop] ¬strings = []
+    [prop] i ≤ strings.length ∧
+          (∀ (j : ℕ), j + 1 ≤ i → strings[j]!.length ≤ strings[acc]!.length) ∧
+            ∀ (j : ℕ), j + 1 ≤ acc → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings.length ≤ i
+    [prop] ∀ (a : ℕ),
+          strings.length ≤ a ∨
+            ¬strings[a]! = strings[acc]! ∨
+              (¬∀ (k : ℕ) (a : k + 1 ≤ strings.length), strings[k].length ≤ strings[acc]!.length) ∨
+                ¬∀ (j : ℕ), j + 1 ≤ a → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings[acc]! = strings[acc]?.getD default
+    [prop] strings.length ≤ acc → strings[acc]! = default
+    [prop] ∀ (h : acc + 1 ≤ strings.length), strings[acc]! = strings[acc]
+    [prop] strings.length ≤ i ∨
+          ¬strings[i]! = strings[acc]! ∨
+            (¬∀ (k : ℕ) (a : k + 1 ≤ strings.length), strings[k].length ≤ strings[acc]!.length) ∨
+              ¬∀ (j : ℕ), j + 1 ≤ i → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings.length ≤ acc ∨
+          (¬∀ (k : ℕ) (a : k + 1 ≤ strings.length), strings[k].length ≤ strings[acc]!.length) ∨
+            ¬∀ (j : ℕ), j + 1 ≤ acc → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings[i]! = strings[i]?.getD default
+    [prop] strings.length ≤ i → strings[i]! = default
+    [prop] ∀ (h : i + 1 ≤ strings.length), strings[i]! = strings[i]
+    [prop] i + 1 ≤ acc → strings[i]!.length + 1 ≤ strings[acc]!.length
+    [prop] ¬strings = [] →
+          (¬strings = [] ∧
+              acc + 1 ≤ strings.length ∧
+                (∀ (j : ℕ), j + 1 ≤ strings.length → strings[j]!.length ≤ strings[acc]!.length) ∧
+                  ∀ (j : ℕ), j + 1 ≤ acc → strings[j]!.length + 1 ≤ strings[acc]!.length) →
+            ∃ i,
+              i + 1 ≤ strings.length ∧
+                strings[i]! = strings[acc]! ∧
+                  (∀ t ∈ strings, t.length ≤ strings[acc]!.length) ∧
+                    ∀ (j : ℕ), j + 1 ≤ i → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings.length ≤ acc → strings[acc]? = none
+    [prop] ∀ (h : acc + 1 ≤ strings.length), strings[acc]? = some strings[acc]
+    [prop] ¬strings = [] →
+          (¬strings = [] ∧
+              i + 1 ≤ strings.length ∧
+                (∀ (j : ℕ), j + 1 ≤ strings.length → strings[j]!.length ≤ strings[i]!.length) ∧
+                  ∀ (j : ℕ), j + 1 ≤ i → strings[j]!.length + 1 ≤ strings[i]!.l
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3_g3_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; (try dsimp only at *); (repeat' apply And.intro); all_goals (first | lib_apply)) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | lib_apply))
+
+--- errors:
+Tactic `apply` failed: could not unify the conclusion of `Refine.mergeSort_le_nat'`
+  (List.mergeSort ?l fun a b => decide (a ≤ b))[?i]! ≤ (List.mergeSort ?l fun a b => decide (a ≤ b))[?i + 1]!
+with the goal
+  longest_postcond strings (some strings[acc]!) h_precond
+
+Note: The full type of `Refine.mergeSort_le_nat'` is
+  ∀ (l : List ℕ),
+    ∀ i < l.length - 1, (l.mergeSort fun a b => decide (a ≤ b))[i]! ≤ (l.mergeSort fun a b => decide (a ≤ b))[i + 1]!
+
+strings : List String
+i acc : ℕ
+h_precond : longest_precond strings
+h1 : ¬strings = []
+h3i :
+  i ≤ strings.length ∧
+    (∀ j < i, strings[j]!.length ≤ strings[acc]!.length) ∧ ∀ j < acc, strings[j]!.length < strings[acc]!.length
+h3g : ¬i < strings.length
+⊢ longest_postcond strings (some strings[acc]!) h_precond
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3_g4_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; (try dsimp only at *); (repeat' apply And.intro); all_goals (first | ((try intros); (try unfold longest_precond at *); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> first | omega | lib_chain) | ((try intros); (try simp_all only [Refine.getElem_bang_map_range, Refine.getElem_bang_append, Refine.getElem_bang_cons, Refine.getElem_bang_nil, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.mergeSort_length', Refine.mem_dedup_mergeSort, Refine.toList_getElem_bang, Refine.string_toList_mk, Refine.string_length_mk, List.length_map, List.length_range]); (repeat' apply And.intro) <;> (try intros) <;> lib_chain))) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | ((try intros); (try unfold longest_precond at *); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> first | omega | lib_chain) | ((try intros); (try simp_all only [Refine.getElem_bang_map_range, Refine.getElem_bang_append, Refine.getElem_bang_cons, Refine.getElem_bang_nil, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.mergeSort_length', Refine.mem_dedup_mergeSort, Refine.toList_getElem_bang, Refine.string_toList_mk, Refine.string_length_mk, List.length_map, List.length_range]); (repeat' apply And.intro) <;> (try intros) <;> lib_chain)))
+
+--- errors:
+failed
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3_g5_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; (try dsimp only at *); (repeat' apply And.intro); all_goals (first | ((try intros); (try split_ifs) <;> (try simp only [Refine.getElem_bang_append, Refine.getElem_bang_cons, Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind))) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | ((try intros); (try split_ifs) <;> (try simp only [Refine.getElem_bang_append, Refine.getElem_bang_cons, Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind)))
+
+--- errors:
+`grind` failed
+case grind.1.1.1.2
+strings : List String
+i acc : ℕ
+h_precond : longest_precond strings
+h1 : ¬strings = []
+h3i :
+  i ≤ strings.length ∧
+    (∀ j < i, strings[j]!.length ≤ strings[acc]!.length) ∧ ∀ j < acc, strings[j]!.length < strings[acc]!.length
+h3g : ¬i < strings.length
+h :
+  ∀ (a : ℕ),
+    strings.length ≤ a ∨
+      ¬strings[a]! = strings[acc]! ∨
+        (¬∀ t ∈ strings, t.length ≤ strings[acc]!.length) ∨
+          ¬∀ (j : ℕ), j + 1 ≤ a → strings[j]!.length + 1 ≤ strings[acc]!.length
+h_1 : acc + 1 ≤ strings.length
+w : String
+h_3 : ¬(w ∈ strings → w.length ≤ strings[acc]!.length)
+h_4 : 1 ≤ acc
+left : strings.Nodup
+right : ∀ (a : String), List.count a strings ≤ 1
+left_1 : ¬strings[acc] = strings[0]
+right_1 : ¬acc = 0
+⊢ False
+[grind] Goal diagnostics
+  [facts] Asserted facts
+    [prop] ¬strings = []
+    [prop] i ≤ strings.length ∧
+          (∀ (j : ℕ), j + 1 ≤ i → strings[j]!.length ≤ strings[acc]!.length) ∧
+            ∀ (j : ℕ), j + 1 ≤ acc → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings.length ≤ i
+    [prop] ∀ (a : ℕ),
+          strings.length ≤ a ∨
+            ¬strings[a]! = strings[acc]! ∨
+              (¬∀ t ∈ strings, t.length ≤ strings[acc]!.length) ∨
+                ¬∀ (j : ℕ), j + 1 ≤ a → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings[acc]! = strings[acc]?.getD default
+    [prop] strings.length ≤ acc → strings[acc]! = default
+    [prop] ∀ (h : acc + 1 ≤ strings.length), strings[acc]! = strings[acc]
+    [prop] strings.length ≤ i ∨
+          ¬strings[i]! = strings[acc]! ∨
+            (¬∀ t ∈ strings, t.length ≤ strings[acc]!.length) ∨
+              ¬∀ (j : ℕ), j + 1 ≤ i → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings.length ≤ acc ∨
+          (¬∀ t ∈ strings, t.length ≤ strings[acc]!.length) ∨
+            ¬∀ (j : ℕ), j + 1 ≤ acc → strings[j]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings[i]! = strings[i]?.getD default
+    [prop] strings.length ≤ i → strings[i]! = default
+    [prop] ∀ (h : i + 1 ≤ strings.length), strings[i]! = strings[i]
+    [prop] i + 1 ≤ acc → strings[i]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings.length ≤ acc → strings[acc]? = none
+    [prop] ∀ (h : acc + 1 ≤ strings.length), strings[acc]? = some strings[acc]
+    [prop] strings.length ≤ i → strings[i]? = none
+    [prop] strings.length ≤ i → strings[i]? = none
+    [prop] ∀ (h : i + 1 ≤ strings.length), strings[i]? = some strings[i]
+    [prop] none.getD default = default
+    [prop] acc + 1 ≤ strings.length
+    [prop] ¬(w ∈ strings → w.length ≤ strings[acc]!.length)
+    [prop] (some strings[acc]).getD default = strings[acc]
+    [prop] w ∈ strings → 1 ≤ strings.length
+    [prop] 1 ≤ i → strings[0]!.length ≤ strings[acc]!.length
+    [prop] strings[0]! = strings[0]?.getD default
+    [prop] strings.length = 0 → strings[0]! = default
+    [prop] ∀ (h : 1 ≤ strings.length), strings[0]! = strings[0]
+    [prop] 1 ≤ acc → strings[0]!.length + 1 ≤ strings[acc]!.length
+    [prop] strings.length = 0
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3_g6_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; (try dsimp only at *); (repeat' apply And.intro); all_goals (first | grind | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind))) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | grind | (rw [Refine.forall_mem_iff_idx]; grind) | (rw [Refine.exists_mem_iff_idx]; grind)))
+
+--- errors:
+Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∃ x ∈ ?l, ?P x
+in the target expression
+  longest_postcond strings (some strings[acc]!) h_precond
+
+strings : List String
+i acc : ℕ
+h_precond : longest_precond strings
+h1 : ¬strings = []
+h3i :
+  i ≤ strings.length ∧
+    (∀ j < i, strings[j]!.length ≤ strings[acc]!.length) ∧ ∀ j < acc, strings[j]!.length < strings[acc]!.length
+h3g : ¬i < strings.length
+⊢ longest_postcond strings (some strings[acc]!) h_precond
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3_g7_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; (try dsimp only at *); (repeat' apply And.intro); all_goals (first | lib_grind | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> lib_grind))) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | lib_grind | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0] <;> lib_grind)))
+
+--- errors:
+lib_budget: the heartbeat budget ran out
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3_g8_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; (try dsimp only at *); (repeat' apply And.intro); all_goals (first | ((try intros); (try casesm* _ ∧ _); (try simp only [Refine.take_succ_getElem?, List.filterMap_append, List.map_append, List.filter_append, List.flatMap_append] at *); (try subst_vars); (try split) <;> (simp_all; done)))) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | ((try intros); (try casesm* _ ∧ _); (try simp only [Refine.take_succ_getElem?, List.filterMap_append, List.map_append, List.filter_append, List.flatMap_append] at *); (try subst_vars); (try split) <;> (simp_all; done))))
+
+--- errors:
+unsolved goals
+strings : List String
+i acc : ℕ
+h_precond : longest_precond strings
+h1 : ¬strings = []
+h3g : strings.length ≤ i
+left✝¹ : i ≤ strings.length
+left✝ : ∀ j < i, (strings[j]?.getD "").length ≤ (strings[acc]?.getD "").length
+right✝ : ∀ j < acc, (strings[j]?.getD "").length < (strings[acc]?.getD "").length
+⊢ ∃ i < strings.length,
+    strings[i]?.getD "" = strings[acc]?.getD "" ∧
+      (∀ t ∈ strings, t.length ≤ (strings[acc]?.getD "").length) ∧
+        ∀ j < i, (strings[j]?.getD "").length < (strings[acc]?.getD "").length
+====================================================================================================
+set_option maxHeartbeats 200000 in
+theorem obl3_3_g9_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; (try dsimp only at *); (repeat' apply And.intro); all_goals (first | (norm_num; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; norm_num; done) | nlinarith | (aesop; done) | decide)) | ((try dsimp only at *); (repeat' apply And.intro); all_goals (first | (norm_num; done) | (simp_all [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.getElem_bang_mem, Refine.getElem_bang_mem_take, Refine.head_mem_take_one, Refine.string_length_mk, Refine.string_toList_mk, Refine.filter_take_succ_bang, Refine.sorted_filter_range, Refine.take_succ_bang, Refine.sum_take_succ_bang, Refine.head_bang_eq, Refine.getElem_bang_append_lt, Refine.getElem_bang_append_length, Refine.exists_le_succ, Refine.forall_le_succ, Refine.take_string_length, Refine.forall_mem_toList_iff_idx, Refine.exists_mem_toList_iff_idx, Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, Refine.getElem_bang_map_range, Refine.mem_dedup_mergeSort, Refine.mergeSort_isPerm, Refine.isPerm_mergeSort, Refine.mem_mergeSort', Refine.length_filter_range_succ, Refine.filter_mergeSort_key_int, Refine.filter_mergeSort_key_nat, Refine.gather_scatter2, Refine.gather_scatter3, Refine.map_toList_mk, Refine.map_comp_toList_mk, String.length_toList, List.range_succ, -List.take_append_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl3_3_s0]; norm_num; done) | nlinarith | (aesop; done) | decide))
+
+--- errors:
+(deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+====================================================================================================
+set_option maxHeartbeats 0 in
+theorem obl3_3_h0_alt (strings : List String) (i : Nat) (acc : Nat) (h_precond : longest_precond strings) (h1 : ¬ (strings = [])) (h3i : (i ≤ strings.length ∧ (∀ j, j < i → strings[j]!.length ≤ strings[acc]!.length) ∧ (∀ j, j < acc → strings[j]!.length < strings[acc]!.length))) (h3g : ¬ (i < strings.length)) :
+    longest_postcond strings (some strings[acc]!) h_precond := by
+  first | (have hEq : i = (strings.length) := (by omega); subst hEq; (try unfold longest_postcond longest_precond at *); (try dsimp only at *); (try intros); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> refine_portfolio) | ((try unfold longest_postcond longest_precond at *); (try dsimp only at *); (try intros); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try intros) <;> refine_portfolio)
+
+--- errors:
+refine_portfolio: no alternative closes
+  ∃ i < strings.length,
+    strings[i]! = strings[acc]! ∧
+      (∀ t ∈ strings, t.length ≤ strings[acc]!.length) ∧ ∀ j < i, strings[j]!.length < strings[acc]!.length

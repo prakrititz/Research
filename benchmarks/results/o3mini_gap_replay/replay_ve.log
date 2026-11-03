@@ -1,0 +1,6 @@
+40 prover-gap trials, 0 already replayed
+{'task': 'verina_advanced_1', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 7.6}
+{'task': 'verina_advanced_10', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 7.1}
+{'task': 'verina_advanced_14', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 4.9}
+{'task': 'verina_advanced_20', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 21.8}
+{'task': 'verina_advanced_23', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 19.4}

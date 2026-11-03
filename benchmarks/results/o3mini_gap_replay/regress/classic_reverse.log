@@ -1,0 +1,2 @@
+1 derivations that needed helper lemmas
+classic_reverse                      alone=True  with_search=False   146.9s

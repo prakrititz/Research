@@ -1,0 +1,54 @@
+4 trials to replay (0 done)
+classic_fast_power                   judged 6/10 applied 2 gaps 0  129.1s diverged: reply 5 was applied in the logged run, ill_formed 
+classic_sort_list                    judged 4/4 applied 2 gaps 0  183.1s 
+classic_sqrt_approx                  judged 4/4 applied 0 gaps 0  407.0s 
+he_003_below_zero                    judged 10/10 applied 2 gaps 0   71.1s 
+4 trials to replay (4 done)
+he_005_intersperse                   judged 4/4 applied 1 gaps 0  205.1s 
+he_009_rolling_max                   judged 4/4 applied 1 gaps 0   94.1s 
+he_010_make_palindrome               judged 4/4 applied 1 gaps 0  151.5s 
+he_012_longest                       judged 12/12 applied 7 gaps 5 2151.9s 
+4 trials to replay (8 done)
+he_013_gcd                           judged 4/4 applied 0 gaps 4  934.9s 
+he_015_string_sequence               judged 4/4 applied 0 gaps 3  495.3s 
+he_020_find_closest_elements         judged 4/4 applied 0 gaps 0   65.5s 
+he_024_largest_divisor               judged 16/16 applied 7 gaps 2  487.4s 
+4 trials to replay (12 done)
+he_025_factorize                     judged 4/4 applied 0 gaps 1  161.5s 
+he_027_flip_case                     judged 11/11 applied 5 gaps 2 1429.0s 
+he_031_is_prime                      judged 12/12 applied 6 gaps 1  348.4s 
+he_032_find_zero                     judged 8/8 applied 2 gaps 0  230.8s 
+4 trials to replay (16 done)
+he_035_max_element                   judged 4/4 applied 0 gaps 2  334.4s 
+he_039_prime_fib                     judged 4/4 applied 0 gaps 0  107.3s 
+he_044_change_base                   judged 11/11 applied 3 gaps 2 1765.5s 
+he_046_fib4                          judged 30/30 applied 22 gaps 0  575.5s 
+4 trials to replay (20 done)
+he_050_decode_shift                  judged 4/4 applied 0 gaps 2 1063.5s 
+he_059_largest_prime_factor          judged 4/4 applied 3 gaps 0  143.5s 
+he_063_fibfib                        judged 8/30 applied 6 gaps 0  128.2s diverged: reply 7 was applied in the logged run, repeat now
+he_068_pluck                         judged 10/10 applied 2 gaps 0  162.3s 
+4 trials to replay (24 done)
+he_069_search                        judged 8/8 applied 2 gaps 1  404.5s 
+he_079_decimal_to_binary             judged 4/4 applied 0 gaps 1  688.8s 
+he_088_sort_array                    judged 20/20 applied 9 gaps 0  185.5s 
+he_092_any_int                       judged 4/4 applied 1 gaps 0  134.5s 
+4 trials to replay (28 done)
+he_093_encode                        judged 4/4 applied 2 gaps 1  892.2s 
+he_096_count_up_to                   judged 14/14 applied 3 gaps 0  247.6s 
+he_099_closest_integer               judged 4/30 applied 2 gaps 1  167.4s diverged: reply 3 was applied in the logged run, repeat now
+he_106_f                             judged 4/4 applied 3 gaps 0   64.3s 
+4 trials to replay (32 done)
+he_107_even_odd_palindrome           judged 7/7 applied 1 gaps 1  318.5s 
+he_114_min_sub_array_sum             judged 4/4 applied 0 gaps 3  354.7s 
+he_116_sort_array                    judged 4/4 applied 1 gaps 0  189.9s 
+he_120_maximum                       judged 4/4 applied 1 gaps 2  266.1s 
+4 trials to replay (36 done)
+he_121_solution                      judged 4/4 applied 0 gaps 2  231.3s 
+he_123_get_odd_collatz               judged 4/4 applied 2 gaps 0   83.3s 
+he_130_tri                           judged 4/4 applied 1 gaps 0  234.0s 
+he_135_can_arrange                   judged 30/30 applied 17 gaps 0  188.1s 
+1 trials to replay (40 done)
+he_148_bf                            judged 9/20 applied 4 gaps 0   54.3s diverged: reply 8 was applied in the logged run, repeat now
+0 trials to replay (41 done)
+0 trials to replay (41 done)

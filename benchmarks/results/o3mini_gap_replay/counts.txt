@@ -1,0 +1,25 @@
+-- counting two symbols: equal counts in every part give equal counts in the whole; a list whose every non-empty prefix
+-- has more `a`s than `b`s but equal totals is empty; so splitting a balanced list into balanced groups leaves no rest
+-- (he_001: bracket groups)
+theorem count_flatten_eq {α : Type} [BEq α] (a b : α) (G : List (List α)) (h : ∀ g ∈ G, g.count a = g.count b) :
+    G.flatten.count a = G.flatten.count b := by
+  induction G with
+  | nil => simp
+  | cons g G ih =>
+    simp only [List.flatten_cons, List.count_append]
+    rw [h g List.mem_cons_self, ih (fun x hx => h x (List.mem_cons_of_mem g hx))]
+theorem rest_nil_of_counts {α : Type} [BEq α] (a b : α) (c : List α) (heq : c.count a = c.count b)
+    (hlt : ∀ k, 0 < k → k ≤ c.length → (c.take k).count b < (c.take k).count a) : c = [] := by
+  by_contra h
+  have := hlt c.length (List.length_pos_iff.mpr h) (Nat.le_refl _)
+  rw [List.take_length] at this
+  omega
+theorem flatten_eq_of_balanced {α : Type} [BEq α] (a b : α) (G : List (List α)) (c L : List α)
+    (h : G.flatten ++ c = L) (hL : L.count a = L.count b) (hG : ∀ g ∈ G, g.count a = g.count b)
+    (hc : ∀ k, 0 < k → k ≤ c.length → (c.take k).count b < (c.take k).count a) : G.flatten = L := by
+  have hf := count_flatten_eq a b G hG
+  have hca : c.count a = c.count b := by
+    rw [← h, List.count_append, List.count_append] at hL
+    omega
+  rw [rest_nil_of_counts a b c hca hc, List.append_nil] at h
+  exact h

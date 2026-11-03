@@ -1,0 +1,64 @@
+4 trials to replay (0 done)
+verina_advanced_1                    judged 4/4 applied 0 gaps 1  286.7s 
+verina_advanced_10                   judged 4/4 applied 0 gaps 0   73.1s 
+verina_advanced_14                   judged 8/8 applied 2 gaps 2  328.4s 
+verina_advanced_20                   judged 15/15 applied 8 gaps 0  205.3s 
+4 trials to replay (4 done)
+verina_advanced_23                   judged 10/10 applied 2 gaps 2  499.3s 
+verina_advanced_24                   judged 4/4 applied 0 gaps 1  178.0s 
+verina_advanced_25                   judged 4/4 applied 3 gaps 0  400.3s 
+verina_advanced_30                   judged 8/8 applied 3 gaps 0   62.9s 
+4 trials to replay (8 done)
+verina_advanced_31                   judged 4/4 applied 1 gaps 0  394.2s 
+verina_advanced_34                   judged 4/4 applied 0 gaps 2  702.5s 
+verina_advanced_36                   judged 4/4 applied 0 gaps 1  148.9s 
+verina_advanced_37                   judged 4/4 applied 0 gaps 3  543.8s 
+4 trials to replay (12 done)
+verina_advanced_39                   judged 4/4 applied 1 gaps 2  232.9s 
+verina_advanced_4                    judged 4/4 applied 0 gaps 1  489.0s 
+verina_advanced_40                   judged 4/4 applied 0 gaps 1  216.5s 
+verina_advanced_46                   judged 4/4 applied 0 gaps 1  221.9s 
+4 trials to replay (16 done)
+verina_advanced_5                    judged 4/4 applied 0 gaps 0  105.3s 
+verina_advanced_54                   judged 4/4 applied 0 gaps 1  271.0s 
+verina_advanced_56                   judged 4/4 applied 0 gaps 1  423.4s 
+verina_advanced_58                   judged 4/4 applied 2 gaps 0  237.4s 
+4 trials to replay (20 done)
+verina_advanced_67                   judged 4/4 applied 0 gaps 1  420.2s 
+verina_advanced_73                   judged 4/4 applied 0 gaps 0   99.7s 
+verina_advanced_75                   judged 4/4 applied 0 gaps 0  158.5s 
+verina_advanced_78                   judged 4/4 applied 0 gaps 0   93.2s 
+4 trials to replay (24 done)
+verina_advanced_8                    judged 7/7 applied 1 gaps 1  405.5s 
+verina_basic_102                     judged 4/4 applied 0 gaps 0  142.3s 
+verina_basic_2                       judged 4/4 applied 2 gaps 0  185.6s 
+verina_basic_24                      judged 4/4 applied 0 gaps 4  914.7s 
+4 trials to replay (28 done)
+verina_basic_25                      judged 17/30 applied 6 gaps 4  419.2s diverged: reply 16 was applied in the logged run, ill_formed
+verina_basic_28                      judged 4/4 applied 1 gaps 1  526.5s 
+verina_basic_3                       judged 4/4 applied 1 gaps 0  106.9s 
+verina_basic_30                      judged 4/4 applied 2 gaps 0  140.2s 
+4 trials to replay (33 done)
+verina_basic_34                      judged 4/4 applied 0 gaps 2 1067.2s 
+verina_basic_35                      judged 4/4 applied 0 gaps 1  205.0s 
+verina_basic_38                      judged 9/9 applied 2 gaps 1  137.3s 
+verina_basic_4                       judged 4/4 applied 2 gaps 0   93.0s 
+4 trials to replay (37 done)
+verina_basic_40                      judged 4/4 applied 0 gaps 1  113.2s 
+verina_basic_41                      judged 4/4 applied 1 gaps 1   83.5s 
+verina_basic_43                      judged 4/4 applied 1 gaps 2  179.3s 
+verina_basic_44                      judged 24/24 applied 10 gaps 0   56.3s 
+4 trials to replay (41 done)
+verina_basic_46                      judged 4/4 applied 0 gaps 1  207.1s 
+verina_basic_48                      judged 4/4 applied 0 gaps 1   91.7s 
+verina_basic_51                      judged 13/18 applied 3 gaps 3  658.4s diverged: reply 12 was applied in the logged run, ill_formed
+verina_basic_52                      judged 4/4 applied 1 gaps 0  111.9s 
+4 trials to replay (45 done)
+verina_basic_54                      judged 4/4 applied 0 gaps 0  215.3s 
+verina_basic_61                      judged 4/4 applied 2 gaps 0   92.7s 
+verina_basic_63                      judged 4/4 applied 0 gaps 1   98.2s 
+verina_basic_64                      judged 4/4 applied 0 gaps 1  322.6s 
+2 trials to replay (49 done)
+verina_basic_67                      judged 4/4 applied 2 gaps 2  131.6s 
+verina_basic_68                      judged 4/4 applied 1 gaps 0   77.9s 
+0 trials to replay (51 done)

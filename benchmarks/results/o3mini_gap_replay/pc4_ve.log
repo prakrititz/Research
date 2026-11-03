@@ -1,0 +1,222 @@
+177 derivations to check (0 already done)
+verina_advanced_1                    SOLVED    verified=True   128.5s 
+verina_advanced_10                   SOLVED    verified=True   177.7s 
+(Lean REPL restarted to free memory; restart 1)
+verina_advanced_11                   SOLVED    verified=True    85.0s 
+verina_advanced_12                   SOLVED    verified=True    79.8s 
+verina_advanced_13                   SOLVED    verified=True   101.3s 
+(Lean REPL restarted to free memory; restart 2)
+verina_advanced_14                   SOLVED    verified=True    96.8s 
+verina_advanced_15                   SOLVED    verified=True    67.4s 
+verina_advanced_16                   SOLVED    verified=True    64.4s 
+verina_advanced_17                   SOLVED    verified=True    65.8s 
+(Lean REPL restarted to free memory; restart 3)
+verina_advanced_18                   SOLVED    verified=True    52.6s 
+verina_advanced_19                   SOLVED    verified=True    50.0s 
+verina_advanced_2                    SOLVED    verified=True    78.2s 
+verina_advanced_20                   SOLVED    verified=True   155.4s 
+(Lean REPL restarted to free memory; restart 4)
+verina_advanced_21                   SOLVED    verified=True    51.1s 
+verina_advanced_22                   SOLVED    verified=True    64.1s 
+verina_advanced_23                   SOLVED    verified=True    81.5s 
+verina_advanced_24                   SOLVED    verified=True    79.5s 
+(Lean REPL restarted to free memory; restart 5)
+verina_advanced_25                   SOLVED    verified=True    66.7s 
+verina_advanced_26                   SOLVED    verified=True    75.7s 
+verina_advanced_27                   SOLVED    verified=True    87.0s 
+verina_advanced_28                   SOLVED    verified=True    84.8s 
+(Lean REPL restarted to free memory; restart 6)
+verina_advanced_29                   SOLVED    verified=True    82.1s 
+verina_advanced_3                    SOLVED    verified=True    64.2s 
+verina_advanced_30                   SOLVED    verified=True    71.0s 
+verina_advanced_31                   SOLVED    verified=True    66.0s 
+(Lean REPL restarted to free memory; restart 7)
+verina_advanced_32                   SOLVED    verified=True    66.1s 
+verina_advanced_33                   SOLVED    verified=True    63.8s 
+verina_advanced_34                   SOLVED    verified=True    70.3s 
+verina_advanced_35                   SOLVED    verified=True    75.1s 
+(Lean REPL restarted to free memory; restart 8)
+verina_advanced_36                   SOLVED    verified=True    68.9s 
+verina_advanced_37                   SOLVED    verified=True    67.6s 
+verina_advanced_38                   SOLVED    verified=True    86.2s 
+verina_advanced_39                   SOLVED    verified=True    54.1s 
+(Lean REPL restarted to free memory; restart 9)
+verina_advanced_4                    SOLVED    verified=True    66.7s 
+verina_advanced_40                   SOLVED    verified=True    51.6s 
+verina_advanced_41                   SOLVED    verified=True    55.7s 
+verina_advanced_42                   SOLVED    verified=True    67.6s 
+(Lean REPL restarted to free memory; restart 10)
+verina_advanced_43                   SOLVED    verified=True    72.2s 
+verina_advanced_44                   SOLVED    verified=True    83.7s 
+verina_advanced_45                   SOLVED    verified=True    80.5s 
+verina_advanced_46                   SOLVED    verified=True    65.3s 
+(Lean REPL restarted to free memory; restart 11)
+verina_advanced_48                   SOLVED    verified=True    74.7s 
+verina_advanced_49                   SOLVED    verified=True    71.4s 
+verina_advanced_5                    SOLVED    verified=True   142.4s 
+(Lean REPL restarted to free memory; restart 12)
+verina_advanced_50                   SOLVED    verified=True    64.3s 
+verina_advanced_51                   SOLVED    verified=True    66.5s 
+verina_advanced_52                   SOLVED    verified=True   106.3s 
+verina_advanced_53                   SOLVED    verified=True   101.1s 
+(Lean REPL restarted to free memory; restart 13)
+verina_advanced_54                   SOLVED    verified=True    76.5s 
+verina_advanced_55                   SOLVED    verified=True    95.5s 
+verina_advanced_56                   SOLVED    verified=True   114.9s 
+(Lean REPL restarted to free memory; restart 14)
+verina_advanced_57                   SOLVED    verified=True    96.1s 
+verina_advanced_58                   SOLVED    verified=True   135.8s 
+verina_advanced_59                   SOLVED    verified=True    57.0s 
+(Lean REPL restarted to free memory; restart 15)
+verina_advanced_6                    SOLVED    verified=True    62.8s 
+verina_advanced_60                   SOLVED    verified=True    59.5s 
+verina_advanced_61                   SOLVED    verified=True    78.8s 
+verina_advanced_62                   SOLVED    verified=True    96.8s 
+(Lean REPL restarted to free memory; restart 16)
+verina_advanced_63                   SOLVED    verified=True    58.5s 
+verina_advanced_64                   SOLVED    verified=True    77.9s 
+verina_advanced_65                   SOLVED    verified=True    55.1s 
+verina_advanced_66                   SOLVED    verified=True    77.1s 
+verina_advanced_67                   SOLVED    verified=True   190.3s 
+(Lean REPL restarted to free memory; restart 17)
+verina_advanced_69                   SOLVED    verified=True    62.9s 
+verina_advanced_7                    SOLVED    verified=True    58.4s 
+verina_advanced_70                   SOLVED    verified=True    56.7s 
+verina_advanced_71                   SOLVED    verified=True   123.1s 
+(Lean REPL restarted to free memory; restart 18)
+verina_advanced_72                   SOLVED    verified=True    77.7s 
+verina_advanced_73                   SOLVED    verified=True   102.4s 
+verina_advanced_74                   SOLVED    verified=True    76.6s 
+verina_advanced_75                   SOLVED    verified=True    80.1s 
+(Lean REPL restarted to free memory; restart 19)
+verina_advanced_76                   SOLVED    verified=True   111.0s 
+verina_advanced_77                   SOLVED    verified=True    57.1s 
+verina_advanced_78                   SOLVED    verified=True   190.8s 
+(Lean REPL restarted to free memory; restart 20)
+verina_advanced_79                   SOLVED    verified=True   173.8s 
+verina_advanced_8                    SOLVED    verified=True    95.3s 
+(Lean REPL restarted to free memory; restart 21)
+verina_advanced_80                   SOLVED    verified=True   170.7s 
+verina_advanced_81                   SOLVED    verified=True    78.9s 
+verina_advanced_9                    SOLVED    verified=True    77.4s 
+(Lean REPL restarted to free memory; restart 22)
+verina_basic_1                       SOLVED    verified=True    75.0s 
+verina_basic_10                      SOLVED    verified=True    71.4s 
+verina_basic_100                     SOLVED    verified=True    74.7s 
+verina_basic_101                     SOLVED    verified=True    72.5s 
+verina_basic_102                     SOLVED    verified=True   216.2s 
+(Lean REPL restarted to free memory; restart 23)
+verina_basic_103                     SOLVED    verified=True    77.7s 
+verina_basic_104                     SOLVED    verified=True   140.6s 
+verina_basic_105                     SOLVED    verified=True    75.5s 
+verina_basic_106                     SOLVED    verified=True    76.0s 
+(Lean REPL restarted to free memory; restart 24)
+verina_basic_107                     SOLVED    verified=True    71.4s 
+verina_basic_108                     SOLVED    verified=True    99.0s 
+verina_basic_11                      SOLVED    verified=True    72.1s 
+verina_basic_12                      SOLVED    verified=True    75.1s 
+verina_basic_13                      SOLVED    verified=True    79.7s 
+(Lean REPL restarted to free memory; restart 25)
+verina_basic_14                      SOLVED    verified=True    51.0s 
+verina_basic_15                      SOLVED    verified=True    54.6s 
+verina_basic_16                      SOLVED    verified=True    56.1s 
+verina_basic_17                      SOLVED    verified=True    57.8s 
+verina_basic_18                      SOLVED    verified=True    53.3s 
+(Lean REPL restarted to free memory; restart 26)
+verina_basic_19                      SOLVED    verified=True    54.6s 
+verina_basic_2                       SOLVED    verified=True    54.7s 
+verina_basic_20                      SOLVED    verified=True    52.4s 
+verina_basic_21                      SOLVED    verified=True    55.0s 
+verina_basic_22                      SOLVED    verified=True    86.1s 
+(Lean REPL restarted to free memory; restart 27)
+verina_basic_24                      SOLVED    verified=True   140.9s 
+verina_basic_26                      SOLVED    verified=True    50.1s 
+verina_basic_27                      SOLVED    verified=True   109.1s 
+(Lean REPL restarted to free memory; restart 28)
+verina_basic_28                      SOLVED    verified=True    53.6s 
+verina_basic_29                      SOLVED    verified=True    63.7s 
+verina_basic_3                       SOLVED    verified=True    76.7s 
+verina_basic_30                      SOLVED    verified=True    62.9s 
+verina_basic_31                      SOLVED    verified=True    68.1s 
+(Lean REPL restarted to free memory; restart 29)
+verina_basic_32                      SOLVED    verified=True    59.0s 
+verina_basic_33                      SOLVED    verified=True    95.8s 
+verina_basic_34                      SOLVED    verified=True   103.5s 
+(Lean REPL restarted to free memory; restart 30)
+verina_basic_35                      SOLVED    verified=True    66.6s 
+verina_basic_36                      SOLVED    verified=True    54.3s 
+verina_basic_37                      SOLVED    verified=True    51.1s 
+verina_basic_38                      SOLVED    verified=True   101.7s 
+(Lean REPL restarted to free memory; restart 31)
+verina_basic_39                      SOLVED    verified=True    67.0s 
+verina_basic_4                       SOLVED    verified=True    68.5s 
+verina_basic_40                      SOLVED    verified=True    90.1s 
+verina_basic_41                      SOLVED    verified=True    85.8s 
+(Lean REPL restarted to free memory; restart 32)
+verina_basic_42                      SOLVED    verified=True    52.7s 
+verina_basic_43                      SOLVED    verified=True    78.5s 
+verina_basic_44                      SOLVED    verified=True    56.6s 
+verina_basic_45                      SOLVED    verified=True    72.5s 
+(Lean REPL restarted to free memory; restart 33)
+verina_basic_46                      SOLVED    verified=True    81.9s 
+verina_basic_47                      SOLVED    verified=True   101.7s 
+verina_basic_48                      SOLVED    verified=True    96.5s 
+(Lean REPL restarted to free memory; restart 34)
+verina_basic_49                      SOLVED    verified=True    57.8s 
+verina_basic_5                       SOLVED    verified=True    62.3s 
+verina_basic_50                      SOLVED    verified=True    51.4s 
+verina_basic_51                      SOLVED    verified=True    66.6s 
+verina_basic_53                      SOLVED    verified=True    52.3s 
+(Lean REPL restarted to free memory; restart 35)
+verina_basic_54                      SOLVED    verified=True    79.2s 
+verina_basic_55                      SOLVED    verified=True    52.8s 
+verina_basic_56                      SOLVED    verified=True   104.4s 
+verina_basic_58                      SOLVED    verified=True    53.4s 
+(Lean REPL restarted to free memory; restart 36)
+verina_basic_59                      SOLVED    verified=True    50.7s 
+verina_basic_6                       SOLVED    verified=True    51.8s 
+verina_basic_60                      SOLVED    verified=True    72.5s 
+verina_basic_62                      SOLVED    verified=True    54.6s 
+verina_basic_64                      SOLVED    verified=True    57.5s 
+(Lean REPL restarted to free memory; restart 37)
+verina_basic_65                      SOLVED    verified=True    51.6s 
+verina_basic_66                      SOLVED    verified=True    67.7s 
+verina_basic_67                      SOLVED    verified=True    52.8s 
+verina_basic_68                      SOLVED    verified=True    52.6s 
+verina_basic_69                      SOLVED    verified=True    51.1s 
+(Lean REPL restarted to free memory; restart 38)
+verina_basic_7                       SOLVED    verified=True    74.3s 
+verina_basic_70                      SOLVED    verified=True    51.5s 
+verina_basic_71                      SOLVED    verified=True    75.3s 
+verina_basic_72                      SOLVED    verified=True    56.3s 
+(Lean REPL restarted to free memory; restart 39)
+verina_basic_73                      SOLVED    verified=True    55.7s 
+verina_basic_76                      SOLVED    verified=True    56.9s 
+verina_basic_77                      SOLVED    verified=True    59.2s 
+verina_basic_78                      SOLVED    verified=True    59.7s 
+verina_basic_8                       SOLVED    verified=True    58.1s 
+(Lean REPL restarted to free memory; restart 40)
+verina_basic_80                      SOLVED    verified=True    56.1s 
+verina_basic_81                      SOLVED    verified=True    72.8s 
+verina_basic_82                      SOLVED    verified=True    61.6s 
+verina_basic_83                      SOLVED    verified=True    60.0s 
+verina_basic_84                      SOLVED    verified=True    61.7s 
+(Lean REPL restarted to free memory; restart 41)
+verina_basic_85                      SOLVED    verified=True    61.0s 
+verina_basic_87                      SOLVED    verified=True    78.6s 
+verina_basic_88                      SOLVED    verified=True    65.5s 
+verina_basic_89                      SOLVED    verified=True   174.9s 
+(Lean REPL restarted to free memory; restart 42)
+verina_basic_9                       SOLVED    verified=True    60.0s 
+verina_basic_90                      SOLVED    verified=True   120.5s 
+verina_basic_91                      SOLVED    verified=True    76.3s 
+(Lean REPL restarted to free memory; restart 43)
+verina_basic_92                      SOLVED    verified=True    63.7s 
+verina_basic_93                      SOLVED    verified=True    60.9s 
+verina_basic_94                      SOLVED    verified=True    47.4s 
+verina_basic_95                      SOLVED    verified=True    55.4s 
+verina_basic_96                      SOLVED    verified=True    78.4s 
+(Lean REPL restarted to free memory; restart 44)
+verina_basic_97                      SOLVED    verified=True    56.1s 
+verina_basic_98                      SOLVED    verified=True    53.8s 
+verina_basic_99                      SOLVED    verified=True    53.5s 

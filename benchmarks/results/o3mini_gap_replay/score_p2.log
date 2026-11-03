@@ -1,0 +1,4 @@
+3 derivations that needed helper lemmas
+he_020_find_closest_elements         alone=False with_search=False unproved 1221.7s
+he_145_order_by_points               alone=True  with_search=False    57.8s
+classic_fast_power                   alone=True  with_search=False    88.2s

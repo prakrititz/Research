@@ -1,0 +1,2 @@
+{"task": "he_022_filter_integers", "lemmas_removed": 1, "automation_alone": true, "steps_accepted": true, "failed_status": "", "open_obligations": [], "unsolved": [], "search_closes_all": false, "seconds": 57.7}
+{"task": "he_107_even_odd_palindrome", "lemmas_removed": 2, "automation_alone": false, "steps_accepted": false, "failed_status": "unproved", "open_obligations": ["the value satisfies the postcondition under the hypotheses"], "unsolved": [], "search_closes_all": false, "seconds": 27.1}

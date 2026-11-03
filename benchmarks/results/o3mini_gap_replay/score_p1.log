@@ -1,0 +1,7 @@
+6 derivations that needed helper lemmas
+he_020_find_closest_elements         alone=False with_search=False unproved 1253.9s
+he_090_next_smallest                 alone=True  with_search=False   247.1s
+he_114_min_sub_array_sum             alone=False with_search=False unproved   81.7s
+he_136_largest_smallest_integers     alone=True  with_search=False   261.7s
+he_145_order_by_points               alone=False with_search=False unproved   67.3s
+classic_fast_power                   alone=False with_search=False unproved  142.9s

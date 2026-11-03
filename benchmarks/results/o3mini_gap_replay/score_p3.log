@@ -1,0 +1,3 @@
+2 derivations that needed helper lemmas
+he_020_find_closest_elements         alone=False with_search=False unproved 1206.6s
+he_114_min_sub_array_sum             alone=True  with_search=False   111.7s

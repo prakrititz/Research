@@ -1,0 +1,18 @@
+8 trials to replay (0 done)
+classic_fast_power                   judged 6/10 applied 1 gaps 1  279.8s diverged: reply 5 was applied in the logged run, ill_formed 
+classic_isqrt                        judged 2/2 applied 2 gaps 0  267.1s 
+classic_reverse                      judged 6/6 applied 1 gaps 1  255.1s diverged: reply 5 was applied in the logged run, repeat now
+classic_sort_list                    judged 4/4 applied 2 gaps 0  246.3s 
+classic_sqrt_approx                  judged 4/4 applied 0 gaps 0  603.5s 
+he_000_has_close_elements            judged 3/3 applied 1 gaps 0  278.4s 
+he_001_separate_paren_groups         judged 4/4 applied 0 gaps 0   71.2s 
+he_002_truncate_number               judged 1/1 applied 1 gaps 0  372.5s 
+8 trials to replay (8 done)
+he_003_below_zero                    judged 10/10 applied 2 gaps 0  357.6s 
+he_004_mean_absolute_deviation       judged 1/1 applied 1 gaps 0  380.2s 
+he_005_intersperse                   judged 4/4 applied 1 gaps 0  423.6s 
+he_006_parse_nested_parens           judged 4/4 applied 0 gaps 0  119.2s 
+he_007_filter_by_substring           judged 1/1 applied 1 gaps 0  332.1s 
+he_008_sum_product                   judged 2/2 applied 2 gaps 0  766.3s 
+he_009_rolling_max                   judged 4/4 applied 1 gaps 0  510.2s 
+he_010_make_palindrome               judged 4/4 applied 1 gaps 0  826.6s 

@@ -1,0 +1,29 @@
+-- closing a group: if every non-empty prefix of `cur` has more `a`s than `b`s and `cur ++ [x]` has equal counts, then
+-- `cur ++ [x]` is balanced (no prefix has more `b`s; equal counts) and no proper non-empty prefix of it is (he_001)
+theorem closed_group_balanced {α : Type} [BEq α] (a b x : α) (cur : List α)
+    (hc : ∀ k, 0 < k → k ≤ cur.length → (cur.take k).count b < (cur.take k).count a)
+    (heq : (cur ++ [x]).count a = (cur ++ [x]).count b) :
+    (∀ k, k ≤ (cur ++ [x]).length → ((cur ++ [x]).take k).count b ≤ ((cur ++ [x]).take k).count a) ∧
+      (cur ++ [x]).count a = (cur ++ [x]).count b := by
+  refine ⟨fun k hk => ?_, heq⟩
+  simp only [List.length_append, List.length_singleton] at hk
+  by_cases hk' : k ≤ cur.length
+  · rw [List.take_append_of_le_length hk']
+    rcases Nat.eq_zero_or_pos k with rfl | hpos
+    · simp
+    · exact Nat.le_of_lt (hc k hpos hk')
+  · have e : k = cur.length + 1 := by omega
+    subst e
+    rw [List.take_of_length_le (by simp)]
+    omega
+theorem closed_group_minimal {α : Type} [BEq α] (a b x : α) (cur : List α)
+    (hc : ∀ k, 0 < k → k ≤ cur.length → (cur.take k).count b < (cur.take k).count a) :
+    ∀ k < (cur ++ [x]).length, 0 < k →
+      ¬((∀ j, j ≤ ((cur ++ [x]).take k).length →
+          (((cur ++ [x]).take k).take j).count b ≤ (((cur ++ [x]).take k).take j).count a) ∧
+        ((cur ++ [x]).take k).count a = ((cur ++ [x]).take k).count b) := by
+  intro k hk hpos ⟨_, h⟩
+  simp only [List.length_append, List.length_singleton] at hk
+  rw [List.take_append_of_le_length (by omega)] at h
+  have := hc k hpos (by omega)
+  omega

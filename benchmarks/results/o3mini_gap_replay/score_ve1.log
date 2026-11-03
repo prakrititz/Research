@@ -1,0 +1,98 @@
+97 derivations that needed helper lemmas
+verina_advanced_1                    alone=False with_search=False unproved   16.3s
+verina_advanced_10                   alone=False with_search=False unproved   13.8s
+verina_advanced_11                   alone=False with_search=False unproved   19.8s
+verina_advanced_12                   alone=False with_search=False unproved   14.5s
+verina_advanced_13                   alone=False with_search=False unproved   54.5s
+verina_advanced_14                   alone=False with_search=False unproved   14.3s
+verina_advanced_15                   alone=True  with_search=False    44.0s
+verina_advanced_16                   alone=False with_search=False unproved   12.9s
+verina_advanced_17                   alone=False with_search=False unproved   13.2s
+verina_advanced_2                    alone=False with_search=False unproved   19.0s
+verina_advanced_20                   alone=False with_search=False unproved   14.3s
+verina_advanced_22                   alone=True  with_search=False    44.0s
+verina_advanced_23                   alone=False with_search=False unproved   14.5s
+verina_advanced_24                   alone=False with_search=False unproved   14.7s
+verina_advanced_25                   alone=False with_search=False unproved   15.8s
+verina_advanced_26                   alone=True  with_search=False    45.5s
+verina_advanced_27                   alone=False with_search=False unproved   43.7s
+verina_advanced_28                   alone=False with_search=False unproved   59.8s
+verina_advanced_29                   alone=False with_search=False unproved   24.0s
+verina_advanced_3                    alone=False with_search=False unproved   19.1s
+verina_advanced_30                   alone=False with_search=False unproved  210.9s
+verina_advanced_31                   alone=False with_search=False unproved   15.7s
+verina_advanced_32                   alone=False with_search=False unproved   15.4s
+verina_advanced_33                   alone=False with_search=False unproved   15.4s
+verina_advanced_34                   alone=False with_search=False unproved   16.6s
+verina_advanced_35                   alone=False with_search=False unproved   17.3s
+verina_advanced_36                   alone=False with_search=False unproved   14.3s
+verina_advanced_37                   alone=False with_search=False unproved   17.1s
+verina_advanced_38                   alone=False with_search=False unproved   20.1s
+verina_advanced_4                    alone=False with_search=False unproved   17.6s
+verina_advanced_42                   alone=False with_search=False unproved  127.4s
+verina_advanced_43                   alone=False with_search=False unproved   16.7s
+verina_advanced_44                   alone=False with_search=False unproved   99.4s
+verina_advanced_45                   alone=False with_search=False unproved   20.7s
+verina_advanced_46                   alone=False with_search=False unproved   21.7s
+verina_advanced_48                   alone=False with_search=False unproved   13.4s
+verina_advanced_49                   alone=False with_search=False unproved   14.0s
+verina_advanced_5                    alone=False with_search=False unproved   46.6s
+verina_advanced_50                   alone=False with_search=False unproved   13.3s
+verina_advanced_51                   alone=False with_search=False unproved   13.5s
+verina_advanced_52                   alone=False with_search=False unproved   57.8s
+verina_advanced_53                   alone=True  with_search=False    45.6s
+verina_advanced_54                   alone=False with_search=False unproved   16.8s
+verina_advanced_55                   alone=False with_search=False unproved   16.4s
+verina_advanced_56                   alone=False with_search=False unproved   16.8s
+verina_advanced_57                   alone=False with_search=False unproved   49.0s
+verina_advanced_58                   alone=False with_search=False unproved   42.3s
+verina_advanced_61                   alone=True  with_search=False    45.8s
+verina_advanced_62                   alone=False with_search=False unproved   17.6s
+verina_advanced_64                   alone=True  with_search=False    43.8s
+verina_advanced_66                   alone=True  with_search=False    53.8s
+verina_advanced_67                   alone=False with_search=False unproved   43.3s
+verina_advanced_71                   alone=False with_search=False unproved  304.8s
+verina_advanced_73                   alone=False with_search=False unproved   16.8s
+verina_advanced_74                   alone=True  with_search=False    44.4s
+verina_advanced_75                   alone=False with_search=False unproved   56.7s
+verina_advanced_76                   alone=False with_search=False unproved   17.7s
+verina_advanced_78                   alone=False with_search=False unproved   60.7s
+verina_advanced_79                   alone=False with_search=False unproved   28.0s
+verina_advanced_8                    alone=False with_search=False unproved   83.0s
+verina_advanced_80                   alone=True  with_search=False    62.1s
+verina_advanced_81                   alone=False with_search=False unproved   13.4s
+verina_basic_102                     alone=False with_search=False unproved   79.6s
+verina_basic_104                     alone=False with_search=False unproved   24.5s
+verina_basic_108                     alone=False with_search=False unproved   20.0s
+verina_basic_22                      alone=False with_search=False unproved   24.2s
+verina_basic_24                      alone=False with_search=False unproved   19.6s
+verina_basic_27                      alone=False with_search=False unproved   18.9s
+verina_basic_3                       alone=True  with_search=False    47.9s
+verina_basic_33                      alone=False with_search=False unproved   15.3s
+verina_basic_34                      alone=False with_search=False unproved   44.0s
+verina_basic_35                      alone=False with_search=False unproved   21.8s
+verina_basic_38                      alone=False with_search=False unproved   31.0s
+verina_basic_39                      alone=False with_search=False unproved   21.1s
+verina_basic_4                       alone=False with_search=False unproved   15.3s
+verina_basic_40                      alone=False with_search=False unproved   92.9s
+verina_basic_41                      alone=False with_search=False unproved   18.6s
+verina_basic_43                      alone=False with_search=False unproved   17.0s
+verina_basic_45                      alone=True  with_search=False    44.9s
+verina_basic_46                      alone=False with_search=False unproved   52.3s
+verina_basic_47                      alone=False with_search=False unproved   48.4s
+verina_basic_48                      alone=False with_search=False unproved   16.1s
+verina_basic_51                      alone=False with_search=False unproved   15.1s
+verina_basic_54                      alone=True  with_search=False    53.2s
+verina_basic_56                      alone=True  with_search=False    47.3s
+verina_basic_60                      alone=False with_search=False unproved   20.4s
+verina_basic_66                      alone=True  with_search=False    48.8s
+verina_basic_7                       alone=False with_search=False unproved   15.0s
+verina_basic_71                      alone=False with_search=False unproved   16.8s
+verina_basic_81                      alone=False with_search=False unproved   15.7s
+verina_basic_87                      alone=False with_search=False unproved   13.3s
+verina_basic_89                      alone=False with_search=False unproved   14.9s
+verina_basic_90                      alone=False with_search=False unproved   22.2s
+verina_basic_91                      alone=False with_search=False unproved   13.4s
+verina_basic_92                      alone=False with_search=False unproved   13.2s
+verina_basic_93                      alone=False with_search=False unproved   13.2s
+verina_basic_96                      alone=False with_search=False unproved   13.6s

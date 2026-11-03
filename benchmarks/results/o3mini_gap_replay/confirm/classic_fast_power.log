@@ -1,0 +1,2 @@
+1 derivations that needed helper lemmas
+classic_fast_power                   alone=True  with_search=False   373.0s

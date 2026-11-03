@@ -1,0 +1,23 @@
+75 derivations that needed helper lemmas
+verina_advanced_1                    alone=False with_search=False unproved   54.4s
+verina_advanced_10                   alone=False with_search=False unproved   47.3s
+verina_advanced_11                   alone=False with_search=False unproved  105.6s
+verina_advanced_12                   alone=False with_search=False unproved   45.7s
+verina_advanced_13                   alone=False with_search=False unproved  137.8s
+verina_advanced_14                   alone=False with_search=False unproved   49.1s
+verina_advanced_2                    alone=False with_search=False unproved   55.2s
+verina_advanced_20                   alone=False with_search=False unproved   48.4s
+verina_advanced_23                   alone=False with_search=False unproved   87.5s
+verina_advanced_24                   alone=False with_search=False unproved   60.7s
+verina_advanced_25                   alone=False with_search=False unproved   38.1s
+verina_advanced_27                   alone=False with_search=False unproved  132.3s
+verina_advanced_28                   alone=False with_search=False unproved   89.1s
+verina_advanced_29                   alone=False with_search=False unproved   82.7s
+verina_advanced_3                    alone=False with_search=False unproved   60.3s
+verina_advanced_30                   alone=False with_search=False unproved  270.4s
+verina_advanced_31                   alone=False with_search=False unproved   44.4s
+verina_advanced_32                   alone=False with_search=False unproved   45.9s
+verina_advanced_33                   alone=False with_search=False unproved   39.6s
+verina_advanced_34                   alone=False with_search=False unproved   53.1s
+verina_advanced_35                   alone=False with_search=False unproved  100.8s
+verina_advanced_36                   alone=True  with_search=False    76.0s

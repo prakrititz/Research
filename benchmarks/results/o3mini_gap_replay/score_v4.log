@@ -1,0 +1,15 @@
+53 derivations that needed helper lemmas
+he_001_separate_paren_groups         alone=False with_search=False unproved  164.3s
+he_005_intersperse                   alone=True  with_search=False    13.6s
+he_009_rolling_max                   alone=True  with_search=False     9.3s
+he_010_make_palindrome               alone=False with_search=False unproved   33.0s
+he_012_longest                       alone=True  with_search=False     9.3s
+he_013_gcd                           alone=True  with_search=False    11.1s
+he_020_find_closest_elements         alone=False with_search=False unproved   12.9s
+he_022_filter_integers               alone=False with_search=False unproved   12.4s
+he_025_factorize                     alone=False with_search=False unproved   66.3s
+he_033_sort_third                    alone=False with_search=False unproved   16.3s
+he_034_unique                        alone=True  with_search=False     6.3s
+he_037_sort_even                     alone=False with_search=False unproved   16.9s
+he_038_decode_cyclic                 alone=False with_search=False unproved   55.6s
+he_044_change_base                   alone=False with_search=False unproved   19.5s

@@ -1,0 +1,2 @@
+1 derivations that needed helper lemmas
+he_010_make_palindrome               alone=False with_search=False unproved  349.6s

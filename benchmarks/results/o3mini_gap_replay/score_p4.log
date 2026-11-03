@@ -1,0 +1,6 @@
+5 derivations that needed helper lemmas
+he_025_factorize                     alone=False with_search=False unproved  720.3s
+he_033_sort_third                    alone=False with_search=False unproved   98.8s
+he_037_sort_even                     alone=False with_search=False unproved  101.2s
+he_038_decode_cyclic                 alone=True  with_search=False   162.5s
+he_044_change_base                   alone=False with_search=False unproved  219.7s

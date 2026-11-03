@@ -1,0 +1,198 @@
+##### verina_basic_34 0
+REPLY {"law": "term", "expr": "arr.foldl (fun acc x => if isEven x then acc.push x else acc) #[]"}
+OPEN ['the value satisfies the postcondition under the hypotheses']
+UNSOLVED case left
+arr : Array ℤ
+h_precond : findEvenNumbers_precond arr
+⊢ ((Array.foldl (fun acc x => if isEven x = true then acc.push x else acc) #[] arr).all fun x =>
+      decide
+        (isEven x = true ∧
+          x ∈ arr.toList ∧
+            List.count x (Array.foldl (fun acc x => if isEven x = true then acc.push x else acc) #[] arr).toList =
+              List.count x arr.toList)) =
+    true || case right.left
+arr : Array ℤ
+h_precond : findEvenNumbers_precond arr
+⊢ (arr.all fun x =>
+      decide
+        (isEven x = true →
+          x ∈ (Array.foldl (fun acc x => if isEven x = true then acc.push x else acc) #[] arr).toList)) =
+    true || case right.right
+arr : Array ℤ
+h_precond : findEvenNumbers_precond arr
+⊢ (arr.all fun x =>
+      arr.all fun y =>
+        decide
+          (isEven x = true →
+            isEven y = true →
+              List.idxOf x arr.toList ≤ List.idxOf y arr.toList →
+ 
+MSG no tactic of the cascade closes this
+##### verina_basic_34 1
+REPLY {"law": "loop", "state": [["i", "Nat"], ["res", "Array Int"]], "init": ["0", "#[]"], "invariant": "res = (arr.take i).foldl (fun acc x => if isEven x then acc.push x else acc) #[]", "guard": "i < arr.size", "variant": "arr.size - i", "result": "res"}
+OPEN ['on exit the invariant and the negated guard imply the postcondition']
+UNSOLVED 
+MSG the automation hit a Lean resource limit (Tactic `simp` failed with a nested error:); the statement itself is well-formed
+##### verina_basic_35 2
+REPLY {"law": "term", "expr": "Array.mk (arr.toList.filter (fun x => x ≠ 0) ++ arr.toList.filter (fun x => x = 0))", "lemmas": []}
+OPEN ['the value satisfies the postcondition under the hypotheses']
+UNSOLVED case left
+arr : Array ℤ
+h_precond : MoveZeroesToEnd_precond arr
+⊢ {
+            toList :=
+              List.filter (fun x => decide (x ≠ 0)) arr.toList ++
+                List.filter (fun x => decide (x = 0)) arr.toList }.toList.isPerm
+      arr.toList =
+    true || case right.left
+arr : Array ℤ
+h_precond : MoveZeroesToEnd_precond arr
+⊢ List.take
+      (List.idxOf 0
+        {
+            toList :=
+              List.filter (fun x => decide (x ≠ 0)) arr.toList ++
+                List.filter (fun x => decide (x = 0)) arr.toList }.toList)
+      {
+          toList :=
+            List.filter (fun x => decide (x ≠ 0)) arr.toList ++
+              List.filter (fun x => decide (x = 0)) arr.toList }.toList =
+    List.filter (fun x => decide (x ≠ 0)) arr.toList || case right.right
+arr : Array ℤ
+h_precond : MoveZeroesToEnd_precond arr
+⊢ List.drop
+      (List.idxOf 0
+        {
+            toList :=
+
+MSG no tactic of the cascade closes this
+##### verina_basic_41 1
+REPLY {"law": "loop", "state": [["i", "Nat"], ["r", "Bool"]], "init": ["1", "true"], "invariant": "r = (∀ j, j < i → a[j]! = a[0]!) ∧ i ≤ a.size", "guard": "i < a.size ∧ r", "variant": "a.size - i", "result": "r"}
+OPEN ['on exit the invariant and the negated guard imply the postcondition']
+UNSOLVED case left
+a : Array ℤ
+i : ℕ
+r : Bool
+h_precond : hasOnlyOneDistinctElement_precond a
+h1i : ((r = true) = ∀ j < i, a[j]! = a[0]!) ∧ i ≤ a.size
+h1g : ¬(i < a.size ∧ r = true)
+⊢ r = true → List.Pairwise (fun x1 x2 => x1 = x2) a.toList
+MSG no tactic of the cascade closes this
+##### verina_basic_43 2
+REPLY {"law": "term", "expr": "n*(2*n+1)*(7+24*n^3-12*n^2-14*n) / 15"}
+OPEN ['the value satisfies the postcondition under the hypotheses']
+UNSOLVED n : ℕ
+h_precond : sumOfFourthPowerOfOddNumbers_precond n
+⊢ sumOfFourthPowerOfOddNumbers_postcond n (n * (2 * n + 1) * (7 + 24 * n ^ 3 - 12 * n ^ 2 - 14 * n) / 15) h_precond
+MSG no tactic of the cascade closes this
+##### verina_basic_43 3
+REPLY {"law": "term", "expr": "n*(2*n+1)*(7+24*n^3-12*n^2-14*n)/15"}
+OPEN ['the value satisfies the postcondition under the hypotheses']
+UNSOLVED n : ℕ
+h_precond : sumOfFourthPowerOfOddNumbers_precond n
+⊢ sumOfFourthPowerOfOddNumbers_postcond n (n * (2 * n + 1) * (7 + 24 * n ^ 3 - 12 * n ^ 2 - 14 * n) / 15) h_precond
+MSG no tactic of the cascade closes this
+##### verina_basic_46 0
+REPLY {"law": "loop", "state": [["i", "Nat"], ["res", "Int"]], "init": ["0", "-1"], "invariant": "((res = -1 ∧ (arr.toList.take i).all (fun a => a ≠ elem)) ∨ (res ≠ -1 ∧ res.toNat < i ∧ arr[res.toNat]! = elem ∧ ∀ j, j < i → (arr[j]! = elem → j ≤ res.toNat))) ∧ i ≤ arr.size", "guard": "i < arr.size", "variant": "arr.size - i", "result": "res"}
+OPEN ['on exit the invariant and the negated guard imply the postcondition']
+UNSOLVED case left
+arr : Array ℤ
+elem res : ℤ
+h_precond : lastPosition_precond arr elem
+h1i :
+  (res = -1 ∧ ((List.take arr.size arr.toList).all fun a => decide (a ≠ elem)) = true ∨
+      res ≠ -1 ∧ res.toNat < arr.size ∧ arr[res.toNat]! = elem ∧ ∀ j < arr.size, arr[j]! = elem → j ≤ res.toNat) ∧
+    arr.size ≤ arr.size
+h1g : ¬arr.size < arr.size
+⊢ res = -1 ∨ res ≥ 0 || case right.left
+arr : Array ℤ
+elem res : ℤ
+h_precond : lastPosition_precond arr elem
+h1i :
+  (res = -1 ∧ ((List.take arr.size arr.toList).all fun a => decide (a ≠ elem)) = true ∨
+      res ≠ -1 ∧ res.toNat < arr.size ∧ arr[res.toNat]! = elem ∧ ∀ j < arr.size, arr[j]! = elem → j ≤ res.toNat) ∧
+    arr.size ≤ arr.size
+h1g : ¬arr.size < arr.size
+⊢ res ≥ 0 →
+    res.toNat < arr.size ∧
+      arr[res.toNat]! = elem ∧ ((List.drop (res.toNat + 1) arr.toList).all fun x => decide (x ≠ elem)) = true || case right.right
+arr : Array ℤ
+elem res 
+MSG no tactic of the cascade closes this
+##### verina_basic_48 0
+REPLY {"law": "loop", "state": [["i", "Nat"]], "init": ["0"], "invariant": "∀ j, j < i → j * j ≠ n", "guard": "i * i ≤ n", "variant": "n - i * i", "result": "if i * i = n then true else false"}
+OPEN ['on exit the invariant and the negated guard imply the postcondition']
+UNSOLVED n i : ℕ
+h1i : ∀ j < i, j * j ≠ n
+h1g : ¬i * i ≤ n
+⊢ isPerfectSquare_postcond n (if i * i = n then true else false)
+MSG no tactic of the cascade closes this
+##### verina_basic_51 3
+REPLY {"law": "term", "expr": "(((lo + hi) / 2) + 1, hi)"}
+OPEN ['the value satisfies the postcondition under the hypotheses']
+UNSOLVED case left.right.right.left
+a : Array ℤ
+key : ℤ
+lo hi : ℕ
+h_precond : BinarySearch_precond a key
+h1i :
+  lo ≤ hi ∧
+    hi ≤ a.size ∧
+      ((a.take lo).all fun x => decide (x < key)) = true ∧ ((a.drop hi).all fun x => decide (x ≥ key)) = true
+h1g : lo < hi
+h3 : a[(lo + hi) / 2] < key
+⊢ ((a.take ((lo + hi) / 2 + 1)).all fun x => decide (x < key)) = true
+MSG no tactic of the cascade closes this
+##### verina_basic_51 5
+REPLY {"law": "term", "expr": "((lo + hi) / 2 + 1, hi)"}
+OPEN ['the value satisfies the postcondition under the hypotheses']
+UNSOLVED case left.right.right.left
+a : Array ℤ
+key : ℤ
+lo hi : ℕ
+h_precond : BinarySearch_precond a key
+h1i :
+  lo ≤ hi ∧
+    hi ≤ a.size ∧
+      ((a.take lo).all fun x => decide (x < key)) = true ∧ ((a.drop hi).all fun x => decide (x ≥ key)) = true
+h1g : lo < hi
+h3 : a[(lo + hi) / 2] < key
+⊢ ((a.take ((lo + hi) / 2 + 1)).all fun x => decide (x < key)) = true
+MSG no tactic of the cascade closes this
+##### verina_basic_51 8
+REPLY {"law": "term", "expr": "(((lo + hi) / 2) + 1, hi)"}
+OPEN ['the value satisfies the postcondition under the hypotheses']
+UNSOLVED case left.right.right.left
+a : Array ℤ
+key : ℤ
+lo hi : ℕ
+h_precond : BinarySearch_precond a key
+h1i :
+  lo ≤ hi ∧
+    hi ≤ a.size ∧
+      ((a.take lo).all fun x => decide (x < key)) = true ∧ ((a.drop hi).all fun x => decide (x ≥ key)) = true
+h1g : lo < hi
+h3 h4 : a[(lo + hi) / 2] < key
+⊢ ((a.take ((lo + hi) / 2 + 1)).all fun x => decide (x < key)) = true
+MSG no tactic of the cascade closes this
+##### verina_basic_63 2
+REPLY {"law": "term", "expr": "if numbers.any (fun a => numbers.any (fun b => if a = b then false else absDiff a b < threshold)) then true else false"}
+OPEN ['the value satisfies the postcondition under the hypotheses']
+UNSOLVED numbers : List Float
+threshold : Float
+h_precond : has_close_elements_precond numbers threshold
+⊢ has_close_elements_postcond numbers threshold
+    (if
+        (numbers.any fun a => numbers.any fun b => if a = b then false else decide (absDiff a b < threshold)) =
+          true then
+      true
+    else false)
+    h_precond
+MSG no tactic of the cascade closes this
+##### verina_basic_67 3
+REPLY {"law": "term", "expr": "x.reverse == x"}
+OPEN ['the value satisfies the postcondition under the hypotheses']
+UNSOLVED x : List Char
+h_precond : IsPalindrome_precond x
+⊢ IsPalindrome_postcond x (x.reverse == x) h_precond
+MSG no tactic of the cascade closes this

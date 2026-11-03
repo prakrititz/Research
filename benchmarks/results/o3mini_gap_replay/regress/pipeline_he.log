@@ -1,0 +1,220 @@
+164 derivations to check (0 already done)
+he_000_has_close_elements            SOLVED    verified=True   148.7s 
+he_001_separate_paren_groups         SOLVED    verified=True  2822.1s 
+(Lean REPL restarted to free memory; restart 1)
+he_002_truncate_number               SOLVED    verified=True   161.7s 
+he_003_below_zero                    SOLVED    verified=True   150.1s 
+he_004_mean_absolute_deviation       SOLVED    verified=True   153.7s 
+(Lean REPL restarted to free memory; restart 2)
+he_005_intersperse                   SOLVED    verified=True   193.2s 
+he_006_parse_nested_parens           SOLVED    verified=True   146.8s 
+he_007_filter_by_substring           SOLVED    verified=True   151.3s 
+(Lean REPL restarted to free memory; restart 3)
+he_008_sum_product                   SOLVED    verified=True   150.6s 
+he_009_rolling_max                   EXHAUSTED verified=False  143.4s out of model calls
+(Lean REPL restarted to free memory; restart 4)
+he_010_make_palindrome               EXHAUSTED verified=False  371.5s out of model calls
+(Lean REPL restarted to free memory; restart 5)
+he_011_string_xor                    SOLVED    verified=True   148.8s 
+he_012_longest                       SOLVED    verified=True   174.3s 
+he_013_gcd                           SOLVED    verified=True   181.4s 
+(Lean REPL restarted to free memory; restart 6)
+he_014_all_prefixes                  SOLVED    verified=True   142.0s 
+he_016_count_distinct                SOLVED    verified=True   144.9s 
+he_017_parse_music                   SOLVED    verified=True   151.4s 
+(Lean REPL restarted to free memory; restart 7)
+he_018_how_many_times                SOLVED    verified=True   142.6s 
+he_020_find_closest_elements         SOLVED    verified=True  2257.6s 
+(Lean REPL restarted to free memory; restart 8)
+he_021_rescale_to_unit               SOLVED    verified=True   155.5s 
+he_022_filter_integers               EXHAUSTED verified=False  260.9s out of model calls
+(Lean REPL restarted to free memory; restart 9)
+he_023_strlen                        SOLVED    verified=True   161.3s 
+he_024_largest_divisor               SOLVED    verified=True   188.0s 
+he_025_factorize                     SOLVED    verified=True  1364.7s 
+(Lean REPL restarted to free memory; restart 10)
+he_026_remove_duplicates             SOLVED    verified=True   280.6s 
+he_027_flip_case                     SOLVED    verified=True   279.3s 
+he_028_concatenate                   SOLVED    verified=True   271.5s 
+(Lean REPL restarted to free memory; restart 11)
+he_029_filter_by_prefix              SOLVED    verified=True   302.3s 
+he_030_get_positive                  SOLVED    verified=True   280.8s 
+he_031_is_prime                      SOLVED    verified=True   263.5s 
+(Lean REPL restarted to free memory; restart 12)
+he_033_sort_third                    SOLVED    verified=True  1145.6s 
+he_034_unique                        SOLVED    verified=True   296.5s 
+(Lean REPL restarted to free memory; restart 13)
+he_035_max_element                   SOLVED    verified=True   280.7s 
+he_036_fizz_buzz                     SOLVED    verified=True   292.1s 
+he_037_sort_even                     SOLVED    verified=True  1312.4s 
+(Lean REPL restarted to free memory; restart 14)
+he_038_decode_cyclic                 SOLVED    verified=True   437.6s 
+he_040_triples_sum_to_zero           SOLVED    verified=True   292.2s 
+he_041_car_race_collision            SOLVED    verified=True   264.4s 
+(Lean REPL restarted to free memory; restart 15)
+he_042_incr_list                     SOLVED    verified=True   283.2s 
+he_043_pairs_sum_to_zero             SOLVED    verified=True   286.0s 
+he_044_change_base                   SOLVED    verified=True  1169.4s 
+(Lean REPL restarted to free memory; restart 16)
+he_045_triangle_area                 SOLVED    verified=True   296.3s 
+he_046_fib4                          SOLVED    verified=True   383.8s 
+he_047_median                        SOLVED    verified=True   270.2s 
+(Lean REPL restarted to free memory; restart 17)
+he_048_is_palindrome                 SOLVED    verified=True   277.4s 
+he_049_modp                          SOLVED    verified=True   858.2s 
+(Lean REPL restarted to free memory; restart 18)
+he_050_decode_shift                  EXHAUSTED verified=False  940.2s out of model calls
+he_051_remove_vowels                 SOLVED    verified=True   805.6s 
+(Lean REPL restarted to free memory; restart 20)
+he_052_below_threshold               SOLVED    verified=True   287.7s 
+he_053_add                           SOLVED    verified=True   279.2s 
+he_054_same_chars                    SOLVED    verified=True   279.6s 
+(Lean REPL restarted to free memory; restart 21)
+he_055_fib                           SOLVED    verified=True   282.2s 
+he_056_correct_bracketing            SOLVED    verified=True   357.9s 
+he_057_monotonic                     SOLVED    verified=True   283.5s 
+(Lean REPL restarted to free memory; restart 22)
+he_058_common                        SOLVED    verified=True   282.6s 
+he_059_largest_prime_factor          EXHAUSTED verified=False  351.6s out of model calls
+(Lean REPL restarted to free memory; restart 23)
+he_060_sum_to_n                      SOLVED    verified=True   272.8s 
+he_061_correct_bracketing            SOLVED    verified=True   384.8s 
+he_062_derivative                    SOLVED    verified=True   312.7s 
+(Lean REPL restarted to free memory; restart 24)
+he_063_fibfib                        SOLVED    verified=True   370.4s 
+he_064_vowels_count                  SOLVED    verified=True   561.6s 
+he_065_circular_shift                SOLVED    verified=True   287.2s 
+he_066_digit_sum                     SOLVED    verified=True   314.9s 
+he_067_fruit_distribution            SOLVED    verified=True   319.6s 
+he_068_pluck                         SOLVED    verified=True   600.6s 
+he_069_search                        SOLVED    verified=True   304.4s 
+he_070_strange_sort_list             SOLVED    verified=True   301.6s 
+he_071_triangle_area                 EXHAUSTED verified=False  454.1s out of model calls
+he_072_will_it_fly                   SOLVED    verified=True   323.6s 
+(Lean REPL restarted to free memory; restart 25)
+he_073_smallest_change               SOLVED    verified=True   320.0s 
+he_074_total_match                   SOLVED    verified=True   300.0s 
+he_075_is_multiply_prime             SOLVED    verified=True   302.8s 
+(Lean REPL restarted to free memory; restart 26)
+he_076_is_simple_power               SOLVED    verified=True   298.9s 
+he_077_iscube                        SOLVED    verified=True   306.4s 
+he_078_hex_key                       SOLVED    verified=True   321.2s 
+(Lean REPL restarted to free memory; restart 27)
+he_079_decimal_to_binary             EXHAUSTED verified=False  981.7s out of model calls
+he_080_is_happy                      SOLVED    verified=True   292.3s 
+he_081_numerical_letter_grade        SOLVED    verified=True   310.1s 
+(Lean REPL restarted to free memory; restart 29)
+he_082_prime_length                  SOLVED    verified=True   286.9s 
+he_083_starts_one_ends               SOLVED    verified=True   324.2s 
+he_084_solve                         EXHAUSTED verified=False  782.6s out of model calls
+(Lean REPL restarted to free memory; restart 30)
+he_085_add_even_at_odd               SOLVED    verified=True   326.9s 
+he_087_get_row                       EXHAUSTED verified=False  686.5s out of model calls
+(Lean REPL restarted to free memory; restart 31)
+he_088_sort_array                    SOLVED    verified=True   384.8s 
+he_089_encrypt                       SOLVED    verified=True   303.1s 
+he_090_next_smallest                 SOLVED    verified=True  1089.2s 
+(Lean REPL restarted to free memory; restart 32)
+he_091_is_bored                      SOLVED    verified=True   306.4s 
+he_092_any_int                       SOLVED    verified=True   338.4s 
+he_093_encode                        SOLVED    verified=True   307.5s 
+(Lean REPL restarted to free memory; restart 33)
+he_094_skjkasdkd                     SOLVED    verified=True   543.8s 
+he_095_check_dict_case               SOLVED    verified=True   303.7s 
+(Lean REPL restarted to free memory; restart 34)
+he_096_count_up_to                   SOLVED    verified=True   312.8s 
+he_097_multiply                      SOLVED    verified=True   296.9s 
+he_098_count_upper                   SOLVED    verified=True   300.0s 
+(Lean REPL restarted to free memory; restart 35)
+he_099_closest_integer               EXHAUSTED verified=False  423.9s out of model calls
+(Lean REPL restarted to free memory; restart 36)
+he_100_make_a_pile                   SOLVED    verified=True   322.1s 
+he_101_words_string                  SOLVED    verified=True   297.5s 
+he_102_choose_num                    SOLVED    verified=True   296.6s 
+(Lean REPL restarted to free memory; restart 37)
+he_103_rounded_avg                   EXHAUSTED verified=False 1004.4s out of model calls
+he_104_unique_digits                 SOLVED    verified=True   319.4s 
+he_105_by_length                     SOLVED    verified=True   312.5s 
+(Lean REPL restarted to free memory; restart 39)
+he_106_f                             SOLVED    verified=True   313.6s 
+he_107_even_odd_palindrome           SOLVED    verified=True   528.8s 
+(Lean REPL restarted to free memory; restart 40)
+he_108_count_nums                    SOLVED    verified=True   310.5s 
+he_109_move_one_ball                 SOLVED    verified=True   293.1s 
+he_110_exchange                      SOLVED    verified=True   279.0s 
+(Lean REPL restarted to free memory; restart 41)
+he_111_histogram                     EXHAUSTED verified=False 5300.3s out of model calls
+(Lean REPL restarted to free memory; restart 43)
+he_112_reverse_delete                SOLVED    verified=True   362.3s 
+he_113_odd_count                     SOLVED    verified=True   289.5s 
+he_114_min_sub_array_sum             SOLVED    verified=True   543.0s 
+he_115_max_fill                      SOLVED    verified=True   259.0s 
+he_116_sort_array                    SOLVED    verified=True  5239.8s 
+(Lean REPL restarted to free memory; restart 44)
+he_117_select_words                  SOLVED    verified=True   354.9s 
+he_118_get_closest_vowel             EXHAUSTED verified=False 1355.6s out of model calls
+he_119_match_parens                  SOLVED    verified=True   290.5s 
+he_120_maximum                       SOLVED    verified=True  21216.0s 
+he_121_solution                      SOLVED    verified=True   320.9s 
+he_122_add_elements                  SOLVED    verified=True   282.2s 
+(Lean REPL restarted to free memory; restart 46)
+he_123_get_odd_collatz               SOLVED    verified=True   293.4s 
+he_124_valid_date                    SOLVED    verified=True   307.3s 
+he_125_split_words                   SOLVED    verified=True   295.4s 
+(Lean REPL restarted to free memory; restart 47)
+he_126_is_sorted                     SOLVED    verified=True   297.3s 
+he_127_intersection                  SOLVED    verified=True   294.0s 
+he_128_prod_signs                    SOLVED    verified=True   274.3s 
+(Lean REPL restarted to free memory; restart 48)
+he_129_min_path                      EXHAUSTED verified=False  474.7s out of model calls
+(Lean REPL restarted to free memory; restart 49)
+he_130_tri                           SOLVED    verified=True   319.3s 
+he_131_digits                        SOLVED    verified=True   288.4s 
+he_132_is_nested                     SOLVED    verified=True   293.1s 
+(Lean REPL restarted to free memory; restart 50)
+he_133_sum_squares                   SOLVED    verified=True   303.0s 
+he_134_check_if_last_char_is_a_letter SOLVED    verified=True   309.0s 
+he_135_can_arrange                   EXHAUSTED verified=False  414.7s out of model calls
+(Lean REPL restarted to free memory; restart 51)
+he_136_largest_smallest_integers     SOLVED    verified=True   886.3s 
+he_137_compare_one                   SOLVED    verified=True   290.9s 
+(Lean REPL restarted to free memory; restart 52)
+he_138_is_equal_to_sum_even          SOLVED    verified=True   280.2s 
+he_139_special_factorial             SOLVED    verified=True   318.4s 
+he_140_fix_spaces                    SOLVED    verified=True   286.7s 
+(Lean REPL restarted to free memory; restart 53)
+he_141_file_name_check               SOLVED    verified=True   294.2s 
+he_142_sum_squares                   SOLVED    verified=True   302.2s 
+he_143_words_in_sentence             SOLVED    verified=True   282.5s 
+(Lean REPL restarted to free memory; restart 54)
+he_144_simplify                      SOLVED    verified=True   282.5s 
+he_145_order_by_points               SOLVED    verified=True   310.9s 
+he_146_special_filter                SOLVED    verified=True   290.6s 
+(Lean REPL restarted to free memory; restart 55)
+he_147_get_max_triples               SOLVED    verified=True   293.7s 
+he_148_bf                            EXHAUSTED verified=False  960.6s out of model calls
+he_149_sorted_list_sum               EXHAUSTED verified=False  294.5s out of model calls
+(Lean REPL restarted to free memory; restart 57)
+he_150_x_or_y                        SOLVED    verified=True   314.8s 
+he_151_double_the_difference         SOLVED    verified=True   321.6s 
+he_152_compare                       SOLVED    verified=True   328.3s 
+(Lean REPL restarted to free memory; restart 58)
+he_153_strongest_extension           SOLVED    verified=True   342.8s 
+he_154_cycpattern_check              SOLVED    verified=True   303.3s 
+he_155_even_odd_count                SOLVED    verified=True   312.1s 
+(Lean REPL restarted to free memory; restart 59)
+he_156_int_to_mini_roman             SOLVED    verified=True   264.6s 
+he_157_right_angle_triangle          SOLVED    verified=True   289.2s 
+he_158_find_max                      SOLVED    verified=True   336.0s 
+(Lean REPL restarted to free memory; restart 60)
+he_159_eat                           SOLVED    verified=True   284.9s 
+he_160_do_algebra                    SOLVED    verified=True   304.2s 
+he_161_solve                         SOLVED    verified=True   283.6s 
+(Lean REPL restarted to free memory; restart 61)
+he_162_string_to_md5                 SOLVED    verified=True   295.3s 
+he_163_generate_integers             SOLVED    verified=True   331.9s 
+classic_fast_power                   SOLVED    verified=True   812.3s 
+classic_isqrt                        SOLVED    verified=True   550.3s 
+classic_reverse                      SOLVED    verified=True   285.2s 
+classic_sort_list                    SOLVED    verified=True   316.8s 
+classic_sqrt_approx                  EXHAUSTED verified=False  414.7s out of model calls

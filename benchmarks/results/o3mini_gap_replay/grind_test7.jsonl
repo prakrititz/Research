@@ -1,0 +1,5 @@
+{"task": "he_005_intersperse", "lemmas_removed": 1, "automation_alone": true, "failed_status": "", "open_obligations": [], "unsolved": [], "search_closes_all": false, "seconds": 12.1}
+{"task": "he_009_rolling_max", "lemmas_removed": 2, "automation_alone": true, "failed_status": "", "open_obligations": [], "unsolved": [], "search_closes_all": false, "seconds": 7.2}
+{"task": "he_012_longest", "lemmas_removed": 1, "automation_alone": false, "failed_status": "unproved", "open_obligations": ["the value satisfies the postcondition under the hypotheses"], "unsolved": [], "search_closes_all": false, "seconds": 18.2}
+{"task": "he_034_unique", "lemmas_removed": 1, "automation_alone": true, "failed_status": "", "open_obligations": [], "unsolved": [], "search_closes_all": false, "seconds": 5.0}
+{"task": "he_069_search", "lemmas_removed": 1, "automation_alone": true, "failed_status": "", "open_obligations": [], "unsolved": [], "search_closes_all": false, "seconds": 6.1}

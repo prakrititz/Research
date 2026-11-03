@@ -1,0 +1,24 @@
+-- reading the digits back (most significant first) gives the number; for `n > 0` the first digit is not `'0'` (he_044)
+theorem foldl_toDigits (b n : Nat) (hb : 1 < b) (hb10 : b ≤ 10) :
+    (Nat.toDigits b n).foldl (fun acc c => acc * b + (c.toNat - '0'.toNat)) 0 = n := by
+  have h := Nat.ofDigitChars_toDigits (n := n) hb hb10
+  rw [Nat.ofDigitChars_eq_foldl] at h
+  have e : (fun acc c => acc * b + (c.toNat - '0'.toNat)) = (fun sofar (c : Char) => b * sofar + (c.toNat - '0'.toNat)) := by
+    funext a c; rw [Nat.mul_comm]
+  rw [e]; exact h
+theorem foldl_toDigits' (b n : Nat) (hb : 1 < b) (hb10 : b ≤ 10) :
+    (Nat.toDigits b n).foldl (fun acc c => acc * b + (c.toNat - 48)) 0 = n :=
+  foldl_toDigits b n hb hb10
+theorem toDigits_head_ne_zero (b n : Nat) (hb : 1 < b) (hb10 : b ≤ 10) (hn : 0 < n) : (Nat.toDigits b n).head! ≠ '0' := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    rw [Nat.toDigits_eq_if hb]
+    split
+    · have : n < 10 := by omega
+      simp only [List.head!_cons]
+      interval_cases n <;> decide
+    · have hq : 0 < n / b := Nat.div_pos (by omega) (by omega)
+      obtain ⟨c, cs, h⟩ := List.exists_cons_of_ne_nil (Nat.toDigits_ne_nil (n := n / b) (b := b))
+      have ih' := ih (n / b) (Nat.div_lt_self (by omega) hb) hq
+      rw [h] at ih' ⊢
+      simpa using ih'

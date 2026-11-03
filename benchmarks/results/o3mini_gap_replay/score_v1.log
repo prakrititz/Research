@@ -1,0 +1,54 @@
+53 derivations that needed helper lemmas
+he_001_separate_paren_groups         alone=False with_search=False unproved   20.8s
+he_005_intersperse                   alone=False with_search=False unproved   13.5s
+he_009_rolling_max                   alone=True  with_search=False     7.6s
+he_010_make_palindrome               alone=False with_search=False unproved   16.0s
+he_012_longest                       alone=False with_search=False unproved   16.9s
+he_013_gcd                           alone=False with_search=False unproved    7.2s
+he_020_find_closest_elements         alone=False with_search=False unproved   10.0s
+he_022_filter_integers               alone=False with_search=False unproved    9.2s
+he_025_factorize                     alone=False with_search=False unproved   22.5s
+he_033_sort_third                    alone=False with_search=False unproved    9.6s
+he_034_unique                        alone=True  with_search=False     5.0s
+he_037_sort_even                     alone=False with_search=False unproved   10.4s
+he_038_decode_cyclic                 alone=False with_search=False unproved   15.4s
+he_044_change_base                   alone=False with_search=False unproved   10.7s
+he_046_fib4                          alone=False with_search=False unproved    8.2s
+he_049_modp                          alone=True  with_search=False     7.0s
+he_050_decode_shift                  alone=False with_search=False unproved   15.5s
+he_051_remove_vowels                 alone=False with_search=False unproved   17.0s
+he_058_common                        alone=True  with_search=False     5.4s
+he_059_largest_prime_factor          alone=False with_search=False unproved   10.4s
+he_063_fibfib                        alone=False with_search=False unproved    7.4s
+he_068_pluck                         alone=False with_search=False unproved   18.8s
+he_069_search                        alone=True  with_search=False     6.4s
+he_071_triangle_area                 alone=False with_search=False unproved    8.4s
+he_079_decimal_to_binary             alone=False with_search=False unproved   14.6s
+he_084_solve                         alone=False with_search=False unproved   15.2s
+he_087_get_row                       alone=False with_search=False unproved   19.7s
+he_088_sort_array                    alone=False with_search=False unproved   10.0s
+he_090_next_smallest                 alone=False with_search=False unproved   17.0s
+he_092_any_int                       alone=False with_search=False unproved    5.4s
+he_094_skjkasdkd                     alone=False with_search=False unproved    9.2s
+he_096_count_up_to                   alone=True  with_search=False     5.5s
+he_099_closest_integer               alone=False with_search=False unproved    6.8s
+he_103_rounded_avg                   alone=False with_search=False unproved   16.4s
+he_104_unique_digits                 alone=False with_search=False unproved    6.4s
+he_107_even_odd_palindrome           alone=False with_search=False unproved    6.5s
+he_111_histogram                     alone=False with_search=False unproved   18.0s
+he_114_min_sub_array_sum             alone=False with_search=False unproved    8.2s
+he_116_sort_array                    alone=False with_search=False unproved    6.1s
+he_118_get_closest_vowel             alone=False with_search=False unproved   21.8s
+he_120_maximum                       alone=False with_search=False unproved    6.9s
+he_123_get_odd_collatz               alone=False with_search=False unproved    6.4s
+he_129_min_path                      alone=False with_search=False unproved   13.4s
+he_135_can_arrange                   alone=False with_search=False unproved   20.7s
+he_136_largest_smallest_integers     alone=False with_search=False unproved   12.6s
+he_145_order_by_points               alone=False with_search=False unproved    6.7s
+he_148_bf                            alone=False with_search=False unproved   16.4s
+he_149_sorted_list_sum               alone=False with_search=False unproved    7.2s
+he_163_generate_integers             alone=True  with_search=False     7.0s
+classic_fast_power                   alone=False with_search=False unproved    5.4s
+classic_reverse                      alone=True  with_search=False     5.2s
+classic_sort_list                    alone=False with_search=False unproved    6.2s
+classic_sqrt_approx                  alone=False with_search=False unproved    7.2s

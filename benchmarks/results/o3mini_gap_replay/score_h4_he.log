@@ -1,0 +1,12 @@
+28 derivations that needed helper lemmas
+he_001_separate_paren_groups         alone=False with_search=False unproved  314.6s
+he_020_find_closest_elements         alone=False with_search=False timeout  450.6s
+he_025_factorize                     alone=False with_search=False unproved  308.2s
+he_033_sort_third                    alone=False with_search=False unproved  185.2s
+he_037_sort_even                     alone=False with_search=False unproved  186.4s
+he_038_decode_cyclic                 alone=False with_search=False unproved  821.3s
+he_044_change_base                   alone=False with_search=False unproved  295.1s
+he_050_decode_shift                  alone=False with_search=False unproved  363.7s
+he_059_largest_prime_factor          alone=False with_search=False unproved  239.5s
+he_071_triangle_area                 alone=False with_search=False unproved  167.9s
+he_079_decimal_to_binary             alone=False with_search=False unproved  252.4s

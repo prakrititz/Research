@@ -1,0 +1,24 @@
+CHECK obl1_0 'the guard is decidable (the loop can run)' PROVED 15s ''
+CHECK obl1_1 'the variant is a natural number' PROVED 0s ''
+CHECK obl1_2 'the invariant holds before the first iteration' UNPROVED 7s 'no tactic of the cascade closes this'
+HELPER obl1_2_h0 'the invariant holds before the first iteration' ok=True 13s ::  ∧ _); (repeat' apply And.intro) <;> (try intros) <;> refine_portfolio
+CHECK obl1_3 'on exit the invariant and the negated guard imply ' PROVED 21s ''
+CHECK obl2_0 'the intermediate property is a proposition' PROVED 0s ''
+CHECK obl3_0 'the guard is decidable (the loop can run)' PROVED 0s ''
+CHECK obl3_1 'the variant is a natural number' PROVED 0s ''
+CHECK obl3_2 'the invariant holds before the first iteration' UNPROVED 42s 'the automation hit a Lean resource limit ((deterministic) timeout at `isDefEq`, maximum number of heartbeats (200000) ha'
+HELPER obl3_2_g0 'the invariant holds before the first iteration' ok=False 1s :: ion | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega)
+HELPER obl3_2_g1 'the invariant holds before the first iteration' ok=False 1s :: nd_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl1_2_h0]; done))
+HELPER obl3_2_g2 'the invariant holds before the first iteration' ok=False 39s :: em!_eq_getElem?_getD, auto_0_obl1_2_h0] <;> grind [auto_0_obl1_2_h0]))
+HELPER obl3_2_g3 'the invariant holds before the first iteration' ok=False 1s :: p only at *); (repeat' apply And.intro); all_goals (first | lib_apply)
+HELPER obl3_2_g4 'the invariant holds before the first iteration' ok=False 3s :: th_range]); (repeat' apply And.intro) <;> (try intros) <;> lib_chain))
+HELPER obl3_2_g5 'the invariant holds before the first iteration' ok=False 46s :: g_cons, Refine.getElem_bang_nil] at *) <;> (try split_ifs) <;> grind))
+HELPER obl3_2_g6 'the invariant holds before the first iteration' ok=False 45s :: em, -List.getElem!_eq_getElem?_getD, auto_0_obl1_2_h0] <;> lib_grind))
+HELPER obl3_2_g7 'the invariant holds before the first iteration' ok=False 1s :: ap_append] at *); (try subst_vars); (try split) <;> (simp_all; done)))
+HELPER obl3_2_g8 'the invariant holds before the first iteration' ok=False 15s :: to_0_obl1_2_h0]; norm_num; done) | nlinarith | (aesop; done) | decide)
+HELPER obl3_2_h0 'the invariant holds before the first iteration' ok=False 435s ::  ∧ _); (repeat' apply And.intro) <;> (try intros) <;> refine_portfolio
+HELPER obl3_2_h1 'the invariant holds before the first iteration' ok=False 508s :: refine_portfolio
+CHECK obl3_3 'on exit the invariant and the negated guard imply ' UNPROVED 37s 'the automation hit a Lean resource limit ((deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has b'
+HELPER obl3_3_g0 'on exit the invariant and the negated guard imply ' ok=False 0s :: ion | (simp_all; done) | omega | grind) | (dsimp only; omega) | omega)
+HELPER obl3_3_g1 'on exit the invariant and the negated guard imply ' ok=True 3s :: nd_getElem, -List.getElem!_eq_getElem?_getD, auto_0_obl1_2_h0]; done))
+STEPS [(True, 'applied'), (True, 'applied'), (False, 'unproved')]

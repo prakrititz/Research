@@ -1,0 +1,8 @@
+32 prover-gap trials, 0 already replayed
+{'task': 'classic_fast_power', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 10.2}
+{'task': 'classic_sort_list', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 6.6}
+{'task': 'he_005_intersperse', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 9.6}
+{'task': 'he_009_rolling_max', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 23.4}
+{'task': 'he_013_gcd', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 69.6}
+{'task': 'he_015_string_sequence', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 16.4}
+{'task': 'he_024_largest_divisor', 'old': 'EXHAUSTED', 'new': 'EXHAUSTED', 'verified': False, 'seconds': 34.7}
