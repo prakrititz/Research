@@ -1,0 +1,11 @@
+4 trials to replay (0 done)
+he_013_gcd                           judged 4/4 applied 3 gaps 1  661.8s 
+he_015_string_sequence               judged 4/4 applied 0 gaps 3  482.3s 
+he_024_largest_divisor               judged 16/16 applied 9 gaps 0  480.6s 
+he_027_flip_case                     judged 11/11 applied 6 gaps 1  839.3s 
+4 trials to replay (4 done)
+he_035_max_element                   judged 4/4 applied 1 gaps 1  297.0s 
+he_069_search                        judged 8/8 applied 2 gaps 1  383.9s 
+he_099_closest_integer               judged 4/30 applied 3 gaps 0   92.1s diverged: reply 3 was applied in the logged run, repeat now
+he_107_even_odd_palindrome           judged 7/7 applied 1 gaps 1  383.3s 
+0 trials to replay (8 done)
