@@ -1,0 +1,8 @@
+he_013_gcd
+he_015_string_sequence
+he_024_largest_divisor
+he_027_flip_case
+he_035_max_element
+he_069_search
+he_099_closest_integer
+he_107_even_odd_palindrome

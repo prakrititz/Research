@@ -1,0 +1,169 @@
+### he_013_gcd 0 1 unproved | ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+case right
+a b : ℕ
+h_precond : greatestCommonDivisor_precond a b
+⊢ ∀ (d : ℕ), d > 0 → a % d = 0 ∧ b % d = 0 ↔ a % d = 0 ∧ b % d = 0
+
+### he_015_string_sequence 0 1 unproved | ['the value satisfies the postcondition under the hypotheses']
+n : ℕ
+h_precond : stringSequence_precond n
+⊢ stringSequence_postcond n (" ".intercalate (List.map toString (List.range (n + 1)))) h_precond
+
+### he_015_string_sequence 1 1 unproved | ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+n : ℕ
+h_precond : stringSequence_precond n
+⊢ (toString 0).splitOn = List.map toString (List.range (0 + 1)) || n i : ℕ
+acc : String
+h_precond : stringSequence_precond n
+h1i : acc.splitOn = List.map toString (List.range (i + 1))
+h1g : ¬i < n
+⊢ stringSequence_postcond n acc h_precond
+
+### he_015_string_sequence 2 1 unproved | ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+n : ℕ
+h_precond : stringSequence_precond n
+⊢ "0".splitOn = List.map toString (List.range (0 + 1)) || n i : ℕ
+acc : String
+h_precond : stringSequence_precond n
+h1i : acc.splitOn = List.map toString (List.range (i + 1))
+h1g : ¬i < n
+⊢ stringSequence_postcond n acc h_precond
+
+### he_024_largest_divisor 1 2 unproved | ['the value satisfies the postcondition under the hypotheses']
+case right
+n d : ℕ
+h_precond : largestDivisor_precond n
+h1i : d < n ∧ ∀ (k : ℕ), d < k ∧ k < n → n % k ≠ 0
+h1g : n % d ≠ 0
+⊢ d - 1 < d
+
+### he_024_largest_divisor 4 4 unproved | ['the value satisfies the postcondition under the hypotheses']
+case right
+n d : ℕ
+h_precond : largestDivisor_precond n
+h1i : d < n ∧ ∀ (k : ℕ), d < k ∧ k < n → n % k ≠ 0
+h1g : n % d ≠ 0
+h2 : ¬d = 1
+⊢ d - 1 < d
+
+### he_024_largest_divisor 10 6 ill_formed | ['the value satisfies the postcondition under the hypotheses']
+
+
+### he_024_largest_divisor 11 6 ill_formed | ['the value satisfies the postcondition under the hypotheses']
+
+
+### he_024_largest_divisor 12 6 ill_formed | ['the value satisfies the postcondition under the hypotheses']
+
+
+### he_024_largest_divisor 13 6 ill_formed | ['the value satisfies the postcondition under the hypotheses']
+
+
+### he_027_flip_case 0 1 unproved | ['the value satisfies the postcondition under the hypotheses']
+
+
+### he_027_flip_case 6 4 ill_formed | ['the value satisfies the postcondition under the hypotheses']
+
+
+### he_027_flip_case 7 4 unproved | ['the value satisfies the postcondition under the hypotheses']
+
+
+### he_027_flip_case 10 4 ill_formed | []
+
+
+### he_035_max_element 0 1 ill_formed | ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+
+
+### he_035_max_element 1 1 ill_formed | ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+
+
+### he_035_max_element 2 1 unproved | ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+l : List ℤ
+h_precond : maxElement_precond l
+⊢ ∃ processed, l = processed ++ l.tail ∧ processed ≠ [] ∧ ∀ x ∈ processed, x ≤ l.head! || case left
+l xs : List ℤ
+m : ℤ
+h_precond : maxElement_precond l
+h1i : ∃ processed, l = processed ++ xs ∧ processed ≠ [] ∧ ∀ x ∈ processed, x ≤ m
+h1g : ¬xs ≠ []
+⊢ m ∈ l
+
+### he_069_search 0 1 ill_formed | ['the value satisfies the postcondition under the hypotheses']
+
+
+### he_069_search 1 1 ill_formed | ['the condition is a decidable proposition (it can run)']
+
+
+### he_069_search 4 5 ill_formed | ['the value satisfies the postcondition under the hypotheses']
+
+
+### he_069_search 5 5 ill_formed | ['the value satisfies the postcondition under the hypotheses']
+
+
+### he_069_search 6 5 unproved | ['the value satisfies the postcondition under the hypotheses']
+lst : List ℕ
+h_precond : search_precond lst
+h1 : ¬List.filter (fun x => decide (List.count x lst ≥ x)) lst = []
+⊢ search_postcond lst (Int.ofNat (List.foldr max 0 (List.filter (fun x => decide (List.count x lst ≥ x)) lst)))
+    h_precond
+
+### he_069_search 7 5 ill_formed | ['the value satisfies the postcondition under the hypotheses']
+
+
+### he_099_closest_integer 1 2 unproved | ['the value satisfies the postcondition under the hypotheses']
+value : String
+h_precond : closestInteger_precond value
+h1 : parseDec value ≥ 0
+⊢ closestInteger_postcond value ⌊parseDec value + 1 / 2⌋ h_precond
+
+### he_107_even_odd_palindrome 0 1 unproved | ['the value satisfies the postcondition under the hypotheses']
+case left
+n : ℕ
+h_precond : evenOddPalindrome_precond n
+⊢ (List.foldl
+        (fun acc i =>
+          if 1 ≤ i ∧ isPal (toString i).toList then if i % 2 = 0 then (acc.1 + 1, acc.2) else (acc.1, acc.2 + 1)
+          else acc)
+        (0, 0) (List.range (n + 1))).1 =
+    (List.filter (fun i => decide (1 ≤ i ∧ isPal (toString i).toList ∧ i % 2 = 0)) (List.range (n + 1))).length || case right
+n : ℕ
+h_precond : evenOddPalindrome_precond n
+⊢ (List.foldl
+        (fun acc i =>
+          if 1 ≤ i ∧ isPal (toString i).toList then if i % 2 = 0 then (acc.1 + 1, acc.2) else (acc.1, acc.2 + 1)
+          else acc)
+        (0, 0) (List.range (n + 1))).2 =
+    (List.filter (fun i => decide (1 ≤ i ∧ isPal (to
+
+### he_107_even_odd_palindrome 6 1 ill_formed | ['the invariant holds before the first iteration', 'on exit the invariant and the negated guard imply the postcondition']
+
+
+### he_120_maximum 0 1 unproved | ['the value satisfies the postcondition under the hypotheses']
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse.isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true || case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse.length - 1,
+    (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse[i]! ≤
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse[i + 1]!
+
+### he_120_maximum 2 1 unproved | ['the value satisfies the postcondition under the hypotheses']
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse.isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true || case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse.length - 1,
+    (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse[i]! ≤
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).reverse[i + 1]!
+

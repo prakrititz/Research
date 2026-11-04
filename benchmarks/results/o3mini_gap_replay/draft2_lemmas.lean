@@ -23,6 +23,10 @@ theorem not_exists_sq_of_bounds (n i : Nat) (h1 : ∀ j, j < i → j * j ≠ n) 
   · exact h1 k hki hk
   · have : i * i ≤ k * k := Nat.mul_self_le_mul_self (by omega)
     omega
+theorem sq_search_exit (n i : Nat) (h1 : ∀ j, j < i → j * j ≠ n) (h2 : n < i * i) : (i * i = n ↔ ∃ k, k * k = n) := by
+  constructor
+  · intro h; omega
+  · intro h; exact absurd h (not_exists_sq_of_bounds n i h1 h2)
 theorem exists_sq_iff_of_bounds (n r : Nat) (h1 : r * r ≤ n) (h2 : n < (r + 1) * (r + 1)) :
     (∃ i, i * i = n) ↔ r * r = n := by
   constructor
@@ -84,21 +88,21 @@ theorem idxOf_append_not_mem {α : Type} [BEq α] [LawfulBEq α] (a : α) (l₁ 
     have hb : (b == a) = false := by simpa [beq_iff_eq] using Ne.symm h.1
     simp [List.idxOf_cons, hb, ih h.2]; omega
 theorem idxOf_filter_ne_append {α : Type} [DecidableEq α] (a : α) (l : List α) :
-    (l.filter (· ≠ a) ++ l.filter (· = a)).idxOf a = (l.filter (· ≠ a)).length := by
+    (l.filter (fun x => !decide (x = a)) ++ l.filter (fun x => decide (x = a))).idxOf a =
+      (l.filter (fun x => !decide (x = a))).length := by
   rw [idxOf_append_not_mem _ _ _ (by simp)]
-  cases h : l.filter (· = a) with
+  cases h : l.filter (fun x => decide (x = a)) with
   | nil => simp
   | cons b t =>
     have hb : b = a := by
-      have := (List.mem_filter.mp (h ▸ List.mem_cons_self : b ∈ l.filter (· = a))).2
+      have := (List.mem_filter.mp (h ▸ List.mem_cons_self : b ∈ l.filter (fun x => decide (x = a)))).2
       simpa using this
     subst hb; simp [List.idxOf_cons]
 theorem filter_ne_append_filter_eq_perm {α : Type} [DecidableEq α] (a : α) (l : List α) :
-    (l.filter (· ≠ a) ++ l.filter (· = a)).isPerm l = true := by
+    (l.filter (fun x => !decide (x = a)) ++ l.filter (fun x => decide (x = a))).isPerm l = true := by
   rw [List.isPerm_iff]
-  have := List.filter_append_perm (fun x => decide (x ≠ a)) l
+  have := List.filter_append_perm (fun x => !decide (x = a)) l
   simpa using this
-
 -- `c * b^m = b^x` and `b ∤ c`: `c = 1` (the exit of a loop dividing out `b`: verina_advanced_14, verina_advanced_23)
 theorem eq_one_of_mul_pow_eq_pow (b c m x : Nat) (hb : 1 < b) (h : c * b ^ m = b ^ x) (hc : c % b ≠ 0) : c = 1 := by
   have hbm : 0 < b ^ m := Nat.pow_pos (by omega)
@@ -124,11 +128,16 @@ theorem pow_iff_of_factor (b n c : Nat) (hb : 1 < b) (h : ∃ m, n = c * b ^ m) 
     exact hne (eq_one_of_mul_pow_eq_pow b c m x hb hx (hc hne))
 
 -- the common divisors of `a` and `b` are the divisors of `g`: `g` is their greatest common divisor (he_013's Euclid exit)
-theorem mod_left_of_common_divisors (a b g : Nat) (hg : g > 0) (h : ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ g % d = 0)) :
-    a % g = 0 := ((h g hg).mpr (Nat.mod_self g)).1
-theorem mod_right_of_common_divisors (a b g : Nat) (hg : g > 0) (h : ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ g % d = 0)) :
-    b % g = 0 := ((h g hg).mpr (Nat.mod_self g)).2
-theorem le_of_common_divisors (a b g : Nat) (P : Nat → Prop) (hg : g > 0)
-    (h : ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ g % d = 0)) : ∀ d, P d → d > 0 → a % d = 0 → b % d = 0 → d ≤ g := by
+theorem mod_left_of_common_divisors (a b g c : Nat) (hg : g > 0)
+    (h : ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ g % d = 0 ∧ c % d = 0)) (hc : c = 0) : a % g = 0 :=
+  ((h g hg).mpr ⟨Nat.mod_self g, by simp [hc]⟩).1
+theorem mod_right_of_common_divisors (a b g c : Nat) (hg : g > 0)
+    (h : ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ g % d = 0 ∧ c % d = 0)) (hc : c = 0) : b % g = 0 :=
+  ((h g hg).mpr ⟨Nat.mod_self g, by simp [hc]⟩).2
+theorem le_of_common_divisors (a b g c : Nat) (P : Nat → Prop) (hg : g > 0)
+    (h : ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ g % d = 0 ∧ c % d = 0)) : ∀ d, P d → d > 0 → a % d = 0 → b % d = 0 → d ≤ g := by
   intro d _ hd ha hb
-  exact Nat.le_of_dvd hg (Nat.dvd_of_mod_eq_zero ((h d hd).mp ⟨ha, hb⟩))
+  exact Nat.le_of_dvd hg (Nat.dvd_of_mod_eq_zero ((h d hd).mp ⟨ha, hb⟩).1)
+theorem arr_all_foldl_push_filter {α : Type} (p q : α → Bool) (a : Array α) :
+    (Array.foldl (fun acc x => if p x = true then acc.push x else acc) #[] a).all q = (a.toList.filter p).all q := by
+  rw [← Array.all_toList, arr_foldl_push_filter]

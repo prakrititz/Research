@@ -1,0 +1,30 @@
+4 trials to replay (0 done)
+verina_advanced_1                    judged 4/4 applied 0 gaps 1  208.2s 
+verina_advanced_14                   judged 8/8 applied 2 gaps 2  235.9s 
+verina_advanced_23                   judged 10/10 applied 2 gaps 2  310.5s 
+verina_advanced_24                   judged 4/4 applied 0 gaps 1  114.2s 
+4 trials to replay (4 done)
+verina_advanced_34                   judged 4/4 applied 0 gaps 2  651.6s 
+verina_advanced_36                   judged 4/4 applied 0 gaps 1  105.9s 
+verina_advanced_37                   judged 4/4 applied 0 gaps 3  372.2s 
+verina_advanced_39                   judged 4/4 applied 3 gaps 0  109.2s 
+4 trials to replay (8 done)
+verina_advanced_4                    judged 4/4 applied 0 gaps 1  377.9s 
+verina_advanced_40                   judged 4/4 applied 0 gaps 1  134.3s 
+verina_advanced_46                   judged 4/4 applied 0 gaps 1  158.6s 
+verina_advanced_54                   judged 4/4 applied 0 gaps 1  163.9s 
+4 trials to replay (12 done)
+verina_advanced_56                   judged 4/4 applied 0 gaps 1  204.6s 
+verina_basic_25                      judged 17/30 applied 6 gaps 4 3118.0s diverged: reply 16 was applied in the logged run, ill_formed
+verina_basic_34                      judged 4/4 applied 0 gaps 2  918.8s 
+verina_basic_35                      judged 4/4 applied 0 gaps 1  203.2s 
+4 trials to replay (16 done)
+verina_basic_41                      judged 4/4 applied 1 gaps 1   90.2s 
+verina_basic_43                      judged 4/4 applied 1 gaps 2  185.3s 
+verina_basic_46                      judged 4/4 applied 0 gaps 1  203.7s 
+verina_basic_48                      judged 4/4 applied 0 gaps 1   98.6s 
+3 trials to replay (20 done)
+verina_basic_51                      judged 13/18 applied 3 gaps 3  727.7s diverged: reply 12 was applied in the logged run, ill_formed
+verina_basic_63                      judged 4/4 applied 0 gaps 1  107.9s 
+verina_basic_67                      judged 4/4 applied 2 gaps 2  167.2s 
+0 trials to replay (23 done)

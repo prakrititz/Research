@@ -1,0 +1,2 @@
+1 derivations that needed helper lemmas
+he_123_get_odd_collatz               alone=True  with_search=False   174.0s
