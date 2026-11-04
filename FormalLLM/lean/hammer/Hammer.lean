@@ -176,15 +176,26 @@ def provedSince (start : Nat) : CoreM Bool := do
 Each closer handles a goal shape the cascade and the hammers leave open; `refine_portfolio` runs them, with the cascade and
 the hammers, on each goal separately. -/
 
-/-- Run `tac` on the main goal within `budget` thousand heartbeats; it must close the goal. An error, the heartbeat budget or
-the recursion limit is a failure (`first` cannot catch the last two) and leaves the state as it was. -/
+/-- The errors logged so far in the current command. -/
+def errorCount : CoreM Nat := do
+  return ((← Core.getMessageLog).reportedPlusUnreported.toList.filter (·.severity matches .error)).length
+
+/-- Run `tac` on the main goal within `budget` thousand heartbeats; it must close the goal. An error (thrown, or logged by
+error recovery), the heartbeat budget or the recursion limit is a failure (`first` cannot catch the last two) and leaves
+the state as it was. -/
 def closeWithin (budget : Nat) (tac : TacticM Unit) : TacticM Bool := do
   let saved ← saveState
+  let errors ← errorCount
   tryCatchRuntimeEx
     (do
       -- `Core.Context.maxHeartbeats` counts raw heartbeats, 1000 per unit of the `maxHeartbeats` option
       withCurrHeartbeats <| withTheReader Core.Context (fun c => { c with maxHeartbeats := budget * 1000 * 1000 }) <|
-        focusAndDone tac
+        Term.withoutErrToSorry <| withoutRecover <| focusAndDone tac
+      -- a failure that error recovery logged and covered with `sorry` (succ_pos's `⟨n - 1, by omega⟩` on he_024) is no
+      -- proof: it would end the portfolio's search with an error, before the alternative that proves the goal
+      if (← errorCount) > errors then
+        saved.restore
+        return false
       return true)
     (fun _ => do saved.restore; return false)
 
