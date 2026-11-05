@@ -1,0 +1,68 @@
+=== the invariant holds before the first iteration
+BINDERS (a : Nat) (b : Nat) (h_precond : greatestCommonDivisor_precond a b)
+STATEMENT (fun (x : Nat) (y : Nat) => x > 0 ∧ (∀ d, d > 0 → (a % d = 0 ∧ b % d = 0) ↔ (x % d = 0 ∧ y % d = 0))) (a) (b)
+SOURCE set_option allowUnsafeReducibility true in
+attribute [local reducible] greatestCommonDivisor_precond in
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 0 in
+#eval show IO Unit from do
+  let found : Option String := Id.run do
+    for a in ([0, 1, 2, 3] : List (Nat)) do
+      for b in ([0, 1, 2, 3] : List (Nat)) do
+        if h_precond : (greatestCommonDivisor_precond a b) then
+          if !(decide (((a : Nat) > 0) ∧ (∀ d : ℕ, d < 4 → (d > 0 → (a % d = 0 ∧ b % d = 0) ↔ ((a : Nat) % d = 0 ∧ (b : Nat) % d = 0))))) then
+            return some ("a := " ++ toString (repr a) ++ ", " ++ "b := " ++ toString (repr b))
+    return none
+  IO.println ("SMALLSCOPE: " ++ found.getD "none")
+
+TIMED_OUT False
+ERRORS []
+INFOS ['SMALLSCOPE: a := 1, b := 1']
+=== on exit the invariant and the negated guard imply the postcondition
+BINDERS (a : Nat) (b : Nat) (x : Nat) (y : Nat) (h_precond : greatestCommonDivisor_precond a b) (h1i : (x > 0 ∧ (∀ d, d > 0 → (a % d = 0 ∧ b % d = 0) ↔ (x % d = 0 ∧ y % d = 0)))) (h1g : ¬ (y ≠ 0))
+STATEMENT greatestCommonDivisor_postcond a b (x) h_precond
+SOURCE set_option allowUnsafeReducibility true in
+attribute [local reducible] greatestCommonDivisor_postcond greatestCommonDivisor_precond in
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 0 in
+#eval show IO Unit from do
+  let found : Option String := Id.run do
+    for a in ([0, 1, 2, 3] : List (Nat)) do
+      for b in ([0, 1, 2, 3] : List (Nat)) do
+        for x in ([0, 1, 2, 3] : List (Nat)) do
+          for y in ([0, 1, 2, 3] : List (Nat)) do
+            if h_precond : (greatestCommonDivisor_precond a b) then
+              if h1i : ((x > 0 ∧ (∀ d, d > 0 → (a % d = 0 ∧ b % d = 0) ↔ (x % d = 0 ∧ y % d = 0)))) then
+                if h1g : (¬ (y ≠ 0)) then
+                  if !(decide (greatestCommonDivisor_postcond a b (x) h_precond)) then
+                    return some ("a := " ++ toString (repr a) ++ ", " ++ "b := " ++ toString (repr b) ++ ", " ++ "x := " ++ toString (repr x) ++ ", " ++ "y := " ++ toString (repr y))
+    return none
+  IO.println ("SMALLSCOPE: " ++ found.getD "none")
+
+TIMED_OUT False
+ERRORS ['failed to synthesize instance of type class\n  Decidable (x > 0 ∧ ∀ (d : ℕ), d > 0 → a % d = 0 ∧ b % d = 0 ↔ x % d = 0 ∧ y % d = 0)\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.']
+INFOS []
+=== on exit the invariant and the negated guard imply the postcondition
+BINDERS (a : Nat) (b : Nat) (a' : Nat) (b' : Nat) (h_precond : greatestCommonDivisor_precond a b) (h1i : (a' > 0 ∧ ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ a' % d = 0 ∧ b' % d = 0))) (h1g : ¬ (b' ≠ 0))
+STATEMENT greatestCommonDivisor_postcond a b (a') h_precond
+SOURCE set_option allowUnsafeReducibility true in
+attribute [local reducible] greatestCommonDivisor_postcond greatestCommonDivisor_precond in
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 0 in
+#eval show IO Unit from do
+  let found : Option String := Id.run do
+    for a in ([0, 1, 2, 3] : List (Nat)) do
+      for b in ([0, 1, 2, 3] : List (Nat)) do
+        for a' in ([0, 1, 2, 3] : List (Nat)) do
+          for b' in ([0, 1, 2, 3] : List (Nat)) do
+            if h_precond : (greatestCommonDivisor_precond a b) then
+              if h1i : ((a' > 0 ∧ ∀ d, d > 0 → (a % d = 0 ∧ b % d = 0 ↔ a' % d = 0 ∧ b' % d = 0))) then
+                if h1g : (¬ (b' ≠ 0)) then
+                  if !(decide (greatestCommonDivisor_postcond a b (a') h_precond)) then
+                    return some ("a := " ++ toString (repr a) ++ ", " ++ "b := " ++ toString (repr b) ++ ", " ++ "a' := " ++ toString (repr a') ++ ", " ++ "b' := " ++ toString (repr b'))
+    return none
+  IO.println ("SMALLSCOPE: " ++ found.getD "none")
+
+TIMED_OUT False
+ERRORS ["failed to synthesize instance of type class\n  Decidable (a' > 0 ∧ ∀ d > 0, a % d = 0 ∧ b % d = 0 ↔ a' % d = 0 ∧ b' % d = 0)\n\nHint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command."]
+INFOS []

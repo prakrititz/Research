@@ -1,0 +1,1730 @@
+run: 3 tasks x 1 trials, gpt-5.4-mini, writing C:\Users\Prakrititz Borah\AppData\Local\Temp\claude\C--Users-Prakrititz-Borah-Downloads-Work-Research\b020564e-3578-4f9b-a07c-f4f95164f4ca\scratchpad\rc2\benchmarks\results\lean_agent\iter_prover54.jsonl
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+You refine a specification into a Lean 4 program, one step at a time. A *goal* asks for a value ρ of a given
+type that satisfies a property, in a context of variables and assumptions. You answer with ONE law, as a JSON object:
+
+1. {"law": "term", "expr": "<Lean expression>"}
+   The value is this expression. Lean must prove the property for it from the assumptions.
+2. {"law": "cases", "cond": "<decidable Lean proposition>"}
+   Split: one new goal where the condition is assumed, one where it is false. Use it when the answer differs by case.
+3. {"law": "bind", "var": "<name>", "type": "<Lean type>", "prop": "<property of var>"}
+   First find a value `var` with the property, then continue with it (and the property) available. Use it to compute
+   something once and reuse it.
+4. {"law": "loop", "state": [["i","Nat"],["acc","Int"]], "init": ["0","0"], "invariant": "<Prop over the state>",
+   "guard": "<decidable Prop>", "variant": "<Nat expression that strictly decreases>", "result": "<expression>"}
+   Start at `init`, repeat while `guard`; `invariant` must hold at the start and, with the guard false, must imply the
+   goal's property for `result`. The new goal is the loop body: find the next state, keeping the invariant and making the
+   variant smaller (usually answered by a `term` that is a tuple).
+
+Any of these may also carry "lemmas": [{"name": "f_succ", "statement": "<Lean proposition>", "proof": "by …"}]: facts that Lean
+proves first and then uses in the obligations (for example how a recursive definition in the specification unfolds one step).
+A false lemma is refused.
+
+Rules: Lean 4 syntax. `a[i]!` indexes (default value if out of range). `Nat` subtraction stops at 0. Names you introduce
+(bind variable, loop state) must not already be in scope. Reply with the JSON object only.
+Example. Goal: find ρ : Nat with 2 * ρ = n * (n + 1), given n : Nat. Answer:
+{"law": "loop", "state": [["i","Nat"],["s","Nat"]], "init": ["0","0"], "invariant": "s * 2 = i * (i + 1) ∧ i ≤ n",
+ "guard": "i < n", "variant": "n - i", "result": "s"}
+The body goal is then: find (i', s') with the invariant and n - i' < n - i. Answer:
+{"law": "term", "expr": "(i + 1, s + (i + 1))"}
+
+How to answer (important):
+- `expr`, `init`, `invariant`, `guard`, `variant`, `result` are Lean *expressions*: the program and its annotations. Never put
+  `by ...`, `⟨value, proof⟩`, `?_` or `Exists.intro` in them. The goal is shown as `∃ ρ, ...`, but you do not prove it:
+  you give ρ.
+- A `term` answer may add "proof": "by <tactics>". It proves the property OF YOUR VALUE: the goal's property with ρ
+  replaced by `expr` (not `∃ ρ, ...`: the value is already chosen, so never start with `refine ⟨value, ?_⟩` or
+  `exists`). The goal's variables and hypotheses are in scope; unfold the specification's definitions first
+  (`unfold f_postcond` or `simp only [f_postcond]`). It is used only if the automation cannot prove the step.
+  Example: {"law": "term", "expr": "Nat.primeFactorsList n", "proof": "by\n  unfold factorize_postcond\n  constructor\n  · ..."}
+
+Task: maximum
+Given an array arr of integers and a non-negative integer k, return a sorted list of length k with the maximum k numbers in arr.
+
+Definitions (Lean):
+@[reducible, simp]
+def maximum_precond (arr : List Int) (k : Nat) : Prop :=
+  k ≤ arr.length
+
+@[reducible, simp]
+def maximum_postcond (arr : List Int) (k : Nat) (result: List Int) (h_precond : maximum_precond (arr) (k)) :=
+  result.isPerm ((arr.mergeSort (fun a b => a ≥ b)).take k) ∧ ∀ i, i < result.length - 1 → result[i]! ≤ result[i + 1]!
+
+Goal 1: find ρ : List Int
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∃ ρ, maximum_postcond arr k ρ h_precond
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4-mini is thinking (Live Stream)...]
+{"law":"term","expr":"((arr.mergeSort (fun a b => a ≥ b)).take k)","proof":"by\n  unfold maximum_postcond\n  constructor\n  · simp\n  · intro i hi\n    have hsorted : List.Sorted (· ≤ ·) (arr.mergeSort (fun a b => a ≥ b)) := by\n      simpa using List.sorted_mergeSort (xs := arr) (r := fun a b => a ≥ b)\n    simpa using hsorted.take k"}
+[Usage: 1096 prompt + 1878 completion tokens | Call: $0.02152 | Cumulative Total: $0.0215 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"law":"term","expr":"((arr.mergeSort (fun a b => a ≥ b)).take k)","proof":"by\n  unfold maximum_postcond\n  constructor\n  · simp\n  · intro i hi\n    have hsorted : List.Sorted (· ≤ ·) (arr.mergeSort (fun a b => a ≥ b)) := by\n      simpa using List.sorted_mergeSort (xs := arr) (r := fun a b => a ≥ b)\n    simpa using hsorted.take k"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_1 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).length - 1,
+    (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i]! ≤
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  unfold maximum_postcond
+  constructor
+  · simp
+  · intro i hi
+    have hsorted : List.Sorted (· ≤ ·) (arr.mergeSort (fun a b => a ≥ b)) := by
+      simpa using List.sorted_mergeSort (xs := arr) (r := fun a b => a ≥ b)
+    simpa using hsorted.take k
+  Lean: unsolved goals
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (b ≤ a))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (b ≤ a))) =
+    true
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  ·\n    have hperm : ∀ l : List Int, l.isPerm l = true := by\n      intro l\n      induction l with\n      | nil =>\n          simp [List.isPerm]\n      | cons x xs ih =>\n          simp [List.isPerm, ih]\n    simpa using hperm ((arr.mergeSort (fun a b => a ≥ b)).take k)\n  ·\n    have hsorted : List.Sorted (· ≤ ·) (arr.mergeSort (fun a b => a ≥ b)) := by\n      simpa using List.sorted_mergeSort (xs := arr) (r := fun a b => a ≥ b)\n    simpa using hsorted.take k"}
+[Usage: 3018 prompt + 3454 completion tokens | Call: $0.04209 | Cumulative Total: $0.0636 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  ·\n    have hperm : ∀ l : List Int, l.isPerm l = true := by\n      intro l\n      induction l with\n      | nil =>\n          simp [List.isPerm]\n      | cons x xs ih =>\n          simp [List.isPerm, ih]\n    simpa using hperm ((arr.mergeSort (fun a b => a ≥ b)).take k)\n  ·\n    have hsorted : List.Sorted (· ≤ ·) (arr.mergeSort (fun a b => a ≥ b)) := by\n      simpa using List.sorted_mergeSort (xs := arr) (r := fun a b => a ≥ b)\n    simpa using hsorted.take k"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_1 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).length - 1,
+    (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i]! ≤
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  unfold maximum_postcond
+  constructor
+  · simp
+  · intro i hi
+    have hsorted : List.Sorted (· ≤ ·) (arr.mergeSort (fun a b => a ≥ b)) := by
+      simpa using List.sorted_mergeSort (xs := arr) (r := fun a b => a ≥ b)
+    simpa using hsorted.take k
+  Lean: unsolved goals
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (b ≤ a))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (b ≤ a))) =
+    true
+- by
+  unfold maximum_postcond
+  constructor
+  ·
+    have hperm : ∀ l : List Int, l.isPerm l = true := by
+      intro l
+      induction l with
+      | nil =>
+          simp [List.isPerm]
+      | cons x xs ih =>
+          simp [List.isPerm, ih]
+    simpa using hperm ((arr.mergeSort (fun a b => a ≥ b)).take k)
+  ·
+    have hsorted : List.Sorted (· ≤ ·) (arr.mergeSort (fun a b => a ≥ b)) := by
+      si
+  Lean: Unknown constant `List.Sorted`
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  ·\n    set l : List Int := (arr.mergeSort (fun a b => decide (a ≥ b))).take k\n    induction l with\n    | nil =>\n        simp [List.isPerm]\n    | cons x xs ih =>\n        simp [List.isPerm, ih]\n  ·\n    simpa using (List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))).take k"}
+[Usage: 3157 prompt + 6161 completion tokens | Call: $0.06950 | Cumulative Total: $0.1331 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  ·\n    set l : List Int := (arr.mergeSort (fun a b => decide (a ≥ b))).take k\n    induction l with\n    | nil =>\n        simp [List.isPerm]\n    | cons x xs ih =>\n        simp [List.isPerm, ih]\n  ·\n    simpa using (List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))).take k"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_1 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).length - 1,
+    (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i]! ≤
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  unfold maximum_postcond
+  constructor
+  ·
+    have hperm : ∀ l : List Int, l.isPerm l = true := by
+      intro l
+      induction l with
+      | nil =>
+          simp [List.isPerm]
+      | cons x xs ih =>
+          simp [List.isPerm, ih]
+    simpa using hperm ((arr.mergeSort (fun a b => a ≥ b)).take k)
+  ·
+    have hsorted : List.Sorted (· ≤ ·) (arr.mergeSort (fun a b => a ≥ b)) := by
+      si
+  Lean: Unknown constant `List.Sorted`
+- by
+  unfold maximum_postcond
+  constructor
+  ·
+    set l : List Int := (arr.mergeSort (fun a b => decide (a ≥ b))).take k
+    induction l with
+    | nil =>
+        simp [List.isPerm]
+    | cons x xs ih =>
+        simp [List.isPerm, ih]
+  ·
+    simpa using (List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))).take k
+  Lean: Unknown constant `List.sorted_mergeSort`
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  have htake :\n      ∀ n (l : List Int), List.Pairwise (· ≤ ·) l → List.Pairwise (· ≤ ·) (l.take n) := by\n    intro n\n    induction n with\n    | zero =>\n        intro l hp\n        simp\n    | succ n ih =>\n        intro l hp\n        cases l with\n        | nil =>\n            simp\n        | cons a t =>\n            simp at hp\n            simp [List.take]\n            constructor\n            · intro x hx\n              exact hp.1 x (List.mem_of_mem_take hx)\n            · exact ih t hp.2\n  have hadj :\n      ∀ (l : List Int), List.Pairwise (· ≤ ·) l → ∀ i, i < l.length - 1 → l[i]! ≤ l[i + 1]! := by\n    intro l hp\n    induction l with\n    | nil =>\n        intro i hi\n        omega\n    | cons a t ih =>\n        cases t with\n        | nil =>\n            intro i hi\n            omega\n        | cons b u =>\n            intro i hi\n            simp at hp\n            cases i with\n            | zero =>\n                simpa using hp.1.1\n            | succ i =>\n                have hi' : i < (b :: u).length - 1 := by\n                  omega\n                simpa using ih hp.2 i hi'\n  unfold maximum_postcond\n  constructor\n  · simp\n  ·\n    have hs0 : List.Pairwise (· ≤ ·) (arr.mergeSort (fun a b => decide (a ≥ b))) := by\n      first\n      | simpa using (List.pairwise_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b)))\n      | simpa using (List.pairwise_mergeSort (l := arr) (r := fun a b => decide (a ≥ b)))\n      | simpa using (List.pairwise_mergeSort (xs := arr) (lt := fun a b => decide (a ≥ b)))\n      | simpa using (List.pairwise_mergeSort (l := arr) (lt := fun a b => decide (a ≥ b)))\n      | simpa using (List.pairwise_mergeSort (fun a b => decide (a ≥ b)) arr)\n      | simpa using (pairwise_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b)))\n      | simpa using (pairwise_mergeSort (l := arr) (r := fun a b => decide (a ≥ b)))\n      | simpa using (pairwise_mergeSort (xs := arr) (lt := fun a b => decide (a ≥ b)))\n      | simpa using (pairwise_mergeSort (l := arr) (lt := fun a b => decide (a ≥ b)))\n      | simpa using (pairwise_mergeSort (fun a b => decide (a ≥ b)) arr)\n    have hs : List.Pairwise (· ≤ ·) ((arr.mergeSort (fun a b => decide (a ≥ b))).take k) := by\n      exact htake k _ hs0\n    intro i hi\n    exact hadj _ hs i hi"}
+[Usage: 3112 prompt + 14815 completion tokens | Call: $0.15593 | Cumulative Total: $0.2890 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  have htake :\n      ∀ n (l : List Int), List.Pairwise (· ≤ ·) l → List.Pairwise (· ≤ ·) (l.take n) := by\n    intro n\n    induction n with\n    | zero =>\n        intro l hp\n        simp\n    | succ n ih =>\n        intro l hp\n        cases l with\n        | nil =>\n            simp\n        | cons a t =>\n            simp at hp\n            simp [List.take]\n            constructor\n            · intro x hx\n              exact hp.1 x (List.mem_of_mem_take hx)\n            · exact ih t hp.2\n  have hadj :\n      ∀ (l : List Int), List.Pairwise (· ≤ ·) l → ∀ i, i < l.length - 1 → l[i]! ≤ l[i + 1]! := by\n    intro l hp\n    induction l with\n    | nil =>\n        intro i hi\n        omega\n    | cons a t ih =>\n        cases t with\n        | nil =>\n            intro i hi\n            omega\n        | cons b u =>\n            intro i hi\n            simp at hp\n            cases i with\n            | zero =>\n                simpa using hp.1.1\n            | succ i =>\n                have hi' : i < (b :: u).length - 1 := by\n                  omega\n                simpa using ih hp.2 i hi'\n  unfold maximum_postcond\n  constructor\n  · simp\n  ·\n    have hs0 : List.Pairwise (· ≤ ·) (arr.mergeSort (fun a b => decide (a ≥ b))) := by\n      first\n      | simpa using (List.pairwise_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b)))\n      | simpa using (List.pairwise_mergeSort (l := arr) (r := fun a b => decide (a ≥ b)))\n      | simpa using (List.pairwise_mergeSort (xs := arr) (lt := fun a b => decide (a ≥ b)))\n      | simpa using (List.pairwise_mergeSort (l := arr) (lt := fun a b => decide (a ≥ b)))\n      | simpa using (List.pairwise_mergeSort (fun a b => decide (a ≥ b)) arr)\n      | simpa using (pairwise_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b)))\n      | simpa using (pairwise_mergeSort (l := arr) (r := fun a b => decide (a ≥ b)))\n      | simpa using (pairwise_mergeSort (xs := arr) (lt := fun a b => decide (a ≥ b)))\n      | simpa using (pairwise_mergeSort (l := arr) (lt := fun a b => decide (a ≥ b)))\n      | simpa using (pairwise_mergeSort (fun a b => decide (a ≥ b)) arr)\n    have hs : List.Pairwise (· ≤ ·) ((arr.mergeSort (fun a b => decide (a ≥ b))).take k) := by\n      exact htake k _ hs0\n    intro i hi\n    exact hadj _ hs i hi"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+You refine a specification into a Lean 4 program, one step at a time. A *goal* asks for a value ρ of a given
+type that satisfies a property, in a context of variables and assumptions. You answer with ONE law, as a JSON object:
+
+1. {"law": "term", "expr": "<Lean expression>"}
+   The value is this expression. Lean must prove the property for it from the assumptions.
+2. {"law": "cases", "cond": "<decidable Lean proposition>"}
+   Split: one new goal where the condition is assumed, one where it is false. Use it when the answer differs by case.
+3. {"law": "bind", "var": "<name>", "type": "<Lean type>", "prop": "<property of var>"}
+   First find a value `var` with the property, then continue with it (and the property) available. Use it to compute
+   something once and reuse it.
+4. {"law": "loop", "state": [["i","Nat"],["acc","Int"]], "init": ["0","0"], "invariant": "<Prop over the state>",
+   "guard": "<decidable Prop>", "variant": "<Nat expression that strictly decreases>", "result": "<expression>"}
+   Start at `init`, repeat while `guard`; `invariant` must hold at the start and, with the guard false, must imply the
+   goal's property for `result`. The new goal is the loop body: find the next state, keeping the invariant and making the
+   variant smaller (usually answered by a `term` that is a tuple).
+
+Any of these may also carry "lemmas": [{"name": "f_succ", "statement": "<Lean proposition>", "proof": "by …"}]: facts that Lean
+proves first and then uses in the obligations (for example how a recursive definition in the specification unfolds one step).
+A false lemma is refused.
+
+Rules: Lean 4 syntax. `a[i]!` indexes (default value if out of range). `Nat` subtraction stops at 0. Names you introduce
+(bind variable, loop state) must not already be in scope. Reply with the JSON object only.
+Example. Goal: find ρ : Nat with 2 * ρ = n * (n + 1), given n : Nat. Answer:
+{"law": "loop", "state": [["i","Nat"],["s","Nat"]], "init": ["0","0"], "invariant": "s * 2 = i * (i + 1) ∧ i ≤ n",
+ "guard": "i < n", "variant": "n - i", "result": "s"}
+The body goal is then: find (i', s') with the invariant and n - i' < n - i. Answer:
+{"law": "term", "expr": "(i + 1, s + (i + 1))"}
+
+How to answer (important):
+- `expr`, `init`, `invariant`, `guard`, `variant`, `result` are Lean *expressions*: the program and its annotations. Never put
+  `by ...`, `⟨value, proof⟩`, `?_` or `Exists.intro` in them. The goal is shown as `∃ ρ, ...`, but you do not prove it:
+  you give ρ.
+- A `term` answer may add "proof": "by <tactics>". It proves the property OF YOUR VALUE: the goal's property with ρ
+  replaced by `expr` (not `∃ ρ, ...`: the value is already chosen, so never start with `refine ⟨value, ?_⟩` or
+  `exists`). The goal's variables and hypotheses are in scope; unfold the specification's definitions first
+  (`unfold f_postcond` or `simp only [f_postcond]`). It is used only if the automation cannot prove the step.
+  Example: {"law": "term", "expr": "Nat.primeFactorsList n", "proof": "by\n  unfold factorize_postcond\n  constructor\n  · ..."}
+
+Task: maximum
+Given an array arr of integers and a non-negative integer k, return a sorted list of length k with the maximum k numbers in arr.
+
+Definitions (Lean):
+@[reducible, simp]
+def maximum_precond (arr : List Int) (k : Nat) : Prop :=
+  k ≤ arr.length
+
+@[reducible, simp]
+def maximum_postcond (arr : List Int) (k : Nat) (result: List Int) (h_precond : maximum_precond (arr) (k)) :=
+  result.isPerm ((arr.mergeSort (fun a b => a ≥ b)).take k) ∧ ∀ i, i < result.length - 1 → result[i]! ≤ result[i + 1]!
+
+Goal 1: find ρ : List Int
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∃ ρ, maximum_postcond arr k ρ h_precond
+
+Earlier attempts on this goal were rejected:
+- {"law": "term", "expr": "((arr.mergeSort (fun a b => a ≥ b)).take k)", "proof": "by\n  unfold maximum_postcond\n  constructor\n  · simp\n  · intro i hi\n    have hsorted : List.Sorted (· ≤ ·) (arr.mergeSort (fun a b => a ≥ b)) := by\n      simpa using List.sorted_mergeSort (xs := arr) (r := fun a b 
+  the term step is not accepted
+- the value satisfies the postcondition under the hypotheses: unproved
+  to prove: maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+  Lean: no tactic of the cascade closes this
+  not closed:
+    case left
+    arr : List ℤ
+    k : ℕ
+    h_precond : maximum_precond arr k
+    ⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).isPerm
+          (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+        true
+  not closed:
+    case right
+    arr : List ℤ
+    k : ℕ
+    h_precond : maximum_precond arr k
+    ⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).length - 1,
+        (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i]! ≤
+          (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i + 1]!
+  counter-example: arr := [-1, 0], k := 2
+- your value was not proved by the automation, and your "proof" failed in Lean: unsolved goals
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (b ≤ a))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (b ≤ a))) =
+    true
+  The proof must prove exactly: (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) ⊢ maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4-mini is thinking (Live Stream)...]
+{"law":"term","expr":"((arr.mergeSort (fun a b => a ≥ b)).take k)","proof":"by\n  unfold maximum_postcond\n  constructor\n  · simpa using (List.isPerm_refl ((arr.mergeSort (fun a b => a ≥ b)).take k))\n  · have hsorted : List.Sorted (fun a b => a ≥ b) (arr.mergeSort (fun a b => a ≥ b)) := by\n      simpa using (List.sorted_mergeSort (xs := arr) (r := fun a b => a ≥ b))\n    simpa using hsorted.take k"}
+[Usage: 1627 prompt + 746 completion tokens | Call: $0.01153 | Cumulative Total: $0.3006 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"law":"term","expr":"((arr.mergeSort (fun a b => a ≥ b)).take k)","proof":"by\n  unfold maximum_postcond\n  constructor\n  · simpa using (List.isPerm_refl ((arr.mergeSort (fun a b => a ≥ b)).take k))\n  · have hsorted : List.Sorted (fun a b => a ≥ b) (arr.mergeSort (fun a b => a ≥ b)) := by\n      simpa using (List.sorted_mergeSort (xs := arr) (r := fun a b => a ≥ b))\n    simpa using hsorted.take k"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_5 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).length - 1,
+    (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i]! ≤
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  unfold maximum_postcond
+  constructor
+  · simpa using (List.isPerm_refl ((arr.mergeSort (fun a b => a ≥ b)).take k))
+  · have hsorted : List.Sorted (fun a b => a ≥ b) (arr.mergeSort (fun a b => a ≥ b)) := by
+      simpa using (List.sorted_mergeSort (xs := arr) (r := fun a b => a ≥ b))
+    simpa using hsorted.take k
+  Lean: Unknown constant `List.isPerm_refl`
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  · simp\n  · have hsorted := List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))\n    simpa using hsorted.take k"}
+[Usage: 2976 prompt + 5061 completion tokens | Call: $0.05805 | Cumulative Total: $0.3586 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  · simp\n  · have hsorted := List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))\n    simpa using hsorted.take k"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_5 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).length - 1,
+    (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i]! ≤
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  unfold maximum_postcond
+  constructor
+  · simpa using (List.isPerm_refl ((arr.mergeSort (fun a b => a ≥ b)).take k))
+  · have hsorted : List.Sorted (fun a b => a ≥ b) (arr.mergeSort (fun a b => a ≥ b)) := by
+      simpa using (List.sorted_mergeSort (xs := arr) (r := fun a b => a ≥ b))
+    simpa using hsorted.take k
+  Lean: Unknown constant `List.isPerm_refl`
+- by
+  unfold maximum_postcond
+  constructor
+  · simp
+  · have hsorted := List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))
+    simpa using hsorted.take k
+  Lean: unsolved goals
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (b ≤ a))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (b ≤ a))) =
+    true
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  · generalize hL : List.take k (arr.mergeSort fun a b => decide (a ≥ b)) = l\n    induction l with\n    | nil =>\n        simp [List.isPerm]\n    | cons a t ih =>\n        simp [List.isPerm, ih]\n  · have hsorted := List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))\n    simpa using hsorted.take k"}
+[Usage: 3106 prompt + 3715 completion tokens | Call: $0.04492 | Cumulative Total: $0.4035 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  · generalize hL : List.take k (arr.mergeSort fun a b => decide (a ≥ b)) = l\n    induction l with\n    | nil =>\n        simp [List.isPerm]\n    | cons a t ih =>\n        simp [List.isPerm, ih]\n  · have hsorted := List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))\n    simpa using hsorted.take k"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_5 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).length - 1,
+    (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i]! ≤
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  unfold maximum_postcond
+  constructor
+  · simp
+  · have hsorted := List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))
+    simpa using hsorted.take k
+  Lean: unsolved goals
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (b ≤ a))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (b ≤ a))) =
+    true
+- by
+  unfold maximum_postcond
+  constructor
+  · generalize hL : List.take k (arr.mergeSort fun a b => decide (a ≥ b)) = l
+    induction l with
+    | nil =>
+        simp [List.isPerm]
+    | cons a t ih =>
+        simp [List.isPerm, ih]
+  · have hsorted := List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))
+    simpa using hsorted.take k
+  Lean: unsolved goals
+case left.cons
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+a : ℤ
+t : List ℤ
+ih : List.take k (arr.mergeSort fun a b => decide (a ≥ b)) = t → t.isPerm t = true
+hL : List.take k (arr.mergeSort fun a b => decide (a ≥ b)) = a :: t
+⊢ t.isPerm t = true
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  · have hself : ∀ l : List Int, l.isPerm l = true := by\n      intro l\n      induction l with\n      | nil =>\n          simp [List.isPerm]\n      | cons a t ih =>\n          simpa [List.isPerm] using ih\n    exact hself ((arr.mergeSort (fun a b => decide (a ≥ b))).take k)\n  · have hsorted := List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))\n    simpa using hsorted.take k"}
+[Usage: 3201 prompt + 1902 completion tokens | Call: $0.02702 | Cumulative Total: $0.4306 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  · have hself : ∀ l : List Int, l.isPerm l = true := by\n      intro l\n      induction l with\n      | nil =>\n          simp [List.isPerm]\n      | cons a t ih =>\n          simpa [List.isPerm] using ih\n    exact hself ((arr.mergeSort (fun a b => decide (a ≥ b))).take k)\n  · have hsorted := List.sorted_mergeSort (xs := arr) (r := fun a b => decide (a ≥ b))\n    simpa using hsorted.take k"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+You refine a specification into a Lean 4 program, one step at a time. A *goal* asks for a value ρ of a given
+type that satisfies a property, in a context of variables and assumptions. You answer with ONE law, as a JSON object:
+
+1. {"law": "term", "expr": "<Lean expression>"}
+   The value is this expression. Lean must prove the property for it from the assumptions.
+2. {"law": "cases", "cond": "<decidable Lean proposition>"}
+   Split: one new goal where the condition is assumed, one where it is false. Use it when the answer differs by case.
+3. {"law": "bind", "var": "<name>", "type": "<Lean type>", "prop": "<property of var>"}
+   First find a value `var` with the property, then continue with it (and the property) available. Use it to compute
+   something once and reuse it.
+4. {"law": "loop", "state": [["i","Nat"],["acc","Int"]], "init": ["0","0"], "invariant": "<Prop over the state>",
+   "guard": "<decidable Prop>", "variant": "<Nat expression that strictly decreases>", "result": "<expression>"}
+   Start at `init`, repeat while `guard`; `invariant` must hold at the start and, with the guard false, must imply the
+   goal's property for `result`. The new goal is the loop body: find the next state, keeping the invariant and making the
+   variant smaller (usually answered by a `term` that is a tuple).
+
+Any of these may also carry "lemmas": [{"name": "f_succ", "statement": "<Lean proposition>", "proof": "by …"}]: facts that Lean
+proves first and then uses in the obligations (for example how a recursive definition in the specification unfolds one step).
+A false lemma is refused.
+
+Rules: Lean 4 syntax. `a[i]!` indexes (default value if out of range). `Nat` subtraction stops at 0. Names you introduce
+(bind variable, loop state) must not already be in scope. Reply with the JSON object only.
+Example. Goal: find ρ : Nat with 2 * ρ = n * (n + 1), given n : Nat. Answer:
+{"law": "loop", "state": [["i","Nat"],["s","Nat"]], "init": ["0","0"], "invariant": "s * 2 = i * (i + 1) ∧ i ≤ n",
+ "guard": "i < n", "variant": "n - i", "result": "s"}
+The body goal is then: find (i', s') with the invariant and n - i' < n - i. Answer:
+{"law": "term", "expr": "(i + 1, s + (i + 1))"}
+
+How to answer (important):
+- `expr`, `init`, `invariant`, `guard`, `variant`, `result` are Lean *expressions*: the program and its annotations. Never put
+  `by ...`, `⟨value, proof⟩`, `?_` or `Exists.intro` in them. The goal is shown as `∃ ρ, ...`, but you do not prove it:
+  you give ρ.
+- A `term` answer may add "proof": "by <tactics>". It proves the property OF YOUR VALUE: the goal's property with ρ
+  replaced by `expr` (not `∃ ρ, ...`: the value is already chosen, so never start with `refine ⟨value, ?_⟩` or
+  `exists`). The goal's variables and hypotheses are in scope; unfold the specification's definitions first
+  (`unfold f_postcond` or `simp only [f_postcond]`). It is used only if the automation cannot prove the step.
+  Example: {"law": "term", "expr": "Nat.primeFactorsList n", "proof": "by\n  unfold factorize_postcond\n  constructor\n  · ..."}
+
+Task: maximum
+Given an array arr of integers and a non-negative integer k, return a sorted list of length k with the maximum k numbers in arr.
+
+Definitions (Lean):
+@[reducible, simp]
+def maximum_precond (arr : List Int) (k : Nat) : Prop :=
+  k ≤ arr.length
+
+@[reducible, simp]
+def maximum_postcond (arr : List Int) (k : Nat) (result: List Int) (h_precond : maximum_precond (arr) (k)) :=
+  result.isPerm ((arr.mergeSort (fun a b => a ≥ b)).take k) ∧ ∀ i, i < result.length - 1 → result[i]! ≤ result[i + 1]!
+
+Goal 1: find ρ : List Int
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∃ ρ, maximum_postcond arr k ρ h_precond
+
+Earlier attempts on this goal were rejected:
+- your value was not proved by the automation, and your "proof" failed in Lean: unsolved goals
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ (List.take k (arr.mergeSort fun a b => decide (b ≤ a))).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (b ≤ a))) =
+    true
+  The proof must prove exactly: (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) ⊢ maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+- {"law": "term", "expr": "((arr.mergeSort (fun a b => a ≥ b)).take k)", "proof": "by\n  unfold maximum_postcond\n  constructor\n  · simpa using (List.isPerm_refl ((arr.mergeSort (fun a b => a ≥ b)).take k))\n  · have hsorted : List.Sorted (fun a b => a ≥ b) (arr.mergeSort (fun a b => a ≥ b)) := by\n 
+  the term step is not accepted
+- the value satisfies the postcondition under the hypotheses: unproved
+  to prove: maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+  Lean: no tactic of the cascade closes this
+  not closed:
+    case left
+    arr : List ℤ
+    k : ℕ
+    h_precond : maximum_precond arr k
+    ⊢ (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).isPerm
+          (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+        true
+  not closed:
+    case right
+    arr : List ℤ
+    k : ℕ
+    h_precond : maximum_precond arr k
+    ⊢ ∀ i < (List.take k (arr.mergeSort fun a b => decide (a ≥ b))).length - 1,
+        (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i]! ≤
+          (List.take k (arr.mergeSort fun a b => decide (a ≥ b)))[i + 1]!
+  counter-example: arr := [-1, 0], k := 2
+- your value was not proved by the automation, and your "proof" failed in Lean: Unknown constant `List.isPerm_refl`
+  The proof must prove exactly: (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) ⊢ maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4-mini is thinking (Live Stream)...]
+{"law":"term","expr":"(((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))","proof":"by\n  unfold maximum_postcond\n  constructor\n  · exact List.perm_mergeSort _\n  · simpa using (List.sorted_mergeSort (fun a b => a ≤ b) ((arr.mergeSort (fun a b => a ≥ b)).take k))"}
+[Usage: 1717 prompt + 1015 completion tokens | Call: $0.01444 | Cumulative Total: $0.4450 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"law":"term","expr":"(((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))","proof":"by\n  unfold maximum_postcond\n  constructor\n  · exact List.perm_mergeSort _\n  · simpa using (List.sorted_mergeSort (fun a b => a ≤ b) ((arr.mergeSort (fun a b => a ≥ b)).take k))"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_9 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k ((((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).length - 1,
+    ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i]! ≤
+      ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  unfold maximum_postcond
+  constructor
+  · exact List.perm_mergeSort _
+  · simpa using (List.sorted_mergeSort (fun a b => a ≤ b) ((arr.mergeSort (fun a b => a ≥ b)).take k))
+  Lean: Unknown constant `List.perm_mergeSort`
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  unfold maximum_postcond\n  let xs := (arr.mergeSort (fun a b => a ≥ b)).take k\n  constructor\n  · first\n    | simpa [xs]\n    | simpa [xs] using (List.mergeSort_perm (fun a b => a ≤ b) xs).isPerm\n    | simpa [xs] using (List.perm_mergeSort (fun a b => a ≤ b) xs).isPerm\n    | simpa [xs] using List.mergeSort_isPerm (fun a b => a ≤ b) xs\n    | simpa [xs] using List.isPerm_mergeSort (fun a b => a ≤ b) xs\n  · simpa [xs] using (List.sorted_mergeSort (fun a b => a ≤ b) xs)"}
+[Usage: 2982 prompt + 8367 completion tokens | Call: $0.09113 | Cumulative Total: $0.5361 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  unfold maximum_postcond\n  let xs := (arr.mergeSort (fun a b => a ≥ b)).take k\n  constructor\n  · first\n    | simpa [xs]\n    | simpa [xs] using (List.mergeSort_perm (fun a b => a ≤ b) xs).isPerm\n    | simpa [xs] using (List.perm_mergeSort (fun a b => a ≤ b) xs).isPerm\n    | simpa [xs] using List.mergeSort_isPerm (fun a b => a ≤ b) xs\n    | simpa [xs] using List.isPerm_mergeSort (fun a b => a ≤ b) xs\n  · simpa [xs] using (List.sorted_mergeSort (fun a b => a ≤ b) xs)"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_9 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k ((((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).length - 1,
+    ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i]! ≤
+      ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  unfold maximum_postcond
+  constructor
+  · exact List.perm_mergeSort _
+  · simpa using (List.sorted_mergeSort (fun a b => a ≤ b) ((arr.mergeSort (fun a b => a ≥ b)).take k))
+  Lean: Unknown constant `List.perm_mergeSort`
+- by
+  unfold maximum_postcond
+  let xs := (arr.mergeSort (fun a b => a ≥ b)).take k
+  constructor
+  · first
+    | simpa [xs]
+    | simpa [xs] using (List.mergeSort_perm (fun a b => a ≤ b) xs).isPerm
+    | simpa [xs] using (List.perm_mergeSort (fun a b => a ≤ b) xs).isPerm
+    | simpa [xs] using List.mergeSort_isPerm (fun a b => a ≤ b) xs
+    | simpa [xs] using List.isPerm_mergeSort (fun a b => a ≤ 
+  Lean: Unknown constant `List.isPerm_mergeSort`
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  · simpa using (List.mergeSort_perm (fun a b => decide (a ≤ b)) ((arr.mergeSort (fun a b => decide (a ≥ b))).take k)).isPerm\n  · simpa using (List.sorted_mergeSort (fun a b => decide (a ≤ b)) ((arr.mergeSort (fun a b => decide (a ≥ b))).take k))"}
+[Usage: 3137 prompt + 9897 completion tokens | Call: $0.10681 | Cumulative Total: $0.6429 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  · simpa using (List.mergeSort_perm (fun a b => decide (a ≤ b)) ((arr.mergeSort (fun a b => decide (a ≥ b))).take k)).isPerm\n  · simpa using (List.sorted_mergeSort (fun a b => decide (a ≤ b)) ((arr.mergeSort (fun a b => decide (a ≥ b))).take k))"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_9 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k ((((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).length - 1,
+    ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i]! ≤
+      ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  unfold maximum_postcond
+  let xs := (arr.mergeSort (fun a b => a ≥ b)).take k
+  constructor
+  · first
+    | simpa [xs]
+    | simpa [xs] using (List.mergeSort_perm (fun a b => a ≤ b) xs).isPerm
+    | simpa [xs] using (List.perm_mergeSort (fun a b => a ≤ b) xs).isPerm
+    | simpa [xs] using List.mergeSort_isPerm (fun a b => a ≤ b) xs
+    | simpa [xs] using List.isPerm_mergeSort (fun a b => a ≤ 
+  Lean: Unknown constant `List.isPerm_mergeSort`
+- by
+  unfold maximum_postcond
+  constructor
+  · simpa using (List.mergeSort_perm (fun a b => decide (a ≤ b)) ((arr.mergeSort (fun a b => decide (a ≥ b))).take k)).isPerm
+  · simpa using (List.sorted_mergeSort (fun a b => decide (a ≤ b)) ((arr.mergeSort (fun a b => decide (a ≥ b))).take k))
+  Lean: Invalid field `isPerm`: The environment does not contain `List.Perm.isPerm`, so it is not possible to project the field `isPerm` from an expression
+  List.mergeSort_perm ?m.28 ?m.37
+of type
+  (List.mergeSort ?m.28 ?m.37).Perm ?m.28
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  · simpa using\n      (List.mergeSort_perm\n        (fun a b : Int => decide (a ≤ b))\n        ((arr.mergeSort (fun a b : Int => decide (a ≥ b))).take k))\n  · simpa using\n      (List.sorted_mergeSort\n        (fun a b : Int => decide (a ≤ b))\n        ((arr.mergeSort (fun a b : Int => decide (a ≥ b))).take k))"}
+[Usage: 3237 prompt + 2422 completion tokens | Call: $0.03231 | Cumulative Total: $0.6752 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  unfold maximum_postcond\n  constructor\n  · simpa using\n      (List.mergeSort_perm\n        (fun a b : Int => decide (a ≤ b))\n        ((arr.mergeSort (fun a b : Int => decide (a ≥ b))).take k))\n  · simpa using\n      (List.sorted_mergeSort\n        (fun a b : Int => decide (a ≤ b))\n        ((arr.mergeSort (fun a b : Int => decide (a ≥ b))).take k))"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_12 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k ((((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).length - 1,
+    ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i]! ≤
+      ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i + 1]!
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  constructor\n  · simpa using\n      (List.perm_mergeSort\n        (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))\n        (r := fun a b => decide (a ≤ b))).isPerm\n  · simpa using\n      (List.sorted_mergeSort\n        (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))\n        (r := fun a b => decide (a ≤ b)))"}
+[Usage: 2909 prompt + 8561 completion tokens | Call: $0.09288 | Cumulative Total: $0.7681 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  constructor\n  · simpa using\n      (List.perm_mergeSort\n        (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))\n        (r := fun a b => decide (a ≤ b))).isPerm\n  · simpa using\n      (List.sorted_mergeSort\n        (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))\n        (r := fun a b => decide (a ≤ b)))"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_12 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k ((((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).length - 1,
+    ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i]! ≤
+      ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  constructor
+  · simpa using
+      (List.perm_mergeSort
+        (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))
+        (r := fun a b => decide (a ≤ b))).isPerm
+  · simpa using
+      (List.sorted_mergeSort
+        (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))
+        (r := fun a b => decide (a ≤ b)))
+  Lean: Unknown constant `List.perm_mergeSort`
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  constructor\n  · simpa using\n      (List.mergeSort_perm\n        (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))\n        (r := fun a b => decide (a ≤ b))).isPerm\n  · let l :=\n      ((List.take k (arr.mergeSort (fun a b => decide (a ≥ b)))).mergeSort\n        (fun a b => decide (a ≤ b)))\n    change ∀ i, i < l.length - 1 → l[i]! ≤ l[i + 1]!\n    have hs : List.Pairwise (· ≤ ·) l := by\n      simpa [l] using\n        (List.sorted_mergeSort\n          (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))\n          (r := fun a b => decide (a ≤ b)))\n    intro i hi\n    let a : Array Int := l.toArray\n    have hs' : List.Pairwise (· ≤ ·) a.toList := by\n      simpa [a, l] using hs\n    have hle : i ≤ i + 1 := by\n      omega\n    have hsize : i + 1 < a.size := by\n      simp [a, l]\n      omega\n    have harr : a[i]! ≤ a[i + 1]! := Refine.sorted_arr_le a hs' i (i + 1) hle hsize\n    have hiA : i < a.size := by\n      simp [a, l]\n      omega\n    have h0 : l[i]! = a[i]! := by\n      simpa [a, l] using (Refine.toList_getElem_bang a i hiA)\n    have h1 : l[i + 1]! = a[i + 1]! := by\n      simpa [a, l] using (Refine.toList_getElem_bang a (i + 1) hsize)\n    calc\n      l[i]! = a[i]! := h0\n      _ ≤ a[i + 1]! := harr\n      _ = l[i + 1]! := h1.symm"}
+[Usage: 3034 prompt + 11787 completion tokens | Call: $0.12546 | Cumulative Total: $0.8936 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  constructor\n  · simpa using\n      (List.mergeSort_perm\n        (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))\n        (r := fun a b => decide (a ≤ b))).isPerm\n  · let l :=\n      ((List.take k (arr.mergeSort (fun a b => decide (a ≥ b)))).mergeSort\n        (fun a b => decide (a ≤ b)))\n    change ∀ i, i < l.length - 1 → l[i]! ≤ l[i + 1]!\n    have hs : List.Pairwise (· ≤ ·) l := by\n      simpa [l] using\n        (List.sorted_mergeSort\n          (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))\n          (r := fun a b => decide (a ≤ b)))\n    intro i hi\n    let a : Array Int := l.toArray\n    have hs' : List.Pairwise (· ≤ ·) a.toList := by\n      simpa [a, l] using hs\n    have hle : i ≤ i + 1 := by\n      omega\n    have hsize : i + 1 < a.size := by\n      simp [a, l]\n      omega\n    have harr : a[i]! ≤ a[i + 1]! := Refine.sorted_arr_le a hs' i (i + 1) hle hsize\n    have hiA : i < a.size := by\n      simp [a, l]\n      omega\n    have h0 : l[i]! = a[i]! := by\n      simpa [a, l] using (Refine.toList_getElem_bang a i hiA)\n    have h1 : l[i + 1]! = a[i + 1]! := by\n      simpa [a, l] using (Refine.toList_getElem_bang a (i + 1) hsize)\n    calc\n      l[i]! = a[i]! := h0\n      _ ≤ a[i + 1]! := harr\n      _ = l[i + 1]! := h1.symm"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_12 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k ((((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).length - 1,
+    ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i]! ≤
+      ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  constructor
+  · simpa using
+      (List.perm_mergeSort
+        (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))
+        (r := fun a b => decide (a ≤ b))).isPerm
+  · simpa using
+      (List.sorted_mergeSort
+        (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))
+        (r := fun a b => decide (a ≤ b)))
+  Lean: Unknown constant `List.perm_mergeSort`
+- by
+  constructor
+  · simpa using
+      (List.mergeSort_perm
+        (l := List.take k (arr.mergeSort (fun a b => decide (a ≥ b))))
+        (r := fun a b => decide (a ≤ b))).isPerm
+  · let l :=
+      ((List.take k (arr.mergeSort (fun a b => decide (a ≥ b)))).mergeSort
+        (fun a b => decide (a ≤ b)))
+    change ∀ i, i < l.length - 1 → l[i]! ≤ l[i + 1]!
+    have hs : List.Pairwise (· ≤ ·) l := b
+  Lean: Invalid argument name `r` for function `List.mergeSort_perm`
+
+Hint: Perhaps you meant one of the following parameter names:
+  • `α`: r̵α̲
+  • `le`: r̵l̲e̲
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]
+{"proof":"by\n  constructor\n  · simpa using\n      (List.mergeSort_perm\n        (l := List.take k (arr.mergeSort fun a b => decide (a ≥ b)))\n        (le := fun a b => decide (a ≤ b))).isPerm\n  · simpa using\n      (List.sorted_mergeSort\n        (l := List.take k (arr.mergeSort fun a b => decide (a ≥ b)))\n        (le := fun a b => decide (a ≤ b)))"}
+[Usage: 3230 prompt + 4736 completion tokens | Call: $0.05544 | Cumulative Total: $0.9490 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"proof":"by\n  constructor\n  · simpa using\n      (List.mergeSort_perm\n        (l := List.take k (arr.mergeSort fun a b => decide (a ≥ b)))\n        (le := fun a b => decide (a ≤ b))).isPerm\n  · simpa using\n      (List.sorted_mergeSort\n        (l := List.take k (arr.mergeSort fun a b => decide (a ≥ b)))\n        (le := fun a b => decide (a ≤ b)))"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+You refine a specification into a Lean 4 program, one step at a time. A *goal* asks for a value ρ of a given
+type that satisfies a property, in a context of variables and assumptions. You answer with ONE law, as a JSON object:
+
+1. {"law": "term", "expr": "<Lean expression>"}
+   The value is this expression. Lean must prove the property for it from the assumptions.
+2. {"law": "cases", "cond": "<decidable Lean proposition>"}
+   Split: one new goal where the condition is assumed, one where it is false. Use it when the answer differs by case.
+3. {"law": "bind", "var": "<name>", "type": "<Lean type>", "prop": "<property of var>"}
+   First find a value `var` with the property, then continue with it (and the property) available. Use it to compute
+   something once and reuse it.
+4. {"law": "loop", "state": [["i","Nat"],["acc","Int"]], "init": ["0","0"], "invariant": "<Prop over the state>",
+   "guard": "<decidable Prop>", "variant": "<Nat expression that strictly decreases>", "result": "<expression>"}
+   Start at `init`, repeat while `guard`; `invariant` must hold at the start and, with the guard false, must imply the
+   goal's property for `result`. The new goal is the loop body: find the next state, keeping the invariant and making the
+   variant smaller (usually answered by a `term` that is a tuple).
+
+Any of these may also carry "lemmas": [{"name": "f_succ", "statement": "<Lean proposition>", "proof": "by …"}]: facts that Lean
+proves first and then uses in the obligations (for example how a recursive definition in the specification unfolds one step).
+A false lemma is refused.
+
+Rules: Lean 4 syntax. `a[i]!` indexes (default value if out of range). `Nat` subtraction stops at 0. Names you introduce
+(bind variable, loop state) must not already be in scope. Reply with the JSON object only.
+Example. Goal: find ρ : Nat with 2 * ρ = n * (n + 1), given n : Nat. Answer:
+{"law": "loop", "state": [["i","Nat"],["s","Nat"]], "init": ["0","0"], "invariant": "s * 2 = i * (i + 1) ∧ i ≤ n",
+ "guard": "i < n", "variant": "n - i", "result": "s"}
+The body goal is then: find (i', s') with the invariant and n - i' < n - i. Answer:
+{"law": "term", "expr": "(i + 1, s + (i + 1))"}
+
+How to answer (important):
+- `expr`, `init`, `invariant`, `guard`, `variant`, `result` are Lean *expressions*: the program and its annotations. Never put
+  `by ...`, `⟨value, proof⟩`, `?_` or `Exists.intro` in them. The goal is shown as `∃ ρ, ...`, but you do not prove it:
+  you give ρ.
+- A `term` answer may add "proof": "by <tactics>". It proves the property OF YOUR VALUE: the goal's property with ρ
+  replaced by `expr` (not `∃ ρ, ...`: the value is already chosen, so never start with `refine ⟨value, ?_⟩` or
+  `exists`). The goal's variables and hypotheses are in scope; unfold the specification's definitions first
+  (`unfold f_postcond` or `simp only [f_postcond]`). It is used only if the automation cannot prove the step.
+  Example: {"law": "term", "expr": "Nat.primeFactorsList n", "proof": "by\n  unfold factorize_postcond\n  constructor\n  · ..."}
+
+Task: maximum
+Given an array arr of integers and a non-negative integer k, return a sorted list of length k with the maximum k numbers in arr.
+
+Definitions (Lean):
+@[reducible, simp]
+def maximum_precond (arr : List Int) (k : Nat) : Prop :=
+  k ≤ arr.length
+
+@[reducible, simp]
+def maximum_postcond (arr : List Int) (k : Nat) (result: List Int) (h_precond : maximum_precond (arr) (k)) :=
+  result.isPerm ((arr.mergeSort (fun a b => a ≥ b)).take k) ∧ ∀ i, i < result.length - 1 → result[i]! ≤ result[i + 1]!
+
+Goal 1: find ρ : List Int
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∃ ρ, maximum_postcond arr k ρ h_precond
+
+Earlier attempts on this goal were rejected:
+- your value was not proved by the automation, and your "proof" failed in Lean: Unknown constant `List.isPerm_refl`
+  The proof must prove exactly: (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) ⊢ maximum_postcond arr k (((arr.mergeSort (fun a b => a ≥ b)).take k)) h_precond
+- {"law": "term", "expr": "(((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))", "proof": "by\n  unfold maximum_postcond\n  constructor\n  · exact List.perm_mergeSort _\n  · simpa using (List.sorted_mergeSort (fun a b => a ≤ b) ((arr.mergeSort (fun a b => a ≥ b)).take k))"}
+  the term step is not accepted
+- the value satisfies the postcondition under the hypotheses: unproved
+  to prove: maximum_postcond arr k ((((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))) h_precond
+  Lean: no tactic of the cascade closes this
+  not closed:
+    case left
+    arr : List ℤ
+    k : ℕ
+    h_precond : maximum_precond arr k
+    ⊢ ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).isPerm
+          (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+        true
+  not closed:
+    case right
+    arr : List ℤ
+    k : ℕ
+    h_precond : maximum_precond arr k
+    ⊢ ∀ i < ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).length - 1,
+        ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i]! ≤
+          ((List.take k (arr.me
+- your value was not proved by the automation, and your "proof" failed in Lean: Unknown constant `List.perm_mergeSort`
+  The proof must prove exactly: (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) ⊢ maximum_postcond arr k ((((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))) h_precond
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4-mini is thinking (Live Stream)...]
+{"law":"term","expr":"(((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))","proof":"by\n  unfold maximum_postcond\n  constructor\n  · simpa using (List.Perm.mergeSort (xs := ((arr.mergeSort (fun a b => a ≥ b)).take k)) (le := (· ≤ ·)))\n  · simpa using (List.sorted_mergeSort (fun a b => a ≤ b) ((arr.mergeSort (fun a b => a ≥ b)).take k))"}
+[Usage: 1670 prompt + 1587 completion tokens | Call: $0.02005 | Cumulative Total: $0.9691 / $4.00]
+
+==================================================
+=== LLM STREAM RESPONSE ===
+==================================================
+{"law":"term","expr":"(((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))","proof":"by\n  unfold maximum_postcond\n  constructor\n  · simpa using (List.Perm.mergeSort (xs := ((arr.mergeSort (fun a b => a ≥ b)).take k)) (le := (· ≤ ·)))\n  · simpa using (List.sorted_mergeSort (fun a b => a ≤ b) ((arr.mergeSort (fun a b => a ≥ b)).take k))"}
+==================================================
+
+
+==================================================
+=== LLM PROMPT ===
+==================================================
+Prove a theorem in Lean 4 (version 4.34, with Mathlib). The automation could not close it; you write the tactic proof. Reply with a JSON object {"proof": "by\n  <tactics, one per line>"} and nothing else. Useful: intro, constructor, rcases, cases, induction ... with, simp_all, simp [lemmas], rw [lemmas], omega, grind, exact, Mathlib's List lemmas, and the proved library lemmas below. Never use sorry, native_decide or axiom.
+
+Proved library lemmas (the prover already rewrites with many of them; you may cite them in helper-lemma proofs, e.g. `rw [Refine.take_succ_bang l i h]`):
+Refine.forall_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∀ x ∈ l, P x) ↔ ∀ k, k < l.length → P l[k]!
+Refine.exists_mem_iff_idx {α : Type} [Inhabited α] (l : List α) (P : α → Prop) : (∃ x ∈ l, P x) ↔ ∃ k, k < l.length ∧ P l[k]!
+Refine.mem_iff_idx {α : Type} [Inhabited α] (l : List α) (x : α) : x ∈ l ↔ ∃ k, k < l.length ∧ l[k]! = x
+Refine.getElem_bang_mem {α : Type} [Inhabited α] (l : List α) (k : Nat) (h : k < l.length) : l[k]! ∈ l
+Refine.getElem_bang_mem_take {α : Type} [Inhabited α] (l : List α) (k n : Nat) (hk : k < n) (hl : k < l.length) : l[k]! ∈ l.take n
+Refine.head_mem_take_one {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l[0]! ∈ l.take 1
+Refine.string_length_mk (l : List Char) : (String.mk l).length = l.length
+Refine.string_toList_mk (l : List Char) : (String.mk l).toList = l
+Refine.take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) : l.take (i + 1) = l.take i ++ [l[i]!]
+Refine.filter_take_succ_bang {α : Type} [Inhabited α] (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) : (l.take (i + 1)).filter p = (l.take i).filter p ++ (if p l[i]! = true then [l[i]!] else [])
+Refine.sorted_filter_range (n : Nat) (p : Nat → Bool) : ∀ i, i < ((List.range n).filter p).length - 1 → ((List.range n).filter p)[i]! < ((List.range n).filter p)[i + 1]!
+Refine.sum_take_succ_bang (l : List Int) (i : Nat) (h : i < l.length) : (l.take (i + 1)).sum = (l.take i).sum + l[i]!
+Refine.head_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.head! = l[0]!
+Refine.getElem_bang_append_lt {α : Type} [Inhabited α] (a b : List α) (k : Nat) (h : k < a.length) : (a ++ b)[k]! = a[k]!
+Refine.getElem_bang_append_length {α : Type} [Inhabited α] (a : List α) (x : α) : (a ++ [x])[a.length]! = x
+Refine.take_string_length (s : String) : s.toList.take s.length = s.toList
+Refine.exists_le_succ (P : Nat → Prop) (i : Nat) : (∃ k, k ≤ i + 1 ∧ P k) ↔ (∃ k, k ≤ i ∧ P k) ∨ P (i + 1)
+Refine.forall_le_succ (P : Nat → Prop) (i : Nat) : (∀ k, k ≤ i + 1 → P k) ↔ (∀ k, k ≤ i → P k) ∧ P (i + 1)
+Refine.toList_getElem_bang {α : Type} [Inhabited α] (s : Array α) (k : Nat) (h : k < s.size) : s.toList[k]! = s[k]!
+Refine.forall_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s.toList, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_toList_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s.toList, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∀ x ∈ s, P x) ↔ ∀ k, k < s.size → P s[k]!
+Refine.exists_mem_array_iff_idx {α : Type} [Inhabited α] (s : Array α) (P : α → Prop) : (∃ x ∈ s, P x) ↔ ∃ k, k < s.size ∧ P s[k]!
+Refine.forall_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.drop m, P x) ↔ ∀ k, m ≤ k → k < l.length → P l[k]!
+Refine.exists_mem_drop_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∃ x ∈ l.drop m, P x) ↔ ∃ k, m ≤ k ∧ k < l.length ∧ P l[k]!
+Refine.forall_mem_take_iff {α : Type} [Inhabited α] (l : List α) (m : Nat) (P : α → Prop) : (∀ x ∈ l.take m, P x) ↔ ∀ k, k < m → k < l.length → P l[k]!
+Refine.arr_all_take_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.take n).all p = true ↔ ∀ k, k < n → k < a.size → p a[k]! = true
+Refine.arr_all_drop_iff {α : Type} [Inhabited α] (a : Array α) (n : Nat) (p : α → Bool) : (a.drop n).all p = true ↔ ∀ k, n ≤ k → k < a.size → p a[k]! = true
+Refine.sorted_arr_le (a : Array Int) (h : List.Pairwise (· ≤ ·) a.toList) : ∀ i k, i ≤ k → k < a.size → a[i]! ≤ a[k]!
+Refine.foldl_max_facts {α : Type} [LinearOrder α] (l : List α) : ∀ (m : α), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l
+Refine.maxlist_nat (L : List Nat) (hne : L ≠ []) : L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true
+Refine.maxlist_int (L : List Int) (hne : L ≠ []) : L.contains (L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.allsub_nil_mem {α : Type} (xs : List α) : ∀ (acc : List (List α)), [] ∈ acc → [] ∈ xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc
+Refine.allsub_nil_mem_arr {α : Type} (xs : Array α) : [] ∈ (xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]])
+Refine.allsub_rev_nil_mem {α : Type} (xs : List α) : [] ∈ ((xs.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]]).map List.reverse)
+Refine.maxlist_int_any (L : List Int) (hne : L ≠ []) : L.any (fun s => s == L.foldl max (L.headD 0)) = true ∧ L.all (fun x => decide (x ≤ L.foldl max (L.headD 0))) = true
+Refine.maxlen_spec {α : Type} (L : List (List α)) (hn : [] ∈ L) : L.any (fun a => decide (a.length = (L.map List.length).foldl max 0)) = true ∧ L.all (fun a => decide (a.length ≤ (L.map List.length).foldl max 0)) = true
+Refine.filter_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : (l.filter (fun y => y = a)).length + (l.filter (fun y => y = b)).length ≤ l.length
+Refine.count_pair_le {α : Type} [DecidableEq α] (l : List α) (a b : α) (hab : a ≠ b) : l.count a + l.count b ≤ l.length
+Refine.find_some_of_any {α : Type} (l : List α) (p : α → Bool) (h : l.any p = true) : ∃ r, l.find? p = some r ∧ r ∈ l ∧ p r = true
+Refine.ts_inner_init (S : Nat → Nat → Int) (target : Int) (n i : Nat) (hi : i < n) : i + 1 ≤ i + 1 ∧ i + 1 ≤ n ∧ ((false = true) → i < 0 ∧ 0 < n ∧ S i 0 = target ∧ ∀ j', i < j' → j' < 0 → S i j' ≠ target) ∧ ((false = false) → ∀ j', i < j' → j' < i + 1 → S i j' ≠ target)
+Refine.ts_pairwise_none (l : List Int) (target : Int) (h : ∀ i j, i < j → j < l.length → l[i]! + l[j]! ≠ target) : List.Pairwise (· + · ≠ target) l
+
+Theorem:
+theorem ob1_16 (arr : List Int) (k : Nat) (h_precond : maximum_precond arr k) :
+    maximum_postcond arr k ((((arr.mergeSort (fun a b => a ≥ b)).take k).mergeSort (fun a b => a ≤ b))) h_precond
+
+What is left after the automation (Lean's goal state):
+case left
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).isPerm
+      (List.take k (arr.mergeSort fun a b => decide (a ≥ b))) =
+    true
+case right
+arr : List ℤ
+k : ℕ
+h_precond : maximum_precond arr k
+⊢ ∀ i < ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b)).length - 1,
+    ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i]! ≤
+      ((List.take k (arr.mergeSort fun a b => decide (a ≥ b))).mergeSort fun a b => decide (a ≤ b))[i + 1]!
+
+Your earlier attempts failed:
+- by
+  unfold maximum_postcond
+  constructor
+  · simpa using (List.Perm.mergeSort (xs := ((arr.mergeSort (fun a b => a ≥ b)).take k)) (le := (· ≤ ·)))
+  · simpa using (List.sorted_mergeSort (fun a b => a ≤ b) ((arr.mergeSort (fun a b => a ≥ b)).take k))
+  Lean: Unknown constant `List.Perm.mergeSort`
+
+Your answer (one JSON object):
+==================================================
+
+
+[gpt-5.4 is thinking (Live Stream)...]

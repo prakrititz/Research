@@ -1,0 +1,38 @@
+diff --git a/FormalLLM/llm/provider.py b/FormalLLM/llm/provider.py
+index b2522da..1c8ded2 100644
+--- a/FormalLLM/llm/provider.py
++++ b/FormalLLM/llm/provider.py
+@@ -217,7 +217,8 @@ class OpenAIChatProvider(LLMProvider):
+         "gpt-4o-mini": (0.15 / 1e6, 0.60 / 1e6),
+         "gpt-4o-2024-08-06": (2.50 / 1e6, 10.00 / 1e6),
+         "gpt-4o-2024-11-20": (2.50 / 1e6, 10.00 / 1e6),
+-        "o3-mini": (1.10 / 1e6, 4.40 / 1e6),
++        "o3-mini": (1.10 / 1e6, 4.40 / 1e6),
++        "o4-mini": (1.10 / 1e6, 4.40 / 1e6),
+         "o1-mini": (1.10 / 1e6, 4.40 / 1e6),
+         "o1": (15.00 / 1e6, 60.00 / 1e6),
+     }
+@@ -321,7 +322,7 @@ class OpenAIChatProvider(LLMProvider):
+         
+         url = f"{self.base_url}/chat/completions"
+ 
+-        is_reasoning = self.model_name.startswith("o1") or self.model_name.startswith("o3")
++        is_reasoning = self.model_name.startswith(("o1", "o3", "o4", "gpt-5"))
+ 
+         data = {
+             "model": self.model_name,
+diff --git a/benchmarks/run_bench.py b/benchmarks/run_bench.py
+index 6c8b502..272b79d 100644
+--- a/benchmarks/run_bench.py
++++ b/benchmarks/run_bench.py
+@@ -55,7 +55,9 @@ CONFIGS = {
+     # --- OpenAI direct API ------------------------------------------------
+     "gpt-4o": dict(kind="openai", model="gpt-4o", base_url="https://api.openai.com/v1"),
+     "gpt-4o-mini": dict(kind="openai", model="gpt-4o-mini", base_url="https://api.openai.com/v1"),
+-    "o3-mini": dict(kind="openai", model="o3-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192),
++    "o3-mini": dict(kind="openai", model="o3-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192),
++    "o4-mini": dict(kind="openai", model="o4-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192),
++    "gpt-5.4-mini": dict(kind="openai", model="gpt-5.4-mini", base_url="https://api.openai.com/v1", reasoning_effort="low", max_tokens=8192),
+ }
+ 
+ #: Named groups so an arm can be selected without listing every config.
