@@ -1,0 +1,5 @@
+def twoSum_precond(nums: list[int], target: int): prop =
+  true_prop
+
+def twoSum_postcond(nums: list[int], target: int, result: option[tuple[nat, nat]], h_precond: twoSum_precond(nums, target)): prop =
+  match result with | none => pairwise(lambda _c1, _c2: (_c1 + _c2) != target, nums) | some((i, j)) => (i < j) and ((j < len(nums)) and (((nums[i] + nums[j]) == target) and (nums[:i].zipIdx.all(lambda ⟨a, i'⟩: nums[i' + 1:].all(lambda b: (a + b) != target)) and nums[i + 1:][:(j - i) - 1].all(lambda b: (nums[i] + b) != target))))

@@ -11,11 +11,11 @@ BINOPS = {
     "∈": "in", "∉": "not in", "^": "**", "==": "===", "!=": "!==",
     "∣": "divides", "<:+:": "is_infix", "^^^": "xor",
 }
-UNOPS = {"¬": "not", "!": "!", "-": "-", "↑": "↑"}
+UNOPS = {"¬": "not", "!": "!", "-": "-", "↑": "↑", "~~~": "~~~"}
 
 #: Lean global (a constant, function or type) -> L_spec name
 NAMES = {
-    "true": "True", "false": "False",
+    "true": "True", "false": "False", "True": "true_prop", "False": "false_prop",     # Bool values; propositions
     "Nat": "nat", "ℕ": "nat", "Int": "int", "ℤ": "int", "Bool": "bool_t", "Char": "char", "String": "str_t",
     "List": "list", "Array": "array", "Option": "option", "Rat": "rat", "ℚ": "rat", "Float": "float", "Prop": "prop",
     "decide": "bool", "List.range": "range", "toString": "str", "String.mk": "string", "Int.ofNat": "int_of_nat",

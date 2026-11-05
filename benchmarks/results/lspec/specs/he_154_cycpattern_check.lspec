@@ -1,0 +1,5 @@
+def cycpatternCheck_precond(a: str_t, b: str_t): prop =
+  true_prop
+
+def cycpatternCheck_postcond(a: str_t, b: str_t, result: bool_t, h_precond: cycpatternCheck_precond(a, b)) =
+  (result == True) <==> ((len(b) == 0) or (exists i: (i < len(b)) and ((list(b)[i:] ++ list(b)[:i]) is_infix list(a))))

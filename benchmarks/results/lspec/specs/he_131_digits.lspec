@@ -1,0 +1,5 @@
+def digits_precond(n: nat): prop =
+  n >= 1
+
+def digits_postcond(n: nat, result: nat, h_precond: digits_precond(n)) =
+  let ds = list(str(n)).map(lambda c: to_nat(c) - 48); result == (product(ds.filter(lambda d: (d % 2) == 1)) if ds.any(lambda d: (d % 2) == 1) else 0)

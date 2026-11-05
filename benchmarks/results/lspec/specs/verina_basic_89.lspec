@@ -1,0 +1,5 @@
+def SetToSeq_precond(s: list[int]): prop =
+  true_prop
+
+def SetToSeq_postcond(s: list[int], result: list[int], h_precond: SetToSeq_precond(s)) =
+  result.all(lambda a: a in s) and (s.all(lambda a: a in result) and (result.all(lambda a: result.count(a) == 1) and pairwise(lambda a, b: (result.index(a) < result.index(b)) ==> (s.index(a) < s.index(b)), result)))

@@ -1,0 +1,8 @@
+def sumOfDigits(x: nat): nat =
+  let rec go((n: nat), (acc: nat)): nat = acc if n == 0 else go(n / 10, acc + (n % 10)); go(x, 0)
+
+def countSumDivisibleBy_precond(n: nat, d: nat): prop =
+  d > 0
+
+def countSumDivisibleBy_postcond(n: nat, d: nat, result: nat, h_precond: countSumDivisibleBy_precond(n, d)): prop =
+  ((List.length(List.filter(lambda x: (x < n) and ((sumOfDigits(x) % d) == 0), range(n))) - result) == 0) and (result <= List.length(List.filter(lambda x: (x < n) and ((sumOfDigits(x) % d) == 0), range(n))))

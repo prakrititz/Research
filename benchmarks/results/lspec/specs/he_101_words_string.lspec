@@ -1,0 +1,5 @@
+def wordsString_precond(s: str_t): prop =
+  true_prop
+
+def wordsString_postcond(s: str_t, result: list[str_t], h_precond: wordsString_precond(s)) =
+  result == s.map(lambda c: ' ' if c === ',' else c).splitOn(" ").filter(lambda w: w !== "")

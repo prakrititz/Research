@@ -1,0 +1,5 @@
+def removeElement_precond(lst: list[nat], target: nat): prop =
+  true_prop
+
+def removeElement_postcond(lst: list[nat], target: nat, result: list[nat], h_precond: removeElement_precond(lst, target)): prop =
+  let lst' = lst.filter(lambda x: x != target); result.zipIdx.all(lambda (x, i): match lst'[i]? with | some(y) => x == y | none => False) and (len(result) == len(lst'))

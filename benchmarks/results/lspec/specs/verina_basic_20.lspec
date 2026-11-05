@@ -1,0 +1,5 @@
+def uniqueProduct_precond(arr: array[int]): prop =
+  true_prop
+
+def uniqueProduct_postcond(arr: array[int], result: int, h_precond: uniqueProduct_precond(arr)) =
+  ((result - list(arr).eraseDups.foldl(lambda _c1, _c2: _c1 * _c2, 1)) == 0) and ((list(arr).eraseDups.foldl(lambda _c1, _c2: _c1 * _c2, 1) - result) == 0)

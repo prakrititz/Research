@@ -1,0 +1,8 @@
+def inArray(a: array[int], x: int): bool_t =
+  a.any(lambda y: y == x)
+
+def dissimilarElements_precond(a: array[int], b: array[int]): prop =
+  true_prop
+
+def dissimilarElements_postcond(a: array[int], b: array[int], result: array[int], h_precond: dissimilarElements_precond(a, b)) =
+  result.all(lambda x: inArray(a, x) != inArray(b, x)) and (list(result).Pairwise(lambda _c1, _c2: _c1 <= _c2) and (List.Nodup(list(result)) and (a.all(lambda x: x not in result if x in b else x in result) and b.all(lambda x: x not in result if x in a else x in result))))

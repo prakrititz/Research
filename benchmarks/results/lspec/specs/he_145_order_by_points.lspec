@@ -1,0 +1,8 @@
+def digitWeight(x: int): int =
+  let ds: list[nat] = list(str(abs_nat(x))).map(lambda c: to_nat(c) - 48); let s: int = sum(ds.map(lambda d: (d as int))); s - (2 * ((ds.head! as nat) as int)) if x < 0 else s
+
+def orderByPoints_precond(nums: list[int]): prop =
+  true_prop
+
+def orderByPoints_postcond(nums: list[int], result: list[int], h_precond: orderByPoints_precond(nums)) =
+  (len(result) == len(nums)) and ((forall i: (i < (len(result) - 1)) ==> (digitWeight(result[i]) <= digitWeight(result[i + 1]))) and (forall x in nums: result.filter(lambda y: digitWeight(y) === digitWeight(x)) == nums.filter(lambda y: digitWeight(y) === digitWeight(x))))

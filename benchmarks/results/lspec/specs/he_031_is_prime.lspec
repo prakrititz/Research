@@ -1,0 +1,5 @@
+def isPrime_precond(n: nat): prop =
+  true_prop
+
+def isPrime_postcond(n: nat, result: bool_t, h_precond: isPrime_precond(n)) =
+  (result == True) <==> ((n >= 2) and (forall d: (d < n) ==> ((d >= 2) ==> ((n % d) != 0))))

@@ -1,0 +1,5 @@
+def copy_precond(src: array[int], sStart: nat, dest: array[int], dStart: nat, len: nat): prop =
+  (size(src) >= (sStart + `len`)) and (size(dest) >= (dStart + `len`))
+
+def copy_postcond(src: array[int], sStart: nat, dest: array[int], dStart: nat, len: nat, result: array[int], h_precond: copy_precond(src, sStart, dest, dStart, `len`)) =
+  (size(result) == size(dest)) and ((forall i: (i < dStart) ==> (result[i] == dest[i])) and ((forall i: ((dStart + `len`) <= i) ==> ((i < size(result)) ==> (result[i] == dest[i]))) and (forall i: (i < `len`) ==> (result[dStart + i] == src[sStart + i]))))

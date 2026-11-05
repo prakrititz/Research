@@ -1,0 +1,5 @@
+def hasCloseElements_precond(numbers: list[rat], threshold: rat): prop =
+  true_prop
+
+def hasCloseElements_postcond(numbers: list[rat], threshold: rat, result: bool_t, h_precond: hasCloseElements_precond(numbers, threshold)) =
+  (result == True) <==> (exists j: (j < len(numbers)) and (exists i: (i < j) and (abs(numbers[i] - numbers[j]) < threshold)))

@@ -1,0 +1,5 @@
+def CanyonSearch_precond(a: array[int], b: array[int]): prop =
+  (size(a) > 0) and ((size(b) > 0) and (pairwise(lambda _c1, _c2: _c1 <= _c2, list(a)) and pairwise(lambda _c1, _c2: _c1 <= _c2, list(b))))
+
+def CanyonSearch_postcond(a: array[int], b: array[int], result: nat, h_precond: CanyonSearch_precond(a, b)) =
+  a.any(lambda ai: b.any(lambda bi: result == abs_nat(ai - bi))) and a.all(lambda ai: b.all(lambda bi: result <= abs_nat(ai - bi)))

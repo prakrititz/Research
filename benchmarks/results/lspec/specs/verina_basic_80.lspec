@@ -1,0 +1,8 @@
+def only_once_precond(a: array[int], key: int): prop =
+  true_prop
+
+def count_occurrences({T: Type}, [DecidableEq(T)], a: array[T], key: T): nat =
+  a.foldl(lambda cnt, x: cnt + 1 if x == key else cnt, 0)
+
+def only_once_postcond(a: array[int], key: int, result: bool_t, h_precond: only_once_precond(a, key)) =
+  ((count_occurrences(a, key) == 1) ==> result) and ((count_occurrences(a, key) != 1) ==> (not result))

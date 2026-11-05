@@ -1,0 +1,5 @@
+def minimumRightShifts_precond(nums: list[int]): prop =
+  List.Nodup(nums)
+
+def minimumRightShifts_postcond(nums: list[int], result: int, h_precond: minimumRightShifts_precond(nums)): prop =
+  let n = len(nums); let isSorted((l: list[int])) = pairwise(lambda _c1, _c2: _c1 <= _c2, l); let rightShift((k: nat), (l: list[int])) = l.rotateRight(k); result == 0 if n <= 1 else ((result >= 0) and ((result < n) and (isSorted(rightShift(to_nat(result), nums)) and range(to_nat(result)).all(lambda j: not isSorted(rightShift(j, nums)))))) or ((result == (-1)) and range(n).all(lambda k: not isSorted(rightShift(k, nums))))

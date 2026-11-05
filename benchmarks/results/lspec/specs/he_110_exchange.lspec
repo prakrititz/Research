@@ -1,0 +1,5 @@
+def exchange_precond(lst1: list[int], lst2: list[int]): prop =
+  true_prop
+
+def exchange_postcond(lst1: list[int], lst2: list[int], result: str_t, h_precond: exchange_precond(lst1, lst2)) =
+  ((result == "YES") or (result == "NO")) and ((result == "YES") <==> (len(lst1.filter(lambda x: (x % 2) == 1)) <= len(lst2.filter(lambda x: (x % 2) == 0))))

@@ -1,0 +1,5 @@
+def makeAPile_precond(n: nat): prop =
+  n > 0
+
+def makeAPile_postcond(n: nat, result: list[nat], h_precond: makeAPile_precond(n)) =
+  (len(result) == n) and (forall i: (i < n) ==> (result[i] == (n + (2 * i))))

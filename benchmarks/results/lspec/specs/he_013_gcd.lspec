@@ -1,0 +1,5 @@
+def greatestCommonDivisor_precond(a: nat, b: nat): prop =
+  (a > 0) and (b > 0)
+
+def greatestCommonDivisor_postcond(a: nat, b: nat, result: nat, h_precond: greatestCommonDivisor_precond(a, b)) =
+  (result > 0) and (((a % result) == 0) and (((b % result) == 0) and (forall d: (d < ((a + b) + 1)) ==> ((d > 0) ==> (((a % d) == 0) ==> (((b % d) == 0) ==> (d <= result)))))))

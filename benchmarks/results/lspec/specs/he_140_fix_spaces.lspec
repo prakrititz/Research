@@ -1,0 +1,14 @@
+def spaceRun: list[char] ==> nat
+  | ' ' :: t => spaceRun(t) + 1
+  | _ => 0
+
+def fixSpec: nat ==> (list[char] ==> list[char])
+  | 0, _ => []
+  | _ + 1, [] => []
+  | fuel + 1, c :: t => (['-'] if spaceRun(c :: t) >= 3 else replicate(spaceRun(c :: t), '_')) ++ fixSpec(fuel, (c :: t)[spaceRun(c :: t):]) if c == ' ' else c :: fixSpec(fuel, t)
+
+def fixSpaces_precond(text: str_t): prop =
+  true_prop
+
+def fixSpaces_postcond(text: str_t, result: str_t, h_precond: fixSpaces_precond(text)) =
+  result == string(fixSpec(len(text), list(text)))

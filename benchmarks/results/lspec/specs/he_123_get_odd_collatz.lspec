@@ -1,0 +1,9 @@
+def collatzSeq: nat ==> (nat ==> list[nat])
+  | 0, _ => []
+  | fuel + 1, x => [1] if x <= 1 else x :: collatzSeq(fuel, x / 2 if (x % 2) == 0 else (3 * x) + 1)
+
+def getOddCollatz_precond(n: nat): prop =
+  n >= 1
+
+def getOddCollatz_postcond(n: nat, result: list[nat], h_precond: getOddCollatz_precond(n)) =
+  result.isPerm(collatzSeq(5000, n).filter(lambda x: (x % 2) == 1)) and (forall i: (i < (len(result) - 1)) ==> (result[i] <= result[i + 1]))

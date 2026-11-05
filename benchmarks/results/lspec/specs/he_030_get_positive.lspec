@@ -1,0 +1,5 @@
+def getPositive_precond(l: list[int]): prop =
+  true_prop
+
+def getPositive_postcond(l: list[int], result: list[int], h_precond: getPositive_precond(l)) =
+  result == l.filter(lambda x: x > 0)

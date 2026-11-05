@@ -1,0 +1,8 @@
+def numName(x: int): str_t =
+  "One" if x == 1 else "Two" if x == 2 else "Three" if x == 3 else "Four" if x == 4 else "Five" if x == 5 else "Six" if x == 6 else "Seven" if x == 7 else "Eight" if x == 8 else "Nine"
+
+def byLength_precond(arr: list[int]): prop =
+  true_prop
+
+def byLength_postcond(arr: list[int], result: list[str_t], h_precond: byLength_precond(arr)) =
+  let ds = arr.filter(lambda x: (1 <= x) and (x <= 9)); result == sorted(ds, lambda a, b: a >= b).map(numName)

@@ -1,0 +1,5 @@
+def nextSmallest_precond(lst: list[int]): prop =
+  true_prop
+
+def nextSmallest_postcond(lst: list[int], result: option[int], h_precond: nextSmallest_precond(lst)) =
+  match result with | none => (forall x in lst: forall y in lst: x == y) | some(r) => (r in lst) and ((exists m in lst: m < r) and (forall x in lst: (exists m in lst: m < x) ==> (r <= x)))

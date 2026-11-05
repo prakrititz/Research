@@ -1,0 +1,8 @@
+def isBalanced(l: list[char]): prop =
+  (forall k: (k <= len(l)) ==> (l[:k].count(')') <= l[:k].count('('))) and (l.count('(') == l.count(')'))
+
+def matchParens_precond(lst: list[str_t]): prop =
+  (len(lst) == 2) and (lst.all(lambda t: list(t).all(lambda c: (c === '(') || (c === ')'))) == True)
+
+def matchParens_postcond(lst: list[str_t], result: str_t, h_precond: matchParens_precond(lst)) =
+  ((result == "Yes") or (result == "No")) and ((result == "Yes") <==> (isBalanced(list(lst[0]) ++ list(lst[1])) or isBalanced(list(lst[1]) ++ list(lst[0]))))

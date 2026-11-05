@@ -1,0 +1,5 @@
+def CalSum_precond(N: nat): prop =
+  true_prop
+
+def CalSum_postcond(N: nat, result: nat, h_precond: CalSum_precond(N)) =
+  (2 * result) == (N * (N + 1))

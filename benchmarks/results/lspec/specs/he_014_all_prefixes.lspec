@@ -1,0 +1,5 @@
+def allPrefixes_precond(string: str_t): prop =
+  true_prop
+
+def allPrefixes_postcond(string: str_t, result: list[str_t], h_precond: allPrefixes_precond(`string`)) =
+  (len(result) == len(`string`)) and (forall i: (i < len(`string`)) ==> (result[i] == string(list(`string`)[:i + 1])))

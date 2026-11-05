@@ -1,0 +1,5 @@
+def smallestMissingNumber_precond(s: list[nat]): prop =
+  pairwise(lambda _c1, _c2: _c1 <= _c2, s)
+
+def smallestMissingNumber_postcond(s: list[nat], result: nat, h_precond: smallestMissingNumber_precond(s)) =
+  (not elem(result, s)) and (forall (k: nat): (k < result) ==> elem(k, s))

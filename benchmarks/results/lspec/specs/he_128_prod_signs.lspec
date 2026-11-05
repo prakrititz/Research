@@ -1,0 +1,5 @@
+def prodSigns_precond(arr: list[int]): prop =
+  true_prop
+
+def prodSigns_postcond(arr: list[int], result: option[int], h_precond: prodSigns_precond(arr)) =
+  match result with | none => arr == [] | some(r) => (arr != []) and (r == (sum(arr.map(lambda (x: int): (abs_nat(x) as int))) * product(arr.map(Int.sign))))

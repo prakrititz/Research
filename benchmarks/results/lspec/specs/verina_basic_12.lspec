@@ -1,0 +1,5 @@
+def cubeSurfaceArea_precond(size: nat): prop =
+  true_prop
+
+def cubeSurfaceArea_postcond(size: nat, result: nat, h_precond: cubeSurfaceArea_precond(`size`)) =
+  ((result - ((6 * `size`) * `size`)) == 0) and ((((6 * `size`) * `size`) - result) == 0)

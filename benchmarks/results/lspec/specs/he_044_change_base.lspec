@@ -1,0 +1,5 @@
+def changeBase_precond(x: nat, base: nat): prop =
+  (2 <= base) and (base < 10)
+
+def changeBase_postcond(x: nat, base: nat, result: str_t, h_precond: changeBase_precond(x, base)) =
+  (list(result).all(lambda c: c.isDigit && ((to_nat(c) - to_nat('0')) < base)) == True) and ((list(result).foldl(lambda acc, c: (acc * base) + (to_nat(c) - to_nat('0')), 0) == x) and (((x == 0) ==> (result == "0")) and ((x > 0) ==> (list(result).head! != '0'))))

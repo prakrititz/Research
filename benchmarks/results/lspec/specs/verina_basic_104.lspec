@@ -1,0 +1,23 @@
+-- (Lean)
+structure Map (K V : Type) [BEq K] [BEq V] where
+  entries : List (K × V)
+deriving Inhabited
+
+-- (Lean)
+instance  (K V : Type) [BEq K] [BEq V] : BEq (Map K V) where
+  beq m1 m2 := List.length m1.entries = List.length m2.entries ∧ List.beq m1.entries m2.entries
+
+def empty({K: Type}, {V: Type}, [BEq(K)], [BEq(V)]): Map(K, V) =
+  ⟨[]⟩
+
+def insert({K: Type}, {V: Type}, [BEq(K)], [BEq(V)], m: Map(K, V), k: K, v: V): Map(K, V) =
+  let entries = m.entries.filter(lambda p: not (p.1 === k)) ++ [(k, v)]; ⟨entries⟩
+
+def update_map_precond(m1: Map(int, int), m2: Map(int, int)): prop =
+  List.Nodup(m1.entries.map(Prod.fst)) and List.Nodup(m2.entries.map(Prod.fst))
+
+def find?({K: Type}, {V: Type}, [BEq(K)], [BEq(V)], m: Map(K, V), k: K): option[V] =
+  m.entries.find?(lambda p: p.1 === k).map(lambda _c1: _c1.2)
+
+def update_map_postcond(m1: Map(int, int), m2: Map(int, int), result: Map(int, int), h_precond: update_map_precond(m1, m2)): prop =
+  pairwise(lambda a, b: a.1 <= b.1, result.entries) and (m2.entries.all(lambda x: find?(result, x.1) == some(x.2)) and (m1.entries.all(lambda x: match find?(m2, x.1) with | some(_) => True | none => find?(result, x.1) == some(x.2)) and result.entries.all(lambda x: match find?(m1, x.1) with | some(v) => (match find?(m2, x.1) with | some(v') => x.2 == v' | none => x.2 == v) | none => find?(m2, x.1) == some(x.2))))

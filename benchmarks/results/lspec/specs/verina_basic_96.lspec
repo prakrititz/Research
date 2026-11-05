@@ -1,0 +1,5 @@
+def SwapSimultaneous_precond(X: int, Y: int): prop =
+  true_prop
+
+def SwapSimultaneous_postcond(X: int, Y: int, result: tuple[int, int], h_precond: SwapSimultaneous_precond(X, Y)) =
+  (result.1 == Y) and ((result.2 == X) and ((X != Y) ==> ((result.fst != X) and (result.snd != Y))))

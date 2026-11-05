@@ -1,0 +1,5 @@
+def maxOfList_precond(lst: list[nat]): prop =
+  lst != []
+
+def maxOfList_postcond(lst: list[nat], result: nat, h_precond: maxOfList_precond(lst)): prop =
+  (result in lst) and (forall x in lst: x <= result)

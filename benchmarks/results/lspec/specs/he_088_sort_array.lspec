@@ -1,0 +1,5 @@
+def sortArray88_precond(array: list[nat]): prop =
+  true_prop
+
+def sortArray88_postcond(array: list[nat], result: list[nat], h_precond: sortArray88_precond(`array`)) =
+  result.isPerm(`array`) and ((`array` != []) ==> (((((`array`.head! + `array`.getLast!) % 2) == 1) ==> (forall i: (i < (len(result) - 1)) ==> (result[i] <= result[i + 1]))) and ((((`array`.head! + `array`.getLast!) % 2) == 0) ==> (forall i: (i < (len(result) - 1)) ==> (result[i + 1] <= result[i])))))

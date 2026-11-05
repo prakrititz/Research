@@ -1,0 +1,5 @@
+def binaryToDecimal_precond(digits: list[nat]): prop =
+  `digits`.all(lambda d: (d == 0) or (d == 1))
+
+def binaryToDecimal_postcond(digits: list[nat], result: nat, h_precond: binaryToDecimal_precond(`digits`)): prop =
+  ((result - foldl(lambda acc, bit: (acc * 2) + bit, 0, `digits`)) == 0) and ((foldl(lambda acc, bit: (acc * 2) + bit, 0, `digits`) - result) == 0)

@@ -1,0 +1,5 @@
+def iter_copy_precond(s: array[int]): prop =
+  true_prop
+
+def iter_copy_postcond(s: array[int], result: array[int], h_precond: iter_copy_precond(s)) =
+  (size(s) == size(result)) and (forall (i: nat): (i < size(s)) ==> (s[i] == result[i]))

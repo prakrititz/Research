@@ -1,0 +1,8 @@
+def letterGrade(x: rat): str_t =
+  "A+" if x == 4 else "A" if x > (37 / 10) else "A-" if x > (33 / 10) else "B+" if x > 3 else "B" if x > (27 / 10) else "B-" if x > (23 / 10) else "C+" if x > 2 else "C" if x > (17 / 10) else "C-" if x > (13 / 10) else "D+" if x > 1 else "D" if x > (7 / 10) else "D-" if x > 0 else "E"
+
+def numericalLetterGrade_precond(grades: list[rat]): prop =
+  true_prop
+
+def numericalLetterGrade_postcond(grades: list[rat], result: list[str_t], h_precond: numericalLetterGrade_precond(grades)) =
+  (len(result) == len(grades)) and (forall i: (i < len(grades)) ==> (result[i] == letterGrade(grades[i])))

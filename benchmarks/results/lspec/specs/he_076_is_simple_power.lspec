@@ -1,0 +1,5 @@
+def isSimplePower_precond(x: int, n: int): prop =
+  true_prop
+
+def isSimplePower_postcond(x: int, n: int, result: bool_t, h_precond: isSimplePower_precond(x, n)) =
+  (result == True) <==> ((x == 1) or (exists k: (k < (abs_nat(x) + 3)) and ((1 <= k) and ((n ** k) == x))))

@@ -1,0 +1,5 @@
+def SelectionSort_precond(a: array[int]): prop =
+  true_prop
+
+def SelectionSort_postcond(a: array[int], result: array[int], h_precond: SelectionSort_precond(a)) =
+  pairwise(lambda _c1, _c2: _c1 <= _c2, list(result)) and is_perm(list(a), list(result))

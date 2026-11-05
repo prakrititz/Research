@@ -1,0 +1,5 @@
+def sumSquaresCeil_precond(lst: list[rat]): prop =
+  true_prop
+
+def sumSquaresCeil_postcond(lst: list[rat], result: int, h_precond: sumSquaresCeil_precond(lst)) =
+  result == sum(lst.map(lambda x: (ceil(x) as int) * (ceil(x) as int)))

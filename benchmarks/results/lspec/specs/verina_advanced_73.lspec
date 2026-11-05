@@ -1,0 +1,5 @@
+def smallestMissing_precond(l: list[nat]): prop =
+  pairwise(lambda _c1, _c2: _c1 < _c2, l)
+
+def smallestMissing_postcond(l: list[nat], result: nat, h_precond: smallestMissing_precond(l)): prop =
+  (result not in l) and (forall (candidate: nat): (candidate < result) ==> (candidate in l))

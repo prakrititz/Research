@@ -1,0 +1,5 @@
+def isGreater_precond(n: int, a: array[int]): prop =
+  size(a) > 0
+
+def isGreater_postcond(n: int, a: array[int], result: bool_t, h_precond: isGreater_precond(n, a)) =
+  (forall i: forall (hi: i < size(a)): n > a[[i]]) <==> result

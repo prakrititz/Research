@@ -1,0 +1,5 @@
+def sqrtApprox_precond(N: rat, e: rat): prop =
+  (N >= 0) and (e > 0)
+
+def sqrtApprox_postcond(N: rat, e: rat, result: rat, h_precond: sqrtApprox_precond(N, e)) =
+  (result >= 0) and (((result * result) <= N) and (N < ((result + e) * (result + e))))

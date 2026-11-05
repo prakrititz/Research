@@ -1,0 +1,5 @@
+def myMin_precond(a: int, b: int): prop =
+  true_prop
+
+def myMin_postcond(a: int, b: int, result: int, h_precond: myMin_precond(a, b)) =
+  ((result <= a) and (result <= b)) and ((result == a) or (result == b))

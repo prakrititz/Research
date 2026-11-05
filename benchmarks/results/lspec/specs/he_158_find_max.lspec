@@ -1,0 +1,8 @@
+def uniqChars(w: str_t): nat =
+  len(list(w).eraseDups)
+
+def findMax_precond(words: list[str_t]): prop =
+  true_prop
+
+def findMax_postcond(words: list[str_t], result: str_t, h_precond: findMax_precond(words)) =
+  ((words == []) and (result == "")) or ((result in words) and ((forall w in words: uniqChars(w) <= uniqChars(result)) and (forall w in words: (uniqChars(w) == uniqChars(result)) ==> (not (w < result)))))

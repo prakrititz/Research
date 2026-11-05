@@ -1,0 +1,5 @@
+def rotateRight_precond(l: list[int], n: nat): prop =
+  true_prop
+
+def rotateRight_postcond(l: list[int], n: nat, result: list[int], h_precond: rotateRight_precond(l, n)) =
+  (len(result) == len(l)) and (forall (i: nat): (i < len(l)) ==> (let `len` = len(l); let rotated_index = to_nat_of(((int_of_nat(i) - int_of_nat(n)) + int_of_nat(`len`)) % int_of_nat(`len`)); result[i]? == l[rotated_index]?))

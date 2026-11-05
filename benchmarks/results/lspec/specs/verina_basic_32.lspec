@@ -1,0 +1,5 @@
+def swapFirstAndLast_precond(a: array[int]): prop =
+  size(a) > 0
+
+def swapFirstAndLast_postcond(a: array[int], result: array[int], h_precond: swapFirstAndLast_precond(a)): prop =
+  (size(result) == size(a)) and ((result[0] == a[size(a) - 1]) and ((result[size(result) - 1] == a[0]) and range(size(result) - 2).all(lambda i: result[i + 1] == a[i + 1])))

@@ -1,0 +1,5 @@
+def removeElement_precond(s: array[int], k: nat): prop =
+  k < size(s)
+
+def removeElement_postcond(s: array[int], k: nat, result: array[int], h_precond: removeElement_precond(s, k)) =
+  (size(result) == (size(s) - 1)) and ((forall i: (i < k) ==> (result[i] == s[i])) and (forall i: (i < size(result)) ==> ((i >= k) ==> (result[i] == s[i + 1]))))

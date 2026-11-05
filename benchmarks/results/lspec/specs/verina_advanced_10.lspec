@@ -1,0 +1,18 @@
+-- (Lean)
+def removePrimeFactor (n : Nat) (p : Nat) : Nat :=
+  if h : p > 1 ∧ n > 0 then
+    if n % p = 0 then
+      have : n / p < n := Nat.div_lt_self h.2 h.1
+      removePrimeFactor (n / p) p
+    else n
+  else n
+termination_by n
+
+def removeAllPrimeFactors(n: nat, primes: list[nat]): nat =
+  primes.foldl(removePrimeFactor, n)
+
+def findExponents_precond(n: nat, primes: list[nat]): prop =
+  (n > 0) and ((len(primes) > 0) and (primes.all(lambda p: is_prime(p)) and (List.Nodup(primes) and (removeAllPrimeFactors(n, primes) == 1))))
+
+def findExponents_postcond(n: nat, primes: list[nat], result: list[tuple[nat, nat]], h_precond: findExponents_precond(n, primes)): prop =
+  (n == result.foldl(lambda acc, (p, e): acc * (p ** e), 1)) and (result.all(lambda (p, _): p in primes) and primes.all(lambda p: result.any(lambda pair: pair.1 == p)))

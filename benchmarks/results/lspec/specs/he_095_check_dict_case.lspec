@@ -1,0 +1,23 @@
+-- (Lean)
+inductive PyVal where
+  | int (n : Int)
+  | bool (b : Bool)
+  | float (q : ℚ)
+  | str (s : String)
+  | none
+  | list (l : List PyVal)
+  | dict (d : List (PyVal × PyVal))
+
+def lowerKey: PyVal ==> bool_t
+  | PyVal.str(s) => list(s).any(Char.isLower) && (!list(s).any(Char.isUpper))
+  | _ => False
+
+def upperKey: PyVal ==> bool_t
+  | PyVal.str(s) => list(s).any(Char.isUpper) && (!list(s).any(Char.isLower))
+  | _ => False
+
+def checkDictCase_precond(keys: list[PyVal]): prop =
+  true_prop
+
+def checkDictCase_postcond(keys: list[PyVal], result: bool_t, h_precond: checkDictCase_precond(keys)) =
+  (result == True) <==> ((keys != []) and ((keys.all(lowerKey) == True) or (keys.all(upperKey) == True)))

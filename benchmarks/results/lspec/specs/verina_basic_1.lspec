@@ -1,0 +1,5 @@
+def hasOppositeSign_precond(a: int, b: int): prop =
+  true_prop
+
+def hasOppositeSign_postcond(a: int, b: int, result: bool_t, h_precond: hasOppositeSign_precond(a, b)) =
+  ((((a < 0) and (b > 0)) or ((a > 0) and (b < 0))) ==> result) and ((not (((a < 0) and (b > 0)) or ((a > 0) and (b < 0)))) ==> (not result))

@@ -1,0 +1,5 @@
+def BinarySearch_precond(a: array[int], key: int): prop =
+  pairwise(lambda _c1, _c2: _c1 <= _c2, list(a))
+
+def BinarySearch_postcond(a: array[int], key: int, result: nat, h_precond: BinarySearch_precond(a, key)) =
+  (result <= size(a)) and (a[:result].all(lambda x: x < key) and a[result:].all(lambda x: x >= key))

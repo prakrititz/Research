@@ -1,0 +1,5 @@
+def hexKey_precond(num: str_t): prop =
+  true_prop
+
+def hexKey_postcond(num: str_t, result: nat, h_precond: hexKey_precond(num)) =
+  result == len(list(num).filter(lambda c: ['2', '3', '5', '7', 'B', 'D'].contains(c)))

@@ -1,0 +1,5 @@
+def rescaleToUnit_precond(numbers: list[rat]): prop =
+  (len(numbers) >= 2) and (numbers.foldl(min, numbers[0]) < numbers.foldl(max, numbers[0]))
+
+def rescaleToUnit_postcond(numbers: list[rat], result: list[rat], h_precond: rescaleToUnit_precond(numbers)) =
+  (len(result) == len(numbers)) and (forall i: (i < len(numbers)) ==> (abs(result[i] - ((numbers[i] - numbers.foldl(min, numbers[0])) / (numbers.foldl(max, numbers[0]) - numbers.foldl(min, numbers[0])))) <= (1 / 1000000 as rat)))

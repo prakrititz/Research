@@ -1,0 +1,11 @@
+def fibfibSpec: nat ==> nat
+  | 0 => 0
+  | 1 => 0
+  | 2 => 1
+  | n + 3 => (fibfibSpec(n + 2) + fibfibSpec(n + 1)) + fibfibSpec(n)
+
+def fibfib_precond(n: nat): prop =
+  true_prop
+
+def fibfib_postcond(n: nat, result: nat, h_precond: fibfib_precond(n)) =
+  result == fibfibSpec(n)

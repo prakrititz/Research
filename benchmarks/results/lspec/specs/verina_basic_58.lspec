@@ -1,0 +1,5 @@
+def double_array_elements_precond(s: array[int]): prop =
+  true_prop
+
+def double_array_elements_postcond(s: array[int], result: array[int], h_precond: double_array_elements_precond(s)) =
+  (size(result) == size(s)) and (forall i: (i < size(s)) ==> (result[i] == (2 * s[i])))

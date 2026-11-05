@@ -1,0 +1,5 @@
+def mergeSortedLists_precond(arr1: list[int], arr2: list[int]): prop =
+  pairwise(lambda _c1, _c2: _c1 <= _c2, arr1) and pairwise(lambda _c1, _c2: _c1 <= _c2, arr2)
+
+def mergeSortedLists_postcond(arr1: list[int], arr2: list[int], result: list[int], h_precond: mergeSortedLists_precond(arr1, arr2)): prop =
+  pairwise(lambda _c1, _c2: _c1 <= _c2, result) and is_perm(arr1 ++ arr2, result)

@@ -1,0 +1,5 @@
+def SquareRoot_precond(N: nat): prop =
+  true_prop
+
+def SquareRoot_postcond(N: nat, result: nat, h_precond: SquareRoot_precond(N)) =
+  ((result * result) <= N) and (N < ((result + 1) * (result + 1)))

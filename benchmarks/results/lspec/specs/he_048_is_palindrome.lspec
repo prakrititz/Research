@@ -1,0 +1,5 @@
+def isPalindrome_precond(text: str_t): prop =
+  true_prop
+
+def isPalindrome_postcond(text: str_t, result: bool_t, h_precond: isPalindrome_precond(text)) =
+  (result == True) <==> (forall i: (i < len(text)) ==> (list(text)[i] == list(text)[(len(text) - 1) - i]))

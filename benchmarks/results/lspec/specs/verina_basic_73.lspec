@@ -1,0 +1,5 @@
+def Match_precond(s: str_t, p: str_t): prop =
+  len(list(s)) == len(list(p))
+
+def Match_postcond(s: str_t, p: str_t, result: bool_t, h_precond: Match_precond(s, p)) =
+  (result == True) <==> (forall (n: nat): (n < len(list(s))) ==> ((list(s)[n] == list(p)[n]) or (list(p)[n] == '?')))

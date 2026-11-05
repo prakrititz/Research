@@ -1,0 +1,5 @@
+def solution_precond(nums: list[nat]): prop =
+  (1 <= len(nums)) and ((len(nums) <= 100) and nums.all(lambda x: (1 <= x) and (x <= 100)))
+
+def solution_postcond(nums: list[nat], result: nat): prop =
+  let n = len(nums); let getSubarray_local = lambda (i: nat), (j: nat): nums[i:][:(j - i) + 1]; let distinctCount_local = lambda (l: list[nat]): let foldFn = lambda (seen: list[nat]), (x: nat): seen if seen.elem(x) else x :: seen; let distinctElems = l.foldl(foldFn, []); len(distinctElems); let square_local = lambda (n: nat): n * n; ((1 <= n) and ((n <= 100) and nums.all(lambda x: (1 <= x) and (x <= 100)))) ==> ((result >= 0) and (let expectedSum: nat = range(n).foldl(lambda (outerSum: nat), (i: nat): let innerSum: nat = range(n - i).foldl(lambda (currentInnerSum: nat), (d: nat): let j = i + d; let subarr = getSubarray_local(i, j); let count = distinctCount_local(subarr); currentInnerSum + square_local(count), 0); outerSum + innerSum, 0); result == expectedSum))

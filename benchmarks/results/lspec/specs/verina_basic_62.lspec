@@ -1,0 +1,5 @@
+def Find_precond(a: array[int], key: int): prop =
+  true_prop
+
+def Find_postcond(a: array[int], key: int, result: int, h_precond: Find_precond(a, key)) =
+  ((result == (-1)) or ((result >= 0) and (result < int_of_nat(size(a))))) and (((result != (-1)) ==> ((a[to_nat_of(result)] == key) and (forall (i: nat): (i < to_nat_of(result)) ==> (a[i] != key)))) and ((result == (-1)) ==> (forall (i: nat): (i < size(a)) ==> (a[i] != key))))

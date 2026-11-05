@@ -1,0 +1,8 @@
+def xOrY_precond(n: nat, x: int, y: int): prop =
+  true_prop
+
+def primeSpec(n: nat): prop =
+  (n >= 2) and (forall d: (d < n) ==> ((d >= 2) ==> ((n % d) != 0)))
+
+def xOrY_postcond(n: nat, x: int, y: int, result: int, h_precond: xOrY_precond(n, x, y)) =
+  (primeSpec(n) ==> (result == x)) and ((not primeSpec(n)) ==> (result == y))

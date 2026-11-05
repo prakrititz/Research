@@ -1,0 +1,8 @@
+def signedDigitSum(x: int): int =
+  let ds = list(str(abs_nat(x))).map(lambda c: ((to_nat(c) - 48 as nat) as int)); sum(ds.tail) - ds.head! if x < 0 else sum(ds)
+
+def countNums_precond(arr: list[int]): prop =
+  true_prop
+
+def countNums_postcond(arr: list[int], result: nat, h_precond: countNums_precond(arr)) =
+  result == len(arr.filter(lambda x: signedDigitSum(x) > 0))

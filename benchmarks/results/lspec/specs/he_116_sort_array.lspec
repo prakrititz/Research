@@ -1,0 +1,8 @@
+def ones(x: int): nat =
+  len(Nat.digits(2, abs_nat(x)).filter(lambda d: d === 1))
+
+def sortArray116_precond(arr: list[int]): prop =
+  true_prop
+
+def sortArray116_postcond(arr: list[int], result: list[int], h_precond: sortArray116_precond(arr)) =
+  result.isPerm(arr) and (forall i: (i < (len(result) - 1)) ==> ((ones(result[i]) < ones(result[i + 1])) or ((ones(result[i]) == ones(result[i + 1])) and (result[i] <= result[i + 1]))))

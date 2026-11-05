@@ -1,0 +1,5 @@
+def factorize_precond(n: nat): prop =
+  n >= 1
+
+def factorize_postcond(n: nat, result: list[nat], h_precond: factorize_precond(n)) =
+  (product(result) == n) and ((forall p in result: is_prime(p)) and (forall i: (i < (len(result) - 1)) ==> (result[i] <= result[i + 1])))

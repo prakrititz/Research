@@ -1,0 +1,5 @@
+def findMajorityElement_precond(lst: list[int]): prop =
+  true_prop
+
+def findMajorityElement_postcond(lst: list[int], result: int, h_precond: findMajorityElement_precond(lst)): prop =
+  let count = lambda x: len(lst.filter(lambda y: y == x)); let n = len(lst); let majority = (count(result) > (n / 2)) and lst.all(lambda x: (count(x) <= (n / 2)) or (x == result)); ((result == (-1)) ==> (lst.all(lambda _c1: count(_c1) <= (n / 2)) or majority)) and ((result != (-1)) ==> majority)

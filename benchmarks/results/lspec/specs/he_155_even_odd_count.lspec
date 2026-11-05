@@ -1,0 +1,5 @@
+def evenOddCount_precond(num: int): prop =
+  true_prop
+
+def evenOddCount_postcond(num: int, result: tuple[nat, nat], h_precond: evenOddCount_precond(num)) =
+  (result.1 == len(list(str(abs_nat(num))).filter(lambda c: ((to_nat(c) - 48) % 2) == 0))) and (result.2 == len(list(str(abs_nat(num))).filter(lambda c: ((to_nat(c) - 48) % 2) == 1)))

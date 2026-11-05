@@ -1,0 +1,5 @@
+def sumToN_precond(n: nat): prop =
+  true_prop
+
+def sumToN_postcond(n: nat, result: nat, h_precond: sumToN_precond(n)) =
+  (2 * result) == (n * (n + 1))

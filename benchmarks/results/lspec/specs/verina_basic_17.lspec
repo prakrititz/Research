@@ -1,0 +1,11 @@
+def isUpperCase(c: char): bool_t =
+  ('A' <= c) and (c <= 'Z')
+
+def shift32(c: char): char =
+  Char.ofNat(to_nat(c) + 32)
+
+def toLowercase_precond(s: str_t): prop =
+  true_prop
+
+def toLowercase_postcond(s: str_t, result: str_t, h_precond: toLowercase_precond(s)) =
+  let cs = list(s); let cs' = list(result); (len(result) == len(s)) and (forall (i: nat): (i < len(s)) ==> ((isUpperCase(cs[i]) ==> (cs'[i] == shift32(cs[i]))) and ((not isUpperCase(cs[i])) ==> (cs'[i] == cs[i]))))

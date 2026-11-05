@@ -1,0 +1,5 @@
+def rightAngleTriangle_precond(a: nat, b: nat, c: nat): prop =
+  true_prop
+
+def rightAngleTriangle_postcond(a: nat, b: nat, c: nat, result: bool_t, h_precond: rightAngleTriangle_precond(a, b, c)) =
+  (result == True) <==> ((((a * a) + (b * b)) == (c * c)) or ((((a * a) + (c * c)) == (b * b)) or (((b * b) + (c * c)) == (a * a))))

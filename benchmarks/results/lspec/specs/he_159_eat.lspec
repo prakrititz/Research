@@ -1,0 +1,5 @@
+def eat_precond(number: nat, need: nat, remaining: nat): prop =
+  (number <= 1000) and ((need <= 1000) and (remaining <= 1000))
+
+def eat_postcond(number: nat, need: nat, remaining: nat, result: list[nat], h_precond: eat_precond(number, need, remaining)) =
+  (len(result) == 2) and ((result[0] == (number + min(need, remaining))) and (result[1] == (remaining - min(need, remaining))))

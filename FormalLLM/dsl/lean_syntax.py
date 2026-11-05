@@ -18,7 +18,7 @@ class Unsupported(Exception):
 #: binary operators: precedence, and whether the right operand binds at the same level (right associative)
 INFIX = {
     "<|": (10, True), "|>": (10, False), "$": (10, True),
-    "↔": (20, False), "→": (25, True),
+    "↔": (20, False), "→": (25, True), "⊕": (30, True),
     "∨": (30, True), "||": (30, False), "∧": (35, True), "&&": (35, False), "×": (35, True),
     "=": (50, False), "≠": (50, False), "==": (50, False), "!=": (50, False), "<": (50, False), ">": (50, False),
     "≤": (50, False), "≥": (50, False), "<=": (50, False), ">=": (50, False), "∈": (50, False), "∉": (50, False),
@@ -28,16 +28,17 @@ INFIX = {
     "++": (65, False), "::": (67, True), "+": (65, False), "-": (65, False),
     "*": (70, False), "/": (70, False), "%": (70, False), "^": (75, True), "∘": (90, False),
 }
-PREFIX = {"¬": 40, "-": 75, "!": 40, "↑": 1024}         # `!b` reads its argument at 40: `!decide (a < b)`
-KEYWORDS = {"fun", "λ", "∀", "∃", "if", "then", "else", "let", "in", "match", "with", "do", "have", "show", "by"}
+PREFIX = {"¬": 40, "-": 75, "!": 40, "↑": 1024, "~~~": 1024}         # `!b` reads its argument at 40: `!decide (a < b)`
+KEYWORDS = {"fun", "λ", "∀", "∃", "if", "then", "else", "let", "in", "match", "with", "do", "have", "show", "by",
+            "termination_by", "decreasing_by", "where", "deriving"}
 
 _TOKEN = re.compile(r"""
     (?P<nl>\n)
-  | (?P<ws>[ \t\r]+)
-  | (?P<num>\d+(?:\.\d+)?)
+  | (?P<ws>[ \t\r]+|--[^\n]*|/-(?:.|\n)*?-/)
+  | (?P<num>0[xX][0-9a-fA-F]+|0[bB][01]+|\d+(?:\.\d+)?)
   | (?P<char>'(?:\\.|[^'\\])')
   | (?P<str>"(?:\\.|[^"\\])*")
-  | (?P<op><:\+:|<\+:|<:\+|<\+|\^\^\^|&&&|\|\|\||>>>|<<<|<\||\|>\.|\|>|:=|=>|\|\||&&|==|!=|<=|>=|\+\+|::|↦|[-+*/%^=<>≤≥≠∈∉∣⊆~∘↔→∧∨¬×!↑·|$])
+  | (?P<op><:\+:|<\+:|<:\+|<\+|\^\^\^|&&&|\|\|\||>>>|<<<|~~~|->|<\||\|>\.|\|>|:=|=>|\|\||&&|==|!=|<=|>=|\+\+|::|↦|[-+*/%^=<>≤≥≠∈∉∣⊆~∘↔→∧∨¬×!↑·|$⊕])
   | (?P<punct>\#\[|⌋₊|⌉₊|[()\[\]{},:;.⟨⟩?@⌊⌋⌈⌉])
   | (?P<ident>[^\W\d]['\w]*(?:\.[^\W\d]['\w]*)*(?:[!?](?!=))?|[∀∃λ])
 """, re.VERBOSE | re.UNICODE)
@@ -53,7 +54,7 @@ def tokenize(text: str):
         pos = m.end()
         if m.lastgroup == "ws":
             continue
-        out.append("\n" if m.lastgroup == "nl" else m.group())
+        out.append("\n" if m.lastgroup == "nl" else "→" if m.group() == "->" else m.group())    # `->` is `→`
         spans.append((m.start(), m.end()))
     return out, spans
 
@@ -61,18 +62,33 @@ def tokenize(text: str):
 class _Parser:
     def __init__(self, text: str):
         self.toks, self.spans = tokenize(text)
+        starts = [text.rfind("\n", 0, s) + 1 for s, _ in self.spans]
+        self.cols = [s - b for (s, _), b in zip(self.spans, starts)]
         self.k = 0
-        self.nl_stops = 0                        # inside a `let` value a line break ends the value
+        # inside a `let` value, a line break ends the value when the next line starts at or left of the `let` (Lean's
+        # layout: the body of `let a := v` goes on its own line, aligned with `let`); ``None``: line breaks are spaces
+        self.stop_col: Optional[int] = None
 
     # --- tokens ---
+    def _stops(self, k: int) -> bool:
+        """The line break at ``k`` ends the current `let` value."""
+        if self.stop_col is None:
+            return False
+        j = k
+        while j < len(self.toks) and self.toks[j] == "\n":
+            j += 1
+        return j < len(self.toks) and self.cols[j] <= self.stop_col
+
     def peek(self, offset: int = 0) -> Optional[str]:
         k, seen = self.k, -1
         while k < len(self.toks):
             if self.toks[k] == "\n":
-                if self.nl_stops:
+                if self._stops(k):
                     if seen + 1 == offset:
                         return "\n"
                     seen += 1
+                    while k + 1 < len(self.toks) and self.toks[k + 1] == "\n":
+                        k += 1
                 k += 1
                 continue
             seen += 1
@@ -82,13 +98,24 @@ class _Parser:
         return None
 
     def next(self) -> str:
-        while self.k < len(self.toks) and self.toks[self.k] == "\n" and not self.nl_stops:
+        while self.k < len(self.toks) and self.toks[self.k] == "\n":
+            if self._stops(self.k):
+                while self.k + 1 < len(self.toks) and self.toks[self.k + 1] == "\n":
+                    self.k += 1
+                break
             self.k += 1
         if self.k >= len(self.toks):
             raise Unsupported("unexpected end")
         tok = self.toks[self.k]
         self.k += 1
         return tok
+
+    def next_col(self) -> int:
+        """The column of the next token (as :meth:`next` would return it)."""
+        k = self.k
+        while k < len(self.toks) and self.toks[k] == "\n":
+            k += 1
+        return self.cols[k] if k < len(self.toks) else -1
 
     def expect(self, tok: str):
         got = self.next()
@@ -119,7 +146,9 @@ class _Parser:
                 return left
             self.next()
             right = self.expr(prec if right_assoc else prec + 1)
-            left = BinOp(op, left, right)
+            names = _arrow_binders(left) if op == "→" else None
+            # `(h : P) → Q` is a dependent arrow, `∀ (h : P), Q` (Lean never reads it as a type ascription)
+            left = Binder("∀", [(n, left.type) for n in names], None, right) if names else BinOp(op, left, right)
 
     def prefix(self) -> Node:
         tok = self.peek()
@@ -217,24 +246,24 @@ class _Parser:
         if self.peek() == ")":
             self.next()
             return Name("()")
-        self.nl_stops, saved = 0, self.nl_stops
+        self.stop_col, saved = None, self.stop_col
         first = self.expr()
         if self.peek() == ":":
             self.next()
             node = Ascribe(first, self.expr())
             self.expect(")")
-            self.nl_stops = saved
+            self.stop_col = saved
             return node
         items = [first]
         while self.peek() == ",":
             self.next()
             items.append(self.expr())
         self.expect(")")
-        self.nl_stops = saved
+        self.stop_col = saved
         return Tuple_(items) if len(items) > 1 else _Paren(first)
 
     def items(self, close: str) -> List[Node]:
-        saved, self.nl_stops = self.nl_stops, 0
+        saved, self.stop_col = self.stop_col, None
         out = []
         if self.peek() == close:
             self.next()
@@ -244,7 +273,7 @@ class _Parser:
                 self.next()
                 out.append(self.expr())
             self.expect(close)
-        self.nl_stops = saved
+        self.stop_col = saved
         return out
 
     def binders(self, stop: set):
@@ -326,34 +355,60 @@ class _Parser:
             self.next()
             scrutinees.append(self.expr())
         self.expect("with")
-        arms = []
-        while self.peek() == "|":
+        return Match(scrutinees, self.arms())
+
+    def arms(self) -> list:
+        """`| p, q => e | _ => f` (of a `match`, or of a definition by cases)."""
+        arms, column = [], self.next_col()
+        # an arm left of this match's first arm belongs to an enclosing match (Lean's layout)
+        while self.peek() == "|" and self.next_col() >= column:
             self.next()
             pats = [self.expr(51)]
             while self.peek() == ",":
                 self.next()
                 pats.append(self.expr(51))
+            while self.peek() == "|":                # alternatives `| [] | [_] => e`: a pattern `BinOp("|", ...)`
+                if len(pats) > 1:
+                    raise Unsupported("alternatives of several patterns")
+                self.next()
+                pats = [BinOp("|", pats[0], self.expr(51))]
             self.expect("=>")
             arms.append((pats, self.expr()))
         if not arms:
             raise Unsupported("match without arms")
-        return Match(scrutinees, arms)
+        return arms
 
     def let(self) -> Node:
+        """`let x := v; body`, `let x := v` NEWLINE `body`, `let f (x : T) : U := v`, `let rec go ...`,
+        `let (a, b) := v`."""
         self.next()
-        name = self.next()
-        params, _ = self.binders({":", ":="})
+        col = self.cols[self.k - 1]
+        rec = self.peek() == "rec"
+        if rec:
+            self.next()
+        pattern = None
+        if self.peek() in ("(", "⟨"):
+            close = ")" if self.next() == "(" else "⟩"
+            pattern = (Tuple_ if close == ")" else Anon)(self.items(close))
+            name, params = "<pat>", []
+        else:
+            name = self.next()
+            params, _ = self.binders({":", ":="})
         typ = None
         if self.peek() == ":":
             self.next()
             typ = self.expr(26)
         self.expect(":=")
-        self.nl_stops += 1
+        saved, self.stop_col = self.stop_col, col
         value = self.expr()
-        self.nl_stops -= 1
+        termination = None
+        if self.peek() == "termination_by":
+            self.next()
+            termination = self.expr()
         if self.peek() in (";", "\n", "in"):
             self.next()
-        return Let(name, typ, value, self.expr(), params)
+        self.stop_col = saved
+        return Let(name, typ, value, self.expr(), params, rec, pattern, termination)
 
 
 class _Paren(Node):
@@ -378,8 +433,47 @@ def _dotted(tok: str) -> Node:
     return node
 
 
+def _arrow_binders(node) -> Optional[List[str]]:
+    """The names of `(a b : T)` before `→` (a dependent arrow), else ``None``."""
+    if not isinstance(node, Ascribe):
+        return None
+    parts = [node.expr] if isinstance(node.expr, Name) else \
+        [node.expr.fn] + node.expr.args if isinstance(node.expr, App) else []
+    if parts and all(isinstance(p, Name) and "." not in p.id and p.id != "·" for p in parts):
+        return [p.id for p in parts]
+    return None
+
+
+def _sections(node, found: list):
+    """Replace each `·` of a `(· + 1)` section by a fresh variable (not inside nested parentheses: those are their own
+    sections)."""
+    if isinstance(node, Name) and node.id == "·":
+        found.append(Name(f"_c{len(found) + 1}"))
+        return found[-1]
+    if isinstance(node, _Paren) or not isinstance(node, Node):
+        return node
+    for key, value in vars(node).items():
+        if isinstance(value, list):
+            setattr(node, key, [_sections_any(v, found) for v in value])
+        elif isinstance(value, tuple):
+            setattr(node, key, _sections_any(value, found))
+        else:
+            setattr(node, key, _sections(value, found))
+    return node
+
+
+def _sections_any(v, found):
+    if isinstance(v, (tuple, list)):
+        return type(v)(_sections_any(x, found) for x in v)
+    return _sections(v, found)
+
+
 def _unparen(node):
     if isinstance(node, _Paren):
+        found = []
+        inner = _sections(node.inner, found)
+        if found:                                # `(· + 1)` is `fun _c1 => _c1 + 1` (Lean elaborates both alike)
+            return Binder("fun", [(n.id, None) for n in found], None, _unparen(inner))
         return _unparen(node.inner)
     if not isinstance(node, Node):
         return node
@@ -436,7 +530,10 @@ def show(node: Node) -> str:
     if isinstance(node, Dot):
         return f"{_arg(node.obj)}.{node.field}"
     if isinstance(node, Index):
-        return f"{_arg(node.obj)}[{show(node.idx)}]{node.kind}"
+        obj = _arg(node.obj)
+        if isinstance(node.obj, Index) and node.obj.kind == "!":
+            obj = f"({obj})"                     # `l[i]![j]!` reads as `l[i]` then Mathlib's `![...]`: write `(l[i]!)[j]!`
+        return f"{obj}[{show(node.idx)}]{node.kind}"
     if isinstance(node, BinOp):
         return f"{_arg(node.left)} {node.op} {_arg(node.right)}"
     if isinstance(node, UnOp):
@@ -456,9 +553,11 @@ def show(node: Node) -> str:
     if isinstance(node, Let):
         params = " " + _binders(node.params) if node.params else ""
         typ = f" : {show(node.type)}" if node.type is not None else ""
-        return f"let {node.name}{params}{typ} := {show(node.value)}; {show(node.body)}"
+        head = show(node.pattern) if node.pattern is not None else node.name
+        term = f" termination_by {show(node.termination)}" if node.termination is not None else ""
+        return f"let {'rec ' if node.rec else ''}{head}{params}{typ} := {show(node.value)}{term}; {show(node.body)}"
     if isinstance(node, Match):
-        arms = " ".join(f"| {', '.join(show(p) for p in pats)} => {show(e)}" for pats, e in node.arms)
+        arms = show_arms(node.arms, " ")
         return f"match {', '.join(show(s) for s in node.scrutinees)} with {arms}"
     if isinstance(node, Tuple_):
         return "(" + ", ".join(show(i) for i in node.items) + ")"
@@ -472,6 +571,15 @@ def show(node: Node) -> str:
         close = dict(zip('|⌊⌈', '|⌋⌉'))[node.kind[0]] + node.kind[1:]
         return f"{node.kind[0]}{show(node.arg)}{close}"
     raise TypeError(type(node).__name__)
+
+
+def show_arms(arms, sep: str) -> str:
+    """`| p => e` arms; a body open to the right (`match`, `fun`, `if`, `let`) would take the arms after it, so it is
+    parenthesised unless it is the last."""
+    def body(k, e):
+        open_right = isinstance(e, (Match, Binder, If, Let))
+        return f"({show(e)})" if open_right and k + 1 < len(arms) else show(e)
+    return sep.join(f"| {', '.join(show(p) for p in pats)} => {body(k, e)}" for k, (pats, e) in enumerate(arms))
 
 
 def _binders(names) -> str:

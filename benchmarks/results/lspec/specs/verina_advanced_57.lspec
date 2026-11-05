@@ -1,0 +1,5 @@
+def nextGreaterElement_precond(nums1: list[int], nums2: list[int]): prop =
+  List.Nodup(nums1) and (List.Nodup(nums2) and nums1.all(lambda x: x in nums2))
+
+def nextGreaterElement_postcond(nums1: list[int], nums2: list[int], result: list[int], h_precond: nextGreaterElement_precond(nums1, nums2)): prop =
+  (len(result) == len(nums1)) and (range(len(nums1)).all(lambda i: let val = nums1[i]; let resultVal = result[i]; let j = nums2.findIdx?(lambda x: x === val); match j with | none => False | some(idx) => let nextGreater = range((len(nums2) - idx) - 1).find?(lambda k: let pos = (idx + k) + 1; nums2[pos] > val); match nextGreater with | none => resultVal == (-1) | some(offset) => resultVal == nums2[(idx + offset) + 1]) and result.all(lambda val: (val == (-1)) or (val in nums2)))

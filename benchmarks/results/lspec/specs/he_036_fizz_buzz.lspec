@@ -1,0 +1,5 @@
+def fizzBuzz_precond(n: nat): prop =
+  true_prop
+
+def fizzBuzz_postcond(n: nat, result: nat, h_precond: fizzBuzz_precond(n)) =
+  result == sum(range(n).filter(lambda i: ((i % 11) == 0) or ((i % 13) == 0)).map(lambda i: list(str(i)).count('7')))

@@ -1,0 +1,5 @@
+def pluck_precond(arr: list[nat]): prop =
+  true_prop
+
+def pluck_postcond(arr: list[nat], result: list[nat], h_precond: pluck_precond(arr)) =
+  ((result == []) <==> (forall x in arr: (x % 2) == 1)) and ((result != []) ==> ((len(result) == 2) and ((result[1] < len(arr)) and ((arr[result[1]] == result[0]) and (((result[0] % 2) == 0) and ((forall x in arr: ((x % 2) == 0) ==> (result[0] <= x)) and (forall j: (j < result[1]) ==> (arr[j] != result[0]))))))))

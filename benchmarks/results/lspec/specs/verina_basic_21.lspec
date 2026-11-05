@@ -1,0 +1,5 @@
+def isSublist_precond(sub: list[int], main: list[int]): prop =
+  true_prop
+
+def isSublist_postcond(sub: list[int], main: list[int], result: bool_t, h_precond: isSublist_precond(sub, main)) =
+  (exists i: ((i + len(sub)) <= len(main)) and (sub == main[i:][:len(sub)])) <==> result

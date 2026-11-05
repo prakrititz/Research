@@ -1,0 +1,15 @@
+-- (Lean)
+inductive PyVal where
+  | int (n : Int)
+  | bool (b : Bool)
+  | float (q : ℚ)
+  | str (s : String)
+  | none
+  | list (l : List PyVal)
+  | dict (d : List (PyVal × PyVal))
+
+def filterIntegers_precond(values: list[PyVal]): prop =
+  true_prop
+
+def filterIntegers_postcond(values: list[PyVal], result: list[int], h_precond: filterIntegers_precond(values)) =
+  result == values.filterMap(lambda v: match v with | PyVal.int(n) => some(n) | _ => none)

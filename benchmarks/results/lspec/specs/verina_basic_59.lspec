@@ -1,0 +1,5 @@
+def DoubleQuadruple_precond(x: int): prop =
+  true_prop
+
+def DoubleQuadruple_postcond(x: int, result: tuple[int, int], h_precond: DoubleQuadruple_precond(x)) =
+  (result.fst == (2 * x)) and (result.snd == (2 * result.fst))

@@ -1,0 +1,5 @@
+def solution_precond(lst: list[int]): prop =
+  lst != []
+
+def solution_postcond(lst: list[int], result: int, h_precond: solution_precond(lst)) =
+  result == sum(range(len(lst)).filter(lambda i: ((i % 2) == 0) and ((lst[i] % 2) == 1)).map(lambda i: lst[i]))

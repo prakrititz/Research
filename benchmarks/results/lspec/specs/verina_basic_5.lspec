@@ -1,0 +1,5 @@
+def multiply_precond(a: int, b: int): prop =
+  true_prop
+
+def multiply_postcond(a: int, b: int, result: int, h_precond: multiply_precond(a, b)) =
+  ((result - (a * b)) == 0) and (((a * b) - result) == 0)

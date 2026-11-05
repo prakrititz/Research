@@ -1,0 +1,5 @@
+def fastPower_precond(b: int, e: nat): prop =
+  true_prop
+
+def fastPower_postcond(b: int, e: nat, result: int, h_precond: fastPower_precond(b, e)) =
+  result == (b ** e)

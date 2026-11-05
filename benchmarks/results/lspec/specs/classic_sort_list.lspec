@@ -1,0 +1,5 @@
+def sortList_precond(l: list[int]): prop =
+  true_prop
+
+def sortList_postcond(l: list[int], result: list[int], h_precond: sortList_precond(l)) =
+  (forall i: (i < (len(result) - 1)) ==> (result[i] <= result[i + 1])) and result.isPerm(l)

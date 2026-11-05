@@ -1,0 +1,5 @@
+def isSorted_precond(lst: list[int]): prop =
+  forall x in lst: x >= 0
+
+def isSorted_postcond(lst: list[int], result: bool_t, h_precond: isSorted_precond(lst)) =
+  (result == True) <==> ((forall i: (i < (len(lst) - 1)) ==> (lst[i] <= lst[i + 1])) and (forall x in lst: lst.count(x) <= 2))

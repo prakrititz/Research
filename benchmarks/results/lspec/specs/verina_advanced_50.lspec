@@ -1,0 +1,5 @@
+def mergeSorted_precond(a1: array[nat], a2: array[nat]): prop =
+  pairwise(lambda _c1, _c2: _c1 <= _c2, list(a1)) and pairwise(lambda _c1, _c2: _c1 <= _c2, list(a2))
+
+def mergeSorted_postcond(a1: array[nat], a2: array[nat], result: array[nat], h_precond: mergeSorted_precond(a1, a2)): prop =
+  pairwise(lambda _c1, _c2: _c1 <= _c2, list(result)) and list(result).isPerm(list(a1) ++ list(a2))

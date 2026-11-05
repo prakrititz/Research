@@ -1,0 +1,5 @@
+def maxStrength_precond(nums: list[int]): prop =
+  nums != []
+
+def maxStrength_postcond(nums: list[int], result: int, h_precond: maxStrength_precond(nums)): prop =
+  let sublists = nums.sublists.filter(lambda _c1: _c1 != []); let products = sublists.map(foldl(lambda _c1, _c2: _c1 * _c2, 1)); products.contains(result) and products.all(lambda _c1: _c1 <= result)

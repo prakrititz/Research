@@ -1,0 +1,5 @@
+def allCharactersSame_precond(s: str_t): prop =
+  true_prop
+
+def allCharactersSame_postcond(s: str_t, result: bool_t, h_precond: allCharactersSame_precond(s)) =
+  let cs = list(s); (result ==> pairwise(lambda _c1, _c2: _c1 == _c2, cs)) and ((not result) ==> ((cs != []) and cs.any(lambda x: x != cs[0])))

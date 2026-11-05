@@ -1,0 +1,5 @@
+def minOperations_precond(nums: list[nat], k: nat): prop =
+  let target_nums = range(k).map(lambda _c1: _c1 + 1); target_nums.all(lambda n: elem(n, nums))
+
+def minOperations_postcond(nums: list[nat], k: nat, result: nat, h_precond: minOperations_precond(nums, k)): prop =
+  let processed = reversed(nums)[:result]; let target_nums = range(k).map(lambda _c1: _c1 + 1); let collected_all = target_nums.all(lambda n: elem(n, processed)); let is_minimal = (let processed_minus_one = reversed(nums)[:result - 1]; not target_nums.all(lambda n: elem(n, processed_minus_one))) if result > 0 else k === 0; collected_all and is_minimal

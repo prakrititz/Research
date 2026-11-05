@@ -1,0 +1,5 @@
+def maxElement_precond(l: list[int]): prop =
+  l != []
+
+def maxElement_postcond(l: list[int], result: int, h_precond: maxElement_precond(l)) =
+  (result in l) and (forall x in l: x <= result)

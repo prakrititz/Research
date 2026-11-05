@@ -85,6 +85,9 @@ class Let(Node):
     value: Node
     body: Node
     params: List[Tuple[str, Optional[Node]]] = field(default_factory=list)   # `let f (x : T) := ...`
+    rec: bool = False                            # `let rec go (n : Nat) : Nat := ...`
+    pattern: Optional[Node] = None               # `let (i, j) := result` (``name`` is then ``<pat>``)
+    termination: Optional[Node] = None           # `let rec f ... := v termination_by m`
 
 
 @dataclass

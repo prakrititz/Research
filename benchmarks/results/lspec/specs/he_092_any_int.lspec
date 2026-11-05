@@ -1,0 +1,15 @@
+-- (Lean)
+inductive PyVal where
+  | int (n : Int)
+  | bool (b : Bool)
+  | float (q : ℚ)
+  | str (s : String)
+  | none
+  | list (l : List PyVal)
+  | dict (d : List (PyVal × PyVal))
+
+def anyInt_precond(x: PyVal, y: PyVal, z: PyVal): prop =
+  true_prop
+
+def anyInt_postcond(x: PyVal, y: PyVal, z: PyVal, result: bool_t, h_precond: anyInt_precond(x, y, z)) =
+  (result == True) <==> (match x, y, z with | PyVal.int(a), PyVal.int(b), PyVal.int(c) => (a == (b + c)) or ((b == (a + c)) or (c == (b + a))) | _, _, _ => false_prop)

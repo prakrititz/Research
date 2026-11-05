@@ -1,0 +1,5 @@
+def ComputeAvg_precond(a: int, b: int): prop =
+  true_prop
+
+def ComputeAvg_postcond(a: int, b: int, result: int, h_precond: ComputeAvg_precond(a, b)) =
+  (2 * result) == ((a + b) - ((a + b) % 2))

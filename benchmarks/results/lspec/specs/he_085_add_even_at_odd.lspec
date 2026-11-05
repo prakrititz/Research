@@ -1,0 +1,5 @@
+def addEvenAtOdd_precond(lst: list[int]): prop =
+  lst != []
+
+def addEvenAtOdd_postcond(lst: list[int], result: int, h_precond: addEvenAtOdd_precond(lst)) =
+  result == sum(range(len(lst)).filter(lambda i: ((i % 2) == 1) and ((lst[i] % 2) == 0)).map(lambda i: lst[i]))

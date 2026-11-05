@@ -1,0 +1,5 @@
+def rain_precond(heights: list[int]): prop =
+  heights.all(lambda h: h >= 0)
+
+def rain_postcond(heights: list[int], result: int, h_precond: rain_precond(heights)): prop =
+  (result >= 0) and (result == 0 if len(heights) < 3 else result == (let max_left_at = lambda i: let rec ml((j: nat), (max_so_far: int)): int = max_so_far if j > i else ml(j + 1, max(max_so_far, heights[j])) termination_by (i + 1) - j; ml(0, 0); let max_right_at = lambda i: let rec mr((j: nat), (max_so_far: int)): int = max_so_far if j >= len(heights) else mr(j + 1, max(max_so_far, heights[j])) termination_by len(heights) - j; mr(i, 0); let water_at = lambda i: max(0, min(max_left_at(i), max_right_at(i)) - heights[i]); let rec sum_water((i: nat), (acc: int)): int = acc if i >= len(heights) else sum_water(i + 1, acc + water_at(i)) termination_by len(heights) - i; sum_water(0, 0)))

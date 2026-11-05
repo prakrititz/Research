@@ -1,0 +1,5 @@
+def willItFly_precond(q: list[int], w: int): prop =
+  true_prop
+
+def willItFly_postcond(q: list[int], w: int, result: bool_t, h_precond: willItFly_precond(q, w)) =
+  (result == True) <==> ((forall i: (i < len(q)) ==> (q[i] == q[(len(q) - 1) - i])) and (sum(q) <= w))

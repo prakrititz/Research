@@ -1,0 +1,5 @@
+def sumSquaresIdx_precond(lst: list[int]): prop =
+  true_prop
+
+def sumSquaresIdx_postcond(lst: list[int], result: int, h_precond: sumSquaresIdx_precond(lst)) =
+  result == sum(range(len(lst)).map(lambda i: lst[i] ** 2 if (i % 3) == 0 else lst[i] ** 3 if (i % 4) == 0 else lst[i]))

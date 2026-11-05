@@ -1,0 +1,5 @@
+def twoSum_precond(nums: array[int], target: int): prop =
+  (size(nums) >= 2) and (range(size(nums)).any(lambda i: range(i).any(lambda j: (nums[i] + nums[j]) == target)) and (len(range(size(nums)).flat_map(lambda i: range(i).filter(lambda j: (nums[i] + nums[j]) == target))) == 1))
+
+def twoSum_postcond(nums: array[int], target: int, result: array[nat], h_precond: twoSum_precond(nums, target)): prop =
+  (size(result) == 2) and ((result[0] < size(nums)) and ((result[1] < size(nums)) and ((result[0] < result[1]) and ((nums[result[0]] + nums[result[1]]) == target))))

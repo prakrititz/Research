@@ -1,0 +1,5 @@
+def replace_precond(arr: array[int], k: int): prop =
+  true_prop
+
+def replace_postcond(arr: array[int], k: int, result: array[int], h_precond: replace_precond(arr, k)) =
+  (size(result) == size(arr)) and ((forall (i: nat): (i < size(arr)) ==> ((arr[i] > k) ==> (result[i] == (-1)))) and (forall (i: nat): (i < size(arr)) ==> ((arr[i] <= k) ==> (result[i] == arr[i]))))

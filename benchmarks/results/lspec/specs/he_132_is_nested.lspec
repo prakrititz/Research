@@ -1,0 +1,8 @@
+def isBalancedSq(l: list[char]): prop =
+  (forall k: (k <= len(l)) ==> (l[:k].count(']') <= l[:k].count('['))) and (l.count('[') == l.count(']'))
+
+def isNested_precond(string: str_t): prop =
+  list(`string`).all(lambda c: (c === '[') || (c === ']')) == True
+
+def isNested_postcond(string: str_t, result: bool_t, h_precond: isNested_precond(`string`)) =
+  (result == True) <==> (exists i: (i < len(`string`)) and (exists len: (`len` <= (len(`string`) - i)) and ((4 <= `len`) and (isBalancedSq(list(`string`)[i:][:`len`]) and (forall k: (k < `len`) ==> ((0 < k) ==> (not isBalancedSq(list(`string`)[i:][:`len`][:k]))))))))

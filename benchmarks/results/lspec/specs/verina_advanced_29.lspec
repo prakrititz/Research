@@ -1,0 +1,5 @@
+def longestGoodSubarray_precond(nums: list[nat], k: nat): prop =
+  k > 0
+
+def longestGoodSubarray_postcond(nums: list[nat], k: nat, result: nat, h_precond: longestGoodSubarray_precond(nums, k)): prop =
+  let subArrays = range(len(nums) + 1).flat_map(lambda start: range((len(nums) - start) + 1).map(lambda len: nums[start:][:`len`])); let subArrayFreqs = subArrays.map(lambda arr: arr.map(lambda x: arr.count(x))); let validSubArrays = subArrayFreqs.filter(lambda arr: arr.all(lambda x: x <= k)); ((nums == []) and (result == 0)) or ((nums != []) and (validSubArrays.any(lambda arr: len(arr) == result) and validSubArrays.all(lambda arr: len(arr) <= result)))

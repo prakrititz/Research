@@ -1,0 +1,5 @@
+def intersperse_precond(numbers: list[int], delimeter: int): prop =
+  true_prop
+
+def intersperse_postcond(numbers: list[int], delimeter: int, result: list[int], h_precond: intersperse_precond(numbers, delimeter)) =
+  (len(result) == (0 if len(numbers) == 0 else (2 * len(numbers)) - 1)) and ((forall i: (i < len(numbers)) ==> (result[2 * i] == numbers[i])) and (forall i: (i < (len(numbers) - 1)) ==> (result[(2 * i) + 1] == delimeter)))

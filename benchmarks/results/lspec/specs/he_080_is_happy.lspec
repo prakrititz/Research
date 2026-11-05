@@ -1,0 +1,5 @@
+def isHappy_precond(s: str_t): prop =
+  true_prop
+
+def isHappy_postcond(s: str_t, result: bool_t, h_precond: isHappy_precond(s)) =
+  (result == True) <==> ((len(s) >= 3) and (forall i: (i < (len(s) - 2)) ==> ((list(s)[i] != list(s)[i + 1]) and ((list(s)[i] != list(s)[i + 2]) and (list(s)[i + 1] != list(s)[i + 2])))))

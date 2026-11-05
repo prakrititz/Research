@@ -1,0 +1,5 @@
+def countDistinctCharacters_precond(s: str_t): prop =
+  true_prop
+
+def countDistinctCharacters_postcond(s: str_t, result: nat, h_precond: countDistinctCharacters_precond(s)) =
+  result == len(list(s.toLower).eraseDups)

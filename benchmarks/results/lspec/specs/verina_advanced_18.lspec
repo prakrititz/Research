@@ -1,0 +1,8 @@
+def countDigits(n: nat): nat =
+  let rec go((n: nat), (acc: nat)): nat = acc if n == 0 else go(n / 10, acc + 1); go(n, 1 if n == 0 else 0)
+
+def isArmstrong_precond(n: nat): prop =
+  true_prop
+
+def isArmstrong_postcond(n: nat, result: bool_t, h_precond: isArmstrong_precond(n)): prop =
+  let n' = foldl(lambda acc, d: acc + (d ** countDigits(n)), 0, List.map(lambda c: to_nat(c) - to_nat('0'), list(str(n)))); (result ==> (n == n')) and ((not result) ==> (n != n'))

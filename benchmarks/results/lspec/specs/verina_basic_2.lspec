@@ -1,0 +1,5 @@
+def findSmallest_precond(s: array[nat]): prop =
+  true_prop
+
+def findSmallest_postcond(s: array[nat], result: option[nat], h_precond: findSmallest_precond(s)) =
+  let xs = list(s); match result with | none => xs == [] | some(r) => (r in xs) and (forall x: (x in xs) ==> (r <= x))

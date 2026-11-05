@@ -1,0 +1,5 @@
+def compareGuess_precond(game: list[int], guess: list[int]): prop =
+  len(game) == len(guess)
+
+def compareGuess_postcond(game: list[int], guess: list[int], result: list[int], h_precond: compareGuess_precond(game, guess)) =
+  (len(result) == len(game)) and (forall i: (i < len(game)) ==> (result[i] == (abs_nat(game[i] - guess[i]) as int)))

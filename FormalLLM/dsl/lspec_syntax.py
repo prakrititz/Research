@@ -113,7 +113,10 @@ def show(node: Node) -> str:
     if isinstance(node, Let):
         params = "(" + _binders(node.params) + ")" if node.params else ""
         typ = f": {show(node.type)}" if node.type is not None else ""
-        return f"let {node.name}{params}{typ} = {show(node.value)}; {show(node.body)}"
+        head = (show(node.pattern) if node.pattern is not None else
+                f"`{node.name}`" if node.name in ops.RESERVED else node.name)
+        term = f" termination_by {show(node.termination)}" if node.termination is not None else ""
+        return f"let {'rec ' if node.rec else ''}{head}{params}{typ} = {show(node.value)}{term}; {show(node.body)}"
     if isinstance(node, Match):
         arms = " ".join(f"| {', '.join(show(p) for p in pats)} => {_low(e) if k + 1 < len(node.arms) else show(e)}"
                         for k, (pats, e) in enumerate(node.arms))
@@ -147,11 +150,11 @@ def _binders(names) -> str:
 
 _TOKEN = re.compile(r"""
     (?P<ws>\s+)
-  | (?P<num>\d+(?:\.\d+)?)
+  | (?P<num>0[xX][0-9a-fA-F]+|0[bB][01]+|\d+(?:\.\d+)?)
   | (?P<char>'(?:\\.|[^'\\])')
   | (?P<str>"(?:\\.|[^"\\])*")
   | (?P<esc>`[^`]+`)
-  | (?P<op><==>|==>|===|!==|:=|=>|==|!=|<=|>=|\*\*|\+\+|::|&&|\|\||[-+*/%<>!↑·=|])
+  | (?P<op><==>|==>|===|!==|&&&|\|\|\||>>>|<<<|~~~|:=|=>|==|!=|<=|>=|\*\*|\+\+|::|&&|\|\||[-+*/%<>!↑·=|⊕])
   | (?P<punct>\#\[|[()\[\]{},:;.⟨⟩?])
   | (?P<ident>[^\W\d][\w']*(?:\.[^\W\d][\w']*)*(?:[!?](?![\w=]))?)
 """, re.VERBOSE | re.UNICODE)
@@ -431,7 +434,20 @@ class _Parser:
 
     def let(self) -> Node:
         self.next()
+        rec = self.peek() == "rec"
+        if rec:
+            self.next()
+        if self.peek() in ("(", "⟨"):                 # `let (i, j) = result; ...`
+            close = ")" if self.next() == "(" else "⟩"
+            items = self.items(close)
+            pattern = Tuple_(items) if close == ")" else Anon(items)
+            self.expect("=")
+            value = self.expr()
+            self.expect(";")
+            return Let("<pat>", None, value, self.expr(), [], rec, pattern)
         name = self.next()
+        if name.startswith("`"):
+            name = name[1:-1]
         params = []
         if self.peek() == "(" and self.adjacent():
             self.next()
@@ -443,8 +459,12 @@ class _Parser:
             typ = self.binops(1)
         self.expect("=")
         value = self.expr()
+        termination = None
+        if self.peek() == "termination_by":
+            self.next()
+            termination = self.expr()
         self.expect(";")
-        return Let(name, typ, value, self.expr(), params)
+        return Let(name, typ, value, self.expr(), params, rec, None, termination)
 
     def match(self) -> Node:
         self.next()
@@ -460,6 +480,11 @@ class _Parser:
             while self.peek() == ",":
                 self.next()
                 pats.append(self.binops(51))
+            while self.peek() == "|":                # alternatives `| [] | [_] => e`
+                if len(pats) > 1:
+                    raise Unsupported("alternatives of several patterns")
+                self.next()
+                pats = [BinOp("|", pats[0], self.binops(51))]
             self.expect("=>")
             arms.append((pats, self.expr()))
         return Match(scrutinees, arms)

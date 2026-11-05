@@ -1,0 +1,5 @@
+def largestSmallestIntegers_precond(lst: list[int]): prop =
+  true_prop
+
+def largestSmallestIntegers_postcond(lst: list[int], result: tuple[option[int], option[int]], h_precond: largestSmallestIntegers_precond(lst)) =
+  (((result.1 == none) and (forall x in lst: x >= 0)) or (exists a in lst: (result.1 == some(a)) and ((a < 0) and (forall x in lst: (x < 0) ==> (x <= a))))) and (((result.2 == none) and (forall x in lst: x <= 0)) or (exists b in lst: (result.2 == some(b)) and ((0 < b) and (forall x in lst: (0 < x) ==> (b <= x)))))

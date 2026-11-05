@@ -1,0 +1,5 @@
+def reverseString_precond(s: str_t): prop =
+  true_prop
+
+def reverseString_postcond(s: str_t, result: str_t, h_precond: reverseString_precond(s)): prop =
+  (len(result) == len(s)) and (list(result) == reversed(list(s)))

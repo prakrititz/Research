@@ -1,0 +1,8 @@
+def isPowerOfTwo_precond(n: int): prop =
+  true_prop
+
+def pow(base: int, exp: nat): int =
+  match exp with | 0 => 1 | n + 1 => base * pow(base, n)
+
+def isPowerOfTwo_postcond(n: int, result: bool_t, h_precond: isPowerOfTwo_precond(n)): prop =
+  (exists (x: nat): (pow(2, x) == n) and (n > 0)) if result else not (exists (x: nat): (pow(2, x) == n) and (n > 0))

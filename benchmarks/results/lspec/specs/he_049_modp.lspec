@@ -1,0 +1,5 @@
+def modp_precond(n: nat, p: nat): prop =
+  p > 0
+
+def modp_postcond(n: nat, p: nat, result: nat, h_precond: modp_precond(n, p)) =
+  result == ((2 ** n) % p)

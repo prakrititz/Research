@@ -1,0 +1,5 @@
+def uniqueSorted_precond(arr: list[int]): prop =
+  true_prop
+
+def uniqueSorted_postcond(arr: list[int], result: list[int], h_precond: uniqueSorted_precond(arr)): prop =
+  is_perm(arr.eraseDups, result) and pairwise(lambda _c1, _c2: _c1 <= _c2, result)

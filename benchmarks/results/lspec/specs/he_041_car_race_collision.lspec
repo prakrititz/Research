@@ -1,0 +1,5 @@
+def carRaceCollision_precond(n: nat): prop =
+  true_prop
+
+def carRaceCollision_postcond(n: nat, result: nat, h_precond: carRaceCollision_precond(n)) =
+  result == (n * n)

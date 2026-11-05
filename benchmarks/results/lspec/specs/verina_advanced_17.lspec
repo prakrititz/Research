@@ -1,0 +1,5 @@
+def insertionSort_precond(l: list[int]): prop =
+  true_prop
+
+def insertionSort_postcond(l: list[int], result: list[int], h_precond: insertionSort_precond(l)): prop =
+  pairwise(lambda _c1, _c2: _c1 <= _c2, result) and is_perm(l, result)

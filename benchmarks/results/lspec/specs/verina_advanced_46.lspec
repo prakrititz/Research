@@ -1,0 +1,5 @@
+def maxSubarraySum_precond(numbers: list[int]): prop =
+  true_prop
+
+def maxSubarraySum_postcond(numbers: list[int], result: int, h_precond: maxSubarraySum_precond(numbers)): prop =
+  let subArraySums = range(len(numbers) + 1).flat_map(lambda start: range((len(numbers) - start) + 1).map(lambda len: sum(numbers[start:][:`len`]))); subArraySums.contains(result) and subArraySums.all(lambda _c1: _c1 <= result)

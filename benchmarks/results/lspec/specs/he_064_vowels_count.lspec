@@ -1,0 +1,5 @@
+def vowelsCount_precond(s: str_t): prop =
+  true_prop
+
+def vowelsCount_postcond(s: str_t, result: nat, h_precond: vowelsCount_precond(s)) =
+  result == (len(list(s).filter(lambda c: ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains(c))) + (1 if (list(s).getLast? == some('y')) or (list(s).getLast? == some('Y')) else 0))

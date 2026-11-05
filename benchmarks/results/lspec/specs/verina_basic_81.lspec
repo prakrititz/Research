@@ -1,0 +1,5 @@
+def DivisionFunction_precond(x: nat, y: nat): prop =
+  true_prop
+
+def DivisionFunction_postcond(x: nat, y: nat, result: tuple[int, int], h_precond: DivisionFunction_precond(x, y)) =
+  let (r, q) = result; ((y == 0) ==> ((r == int_of_nat(x)) and (q == 0))) and ((y != 0) ==> ((((q * int_of_nat(y)) + r) == int_of_nat(x)) and (((0 <= r) and (r < int_of_nat(y))) and (0 <= q))))

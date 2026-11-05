@@ -1,0 +1,5 @@
+def maxSubarraySum_precond(xs: list[int]): prop =
+  true_prop
+
+def maxSubarraySum_postcond(xs: list[int], result: int, h_precond: maxSubarraySum_precond(xs)): prop =
+  let subarray_sums = range(len(xs) + 1).flat_map(lambda start: List.range'(1, len(xs) - start).map(lambda len: sum(xs[start:][:`len`]))); let has_result_subarray = subarray_sums.any(lambda sum: `sum` === result); let is_maximum = subarray_sums.all(lambda _c1: _c1 <= result); match xs with | [] => result === 0 | _ => has_result_subarray and is_maximum

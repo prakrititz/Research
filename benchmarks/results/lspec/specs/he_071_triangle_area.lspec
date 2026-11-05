@@ -1,0 +1,8 @@
+def area2(a: rat, b: rat, c: rat): rat =
+  let p = ((a + b) + c) / 2; ((p * (p - a)) * (p - b)) * (p - c)
+
+def triangleArea71_precond(a: rat, b: rat, c: rat): prop =
+  (a > 0) and ((b > 0) and (c > 0))
+
+def triangleArea71_postcond(a: rat, b: rat, c: rat, result: rat, h_precond: triangleArea71_precond(a, b, c)) =
+  ((((a + b) <= c) or (((a + c) <= b) or ((b + c) <= a))) ==> (result == (-1))) and ((not (((a + b) <= c) or (((a + c) <= b) or ((b + c) <= a)))) ==> ((result >= 0) and (((result * 100).den == 1) and (((result < (1 / 200)) or (((result - (1 / 200)) ** 2) <= area2(a, b, c))) and (area2(a, b, c) <= ((result + (1 / 200)) ** 2))))))

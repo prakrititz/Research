@@ -1,0 +1,5 @@
+def triangleArea_precond(a: rat, h: rat): prop =
+  true_prop
+
+def triangleArea_postcond(a: rat, h: rat, result: rat, h_precond: triangleArea_precond(a, h)) =
+  abs(result - ((a * h) / 2)) <= (1 / 1000000 as rat)

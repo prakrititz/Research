@@ -1,0 +1,11 @@
+def toLower(c: char): char =
+  Char.ofNat(Char.toNat(c) + 32) if ('A' <= c) && (c <= 'Z') else c
+
+def normalize_str(s: str_t): list[char] =
+  s.data.map(toLower)
+
+def allVowels_precond(s: str_t): prop =
+  true_prop
+
+def allVowels_postcond(s: str_t, result: bool_t, h_precond: allVowels_precond(s)): prop =
+  let chars = normalize_str(s); result <==> List.all(['a', 'e', 'i', 'o', 'u'], lambda v: chars.contains(v))

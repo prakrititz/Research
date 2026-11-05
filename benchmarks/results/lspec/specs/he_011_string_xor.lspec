@@ -1,0 +1,5 @@
+def stringXor_precond(a: str_t, b: str_t): prop =
+  (len(a) == len(b)) and (list(a).all(lambda c: (c === '0') || (c === '1')) and list(b).all(lambda c: (c === '0') || (c === '1')))
+
+def stringXor_postcond(a: str_t, b: str_t, result: str_t, h_precond: stringXor_precond(a, b)) =
+  (len(result) == len(a)) and (forall i: (i < len(a)) ==> (list(result)[i] == ('0' if list(a)[i] == list(b)[i] else '1')))

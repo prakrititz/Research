@@ -1,0 +1,5 @@
+def MoveZeroesToEnd_precond(arr: array[int]): prop =
+  true_prop
+
+def MoveZeroesToEnd_postcond(arr: array[int], result: array[int], h_precond: MoveZeroesToEnd_precond(arr)) =
+  let firstResZeroIdx = list(result).index(0); is_perm(list(result), list(arr)) and ((list(result)[:firstResZeroIdx] == list(arr).filter(lambda _c1: _c1 != 0)) and (list(result)[firstResZeroIdx:] == list(arr).filter(lambda _c1: _c1 == 0)))

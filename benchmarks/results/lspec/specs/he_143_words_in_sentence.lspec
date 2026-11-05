@@ -1,0 +1,5 @@
+def wordsInSentence_precond(sentence: str_t): prop =
+  true_prop
+
+def wordsInSentence_postcond(sentence: str_t, result: str_t, h_precond: wordsInSentence_precond(sentence)) =
+  result == " ".intercalate(sentence.splitOn(" ").filter(lambda w: bool(is_prime(len(w)))))

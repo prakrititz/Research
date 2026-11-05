@@ -1,0 +1,5 @@
+def multiply_precond(a: int, b: int): prop =
+  true_prop
+
+def multiply_postcond(a: int, b: int, result: int, h_precond: multiply_precond(a, b)) =
+  result == (((abs_nat(a) % 10 as nat) as int) * ((abs_nat(b) % 10 as nat) as int))

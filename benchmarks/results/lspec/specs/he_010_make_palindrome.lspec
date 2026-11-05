@@ -1,0 +1,8 @@
+def isPal(l: list[char]): prop =
+  l == reversed(l)
+
+def makePalindrome_precond(string: str_t): prop =
+  true_prop
+
+def makePalindrome_postcond(string: str_t, result: str_t, h_precond: makePalindrome_precond(`string`)) =
+  exists i: (i <= len(`string`)) and (isPal(list(`string`)[i:]) and ((forall j: (j < i) ==> (not isPal(list(`string`)[j:]))) and (list(result) == (list(`string`) ++ reversed(list(`string`)[:i])))))

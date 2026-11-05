@@ -1,0 +1,5 @@
+def cubeElements_precond(a: array[int]): prop =
+  true_prop
+
+def cubeElements_postcond(a: array[int], result: array[int], h_precond: cubeElements_precond(a)) =
+  (size(result) == size(a)) and (forall i: (i < size(a)) ==> (result[i] == ((a[i] * a[i]) * a[i])))

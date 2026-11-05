@@ -1,0 +1,5 @@
+def search_precond(lst: list[nat]): prop =
+  (lst != []) and (forall x in lst: x > 0)
+
+def search_postcond(lst: list[nat], result: int, h_precond: search_precond(lst)) =
+  ((result == (-1)) and (forall x in lst: lst.count(x) < x)) or ((result > 0) and ((to_nat(result) in lst) and ((lst.count(to_nat(result)) >= to_nat(result)) and (forall x in lst: (lst.count(x) >= x) ==> (x <= to_nat(result))))))

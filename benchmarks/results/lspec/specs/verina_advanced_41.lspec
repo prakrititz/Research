@@ -1,0 +1,5 @@
+def maxOfThree_precond(a: int, b: int, c: int): prop =
+  true_prop
+
+def maxOfThree_postcond(a: int, b: int, c: int, result: int, h_precond: maxOfThree_precond(a, b, c)): prop =
+  ((result >= a) and ((result >= b) and (result >= c))) and ((result == a) or ((result == b) or (result == c)))

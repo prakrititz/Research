@@ -1,0 +1,5 @@
+def truncateNumber_precond(number: rat): prop =
+  number >= 0
+
+def truncateNumber_postcond(number: rat, result: rat, h_precond: truncateNumber_precond(number)) =
+  abs(result - (number - (floor(number) as rat))) <= (1 / 1000000 as rat)

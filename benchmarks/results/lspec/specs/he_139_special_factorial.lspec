@@ -1,0 +1,9 @@
+def specialFactorial_precond(n: nat): prop =
+  n > 0
+
+def factSpec: nat ==> nat
+  | 0 => 1
+  | n + 1 => (n + 1) * factSpec(n)
+
+def specialFactorial_postcond(n: nat, result: nat, h_precond: specialFactorial_precond(n)) =
+  result == product(range(n).map(lambda i: factSpec(i + 1)))

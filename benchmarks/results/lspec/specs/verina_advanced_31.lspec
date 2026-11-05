@@ -1,0 +1,5 @@
+def longestIncreasingSubseqLength_precond(xs: list[int]): prop =
+  true_prop
+
+def longestIncreasingSubseqLength_postcond(xs: list[int], result: nat, h_precond: longestIncreasingSubseqLength_precond(xs)): prop =
+  let allSubseq = (xs.foldl(lambda acc, x: acc ++ acc.map(lambda sub: x :: sub)))([[]]).map(List.reverse); let increasingSubseqLens = allSubseq.filter(lambda l: pairwise(lambda _c1, _c2: _c1 < _c2, l)).map(lambda _c1: len(_c1)); increasingSubseqLens.contains(result) and increasingSubseqLens.all(lambda _c1: _c1 <= result)

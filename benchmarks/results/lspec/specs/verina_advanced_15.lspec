@@ -1,0 +1,5 @@
+def increasingTriplet_precond(nums: list[int]): prop =
+  true_prop
+
+def increasingTriplet_postcond(nums: list[int], result: bool_t, h_precond: increasingTriplet_precond(nums)): prop =
+  let nums' = nums.zipIdx; (result ==> nums'.any(lambda (x, i): nums'.any(lambda (y, j): nums'.any(lambda (z, k): (i < j) and ((j < k) and ((x < y) and (y < z))))))) and ((not result) ==> nums'.all(lambda (x, i): nums'.all(lambda (y, j): nums'.all(lambda (z, k): (i >= j) or ((j >= k) or ((x >= y) or (y >= z)))))))

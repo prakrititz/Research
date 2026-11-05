@@ -1,0 +1,5 @@
+def remove_front_precond(a: array[int]): prop =
+  size(a) > 0
+
+def remove_front_postcond(a: array[int], result: array[int], h_precond: remove_front_precond(a)) =
+  (size(a) > 0) and ((size(result) == (size(a) - 1)) and (forall (i: nat): (i < size(result)) ==> (result[i] == a[i + 1])))

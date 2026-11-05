@@ -1,0 +1,5 @@
+def reverseWords_precond(words_str: str_t): prop =
+  true_prop
+
+def reverseWords_postcond(words_str: str_t, result: str_t, h_precond: reverseWords_precond(words_str)): prop =
+  exists (words: list[str_t]): (words == words_str.splitOn(" ").filter(lambda w: w != "")) and (result == String.intercalate(" ", reversed(words)))

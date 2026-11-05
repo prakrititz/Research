@@ -1,0 +1,8 @@
+def rot4(c: char): char =
+  Char.ofNat((((to_nat(c) - 97) + 4) % 26) + 97) if ('a' <= c) and (c <= 'z') else c
+
+def encrypt_precond(s: str_t): prop =
+  true_prop
+
+def encrypt_postcond(s: str_t, result: str_t, h_precond: encrypt_precond(s)) =
+  (len(result) == len(s)) and (forall i: (i < len(s)) ==> (list(result)[i] == rot4(list(s)[i])))

@@ -1,0 +1,5 @@
+def median_precond(l: list[rat]): prop =
+  l != []
+
+def median_postcond(l: list[rat], result: rat, h_precond: median_precond(l)) =
+  let s = sorted(l, lambda a, b: a <= b); abs(result - (s[len(s) / 2] if (len(s) % 2) == 1 else (s[(len(s) / 2) - 1] + s[len(s) / 2]) / 2)) <= (1 / 1000000 as rat)

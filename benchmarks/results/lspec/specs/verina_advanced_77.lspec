@@ -1,0 +1,5 @@
+def trapRainWater_precond(height: list[nat]): prop =
+  true_prop
+
+def trapRainWater_postcond(height: list[nat], result: nat, h_precond: trapRainWater_precond(height)): prop =
+  let waterAt = range(len(height)).map(lambda i: let lmax = List.take(i + 1, height).foldl(Nat.max, 0); let rmax = List.drop(i, height).foldl(Nat.max, 0); Nat.min(lmax, rmax) - height[i]); ((result - waterAt.foldl(lambda _c1, _c2: _c1 + _c2, 0)) == 0) and (waterAt.foldl(lambda _c1, _c2: _c1 + _c2, 0) <= result)

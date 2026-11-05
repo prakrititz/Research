@@ -1,0 +1,5 @@
+def missingNumber_precond(nums: list[nat]): prop =
+  nums.all(lambda x: x <= len(nums)) and List.Nodup(nums)
+
+def missingNumber_postcond(nums: list[nat], result: nat, h_precond: missingNumber_precond(nums)): prop =
+  let n = len(nums); (result in range(n + 1)) and ((not (result in nums)) and (forall x: (x in range(n + 1)) ==> ((x != result) ==> (x in nums))))

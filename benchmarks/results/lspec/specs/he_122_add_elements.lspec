@@ -1,0 +1,5 @@
+def addElements_precond(arr: list[int], k: nat): prop =
+  (arr != []) and ((1 <= k) and (k <= len(arr)))
+
+def addElements_postcond(arr: list[int], k: nat, result: int, h_precond: addElements_precond(arr, k)) =
+  result == sum(arr[:k].filter(lambda x: abs_nat(x) < 100))

@@ -1,0 +1,8 @@
+def hasSub(s: str_t, t: str_t): prop =
+  exists i: (i <= len(s)) and (list(t) == list(s)[i:][:len(t)])
+
+def filterBySubstring_precond(strings: list[str_t], substring: str_t): prop =
+  true_prop
+
+def filterBySubstring_postcond(strings: list[str_t], substring: str_t, result: list[str_t], h_precond: filterBySubstring_precond(strings, substring)) =
+  result == strings.filter(lambda s: bool(hasSub(s, substring)))

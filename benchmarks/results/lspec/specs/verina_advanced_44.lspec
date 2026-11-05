@@ -1,0 +1,5 @@
+def maxSubarraySumDivisibleByK_precond(arr: array[int], k: int): prop =
+  k > 0
+
+def maxSubarraySumDivisibleByK_postcond(arr: array[int], k: int, result: int): prop =
+  let subarrays = range(size(arr)).flat_map(lambda start: range((size(arr) - start) + 1).map(lambda len: arr.extract(start, start + `len`))); let divisibleSubarrays = subarrays.filter(lambda subarray: ((size(subarray) % to_nat(k)) == 0) && (size(subarray) > 0)); let subarraySums = divisibleSubarrays.map(lambda subarray: sum(list(subarray))); ((len(subarraySums) == 0) ==> (result == 0)) and ((len(subarraySums) > 0) ==> ((result in subarraySums) and subarraySums.all(lambda sum: `sum` <= result)))

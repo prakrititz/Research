@@ -1,0 +1,11 @@
+def isBinary(m: list[char], v: nat): prop =
+  (m.all(lambda c: (c === '0') || (c === '1')) == True) and ((m.foldl(lambda acc, c: (2 * acc) + (1 if c === '1' else 0), 0) == v) and (((v == 0) ==> (m == ['0'])) and ((v > 0) ==> (m.head! == '1'))))
+
+def roundedHalfEven(s: nat): nat =
+  s / 2 if (s % 2) == 0 else s / 2 if ((s / 2) % 2) == 0 else (s / 2) + 1
+
+def roundedAvg_precond(n: nat, m: nat): prop =
+  true_prop
+
+def roundedAvg_postcond(n: nat, m: nat, result: option[str_t], h_precond: roundedAvg_precond(n, m)) =
+  match result with | none => n > m | some(b) => (n <= m) and ((len(b) >= 3) and ((list(b)[:2] == ['0', 'b']) and isBinary(list(b)[2:], roundedHalfEven(n + m))))

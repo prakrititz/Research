@@ -1,0 +1,8 @@
+def isEven(n: int): bool_t =
+  (n % 2) == 0
+
+def FindEvenNumbers_precond(arr: array[int]): prop =
+  true_prop
+
+def FindEvenNumbers_postcond(arr: array[int], result: array[int], h_precond: FindEvenNumbers_precond(arr)) =
+  result.all(lambda x: isEven(x)) and (list(result).Sublist(list(arr)) and (size(result) == list(arr).count_if(isEven)))

@@ -1,0 +1,8 @@
+def digitToLetters(c: char): list[char] =
+  match c with | '2' => ['a', 'b', 'c'] | '3' => ['d', 'e', 'f'] | '4' => ['g', 'h', 'i'] | '5' => ['j', 'k', 'l'] | '6' => ['m', 'n', 'o'] | '7' => ['p', 'q', 'r', 's'] | '8' => ['t', 'u', 'v'] | '9' => ['w', 'x', 'y', 'z'] | _ => []
+
+def letterCombinations_precond(digits: str_t): prop =
+  true_prop
+
+def letterCombinations_postcond(digits: str_t, result: list[str_t], h_precond: letterCombinations_precond(`digits`)): prop =
+  result == [] if `digits`.isEmpty else result == [] if list(`digits`).any(lambda c: not (c in ['2', '3', '4', '5', '6', '7', '8', '9'])) else let expected = list(`digits`).map(digitToLetters).foldl(lambda acc, ls: acc.flat_map(lambda s: ls.map(lambda c: s ++ string1(c))), [""]); (len(result) == len(expected)) and (result.all(lambda s: s in expected) and expected.all(lambda s: s in result))

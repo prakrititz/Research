@@ -1,0 +1,5 @@
+def LongestCommonSubsequence_precond(a: array[int], b: array[int]): prop =
+  true_prop
+
+def LongestCommonSubsequence_postcond(a: array[int], b: array[int], result: int, h_precond: LongestCommonSubsequence_precond(a, b)): prop =
+  let allSubseq((arr: array[int])) = (arr.foldl(lambda acc, x: acc ++ acc.map(lambda sub: x :: sub)))([[]]).map(List.reverse); let subseqA = allSubseq(a); let subseqB = allSubseq(b); let commonSubseqLens = subseqA.filter(lambda l: subseqB.contains(l)).map(lambda _c1: len(_c1)); commonSubseqLens.contains(result) and commonSubseqLens.all(lambda _c1: _c1 <= result)

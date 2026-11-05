@@ -1,0 +1,5 @@
+def lastDigit_precond(n: nat): prop =
+  true_prop
+
+def lastDigit_postcond(n: nat, result: nat, h_precond: lastDigit_precond(n)) =
+  ((0 <= result) and (result < 10)) and ((((n % 10) - result) == 0) and ((result - (n % 10)) == 0))

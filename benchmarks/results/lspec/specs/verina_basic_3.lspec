@@ -1,0 +1,5 @@
+def isDivisibleBy11_precond(n: int): prop =
+  true_prop
+
+def isDivisibleBy11_postcond(n: int, result: bool_t, h_precond: isDivisibleBy11_precond(n)) =
+  (result ==> (exists (k: int): n == (11 * k))) and ((not result) ==> (forall (k: int): not (n == (11 * k))))

@@ -1,0 +1,5 @@
+def common_precond(l1: list[int], l2: list[int]): prop =
+  true_prop
+
+def common_postcond(l1: list[int], l2: list[int], result: list[int], h_precond: common_precond(l1, l2)) =
+  (forall i: (i < (len(result) - 1)) ==> (result[i] < result[i + 1])) and ((forall x in result: (x in l1) and (x in l2)) and (forall x in l1: (x in l2) ==> (x in result)))

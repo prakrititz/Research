@@ -1,0 +1,5 @@
+def histogram_precond(test: str_t): prop =
+  true_prop
+
+def histogram_postcond(test: str_t, result: list[tuple[str_t, nat]], h_precond: histogram_precond(test)) =
+  let ws = test.splitOn(" ").filter(lambda w: w !== ""); ((ws == []) ==> (result == [])) and ((ws != []) ==> ((forall p in result: (p.1 in ws) and ((p.2 == ws.count(p.1)) and (forall w in ws: ws.count(w) <= p.2))) and ((forall w in ws: (forall v in ws: ws.count(v) <= ws.count(w)) ==> (exists p in result: p.1 == w)) and result.map(Prod.fst).Nodup)))

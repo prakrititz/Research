@@ -1,0 +1,10 @@
+def fib_precond(n: nat): prop =
+  true_prop
+
+def fibSpec: nat ==> nat
+  | 0 => 0
+  | 1 => 1
+  | n + 2 => fibSpec(n) + fibSpec(n + 1)
+
+def fib_postcond(n: nat, result: nat, h_precond: fib_precond(n)) =
+  result == fibSpec(n)

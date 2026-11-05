@@ -1,0 +1,5 @@
+def isPeakValley_precond(lst: list[int]): prop =
+  true_prop
+
+def isPeakValley_postcond(lst: list[int], result: bool_t, h_precond: isPeakValley_precond(lst)): prop =
+  let `len` = len(lst); let validPeaks = range(`len`).filter(lambda p: (1 <= p) and ((p < (`len` - 1)) and (range(p).all(lambda i: lst[i] < lst[i + 1]) and range((`len` - 1) - p).all(lambda i: lst[p + i] > lst[(p + i) + 1])))); ((validPeaks !== []) ==> result) and ((len(validPeaks) == 0) ==> (not result))

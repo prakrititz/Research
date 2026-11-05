@@ -1,0 +1,5 @@
+def LinearSearch_precond(a: array[int], e: int): prop =
+  true_prop
+
+def LinearSearch_postcond(a: array[int], e: int, result: nat, h_precond: LinearSearch_precond(a, e)) =
+  (result <= size(a)) and (((result == size(a)) or (a[result] == e)) and (forall i: (i < result) ==> (a[i] != e)))

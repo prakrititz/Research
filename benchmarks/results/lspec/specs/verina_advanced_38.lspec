@@ -1,0 +1,5 @@
+def maxCoverageAfterRemovingOne_precond(intervals: list[Prod(nat, nat)]): prop =
+  len(intervals) > 0
+
+def maxCoverageAfterRemovingOne_postcond(intervals: list[Prod(nat, nat)], result: nat, h_precond: maxCoverageAfterRemovingOne_precond(intervals)): prop =
+  exists i < len(intervals): let remaining = List.eraseIdx(intervals, i); let `sorted` = List.mergeSort(remaining, lambda (a: tuple[nat, nat]), (b: tuple[nat, nat]): a.1 <= b.1); let merged = `sorted`.foldl(lambda acc, curr: match acc with | [] => [curr] | (s, e) :: rest => (s, max(e, curr.2)) :: rest if curr.1 <= e else curr :: acc, []); let cov = reversed(merged).foldl(lambda acc, (s, e): acc + (e - s), 0); (result == cov) and (forall j < len(intervals): let rem_j = List.eraseIdx(intervals, j); let sort_j = List.mergeSort(rem_j, lambda (a: tuple[nat, nat]), (b: tuple[nat, nat]): a.1 <= b.1); let merged_j = sort_j.foldl(lambda acc, curr: match acc with | [] => [curr] | (s, e) :: rest => (s, max(e, curr.2)) :: rest if curr.1 <= e else curr :: acc, []); let cov_j = reversed(merged_j).foldl(lambda acc, (s, e): acc + (e - s), 0); cov >= cov_j)

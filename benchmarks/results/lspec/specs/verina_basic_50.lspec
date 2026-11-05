@@ -1,0 +1,5 @@
+def Abs_precond(x: int): prop =
+  true_prop
+
+def Abs_postcond(x: int, result: int, h_precond: Abs_precond(x)) =
+  ((x >= 0) ==> (x == result)) and ((x < 0) ==> ((x + result) == 0))

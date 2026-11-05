@@ -1,0 +1,11 @@
+def oddDigits(s: str_t): nat =
+  len(list(s).filter(lambda c: ((to_nat(c) - 48) % 2) == 1))
+
+def oddMsg(n: nat): str_t =
+  "the number of odd elements in the string i of the input.".replace("i", str(n))
+
+def oddCount_precond(lst: list[str_t]): prop =
+  forall s in lst: list(s).all(Char.isDigit) == True
+
+def oddCount_postcond(lst: list[str_t], result: list[str_t], h_precond: oddCount_precond(lst)) =
+  (len(result) == len(lst)) and (forall k: (k < len(lst)) ==> (result[k] == oddMsg(oddDigits(lst[k]))))

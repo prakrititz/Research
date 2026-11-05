@@ -1,0 +1,8 @@
+def swapCase(c: char): char =
+  c.toLower if c.isUpper else c.toUpper if c.isLower else c
+
+def solve_precond(s: str_t): prop =
+  true_prop
+
+def solve_postcond(s: str_t, result: str_t, h_precond: solve_precond(s)) =
+  result == (string(list(s).map(swapCase)) if list(s).any(Char.isAlpha) else string(reversed(list(s))))

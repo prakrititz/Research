@@ -1,0 +1,5 @@
+def removeDuplicates_precond(numbers: list[int]): prop =
+  true_prop
+
+def removeDuplicates_postcond(numbers: list[int], result: list[int], h_precond: removeDuplicates_precond(numbers)) =
+  result == numbers.filter(lambda x: numbers.count(x) == 1)

@@ -1,0 +1,5 @@
+def reverseDelete_precond(s: str_t, c: str_t): prop =
+  true_prop
+
+def reverseDelete_postcond(s: str_t, c: str_t, result: tuple[str_t, bool_t], h_precond: reverseDelete_precond(s, c)) =
+  (list(result.1) == list(s).filter(lambda ch: !list(c).contains(ch))) and ((result.2 == True) <==> (list(result.1) == reversed(list(result.1))))

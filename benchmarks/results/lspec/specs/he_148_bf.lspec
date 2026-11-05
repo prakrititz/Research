@@ -1,0 +1,8 @@
+def solarPlanets: list[str_t] =
+  ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
+
+def bf_precond(planet1: str_t, planet2: str_t): prop =
+  true_prop
+
+def bf_postcond(planet1: str_t, planet2: str_t, result: list[str_t], h_precond: bf_precond(planet1, planet2)) =
+  (((planet1 not in solarPlanets) or (planet2 not in solarPlanets)) ==> (result == [])) and ((planet1 in solarPlanets) ==> ((planet2 in solarPlanets) ==> (exists i: (i < 8) and ((solarPlanets[i] == planet1) and (exists j: (j < 8) and ((solarPlanets[j] == planet2) and (result == solarPlanets[min(i, j) + 1:][:(max(i, j) - min(i, j)) - 1])))))))
