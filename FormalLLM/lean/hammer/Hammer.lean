@@ -635,6 +635,9 @@ def portfolio : List (Nat × String) :=
    -- `grind` with the whole library (a macro of the task file; he_010's loop exit)
    (400, "lib_grind"),
    (600, "(try unfold_local); (try lib_simp); lib_apply_grind"),
+   -- the same without the simp set first: it unfolds a `@[simp]` predicate (`isPal`) in the goal that the lemma's
+   -- side condition must match as written (he_107: two counters in one fold, `Refine.foldl_pair_count_fst`)
+   (400, "lib_apply_grind"),
    (200, "solve_by_elim +suggestions"), (200, "exact?"), (200, "grind +suggestions"), (200, "(simp_all; grind +suggestions)"),
    (400, "try?"), (400, "refine_hammer")]
 

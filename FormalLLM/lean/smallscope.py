@@ -143,15 +143,79 @@ def _decidable_form(text: str) -> str:
 BOUND = 4
 _FORALL = re.compile(r"∀\s*\(?\s*((?:\w+\s*)+?)\s*(:\s*(?:ℕ|Nat)\s*)?\)?\s*,")
 _WEAK = "→↔∨¬∀∃λ"
+_SPEC_DEF = re.compile(r"\b(\w+_(?:precond|postcond))\b")
+
+
+def _beta(t: str) -> str:
+    """``(fun (x : A) (y : B) => body) (u) (v)`` as ``body`` with ``x``, ``y`` replaced: the invariant applied to the initial
+    state, as the engine states it. Left as it is when a parameter is bound again inside the body."""
+    t = _strip(t)
+    if not t.startswith("(fun "):
+        return t
+    depth = 0
+    for k, ch in enumerate(t):
+        depth += ch == "("
+        depth -= ch == ")"
+        if depth == 0:
+            break
+    else:
+        return t
+    head, _, body = t[5:k].partition("=>")
+    # each parameter with its type, which the substituted argument keeps (`([] : List Nat)`)
+    params = [(n, typ.strip()) for names, typ in (g.partition(":")[::2] for g in _split_groups(head)) for n in names.split()] \
+        if "(" in head else [(n, "") for n in head.split()]
+    args, rest, depth, cur = [], t[k + 1:], 0, ""
+    for ch in rest:
+        depth += ch == "("
+        depth -= ch == ")"
+        if ch == " " and depth == 0:
+            if cur:
+                args.append(cur)
+            cur = ""
+        else:
+            cur += ch
+    if cur:
+        args.append(cur)
+    if not body or len(args) != len(params) or depth != 0:
+        return t
+    for p, _ in params:
+        if re.search(r"(∀|∃|fun|λ)[^,=]*\b" + re.escape(p) + r"(?![\w'])", body):
+            return t
+    for (p, typ), a in zip(params, args):
+        value = f"({_strip(a)} : {typ})" if typ else f"({_strip(a)})"
+        body = re.sub(r"(?<![\w.'])" + re.escape(p) + r"(?![\w'])", lambda _: value, body)
+    return body.strip()
+
+
+def _split_groups(head: str) -> List[str]:
+    """The contents of the top-level parenthesised groups of ``head``."""
+    groups, depth, cur = [], 0, ""
+    for ch in head:
+        if ch == "(":
+            depth += 1
+            if depth == 1:
+                cur = ""
+                continue
+        elif ch == ")":
+            depth -= 1
+            if depth == 0:
+                groups.append(cur)
+                continue
+        if depth >= 1:
+            cur += ch
+    return groups
 
 
 def _bounded(t: str) -> str:
     t = _strip(t)
     m = _FORALL.match(t)
     if m:
-        names = m.group(1).split()
-        return f"∀ {' '.join(names)}{' : ℕ' if m.group(2) else ''}, " + "".join(f"{n} < {BOUND} → " for n in names) + \
-            "(" + t[m.end():].strip() + ")"
+        names, body = m.group(1).split(), t[m.end():].strip()
+        # `∀ i, i < n → ...` or `∀ x, x ∈ l → ...` is decidable as it stands (and `x` need not be a number)
+        if re.match(r"\(?\s*" + re.escape(names[0]) + r"\s*(<|≤|∈)", body):
+            return t
+        # the type written out: with `∀ d, d < 4 → ...` instance search runs before the numeral's type is settled
+        return f"∀ {' '.join(names)} : ℕ, " + "".join(f"{n} < {BOUND} → " for n in names) + "(" + body + ")"
     parts = _split_top(t, "∧")
     depth, top = 0, ""
     for ch in t:
@@ -173,7 +237,9 @@ def falsifier(binders: str, statement: str) -> Optional[str]:
     if not parsed:
         return None
     text = binders + " " + statement          # the domains: from the statement as written, not the bound
-    statement = _bounded(statement)
+    # the invariant applied to the state is reduced only where that lets a `∀` in it be bounded
+    reduced = _beta(statement)
+    statement = _bounded(reduced) if _bounded(reduced) != _strip(reduced) else _bounded(statement)
     for small in (False, True):
         dom = Domains(text, small)
         data, hyps, total = [], [], 1
@@ -193,6 +259,10 @@ def falsifier(binders: str, statement: str) -> Optional[str]:
             break
     else:
         return None
+    # `h_precond : f_precond a b` (or a postcondition in the statement) is decidable once its definition unfolds
+    defs = sorted(set(_SPEC_DEF.findall(binders + " " + statement)) - {n for names, _ in parsed for n in names})
+    unfold = (f"set_option allowUnsafeReducibility true in\nattribute [local reducible] {' '.join(defs)} in\n"
+              if defs else "")
     lines, ind = [], "    "
     for n, typ, values in data:
         lines.append(f"{ind}for {n} in ([{', '.join(values)}] : List ({typ})) do")
@@ -204,7 +274,7 @@ def falsifier(binders: str, statement: str) -> Optional[str]:
     lines.append(f"{ind}if !(decide ({statement})) then")
     lines.append(f"{ind}  return some ({shown})")
     body = "\n".join(lines)
-    return (f"set_option maxRecDepth 100000 in\nset_option maxHeartbeats 0 in\n"
+    return (unfold + f"set_option maxRecDepth 100000 in\nset_option maxHeartbeats 0 in\n"
             f"#eval show IO Unit from do\n"
             f"  let found : Option String := Id.run do\n{body}\n    return none\n"
             f"  IO.println (\"{MARK} \" ++ found.getD \"none\")\n")
