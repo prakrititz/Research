@@ -1,5 +1,5 @@
 def flipChar(c: char): char =
-  c.toLower if c.isUpper else c.toUpper if c.isLower else c
+  c.lower if c.isupper else c.upper if c.islower else c
 
 def flipCase_precond(string: str): prop =
   true_prop

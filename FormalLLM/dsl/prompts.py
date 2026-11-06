@@ -20,8 +20,10 @@ refinement law, written as a JSON object whose expressions are L_spec:
    differs by case.
    {"law": "cases", "cond": "<condition>"}
 3. bind: first find a value `var` of type `type` with property `prop`, then continue with it (and `prop`) available.
-   Use it to compute something once and reuse it.
+   Use it to compute something once and reuse it. `prop` is a statement about `var` (true or false), not a value;
+   to name a known value write "value" instead of "prop" (it means `var == value`).
    {"law": "bind", "var": "<new name>", "type": "<type>", "prop": "<property of var>"}
+   {"law": "bind", "var": "m", "type": "rat", "value": "sum(l) / (len(l) as rat)"}
 4. loop: state variables with their types and initial values; repeat while `guard`. `invariant` must hold at the start,
    be kept by every iteration, and, together with `not guard`, imply the goal's property for `result`. `variant` is a
    nat that every iteration makes smaller. The new goal is the loop body: find the next state (usually a `term` that is
@@ -29,7 +31,8 @@ refinement law, written as a JSON object whose expressions are L_spec:
    {"law": "loop", "state": [["i", "nat", "0"], ["acc", "int", "0"]], "invariant": "<property of the state>",
     "guard": "<condition>", "variant": "<nat expression>", "result": "<expression over the state>"}
 
-New names (bind variable, state variables) must not already be in scope. You never write proofs: if the prover cannot
+Every expression is a JSON string, including numbers and booleans ("0", "False", "[]"). New names (bind variable,
+state variables) must not already be in scope. You never write proofs: if the prover cannot
 prove a step it is refused with the reason, and you write a different one."""
 
 EXAMPLE = """Example. Goal: inputs n: nat; find result: nat such that 2 * result == n * (n + 1).

@@ -69,8 +69,9 @@ def step_pairs(node, tree: dict, state=None):
     pairs = [("goal", closed(goal.binders(), f"∃ {r} : {goal.ret}, {goal.post.replace(steps.HOLE, r)}"),
               closed(binders, statement), "#lspec_same_beta" if "next" in shown else "#lspec_same")]
     gold = {k: v for k, v in tree.items() if k != "children"}
-    written = steps.from_engine(gold)
-    back = steps.to_engine(written)
+    scope = [n for n, _ in goal.ctx] + [n for n, _ in goal.hyps]
+    written = steps.from_engine(gold, scope)
+    back = steps.to_engine(written, scope)
     (ob1, sg1), (ob2, sg2) = _expansion(node.law, goal), _expansion(law_from_json(back), goal)
     if [k for k, *_ in ob1] != [k for k, *_ in ob2] or len(sg1) != len(sg2):
         raise steps.StepError("step", "the translated step gives a different number or kind of obligations")

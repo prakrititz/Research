@@ -34,10 +34,14 @@ METHOD_FUNCS = {
     "mergeSort": "sorted", "toNat": "to_nat", "natAbs": "abs_nat", "dedup": "dedup", "toArray": "array_of",
 }
 #: Lean method renamed but still a method: `l.idxOf x` -> `l.index(x)`
-METHODS = {"idxOf": "index", "headD": "head_or", "getD": "get_or", "flatMap": "flat_map", "countP": "count_if"}
+METHODS = {"idxOf": "index", "headD": "head_or", "getD": "get_or", "flatMap": "flat_map", "countP": "count_if",
+           # Python's string and character methods (`sep.join(l)` is `sep.intercalate l`; `s.split(",")` splits on ",")
+           "intercalate": "join", "splitOn": "split", "startsWith": "startswith", "endsWith": "endswith", "trim": "strip",
+           "toUpper": "upper", "toLower": "lower", "isDigit": "isdigit", "isAlpha": "isalpha", "isUpper": "isupper",
+           "isLower": "islower", "isWhitespace": "isspace"}
 
 #: L_spec reserved words (an L_spec name that would collide with one of these is written `` `name` ``)
-KEYWORDS = {"lambda", "forall", "exists", "if", "else", "let", "match", "with", "and", "or", "not", "in", "as",
+KEYWORDS = {"lambda", "forall", "exists", "if", "else", "let", "match", "with", "and", "or", "not", "in", "as", "for",
             "divides", "is_infix", "xor"}
 
 

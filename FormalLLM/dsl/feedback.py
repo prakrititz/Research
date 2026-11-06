@@ -95,5 +95,17 @@ def recipient(kind: str, attempts_on_goal: int, limit: int = 2) -> str:
     return "applier"
 
 
+def lean_error(message: str, limit: int = 400) -> str:
+    """Lean's error, trimmed, with the Lean names the model never wrote put back in L_spec spelling where it is
+    unambiguous (``List.length`` -> ``len``, ``Nat`` -> ``nat``, ...)."""
+    import re
+    from FormalLLM.dsl import ops
+    text = " ".join(message.split())[:limit]
+    for lean, spec in list(ops.NAMES.items()) + [(f"List.{m}", f) for m, f in ops.METHOD_FUNCS.items()]:
+        if lean.isidentifier() or "." in lean:
+            text = re.sub(rf"(?<![\w.]){re.escape(lean)}(?![\w.])", spec, text)
+    return text
+
+
 def first_line(text: Optional[str]) -> str:
     return (text or "").strip().split("\n")[0][:200]

@@ -1,5 +1,5 @@
 {"id": "classic_fast_power", "defs": 2, "verbatim": [], "same": 2, "errors": [], "seconds": 0.1}
 {"id": "classic_isqrt", "defs": 2, "verbatim": [], "same": 2, "errors": [], "seconds": 0.1}
-{"id": "classic_reverse", "defs": 2, "verbatim": [], "same": 2, "errors": [], "seconds": 0.1}
-{"id": "classic_sort_list", "defs": 2, "verbatim": [], "same": 2, "errors": [], "seconds": 0.0}
+{"id": "classic_reverse", "defs": 2, "verbatim": [], "same": 2, "errors": [], "seconds": 0.2}
+{"id": "classic_sort_list", "defs": 2, "verbatim": [], "same": 2, "errors": [], "seconds": 0.1}
 {"id": "classic_sqrt_approx", "defs": 2, "verbatim": [], "same": 2, "errors": [], "seconds": 0.1}

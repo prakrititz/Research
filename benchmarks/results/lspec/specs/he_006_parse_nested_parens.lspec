@@ -5,4 +5,4 @@ def parseNestedParens_precond(paren_string: str): prop =
   list(paren_string).all(lambda c: c === '(' || c === ')' || c === ' ')
 
 def parseNestedParens_postcond(paren_string: str, result: list[nat], h_precond: parseNestedParens_precond(paren_string)) =
-  let groups = paren_string.splitOn(" ").filter(lambda g: g !== ""); len(result) == len(groups) and (forall i: i < len(groups) ==> result[i] == maxDepth(list(groups[i])))
+  let groups = paren_string.split(" ").filter(lambda g: g !== ""); len(result) == len(groups) and (forall i: i < len(groups) ==> result[i] == maxDepth(list(groups[i])))

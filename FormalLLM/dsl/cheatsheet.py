@@ -61,9 +61,27 @@ MEANING = [
     "`/` on `nat` and `int` is integer division (`7 / 2 == 3`, `x / 0 == 0`); on `rat` it is exact.",
     "`l[i]` is the element at `i`, or the type's default (`0`, `False`, `\"\"`) when `i >= len(l)`; "
     "`l[i]?` is `some(x)` or `none`.",
-    "`==` is equality as a proposition; `===` is the Boolean test (Lean's `==`). "
+    "Slices (`l[a:b]`) are for lists; a `str` slice is a different type: slice its characters and rebuild it, "
+    "`String.mk(list(s)[a:b])`.",
+    "`//` and `%` with a negative divisor differ from Python: `7 // -2 == -3`, `7 % -2 == 1` (the remainder is never "
+    "negative); `x // 0 == 0`.",
+        "`==` is equality as a proposition; `===` is the Boolean test (Lean's `==`). "
     "A Boolean `b` used as a condition is written `b == True`.",
     "`forall`/`exists`/`lambda` bodies extend to the end of the expression: parenthesise them inside larger ones.",
+]
+
+
+#: Python forms the parser also reads (never printed): what each one means in Lean
+PYTHON_FORMS = [
+    ("`[f(x) for x in l if p(x)]`", "`l.filter(p).map(f)` (one `for`, one variable)"),
+    ("`sum(f(x) for x in l)`, `any(p(x) for x in l)`, `all(...)`", "the same on the list `[f(x) for x in l]`"),
+    ("`range(a, b)`", "`a, a+1, ..., b-1`"),
+    ("`l[-1]`, `l[:-1]`, `l[-2:]`, `l[a:b]`, `l[::-1]`", "as in Python (`l[len(l) - 1]`, ..., `reversed(l)`)"),
+    ("`a < b <= c`", "`a < b and b <= c`"),
+    ("`a // b`", "`a / b` (integer division)"),
+    ("`map(f, l)`, `filter(p, l)`", "`l.map(f)`, `l.filter(p)`"),
+    ("`s.upper()`, `sep.join(l)`, `s.split(sep)`, `s.strip()`, `s.startswith(t)`", "the string methods"),
+    ("`let x := v; body`", "`let x = v; body`"),
 ]
 
 
@@ -87,6 +105,8 @@ def sheet() -> str:
         "## Names and types", _table(name_rows),
         "## Methods written as functions", _table(func_rows),
         "## Renamed methods", _table(meth_rows),
+        "## Python forms also accepted",
+        "\n".join(["| you may write | it means |", "|---|---|"] + [f"| {a} | {b} |" for a, b in PYTHON_FORMS]),
         "## Meaning (Lean's, not Python's)", "\n".join(f"- {m}" for m in MEANING),
         "## Examples", _table(example_rows, head=("what", "L_spec"), code_first=False),
     ]

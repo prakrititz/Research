@@ -2,4 +2,4 @@ def countDistinctCharacters_precond(s: str): prop =
   true_prop
 
 def countDistinctCharacters_postcond(s: str, result: nat, h_precond: countDistinctCharacters_precond(s)) =
-  result == len(list(s.toLower).eraseDups)
+  result == len(list(s.lower).eraseDups)

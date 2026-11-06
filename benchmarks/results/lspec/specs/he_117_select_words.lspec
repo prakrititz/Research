@@ -2,4 +2,4 @@ def selectWords_precond(s: str, n: nat): prop =
   true_prop
 
 def selectWords_postcond(s: str, n: nat, result: list[str], h_precond: selectWords_precond(s, n)) =
-  result == s.splitOn(" ").filter(lambda w: w !== "" && len(list(w).filter(lambda ch: !['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains(ch))) === n)
+  result == s.split(" ").filter(lambda w: w !== "" && len(list(w).filter(lambda ch: !['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains(ch))) === n)

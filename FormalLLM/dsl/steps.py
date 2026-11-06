@@ -49,20 +49,33 @@ def fields_for(law: str) -> List[Tuple[str, str]]:
 
 # --- one expression ------------------------------------------------------------------------------------------------
 
-def to_lean(text: str, field: str) -> str:
-    """L_spec text -> Lean text."""
+def _text(value):
+    """A JSON value where L_spec text was expected (models write `false`, `0`, `[]` unquoted): its L_spec text."""
+    if isinstance(value, bool):
+        return "True" if value else "False"
+    if isinstance(value, (int, float)):
+        return repr(value)
+    if isinstance(value, list):
+        items = [_text(v) for v in value]
+        return "[" + ", ".join(items) + "]" if all(isinstance(i, str) for i in items) else value
+    return value
+
+
+def to_lean(text: str, field: str, scope=()) -> str:
+    """L_spec text -> Lean text; ``scope``: the variables in scope (a name among them is that variable)."""
+    text = _text(text)
     if not isinstance(text, str) or not text.strip():
         raise StepError(field, "empty")
     try:
-        return lean_syntax.show(lspec_syntax.parse(text))
+        return lean_syntax.show(lspec_syntax.parse(text, scope))
     except Exception as error:                            # the parser's message, attributed to the field
         raise StepError(field, f"{type(error).__name__}: {error}") from None
 
 
-def to_lspec(text: str, field: str = "?") -> str:
-    """Lean text -> L_spec text."""
+def to_lspec(text: str, field: str = "?", scope=()) -> str:
+    """Lean text -> L_spec text, to be read back with ``to_lean(..., scope)``."""
     try:
-        return lspec_syntax.show(lean_syntax.parse(text))
+        return lspec_syntax.show_in(lean_syntax.parse(text), scope)
     except Exception as error:
         raise StepError(field, f"{type(error).__name__}: {error}") from None
 
@@ -75,12 +88,20 @@ def _name(value, field: str) -> str:
 
 # --- a step --------------------------------------------------------------------------------------------------------
 
-def to_engine(step: dict) -> dict:
-    """The model's L_spec step -> the engine's step (Lean text). Unknown keys are ignored; ``children`` is not touched."""
+def to_engine(step: dict, scope=()) -> dict:
+    """The model's L_spec step -> the engine's step (Lean text). ``scope``: the goal's variables (and assumption names);
+    a loop's state and a bind's variable are added where they are in scope. Unknown keys are ignored."""
     if not isinstance(step, dict):
         raise StepError("step", "expected a JSON object")
     law = step.get("law")
     out = {"law": law}
+    if law == "bind" and "prop" not in step and "value" in step and isinstance(step.get("var"), str):
+        step = {**step, "prop": f"{step['var']} == ({_text(step['value'])})"}          # bind to a known value
+    inner = set(scope)
+    if law == "loop" and isinstance(step.get("state"), list):
+        inner |= {item[0] for item in step["state"] if isinstance(item, (list, tuple)) and item and isinstance(item[0], str)}
+    if law == "bind" and isinstance(step.get("var"), str):
+        inner.add(step["var"])
     for field, kind in fields_for(law):
         if field not in step:
             raise StepError(field, "missing")
@@ -95,10 +116,12 @@ def to_engine(step: dict) -> dict:
                 if not isinstance(item, (list, tuple)) or len(item) != 3:
                     raise StepError(f"state[{k}]", "expected [name, type, initial value]")
                 name, typ, init = item
-                out["state"].append([_name(name, f"state[{k}].name"), to_lean(typ, f"state[{k}].type")])
-                out["init"].append(to_lean(init, f"state[{k}].initial value"))
+                out["state"].append([_name(name, f"state[{k}].name"), to_lean(typ, f"state[{k}].type", scope)])
+                out["init"].append(to_lean(init, f"state[{k}].initial value", scope))
+        elif field == "type":
+            out[field] = to_lean(value, field, scope)
         else:
-            out[field] = to_lean(value, field)
+            out[field] = to_lean(value, field, inner)
     lemmas = step.get("lemmas") or []
     if lemmas:
         out["lemmas"] = []
@@ -106,25 +129,32 @@ def to_engine(step: dict) -> dict:
             if not isinstance(lemma, dict) or not {"name", "statement", "proof"} <= set(lemma):
                 raise StepError(f"lemmas[{k}]", "a lemma needs name, statement and proof")
             out["lemmas"].append({"name": _name(lemma["name"], f"lemmas[{k}].name"),
-                                  "statement": to_lean(lemma["statement"], f"lemmas[{k}].statement"),
+                                  "statement": to_lean(lemma["statement"], f"lemmas[{k}].statement", scope),
                                   "proof": lemma["proof"]})
     return out
 
 
-def from_engine(step: dict) -> dict:
-    """The engine's step (Lean text) -> L_spec, in the model's format (``children`` dropped)."""
+def from_engine(step: dict, scope=()) -> dict:
+    """The engine's step (Lean text) -> L_spec, in the model's format (``children`` dropped); ``scope`` as for
+    ``to_engine``, which reads the result back."""
     law = step["law"]
     out = {"law": law}
+    inner = set(scope)
+    if law == "loop":
+        inner |= {name for name, _ in step["state"]}
+    if law == "bind":
+        inner.add(step["var"])
     for field, kind in fields_for(law):
         if kind == "name":
             out[field] = step[field]
         elif kind == "state":
-            out["state"] = [[name, to_lspec(typ, f"state[{k}].type"), to_lspec(init, f"state[{k}].initial value")]
+            out["state"] = [[name, to_lspec(typ, f"state[{k}].type", scope),
+                             to_lspec(init, f"state[{k}].initial value", scope)]
                             for k, ((name, typ), init) in enumerate(zip(step["state"], step["init"]))]
         else:
-            out[field] = to_lspec(step[field], field)
+            out[field] = to_lspec(step[field], field, scope if field == "type" else inner)
     if step.get("lemmas"):
-        out["lemmas"] = [{"name": l["name"], "statement": to_lspec(l["statement"], f"lemmas[{k}].statement"),
+        out["lemmas"] = [{"name": l["name"], "statement": to_lspec(l["statement"], f"lemmas[{k}].statement", scope),
                           "proof": l["proof"]} for k, l in enumerate(step["lemmas"])]
     return out
 
@@ -224,10 +254,11 @@ def goal_to_lspec(goal, state: Optional[List[str]] = None) -> dict:
     shown as named components (``i_next, acc_next``) and the property with the invariant and variant applied to them,
     instead of ``(lambda i, acc: ...)(result.1, result.2)``."""
     r = result_name(goal)
-    shown = {"inputs": [[n, to_lspec(t, f"input {n}")] for n, t in goal.ctx],
-             "assumptions": [[n, to_lspec(p, f"assumption {n}")] for n, p in goal.hyps],
-             "find": [r, to_lspec(goal.ret, "result type")],
-             "such_that": to_lspec(goal.post.replace(HOLE, r), "property")}
+    scope = [n for n, _ in goal.ctx] + [n for n, _ in goal.hyps]
+    shown = {"inputs": [[n, to_lspec(t, f"input {n}", scope)] for n, t in goal.ctx],
+             "assumptions": [[n, to_lspec(p, f"assumption {n}", scope)] for n, p in goal.hyps],
+             "find": [r, to_lspec(goal.ret, "result type", scope)],
+             "such_that": to_lspec(goal.post.replace(HOLE, r), "property", scope + [r])}
     if state:
         taken = {n for n, _ in goal.ctx} | {n for n, _ in goal.hyps} | set(re.findall(r"[A-Za-z_][\w']*", goal.post))
         names = []
@@ -240,7 +271,7 @@ def goal_to_lspec(goal, state: Optional[List[str]] = None) -> dict:
         tree = _replace(tree, {repr(p): Name(n) for p, n in zip(_projections(r, len(names)), names)})
         if not any(isinstance(n, Name) and n.id == r for n in walk(tree)):       # every use of r was a component
             shown["find"][0] = "(" + ", ".join(names) + ")" if len(names) > 1 else names[0]
-            shown["such_that"] = lspec_syntax.show(tree)
+            shown["such_that"] = lspec_syntax.show_in(tree, scope + names + [r])
             shown["next"], shown["as"] = names, r
     return shown
 
@@ -248,18 +279,19 @@ def goal_to_lspec(goal, state: Optional[List[str]] = None) -> dict:
 def goal_from_lspec(shown: dict) -> Tuple[str, str]:
     """The Lean statement the L_spec goal stands for: ``(binders, ∃ r : T, property)`` (for checking ``goal_to_lspec``;
     a loop body's goal, shown with named components, stands for the statement up to beta reduction)."""
-    binders = " ".join([f"({n} : {to_lean(t, n)})" for n, t in shown["inputs"]] +
-                       [f"({n} : {to_lean(p, n)})" for n, p in shown["assumptions"]])
-    typ = to_lean(shown["find"][1], "result type")
+    scope = [n for n, _ in shown["inputs"]] + [n for n, _ in shown["assumptions"]]
+    binders = " ".join([f"({n} : {to_lean(t, n, scope)})" for n, t in shown["inputs"]] +
+                       [f"({n} : {to_lean(p, n, scope)})" for n, p in shown["assumptions"]])
+    typ = to_lean(shown["find"][1], "result type", scope)
     if "next" in shown:
         r = shown["as"]
         try:
-            tree = lspec_syntax.parse(shown["such_that"])
+            tree = lspec_syntax.parse(shown["such_that"], scope + list(shown["next"]) + [shown["as"]])
         except Exception as error:
             raise StepError("property", f"{type(error).__name__}: {error}") from None
         tree = subst(tree, dict(zip(shown["next"], _projections(r, len(shown["next"])))))
         return binders, f"∃ {r} : {typ}, {lean_syntax.show(tree)}"
-    return binders, f"∃ {shown['find'][0]} : {typ}, {to_lean(shown['such_that'], 'property')}"
+    return binders, f"∃ {shown['find'][0]} : {typ}, {to_lean(shown['such_that'], 'property', scope + [shown['find'][0]])}"
 
 
 def goal_text(shown: dict) -> str:

@@ -122,3 +122,80 @@ def test_recipient():
     assert feedback.recipient(feedback.FALSE, 1) == "applier"
     assert feedback.recipient(feedback.UNPROVED, 1) == "selector"
     assert feedback.recipient(feedback.FALSE, 2) == "selector"
+
+
+# --- what models actually write ------------------------------------------------------------------------------------
+
+def test_json_values_are_accepted():
+    back = steps.to_engine({"law": "loop", "state": [["i", "nat", 0], ["found", "bool", False], ["acc", "list[int]", []]],
+                            "invariant": "i <= len(l)", "guard": "i < len(l)", "variant": "len(l) - i",
+                            "result": "found"})
+    assert back["init"] == ["0", "false", "[]"]
+
+
+def test_bind_with_a_value():
+    back = steps.to_engine({"law": "bind", "var": "m", "type": "rat", "value": "sum(l) / (len(l) as rat)"})
+    assert lean_syntax.parse(back["prop"]) == lean_syntax.parse("m = (l.sum / (l.length : Rat))")
+
+
+def test_lean_style_let_and_python_map_filter():
+    assert lean_syntax.show(lspec_syntax.parse("let s := len(l); s + 1")) == lean_syntax.show(
+        lspec_syntax.parse("let s = len(l); s + 1"))
+    assert lean_syntax.show(lspec_syntax.parse("map(lambda x: x + 1, l)")) == "l.map (fun x => x + 1)"
+    assert lean_syntax.show(lspec_syntax.parse("filter(lambda x: x > 0, l)")) == "l.filter (fun x => x > 0)"
+
+
+def test_lean_error_in_lspec_names():
+    assert feedback.lean_error("type mismatch: Nat expected, List.length l") == "type mismatch: nat expected, len l"
+
+
+@pytest.mark.parametrize("spec, lean", [
+    ("[x * 2 for x in l if x > 0]", "(l.filter (fun x => x > 0)).map (fun x => x * 2)"),
+    ("[x for x in l if x > 0]", "l.filter (fun x => x > 0)"),
+    ("sum(x * x for x in l)", "(l.map (fun x => x * x)).sum"),
+    ("any(x < 0 for x in l)", "l.any (fun x => x < 0)"),
+    ("range(2, n)", "List.range' 2 (n - 2)"),
+    ("l[-1]", "l[l.length - 1]!"),
+    ("l[:-1]", "l.take (l.length - 1)"),
+    ("l[1:3]", "(l.drop 1).take (3 - 1)"),
+    ("l[::-1]", "l.reverse"),
+    ("0 <= i < len(l)", "(0 ≤ i) ∧ (i < l.length)"),
+    ("a // b", "a / b"),
+    ('", ".join(ws)', '", ".intercalate ws'),
+    ('s.split(",")', 's.splitOn ","'),
+    ("s.upper()", "s.toUpper"),
+])
+def test_python_forms(spec, lean):
+    assert lean_syntax.parse(lean_syntax.show(lspec_syntax.parse(spec))) == lean_syntax.parse(lean)
+
+
+def test_comparison_inside_comparison_is_not_a_chain():
+    assert to_lspec("(a = b) = c") == "(a == b) == c"
+    assert lean_syntax.parse(round_trip("(a < b) = c")) == lean_syntax.parse("(a < b) = c")
+
+
+@pytest.mark.parametrize("spec", ["[x for (a, b) in l]", "[x for x in l for y in m]", "l[::2]", "range(0, n, 2)"])
+def test_unsupported_python_forms_say_so(spec):
+    with pytest.raises(lean_syntax.Unsupported):
+        lspec_syntax.parse(spec)
+
+
+def test_a_variable_is_never_a_builtin():
+    """A goal's input called `string` (or a loop variable called `sum`) is that variable."""
+    assert steps.to_lean("len(string)", "x", ["string"]) == "string.length"
+    assert steps.to_lean("string(l)", "x") == "String.mk l"
+    back = steps.to_engine({"law": "loop", "state": [["sum", "int", "0"]], "invariant": "sum == 0", "guard": "False",
+                            "variant": "0", "result": "sum"}, ["l"])
+    assert back["invariant"] == "sum = 0" and back["result"] == "sum"
+
+
+@pytest.mark.parametrize("lean, scope", [
+    ("String.mk (string.toList.take 2)", ["string"]),     # `string(...)` would be the input
+    ("∀ (l : List Int), l.length = list.length", ["list"]),  # `list[int]` would index the input
+    ("decide (bool = true) ∧ len.length = 0", ["bool", "len"]),
+])
+def test_printing_avoids_names_that_are_variables(lean, scope):
+    """Printed for a scope, the text reads back to the same tree in that scope (`he_014`, `verina_advanced_48`)."""
+    shown = steps.to_lspec(lean, "x", scope)
+    assert lean_syntax.parse(steps.to_lean(shown, "x", scope)) == lean_syntax.parse(lean), shown
+    assert "`" not in shown                                 # a variable in scope needs no escape

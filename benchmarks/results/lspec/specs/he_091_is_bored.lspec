@@ -2,4 +2,4 @@ def isBored_precond(S: str): prop =
   true_prop
 
 def isBored_postcond(S: str, result: nat, h_precond: isBored_precond(S)) =
-  let sentences = S.replace("?", ".").replace("!", ".").splitOn(".").map(String.trim); result == len(sentences.filter(lambda t: t.startsWith("I ")))
+  let sentences = S.replace("?", ".").replace("!", ".").split(".").map(String.trim); result == len(sentences.filter(lambda t: t.startswith("I ")))

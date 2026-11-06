@@ -2,4 +2,4 @@ def palindromeIgnoreNonAlnum_precond(s: str): prop =
   true_prop
 
 def palindromeIgnoreNonAlnum_postcond(s: str, result: bool, h_precond: palindromeIgnoreNonAlnum_precond(s)): prop =
-  let cleaned = s.data.filter(lambda c: c.isAlpha || c.isDigit).map(Char.toLower); let forward = cleaned; let backward = reversed(cleaned); forward == backward if result else forward != backward
+  let cleaned = s.data.filter(lambda c: c.isalpha || c.isdigit).map(Char.toLower); let forward = cleaned; let backward = reversed(cleaned); forward == backward if result else forward != backward

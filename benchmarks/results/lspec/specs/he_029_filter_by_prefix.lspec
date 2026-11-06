@@ -2,4 +2,4 @@ def filterByPrefix_precond(strings: list[str], prefix_: str): prop =
   true_prop
 
 def filterByPrefix_postcond(strings: list[str], prefix_: str, result: list[str], h_precond: filterByPrefix_precond(strings, prefix_)) =
-  result == strings.filter(lambda s: s.startsWith(prefix_))
+  result == strings.filter(lambda s: s.startswith(prefix_))

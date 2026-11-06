@@ -1,11 +1,11 @@
 def numOf(s: str): nat =
-  s.splitOn("/")[0].toNat!
+  s.split("/")[0].toNat!
 
 def denOf(s: str): nat =
-  s.splitOn("/")[1].toNat!
+  s.split("/")[1].toNat!
 
 def wellFormedFrac(s: str): prop =
-  len(s.splitOn("/")) == 2 and s.splitOn("/").all(String.isNat) == True and 0 < denOf(s)
+  len(s.split("/")) == 2 and s.split("/").all(String.isNat) == True and 0 < denOf(s)
 
 def simplify_precond(x: str, n: str): prop =
   wellFormedFrac(x) and wellFormedFrac(n)

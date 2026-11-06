@@ -1,5 +1,5 @@
 def parseQ(s: str): rat =
-  match s.map(lambda c: '.' if c === ',' else c).splitOn(".") with | [w] => (w.toNat! as rat) | [w, f] => (w.toNat! as rat) + (f.toNat! as rat) / (10 as rat) ** len(f) | _ => 0
+  match s.map(lambda c: '.' if c === ',' else c).split(".") with | [w] => (w.toNat! as rat) | [w, f] => (w.toNat! as rat) + (f.toNat! as rat) / (10 as rat) ** len(f) | _ => 0
 
 def valQ: rat ⊕ str ==> rat
   | Sum.inl(q) => q

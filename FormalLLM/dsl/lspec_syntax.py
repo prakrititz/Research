@@ -22,6 +22,10 @@ ABS_INV = {v: k for k, v in ABS_FUNCS.items()}
 TYPE_CTORS = {"List", "Array", "Option"}                  # `list[int]` is `List Int`
 BOUNDS = {"∈": "in", "∉": "not in", "<": "<", "≤": "<=", ">": ">", "≥": ">="}
 BOUNDS_INV = {v: k for k, v in BOUNDS.items()}
+#: Python's function form, read as the method (never printed): `map(f, l)` is `l.map(f)`, `filter(p, l)` is `l.filter(p)`
+PY_FUNCS = {"map", "filter"}
+#: comparisons that chain as in Python (`a < b <= c` is `a < b and b <= c`)
+CHAIN = {"=", "≠", "<", ">", "≤", "≥"}
 
 # --- printing -----------------------------------------------------------------------------------------------------
 
@@ -29,8 +33,10 @@ _ATOMS = (Name, Num, Char, Str, ListLit, Tuple_, Anon, Abs, App, Dot, Index, Asc
 
 
 def _name(lean: str) -> str:
-    if lean in ops.NAMES:
-        return ops.NAMES[lean]
+    if lean in _SCOPE:                                     # a variable where the text is read: no escape needed
+        return lean
+    if lean in ops.NAMES:                                  # Lean's name when the L_spec one is a variable in scope
+        return lean if ops.NAMES[lean] in _SCOPE else ops.NAMES[lean]
     if lean in ops.RESERVED:
         return f"`{lean}`"
     return lean
@@ -49,6 +55,8 @@ def _operand(child: Node, op: str, side: str) -> str:
     differently without (the parser reads with the same table, so the text reads back to the same tree)."""
     if isinstance(child, BinOp) and child.op in _ATOM_OPS:
         return show(child)
+    if isinstance(child, BinOp) and child.op in CHAIN and op in CHAIN:          # it would read as a chain
+        return f"({show(child)})"
     if isinstance(child, BinOp) and child.op in INFIX and op in INFIX:
         prec, right_assoc = INFIX[op]
         inner, _ = INFIX[child.op]
@@ -93,19 +101,19 @@ def show(node: Node) -> str:
         args = [show(a) for a in node.args]
         fn = node.fn
         if isinstance(fn, Dot):
-            if fn.field in ops.METHOD_FUNCS:
+            if fn.field in ops.METHOD_FUNCS and ops.METHOD_FUNCS[fn.field] not in _SCOPE:
                 return f"{ops.METHOD_FUNCS[fn.field]}({', '.join([show(fn.obj)] + args)})"
             if fn.field in ("take", "drop") and len(args) == 1:
                 return f"{_arg(fn.obj)}[{':' + args[0] if fn.field == 'take' else args[0] + ':'}]"
             return f"{_arg(fn.obj)}.{_method(fn.field)}({', '.join(args)})"
         if isinstance(fn, Name) and fn.id in TYPE_CTORS and len(args) == 1:
             return f"{_name(fn.id)}[{args[0]}]"
-        if isinstance(fn, Name) and fn.id in ops.CALL_NAMES:          # `decide p` is `bool(p)`
+        if isinstance(fn, Name) and fn.id in ops.CALL_NAMES and ops.CALL_NAMES[fn.id] not in _SCOPE:          # `decide p` is `bool(p)`
             return f"{ops.CALL_NAMES[fn.id]}({', '.join(args)})"
         head = _name(fn.id) if isinstance(fn, Name) else f"({show(fn)})"
         return f"{head}({', '.join(args)})"
     if isinstance(node, Dot):
-        if node.field in ops.METHOD_FUNCS:
+        if node.field in ops.METHOD_FUNCS and ops.METHOD_FUNCS[node.field] not in _SCOPE:
             return f"{ops.METHOD_FUNCS[node.field]}({show(node.obj)})"
         return f"{_arg(node.obj)}.{_method(node.field)}"
     if isinstance(node, Index):
@@ -174,14 +182,14 @@ _TOKEN = re.compile(r"""
   | (?P<char>'(?:\\.|[^'\\])')
   | (?P<str>"(?:\\.|[^"\\])*")
   | (?P<esc>`[^`]+`)
-  | (?P<op><==>|==>|===|!==|&&&|\|\|\||>>>|<<<|~~~|:=|=>|==|!=|<=|>=|\*\*|\+\+|::|&&|\|\||[-+*/%<>!↑·=|⊕])
+  | (?P<op><==>|==>|===|!==|&&&|\|\|\||>>>|<<<|~~~|//|:=|=>|==|!=|<=|>=|\*\*|\+\+|::|&&|\|\||[-+*/%<>!↑·=|⊕])
   | (?P<punct>\#\[|[()\[\]{},:;.⟨⟩?])
   | (?P<ident>[^\W\d][\w']*(?:\.[^\W\d][\w']*)*(?:[!?](?![\w=]))?)
 """, re.VERBOSE | re.UNICODE)
 
 #: L_spec infix spelling -> Lean operator
 _INFIX = {ops.BINOPS.get(op, op): op for op in INFIX if op not in ("<|", "|>", "$", "×")}
-_INFIX.update({"<=": "≤", ">=": "≥"})
+_INFIX.update({"<=": "≤", ">=": "≥", "//": "/"})                 # Python's `//`: integer division
 
 
 def tokenize(text: str):
@@ -242,6 +250,7 @@ class _Parser:
 
     def binops(self, min_prec: int) -> Node:
         left = self.prefix()
+        last = None                         # the right operand of a comparison just read: `a < b < c` chains
         while True:
             spelled = self.infix()
             if spelled is None:
@@ -254,7 +263,11 @@ class _Parser:
             if spelled == "not in":
                 self.next()
             right = self.binops(prec if right_assoc else prec + 1)
-            left = BinOp(op, left, right)
+            if op in CHAIN and last is not None:                  # Python: `a < b < c` is `a < b and b < c`
+                left = BinOp("∧", left, BinOp(op, last, right))
+            else:
+                left = BinOp(op, left, right)
+            last = right if op in CHAIN else None
 
     def prefix(self) -> Node:
         tok = self.peek()
@@ -291,7 +304,12 @@ class _Parser:
             self.expect(")")
             return Tuple_(items) if len(items) > 1 else first
         if tok in ("[", "#["):
-            return ListLit(self.items("]"), array=tok == "#[")
+            items = self.items("]")
+            if len(items) == 1 and isinstance(items[0], _Gen):
+                if tok == "#[":
+                    raise Unsupported("an array comprehension: write the list comprehension and `array_of(...)`")
+                return items[0].as_list()
+            return ListLit(items, array=tok == "#[")
         if tok == "⟨":
             return Anon(self.items("⟩"))
         if tok == "·":
@@ -308,6 +326,8 @@ class _Parser:
             if tok in ops.KEYWORDS:
                 raise Unsupported(f"unexpected {tok!r}")
             if "." not in tok:
+                if tok in _SCOPE:
+                    return Name(tok)             # a variable of the goal, whatever L_spec name it spells
                 return _SpecName(tok)            # resolved by what follows: `list[int]`, `list(s)`, `list`
             node = _dotted(tok)
             return _rename_fields(node)
@@ -319,11 +339,31 @@ class _Parser:
             self.next()
             return out
         out.append(self.expr())
+        if self.peek() == "for":                               # `[f(x) for x in l if p(x)]`, `sum(f(x) for x in l)`
+            out[0] = self.comprehension(out[0])
+            self.expect(close)
+            return out
         while self.peek() == ",":
             self.next()
             out.append(self.expr())
         self.expect(close)
         return out
+
+    def comprehension(self, elem: Node) -> "_Gen":
+        self.next()
+        var = self.next()
+        if not re.fullmatch(r"[^\W\d][\w']*", var) or var in ops.KEYWORDS:
+            raise Unsupported("a comprehension over a pattern (`for i, x in ...`): use one variable, e.g. an index "
+                              "`for i in range(len(l))`")
+        self.expect("in")
+        source = self.binops(1)
+        cond = None
+        if self.peek() == "if":
+            self.next()
+            cond = self.binops(1)
+        if self.peek() == "for":
+            raise Unsupported("a comprehension with two `for`: write `l.flat_map(lambda x: [...])`")
+        return _Gen(elem, var, source, cond)
 
     def postfix(self, node: Node) -> Node:
         while True:
@@ -344,16 +384,28 @@ class _Parser:
                 return _resolve(node)
 
     def call(self, fn: Node, args: List[Node]) -> Node:
+        if isinstance(fn, _SpecName) and fn.id in ("any", "all") and len(args) == 1:  # `any(p(x) for x in l)`
+            arg = args[0]
+            if isinstance(arg, _Gen):
+                return App(Dot(arg.source_list(), fn.id), [arg.lam(arg.elem)])
+            return App(Dot(arg, fn.id), [Binder("fun", [("_b", None)], None, Name("_b"))])
+        args = [a.as_list() if isinstance(a, _Gen) else a for a in args]
+        if isinstance(fn, _SpecName) and fn.id == "range" and len(args) > 1:         # `range(a, b)`
+            if len(args) > 2:
+                raise Unsupported("`range` with a step: write `range(n).map(lambda k: a + k * step)`")
+            return App(Name("List.range'"), [args[0], BinOp("-", args[1], args[0])])
         if isinstance(fn, _SpecName) and fn.id in ops.METHOD_FUNCS_INV and args:     # `len(l)` is `l.length`
             dot = Dot(args[0], ops.METHOD_FUNCS_INV[fn.id])
             return App(dot, args[1:]) if len(args) > 1 else dot
+        if isinstance(fn, _SpecName) and fn.id in PY_FUNCS and len(args) == 2:      # `map(f, l)` is `l.map f`
+            return App(Dot(args[1], fn.id), [args[0]])
         if isinstance(fn, _SpecName) and fn.id in ops.CALL_NAMES_INV and args:      # `bool(p)` is `decide p`
             return App(Name(ops.CALL_NAMES_INV[fn.id]), args)
         if isinstance(fn, _SpecName) and fn.id in ABS_INV and len(args) == 1:
             return Abs(args[0], ABS_INV[fn.id])
         fn = _resolve(fn)
-        if isinstance(fn, Dot) and not args:
-            raise Unsupported(f"`.{fn.field}()` with no arguments: write `.{fn.field}`")
+        if isinstance(fn, Dot) and not args:                                        # `s.upper()` is `s.toUpper`
+            return fn
         return App(fn, args)
 
     def subscript(self, obj: Node) -> Node:
@@ -368,11 +420,19 @@ class _Parser:
             arg = self.expr()
             self.expect("]")
             return App(obj, [arg])
-        if self.peek() == ":":                                                        # `l[:k]`
-            self.next()
+        if self.peek() in (":", "::"):                                                # `l[:k]`, `l[::-1]`
+            double = self.next() == "::"
+            if double or self.peek() == ":":
+                if not double:
+                    self.next()
+                step = self.expr()
+                self.expect("]")
+                if isinstance(step, UnOp) and step.op == "-" and isinstance(step.arg, Num) and step.arg.text == "1":
+                    return Dot(obj, "reverse")
+                raise Unsupported("a slice with a step other than `[::-1]`")
             k = self.expr()
             self.expect("]")
-            return App(Dot(obj, "take"), [k])
+            return App(Dot(obj, "take"), [_from_end(obj, k)])
         if self.peek() == "[":                                                        # `l[[i]]`
             self.next()
             idx = self.expr()
@@ -380,15 +440,20 @@ class _Parser:
             self.expect("]")
             return Index(obj, idx, "")
         idx = self.expr()
-        if self.peek() == ":":                                                        # `l[k:]`
+        if self.peek() == ":":                                                        # `l[k:]`, `l[a:b]`
             self.next()
+            if self.peek() == "]":
+                self.next()
+                return App(Dot(obj, "drop"), [_from_end(obj, idx)])
+            end = self.expr()
             self.expect("]")
-            return App(Dot(obj, "drop"), [idx])
+            start, end = _from_end(obj, idx), _from_end(obj, end)
+            return App(Dot(App(Dot(obj, "drop"), [start]), "take"), [BinOp("-", end, start)])
         self.expect("]")
         if self.peek() == "?" and self.adjacent():
             self.next()
-            return Index(obj, idx, "?")
-        return Index(obj, idx, "!")
+            return Index(obj, _from_end(obj, idx), "?")
+        return Index(obj, _from_end(obj, idx), "!")
 
     def binders(self):
         out = []
@@ -454,6 +519,13 @@ class _Parser:
         self.expect(":")
         return Binder(kind, names, bound, self.expr())
 
+    def assign(self):
+        """`=` in a `let`; Lean's `:=` is accepted too (models write it)."""
+        if self.peek() == ":=":
+            self.next()
+        else:
+            self.expect("=")
+
     def let(self) -> Node:
         self.next()
         rec = self.peek() == "rec"
@@ -463,7 +535,7 @@ class _Parser:
             close = ")" if self.next() == "(" else "⟩"
             items = self.items(close)
             pattern = Tuple_(items) if close == ")" else Anon(items)
-            self.expect("=")
+            self.assign()
             value = self.expr()
             self.expect(";")
             return Let("<pat>", None, value, self.expr(), [], rec, pattern)
@@ -479,7 +551,7 @@ class _Parser:
         if self.peek() == ":":
             self.next()
             typ = self.binops(1)
-        self.expect("=")
+        self.assign()
         value = self.expr()
         termination = None
         if self.peek() == "termination_by":
@@ -512,6 +584,31 @@ class _Parser:
         return Match(scrutinees, arms)
 
 
+def _from_end(obj: Node, k: Node) -> Node:
+    """Python's negative index or slice bound: `l[-k]` is `l[len(l) - k]`."""
+    if isinstance(k, UnOp) and k.op == "-":
+        return BinOp("-", Dot(obj, "length"), k.arg)
+    return k
+
+
+class _Gen(Node):
+    """`elem for var in source if cond`, before it is read as a list (`source.filter(...).map(...)`) or an `any`/`all`."""
+    def __init__(self, elem, var, source, cond):
+        self.elem, self.var, self.source, self.cond = elem, var, source, cond
+
+    def lam(self, body: Node) -> Node:
+        return Binder("fun", [(self.var, None)], None, body)
+
+    def source_list(self) -> Node:
+        return App(Dot(self.source, "filter"), [self.lam(self.cond)]) if self.cond is not None else self.source
+
+    def as_list(self) -> Node:
+        base = self.source_list()
+        if isinstance(self.elem, Name) and self.elem.id == self.var:
+            return base
+        return App(Dot(base, "map"), [self.lam(self.elem)])
+
+
 class _SpecName(Node):
     """A plain L_spec name before it is resolved: `list` is `List` in `list[int]` and `toList` in `list(s)`."""
     def __init__(self, id):
@@ -536,9 +633,30 @@ def show_name(node: Node) -> str:
     raise Unsupported("a binder must be a name")
 
 
-def parse(text: str) -> Node:
-    p = _Parser(text)
-    node = p.expr()
-    if p.peek() is not None:
-        raise Unsupported(f"trailing {p.peek()!r}")
-    return _resolve(node)
+#: names that are variables where the text is read (a goal's inputs, a loop's state): such a name is that variable,
+#: never the L_spec name it happens to spell (an input called `string` is not `string(...)`)
+_SCOPE: frozenset = frozenset()
+
+
+def show_in(node: Node, scope=()) -> str:
+    """``show`` for text read back with ``parse(text, scope)``: an L_spec name that is a variable in ``scope`` is
+    printed with Lean's spelling instead (``String.mk(s)``, not ``string(s)``, where an input is called ``string``)."""
+    global _SCOPE
+    saved, _SCOPE = _SCOPE, frozenset(scope)
+    try:
+        return show(node)
+    finally:
+        _SCOPE = saved
+
+
+def parse(text: str, scope=()) -> Node:
+    global _SCOPE
+    saved, _SCOPE = _SCOPE, frozenset(scope)
+    try:
+        p = _Parser(text)
+        node = p.expr()
+        if p.peek() is not None:
+            raise Unsupported(f"trailing {p.peek()!r}")
+        return _resolve(node)
+    finally:
+        _SCOPE = saved

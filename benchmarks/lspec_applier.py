@@ -45,11 +45,12 @@ class Gold:
 
     def __init__(self):
         self.current = None                                # the gold step of the goal being asked about
+        self.scope = []                                    # that goal's variables
 
     def generate(self, prompt: str, max_tokens=None) -> str:
         if "Choose the law for this goal" in prompt:
             return json.dumps({"law": self.current["law"], "plan": ""})
-        return json.dumps(steps.from_engine(self.current), ensure_ascii=False)
+        return json.dumps(steps.from_engine(self.current, self.scope), ensure_ascii=False)
 
 
 def make_model(spec: str, args):
@@ -146,7 +147,7 @@ def check(pos: Positioned, node, written: dict, level: str):
     """Translate ``written`` and check it at ``node`` to ``level``: (kind, message)."""
     from FormalLLM.lean.laws import IllFormed, law_from_json
     try:
-        law = law_from_json(steps.to_engine(written))
+        law = law_from_json(steps.to_engine(written, scope_of(node.goal)))
         expansion = law.expand(node.goal, lambda: 10 ** 6)
     except (steps.StepError, IllFormed, KeyError, TypeError, ValueError) as error:
         return feedback.UNREADABLE, feedback.unreadable(error)
@@ -155,10 +156,16 @@ def check(pos: Positioned, node, written: dict, level: str):
     d = pos.d
     if level == "elaborate":
         for k, ob in enumerate(expansion.obligations):
-            ok = d._check(ob, f"wf{node.goal.id}_{k}").proved if ob.body is not None else d._elaborates(ob)
-            if not ok:
+            if ob.body is not None:
+                verdict = d._check(ob, f"wf{node.goal.id}_{k}")
+                error = None if verdict.proved else (verdict.message or verdict.status)
+            else:
+                reply = d._run(f"example {ob.binders} :\n    {ob.statement} := by\n  sorry\n")
+                error = "timeout" if reply.timed_out else (reply.errors[0] if reply.errors else None)
+            if error:
                 return feedback.UNREADABLE, (f"Lean cannot read the step: {ob.description} does not type-check.\n"
-                                             f"  {feedback._lspec(feedback.closed_statement(ob))}")
+                                             f"  {feedback._lspec(feedback.closed_statement(ob))}\n"
+                                             f"  Lean's error: {feedback.lean_error(error)}")
         return feedback.ACCEPTED, ""
     result = d.apply(node.goal.id, law)
     loop_body = any(getattr(n.law, "kind", "") == "loop" and n.children and n.children[0] is node
@@ -166,12 +173,16 @@ def check(pos: Positioned, node, written: dict, level: str):
     return feedback.kind_of(result), feedback.describe(result, loop_body)
 
 
+def scope_of(goal) -> list:
+    return [n for n, _ in goal.ctx] + [n for n, _ in goal.hyps]
+
+
 def run_step(model, workflow: str, task, pos: Positioned, path: str, sub: dict, state, level: str, attempts: int):
     node = pos.open(path)
     shown = steps.goal_text(steps.goal_to_lspec(node.goal, state))
     gold = {k: v for k, v in sub.items() if k != "children"}
     if isinstance(model, Gold):
-        model.current = gold
+        model.current, model.scope = gold, scope_of(node.goal)
     tries, failures, law, plan = [], [], gold["law"], None
     started = time.time()
     try:

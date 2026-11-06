@@ -1,5 +1,5 @@
 def parseMusic_precond(music_string: str): prop =
-  music_string == "" or (forall n in music_string.splitOn(" "): n == "o" or n == "o|" or n == ".|")
+  music_string == "" or (forall n in music_string.split(" "): n == "o" or n == "o|" or n == ".|")
 
 def parseMusic_postcond(music_string: str, result: list[nat], h_precond: parseMusic_precond(music_string)) =
-  let notes = [] if music_string == "" else music_string.splitOn(" "); len(result) == len(notes) and (forall i: i < len(notes) ==> result[i] == (4 if notes[i] == "o" else 2 if notes[i] == "o|" else 1))
+  let notes = [] if music_string == "" else music_string.split(" "); len(result) == len(notes) and (forall i: i < len(notes) ==> result[i] == (4 if notes[i] == "o" else 2 if notes[i] == "o|" else 1))

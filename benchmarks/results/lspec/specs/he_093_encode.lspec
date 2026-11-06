@@ -1,5 +1,5 @@
 def encChar(c: char): char =
-  let d = c.toLower if c.isUpper else c.toUpper if c.isLower else c; Char.ofNat(to_nat(d) + 2) if ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains(d) else d
+  let d = c.lower if c.isupper else c.upper if c.islower else c; Char.ofNat(to_nat(d) + 2) if ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains(d) else d
 
 def encode93_precond(message: str): prop =
   true_prop

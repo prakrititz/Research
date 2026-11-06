@@ -2,4 +2,4 @@ def fileNameCheck_precond(file_name: str): prop =
   true_prop
 
 def fileNameCheck_postcond(file_name: str, result: str, h_precond: fileNameCheck_precond(file_name)) =
-  (result == "Yes" or result == "No") and (result == "Yes" <==> len(list(file_name).filter(Char.isDigit)) <= 3 and list(file_name).count('.') == 1 and (exists i: i < len(file_name) and list(file_name)[i] == '.' and 0 < i and list(file_name)[0].isAlpha == True and (list(file_name)[i + 1:] == list("txt") or list(file_name)[i + 1:] == list("exe") or list(file_name)[i + 1:] == list("dll"))))
+  (result == "Yes" or result == "No") and (result == "Yes" <==> len(list(file_name).filter(Char.isDigit)) <= 3 and list(file_name).count('.') == 1 and (exists i: i < len(file_name) and list(file_name)[i] == '.' and 0 < i and list(file_name)[0].isalpha == True and (list(file_name)[i + 1:] == list("txt") or list(file_name)[i + 1:] == list("exe") or list(file_name)[i + 1:] == list("dll"))))
