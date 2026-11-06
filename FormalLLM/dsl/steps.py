@@ -16,11 +16,12 @@ part of its answer to fix.
 
 The format does not depend on who chose the law: one model that chooses and writes the step, or a selector that names
 the law and an applier that writes the rest (``fields_for(law)`` is what the applier must fill)."""
+import json
 import re
 from typing import Dict, List, Optional, Tuple
 
 from FormalLLM.dsl import lean_syntax, lspec_syntax
-from FormalLLM.dsl.ast import App, Binder, Let, Match, Name, Node, walk
+from FormalLLM.dsl.ast import App, BinOp, Binder, Let, Match, Name, Node, walk
 
 HOLE = "⟪r⟫"                     # the engine's placeholder for the value being derived (``laws.HOLE``)
 
@@ -65,7 +66,8 @@ def to_lean(text: str, field: str, scope=()) -> str:
     """L_spec text -> Lean text; ``scope``: the variables in scope (a name among them is that variable)."""
     text = _text(text)
     if not isinstance(text, str) or not text.strip():
-        raise StepError(field, "empty")
+        raise StepError(field, 'empty: an expression is needed (the empty string is `""`, written "\\"\\"" in JSON; '
+                               'the empty list is "[]")')
     try:
         return lean_syntax.show(lspec_syntax.parse(text, scope))
     except Exception as error:                            # the parser's message, attributed to the field
@@ -96,7 +98,7 @@ def to_engine(step: dict, scope=()) -> dict:
     law = step.get("law")
     out = {"law": law}
     if law == "bind" and "prop" not in step and "value" in step and isinstance(step.get("var"), str):
-        step = {**step, "prop": f"{step['var']} == ({_text(step['value'])})"}          # bind to a known value
+        step = {**step, "prop": f"{step['var']} == ({_text(step['value'])})", "_value": True}          # bind to a known value
     inner = set(scope)
     if law == "loop" and isinstance(step.get("state"), list):
         inner |= {item[0] for item in step["state"] if isinstance(item, (list, tuple)) and item and isinstance(item[0], str)}
@@ -122,6 +124,7 @@ def to_engine(step: dict, scope=()) -> dict:
             out[field] = to_lean(value, field, scope)
         else:
             out[field] = to_lean(value, field, inner)
+    _shadow(out, scope, step)
     lemmas = step.get("lemmas") or []
     if lemmas:
         out["lemmas"] = []
@@ -132,6 +135,44 @@ def to_engine(step: dict, scope=()) -> dict:
                                   "statement": to_lean(lemma["statement"], f"lemmas[{k}].statement", scope),
                                   "proof": lemma["proof"]})
     return out
+
+
+def _shadow(out: dict, scope, step: dict) -> None:
+    """A loop's state variable or a bind's variable named like a variable of the goal shadows it, as reassigning a
+    variable does in Python: it is renamed (``found`` -> ``found2``) where the new variable is in scope (invariant,
+    guard, variant, result; a bind's property), and the old name keeps meaning the goal's variable elsewhere (initial
+    values)."""
+    if out.get("law") == "loop":
+        names = [item[0] for item in out["state"]]
+    elif out.get("law") == "bind":
+        names = [out["var"]]
+    else:
+        return
+    clash = [n for n in names if n in set(scope)]
+    if not clash:
+        return
+    taken = set(scope) | set(re.findall(r"[A-Za-z_][\w']*", json.dumps(step, ensure_ascii=False)))
+    renames = {}
+    for name in clash:
+        k = 2
+        while f"{name}{k}" in taken:
+            k += 1
+        renames[name] = f"{name}{k}"
+        taken.add(renames[name])
+    mapping = {old: Name(new) for old, new in renames.items()}
+    if out["law"] == "loop":
+        out["state"] = [[renames.get(n, n), t] for n, t in out["state"]]
+        fields = ("invariant", "guard", "variant", "result")
+    else:
+        out["var"] = renames[out["var"]]
+        fields = ("prop",)
+    for field in fields:
+        tree = lean_syntax.parse(out[field])
+        if step.get("_value"):                             # `x = value`: the value is computed before x is bound
+            tree = BinOp(tree.op, mapping[tree.left.id], tree.right)
+        else:
+            tree = subst(tree, mapping)
+        out[field] = lean_syntax.show(tree)
 
 
 def from_engine(step: dict, scope=()) -> dict:

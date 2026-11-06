@@ -163,14 +163,15 @@ def check(pos: Positioned, node, written: dict, level: str):
                 reply = d._run(f"example {ob.binders} :\n    {ob.statement} := by\n  sorry\n")
                 error = "timeout" if reply.timed_out else (reply.errors[0] if reply.errors else None)
             if error:
-                return feedback.UNREADABLE, (f"Lean cannot read the step: {ob.description} does not type-check.\n"
-                                             f"  {feedback._lspec(feedback.closed_statement(ob))}\n"
-                                             f"  Lean's error: {feedback.lean_error(error)}")
+                shown = feedback.lean_error(error)
+                return feedback.UNREADABLE, (f"Lean cannot read the step: {ob.description}: this does not type-check.\n"
+                                             f"  {feedback._lspec(feedback.closed_statement(ob), scope_of(node.goal))}\n"
+                                             f"  Lean's error: {shown}" + feedback.hints(shown, feedback.TYPE_HINTS))
         return feedback.ACCEPTED, ""
     result = d.apply(node.goal.id, law)
     loop_body = any(getattr(n.law, "kind", "") == "loop" and n.children and n.children[0] is node
                     for n in d.nodes.values())
-    return feedback.kind_of(result), feedback.describe(result, loop_body)
+    return feedback.kind_of(result), feedback.describe(result, loop_body, scope_of(node.goal))
 
 
 def scope_of(goal) -> list:

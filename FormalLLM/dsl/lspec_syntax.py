@@ -113,6 +113,9 @@ def show(node: Node) -> str:
         head = _name(fn.id) if isinstance(fn, Name) else f"({show(fn)})"
         return f"{head}({', '.join(args)})"
     if isinstance(node, Dot):
+        if (node.field == "get!" and isinstance(node.obj, Dot) and node.obj.field in ("max?", "min?")
+                and node.obj.field[:3] not in _SCOPE):                       # `l.max?.get!` is `max(l)`
+            return f"{node.obj.field[:3]}({show(node.obj.obj)})"
         if node.field in ops.METHOD_FUNCS and ops.METHOD_FUNCS[node.field] not in _SCOPE:
             return f"{ops.METHOD_FUNCS[node.field]}({show(node.obj)})"
         return f"{_arg(node.obj)}.{_method(node.field)}"
@@ -275,6 +278,17 @@ class _Parser:
             return self.binder()
         if tok == "let":
             return self.let()
+        if tok == "if":                                     # Lean's `if c then a else b` (`else` reaches right)
+            self.next()
+            hyp = None
+            if self.peek(1) == ":=":
+                hyp = self.next()
+                self.next()
+            cond = self.expr(0)
+            self.expect("then")
+            then = self.expr(0)
+            self.expect("else")
+            return If(cond, then, self.expr(0), hyp)
         if tok == "match":
             return self.match()
         if tok in ops.UNOPS_INV and tok != "-" or tok == "-" and self.peek(1) is not None:
@@ -397,6 +411,8 @@ class _Parser:
         if isinstance(fn, _SpecName) and fn.id in ops.METHOD_FUNCS_INV and args:     # `len(l)` is `l.length`
             dot = Dot(args[0], ops.METHOD_FUNCS_INV[fn.id])
             return App(dot, args[1:]) if len(args) > 1 else dot
+        if isinstance(fn, _SpecName) and fn.id in ("max", "min") and len(args) == 1:  # of a list (default if empty)
+            return Dot(Dot(args[0], fn.id + "?"), "get!")
         if isinstance(fn, _SpecName) and fn.id in PY_FUNCS and len(args) == 2:      # `map(f, l)` is `l.map f`
             return App(Dot(args[1], fn.id), [args[0]])
         if isinstance(fn, _SpecName) and fn.id in ops.CALL_NAMES_INV and args:      # `bool(p)` is `decide p`

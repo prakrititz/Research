@@ -31,9 +31,9 @@ MEANING = {
 }
 
 
-def _lspec(statement: str) -> str:
+def _lspec(statement: str, scope=()) -> str:
     try:
-        return steps.to_lspec(statement)
+        return steps.to_lspec(statement, "statement", scope)
     except Exception:
         return statement                                   # shown as Lean rather than not at all
 
@@ -49,7 +49,7 @@ def kind_of(step) -> str:
     return UNPROVED
 
 
-def describe(step, loop_body: bool = False) -> str:
+def describe(step, loop_body: bool = False, scope=()) -> str:
     """The refusal of an engine ``Step`` as the model reads it."""
     if step.ok:
         return "accepted"
@@ -62,7 +62,7 @@ def describe(step, loop_body: bool = False) -> str:
         kind = verdict.obligation.kind
         key = "term_loop_body" if kind == "term" and loop_body else kind
         lines.append(f"- {MEANING.get(key, verdict.obligation.description)}")
-        lines.append(f"  To prove: {_lspec(closed_statement(verdict.obligation))}")
+        lines.append(f"  To prove: {_lspec(closed_statement(verdict.obligation), scope)}")
         if verdict.counterexample:
             lines.append("  It is false: " + verdict.counterexample.replace("\n", "\n  "))
         elif verdict.status == "TIMEOUT":
@@ -81,9 +81,32 @@ def closed_statement(obligation) -> str:
     return f"∀ {obligation.binders}, {obligation.statement}" if obligation.binders.strip() else obligation.statement
 
 
+#: (pattern in the parser's message, hint): spellings from other languages
+SYNTAX_HINTS = [
+    (r"'\?'(?!\w)", "A conditional is written `a if c else b` (or `if c then a else b`), not `c ? a : b`."),
+    (r"'s\.t\.?'|'such'", "Write `exists j: j < i and ...`, not `s.t.`."),
+]
+
+#: (pattern in Lean's error, hint): the usual reasons a type-correct-looking step is not
+TYPE_HINTS = [
+    (r"expected to have type\s+prop|HAdd \S+ \S+ prop|HSub \S+ \S+ prop|HMul \S+ \S+ prop",
+     "A value is written where a statement (true or false) is expected. A bind's `prop` is a statement about its "
+     "variable (`x == ...`); to give the value itself, write `\"value\": ...` instead of `prop`."),
+    (r"HAdd (str|\(?list)", "Strings and lists are joined with `++`, not `+`."),
+    (r"GetElem\?? \(?list[^,]*\)? int", "A list index is a `nat`: convert an `int` with `to_nat(i)`."),
+    (r"Inhabited", "This type has no default value, so `l[i]` cannot be used on its lists: use `l[i]?` (an option)."),
+]
+
+
+def hints(message: str, table) -> str:
+    import re
+    found = [hint for pattern, hint in table if re.search(pattern, message)]
+    return "".join(f"\n  Hint: {h}" for h in found)
+
+
 def unreadable(error: Exception) -> str:
     if isinstance(error, steps.StepError):
-        return f"Your answer could not be read. In `{error.field}`: {error.message}"
+        return f"Your answer could not be read. In `{error.field}`: {error.message}" + hints(error.message, SYNTAX_HINTS)
     return f"Your answer could not be read: {error}"
 
 

@@ -41,7 +41,7 @@ METHODS = {"idxOf": "index", "headD": "head_or", "getD": "get_or", "flatMap": "f
            "isLower": "islower", "isWhitespace": "isspace"}
 
 #: L_spec reserved words (an L_spec name that would collide with one of these is written `` `name` ``)
-KEYWORDS = {"lambda", "forall", "exists", "if", "else", "let", "match", "with", "and", "or", "not", "in", "as", "for",
+KEYWORDS = {"lambda", "forall", "exists", "if", "else", "let", "match", "with", "and", "or", "not", "in", "as", "for", "then",
             "divides", "is_infix", "xor"}
 
 

@@ -199,3 +199,41 @@ def test_printing_avoids_names_that_are_variables(lean, scope):
     shown = steps.to_lspec(lean, "x", scope)
     assert lean_syntax.parse(steps.to_lean(shown, "x", scope)) == lean_syntax.parse(lean), shown
     assert "`" not in shown                                 # a variable in scope needs no escape
+
+
+@pytest.mark.parametrize("spec, lean", [
+    ("if x > 0 then x else -x + 1", "if x > 0 then x else -x + 1"),            # Lean's `else` reaches right
+    ("p and (if n > 0 then q else True)", "p ∧ (if n > 0 then q else true)"),
+    ("if h := i < len(l) then l[i] else 0", "if h : i < l.length then l[i]! else 0"),
+])
+def test_lean_style_conditional(spec, lean):
+    assert lean_syntax.parse(steps.to_lean(spec, "x", ["x", "p", "n", "q", "i", "l"])) == lean_syntax.parse(lean)
+
+
+def test_max_and_min_of_a_list_round_trip():
+    lean = steps.to_lean("max(l[:3]) + min(l)", "x", ["l"])
+    assert lean_syntax.parse(lean) == lean_syntax.parse("(l.take 3).max?.get! + l.min?.get!")
+    assert steps.to_lspec(lean, "x", ["l"]) == "max(l[:3]) + min(l)"
+    assert lean_syntax.parse(steps.to_lean("max(a, b)", "x", ["a", "b"])) == lean_syntax.parse("max a b")
+
+
+def test_a_reused_name_shadows_the_goal_variable():
+    """A loop's state named like an input is a new variable inside the loop; its initial value is the input."""
+    back = steps.to_engine({"law": "loop", "state": [["found", "bool", "found"]], "invariant": "found == True",
+                            "guard": "False", "variant": "0", "result": "found"}, ["l", "found"])
+    assert back["state"] == [["found2", "Bool"]] and back["init"] == ["found"]
+    assert back["result"] == "found2" and "found2" in back["invariant"]
+    bind = steps.to_engine({"law": "bind", "var": "lo", "type": "int", "value": "lo + 1"}, ["lo"])
+    assert bind["var"] == "lo2" and lean_syntax.parse(bind["prop"]) == lean_syntax.parse("lo2 = (lo + 1)")
+
+
+@pytest.mark.parametrize("message, table, expected", [
+    ("Unsupported: trailing '?'", feedback.SYNTAX_HINTS, "a if c else b"),
+    ("failed to synthesize instance of type class HAdd str str ?m.3", feedback.TYPE_HINTS, "++"),
+    ("Type mismatch x has type list rat but is expected to have type prop", feedback.TYPE_HINTS, "\"value\""),
+    ("failed to synthesize instance of type class GetElem? (list int) int ?m.1", feedback.TYPE_HINTS, "to_nat"),
+    ("unknown identifier `foo`", feedback.TYPE_HINTS, None),
+])
+def test_hints_name_the_usual_fix(message, table, expected):
+    found = feedback.hints(message, table)
+    assert (expected in found) if expected else found == ""
