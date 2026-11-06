@@ -1,15 +1,15 @@
-def opPrec(o: str_t): nat =
-  3 if o == "**" else 2 if (o == "*") or (o == "//") else 1
+def opPrec(o: str): nat =
+  3 if o == "**" else 2 if o == "*" or o == "//" else 1
 
-def opApply(o: str_t, a: int, b: int): int =
+def opApply(o: str, a: int, b: int): int =
   a + b if o == "+" else a - b if o == "-" else a * b if o == "*" else a / b if o == "//" else a ** to_nat(b)
 
-def evalOps: nat ==> (list[int] ==> (list[str_t] ==> int))
+def evalOps: nat ==> list[int] ==> list[str] ==> int
   | 0, xs, _ => xs.head!
-  | fuel + 1, xs, ops => xs.head! if ops == [] else let m = ops.map(opPrec).foldl(max, 0); let cands = range(len(ops)).filter(lambda i: opPrec(ops[i]) == m); let i = cands.getLast! if m == 3 else cands.head!; evalOps(fuel, (xs[:i] ++ [opApply(ops[i], xs[i], xs[i + 1])]) ++ xs[i + 2:], ops.eraseIdx(i))
+  | fuel + 1, xs, ops => xs.head! if ops == [] else let m = ops.map(opPrec).foldl(max, 0); let cands = range(len(ops)).filter(lambda i: opPrec(ops[i]) == m); let i = cands.getLast! if m == 3 else cands.head!; evalOps(fuel, xs[:i] ++ [opApply(ops[i], xs[i], xs[i + 1])] ++ xs[i + 2:], ops.eraseIdx(i))
 
-def doAlgebra_precond(operator: list[str_t], operand: list[int]): prop =
-  (len(operand) == (len(operator) + 1)) and ((2 <= len(operand)) and ((forall x in operand: 0 <= x) and (forall o in operator: (o == "+") or ((o == "-") or ((o == "*") or ((o == "//") or (o == "**")))))))
+def doAlgebra_precond(operator: list[str], operand: list[int]): prop =
+  len(operand) == len(operator) + 1 and 2 <= len(operand) and (forall x in operand: 0 <= x) and (forall o in operator: o == "+" or o == "-" or o == "*" or o == "//" or o == "**")
 
-def doAlgebra_postcond(operator: list[str_t], operand: list[int], result: int, h_precond: doAlgebra_precond(operator, operand)) =
+def doAlgebra_postcond(operator: list[str], operand: list[int], result: int, h_precond: doAlgebra_precond(operator, operand)) =
   result == evalOps(len(operator), operand, operator)

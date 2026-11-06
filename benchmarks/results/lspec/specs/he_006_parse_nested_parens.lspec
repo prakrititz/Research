@@ -1,8 +1,8 @@
 def maxDepth(l: list[char]): nat =
   to_nat(range(len(l) + 1).map(lambda k: (l[:k].count('(') as int) - (l[:k].count(')') as int)).foldl(max, 0))
 
-def parseNestedParens_precond(paren_string: str_t): prop =
-  list(paren_string).all(lambda c: ((c === '(') || (c === ')')) || (c === ' '))
+def parseNestedParens_precond(paren_string: str): prop =
+  list(paren_string).all(lambda c: c === '(' || c === ')' || c === ' ')
 
-def parseNestedParens_postcond(paren_string: str_t, result: list[nat], h_precond: parseNestedParens_precond(paren_string)) =
-  let groups = paren_string.splitOn(" ").filter(lambda g: g !== ""); (len(result) == len(groups)) and (forall i: (i < len(groups)) ==> (result[i] == maxDepth(list(groups[i]))))
+def parseNestedParens_postcond(paren_string: str, result: list[nat], h_precond: parseNestedParens_precond(paren_string)) =
+  let groups = paren_string.splitOn(" ").filter(lambda g: g !== ""); len(result) == len(groups) and (forall i: i < len(groups) ==> result[i] == maxDepth(list(groups[i])))

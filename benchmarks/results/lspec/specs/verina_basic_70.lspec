@@ -1,5 +1,5 @@
-def LinearSearch3_precond(a: array[int], P: int ==> bool_t): prop =
-  exists i: (i < size(a)) and P(a[i])
+def LinearSearch3_precond(a: array[int], P: int ==> bool): prop =
+  exists i: i < size(a) and P(a[i])
 
-def LinearSearch3_postcond(a: array[int], P: int ==> bool_t, result: nat, h_precond: LinearSearch3_precond(a, P)) =
-  (result < size(a)) and (P(a[result]) and (forall k: (k < result) ==> (not P(a[k]))))
+def LinearSearch3_postcond(a: array[int], P: int ==> bool, result: nat, h_precond: LinearSearch3_precond(a, P)) =
+  result < size(a) and P(a[result]) and (forall k: k < result ==> (not P(a[k])))

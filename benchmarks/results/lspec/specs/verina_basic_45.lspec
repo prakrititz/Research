@@ -1,14 +1,14 @@
-def isEven(n: int): bool_t =
-  (n % 2) == 0
+def isEven(n: int): bool =
+  n % 2 == 0
 
-def isOdd(n: int): bool_t =
-  (n % 2) != 0
+def isOdd(n: int): bool =
+  n % 2 != 0
 
 def firstEvenOddIndices(lst: list[int]): option[tuple[nat, nat]] =
   let evenIndex = lst.findIdx?(isEven); let oddIndex = lst.findIdx?(isOdd); match evenIndex, oddIndex with | some(ei), some(oi) => some((ei, oi)) | _, _ => none
 
 def findProduct_precond(lst: list[int]): prop =
-  (len(lst) > 1) and ((exists x in lst: isEven(x)) and (exists x in lst: isOdd(x)))
+  len(lst) > 1 and (exists x in lst: isEven(x)) and (exists x in lst: isOdd(x))
 
 def findProduct_postcond(lst: list[int], result: int, h_precond: findProduct_precond(lst)) =
-  match firstEvenOddIndices(lst) with | some((ei, oi)) => result == (lst[ei] * lst[oi]) | none => true_prop
+  match firstEvenOddIndices(lst) with | some((ei, oi)) => result == lst[ei] * lst[oi] | none => true_prop

@@ -2,4 +2,4 @@ def findFirstOccurrence_precond(arr: array[int], target: int): prop =
   pairwise(lambda _c1, _c2: _c1 <= _c2, list(arr))
 
 def findFirstOccurrence_postcond(arr: array[int], target: int, result: int, h_precond: findFirstOccurrence_precond(arr, target)) =
-  ((result == (-1)) or (result >= 0)) and (((result >= 0) ==> ((to_nat(result) < size(arr)) and ((arr[to_nat(result)] == target) and (forall (i: nat): (i < to_nat(result)) ==> (arr[i] != target))))) and ((result == (-1)) ==> (forall (i: nat): (i < size(arr)) ==> (arr[i] != target))))
+  (result == (-1) or result >= 0) and (result >= 0 ==> to_nat(result) < size(arr) and arr[to_nat(result)] == target and (forall (i: nat): i < to_nat(result) ==> arr[i] != target)) and (result == (-1) ==> (forall (i: nat): i < size(arr) ==> arr[i] != target))

@@ -1,8 +1,8 @@
 def countOnes(lst: list[char]): nat =
   lst.foldl(lambda acc, c: acc + 1 if c == '1' else acc, 0)
 
-def shortestBeautifulSubstring_precond(s: str_t, k: nat): prop =
-  list(s).all(lambda c: (c == '0') or (c == '1'))
+def shortestBeautifulSubstring_precond(s: str, k: nat): prop =
+  list(s).all(lambda c: c == '0' or c == '1')
 
-def shortestBeautifulSubstring_postcond(s: str_t, k: nat, result: str_t, h_precond: shortestBeautifulSubstring_precond(s, k)): prop =
-  let chars = s.data; let substrings = range(len(chars)).flat_map(lambda i: range((len(chars) - i) + 1).map(lambda len: chars[i:][:`len`])); let isBeautiful = lambda sub: countOnes(sub) == k; let beautiful = substrings.filter(lambda sub: isBeautiful(sub)); let targets = beautiful.map(lambda _c1: _c1.asString).filter(lambda s: s != ""); ((result == "") and (targets == [])) or ((result in targets) and (forall r in targets: (len(r) > len(result)) or ((len(r) == len(result)) and (result <= r))))
+def shortestBeautifulSubstring_postcond(s: str, k: nat, result: str, h_precond: shortestBeautifulSubstring_precond(s, k)): prop =
+  let chars = s.data; let substrings = range(len(chars)).flat_map(lambda i: range(len(chars) - i + 1).map(lambda len: chars[i:][:`len`])); let isBeautiful = lambda sub: countOnes(sub) == k; let beautiful = substrings.filter(lambda sub: isBeautiful(sub)); let targets = beautiful.map(lambda _c1: _c1.asString).filter(lambda s: s != ""); result == "" and targets == [] or result in targets and (forall r in targets: len(r) > len(result) or len(r) == len(result) and result <= r)

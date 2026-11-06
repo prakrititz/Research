@@ -1,5 +1,5 @@
 def isPerfectSquare_precond(n: nat): prop =
   true_prop
 
-def isPerfectSquare_postcond(n: nat, result: bool_t): prop =
-  result <==> (exists (i: nat): (i * i) == n)
+def isPerfectSquare_postcond(n: nat, result: bool): prop =
+  result <==> (exists (i: nat): i * i == n)

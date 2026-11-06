@@ -1,8 +1,8 @@
 def atMod(m: nat, x: list[int]): list[int] =
-  range(len(x)).filter(lambda i: (i % m) == 0).map(lambda i: x[i])
+  range(len(x)).filter(lambda i: i % m == 0).map(lambda i: x[i])
 
 def sortThird_precond(l: list[int]): prop =
   true_prop
 
 def sortThird_postcond(l: list[int], result: list[int], h_precond: sortThird_precond(l)) =
-  (len(result) == len(l)) and ((forall i: (i < len(l)) ==> (((i % 3) != 0) ==> (result[i] == l[i]))) and (atMod(3, result).isPerm(atMod(3, l)) and (forall i: (i < (len(atMod(3, result)) - 1)) ==> (atMod(3, result)[i] <= atMod(3, result)[i + 1]))))
+  len(result) == len(l) and (forall i: i < len(l) ==> i % 3 != 0 ==> result[i] == l[i]) and atMod(3, result).isPerm(atMod(3, l)) and (forall i: i < len(atMod(3, result)) - 1 ==> atMod(3, result)[i] <= atMod(3, result)[i + 1])

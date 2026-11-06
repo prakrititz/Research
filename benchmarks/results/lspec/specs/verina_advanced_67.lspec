@@ -1,8 +1,8 @@
-def runLengthEncode_precond(s: str_t): prop =
+def runLengthEncode_precond(s: str): prop =
   true_prop
 
-def decodeRLE(lst: list[tuple[char, nat]]): str_t =
+def decodeRLE(lst: list[tuple[char, nat]]): str =
   match lst with | [] => "" | (ch, cnt) :: tail => let repeated = string(replicate(cnt, ch)); repeated ++ decodeRLE(tail)
 
-def runLengthEncode_postcond(s: str_t, result: list[tuple[char, nat]], h_precond: runLengthEncode_precond(s)): prop =
-  (forall pair in result: pair.snd > 0) and ((forall (i: nat): (i < (len(result) - 1)) ==> (result[i].fst != result[i + 1].fst)) and (decodeRLE(result) == s))
+def runLengthEncode_postcond(s: str, result: list[tuple[char, nat]], h_precond: runLengthEncode_precond(s)): prop =
+  (forall pair in result: pair.snd > 0) and (forall (i: nat): i < len(result) - 1 ==> result[i].fst != result[i + 1].fst) and decodeRLE(result) == s

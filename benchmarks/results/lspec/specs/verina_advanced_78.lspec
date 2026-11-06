@@ -1,5 +1,5 @@
 def twoSum_precond(nums: list[int], target: int): prop =
-  let pairwiseSum = range(len(nums)).flat_map(lambda i: nums[i + 1:].map(lambda y: nums[i] + y)); (len(nums) > 1) and (pairwiseSum.count(target) == 1)
+  let pairwiseSum = range(len(nums)).flat_map(lambda i: nums[i + 1:].map(lambda y: nums[i] + y)); len(nums) > 1 and pairwiseSum.count(target) == 1
 
 def twoSum_postcond(nums: list[int], target: int, result: Prod(nat, nat), h_precond: twoSum_precond(nums, target)): prop =
-  let i = result.fst; let j = result.snd; (i < j) and ((i < len(nums)) and ((j < len(nums)) and ((nums[i] + nums[j]) == target)))
+  let i = result.fst; let j = result.snd; i < j and i < len(nums) and j < len(nums) and nums[i] + nums[j] == target

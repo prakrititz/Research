@@ -1,8 +1,8 @@
-def isOdd(x: int): bool_t =
-  (x % 2) != 0
+def isOdd(x: int): bool =
+  x % 2 != 0
 
 def findFirstOdd_precond(a: array[int]): prop =
   size(a) > 0
 
 def findFirstOdd_postcond(a: array[int], result: option[nat], h_precond: findFirstOdd_precond(a)) =
-  match result with | some(idx) => (idx < size(a)) and (isOdd(a[idx]) and (forall j: (j < idx) ==> (not isOdd(a[j])))) | none => forall i: (i < size(a)) ==> (not isOdd(a[i]))
+  match result with | some(idx) => idx < size(a) and isOdd(a[idx]) and (forall j: j < idx ==> (not isOdd(a[j]))) | none => forall i: i < size(a) ==> (not isOdd(a[i]))

@@ -1,5 +1,5 @@
-def containsZ_precond(s: str_t): prop =
+def containsZ_precond(s: str): prop =
   true_prop
 
-def containsZ_postcond(s: str_t, result: bool_t, h_precond: containsZ_precond(s)) =
-  let cs = list(s); (exists x: (x in cs) and ((x == 'z') or (x == 'Z'))) <==> result
+def containsZ_postcond(s: str, result: bool, h_precond: containsZ_precond(s)) =
+  let cs = list(s); (exists x: x in cs and (x == 'z' or x == 'Z')) <==> result

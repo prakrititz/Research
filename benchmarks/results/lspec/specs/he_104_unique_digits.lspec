@@ -1,8 +1,8 @@
-def noEvenDigit(n: nat): bool_t =
-  list(str(n)).all(lambda c: ((to_nat(c) - 48) % 2) === 1)
+def noEvenDigit(n: nat): bool =
+  list(str(n)).all(lambda c: (to_nat(c) - 48) % 2 === 1)
 
 def uniqueDigits_precond(x: list[nat]): prop =
   true_prop
 
 def uniqueDigits_postcond(x: list[nat], result: list[nat], h_precond: uniqueDigits_precond(x)) =
-  result.isPerm(x.filter(noEvenDigit)) and (forall i: (i < (len(result) - 1)) ==> (result[i] <= result[i + 1]))
+  result.isPerm(x.filter(noEvenDigit)) and (forall i: i < len(result) - 1 ==> result[i] <= result[i + 1])

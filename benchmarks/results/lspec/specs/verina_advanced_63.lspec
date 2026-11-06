@@ -2,4 +2,4 @@ def removeDuplicates_precond(nums: list[int]): prop =
   pairwise(lambda _c1, _c2: _c1 <= _c2, nums)
 
 def removeDuplicates_postcond(nums: list[int], result: nat, h_precond: removeDuplicates_precond(nums)): prop =
-  ((result - len(nums.eraseDups)) == 0) and (len(nums.eraseDups) <= result)
+  result - len(nums.eraseDups) == 0 and len(nums.eraseDups) <= result

@@ -2,4 +2,4 @@ def getRow_precond(lst: list[list[int]], x: int): prop =
   true_prop
 
 def getRow_postcond(lst: list[list[int]], x: int, result: list[tuple[nat, nat]], h_precond: getRow_precond(lst, x)) =
-  (forall p in result: (p.1 < len(lst)) and ((p.2 < len(lst[p.1])) and (lst[p.1][p.2] == x))) and ((forall i: (i < len(lst)) ==> (forall j: (j < len(lst[i])) ==> ((lst[i][j] == x) ==> ((i, j) in result)))) and (result.Nodup and (forall k: (k < (len(result) - 1)) ==> ((result[k].1 < result[k + 1].1) or ((result[k].1 == result[k + 1].1) and (result[k + 1].2 < result[k].2))))))
+  (forall p in result: p.1 < len(lst) and p.2 < len(lst[p.1]) and lst[p.1][p.2] == x) and (forall i: i < len(lst) ==> (forall j: j < len(lst[i]) ==> lst[i][j] == x ==> (i, j) in result)) and result.Nodup and (forall k: k < len(result) - 1 ==> result[k].1 < result[k + 1].1 or result[k].1 == result[k + 1].1 and result[k + 1].2 < result[k].2)

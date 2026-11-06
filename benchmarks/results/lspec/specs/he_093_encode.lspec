@@ -1,8 +1,8 @@
 def encChar(c: char): char =
   let d = c.toLower if c.isUpper else c.toUpper if c.isLower else c; Char.ofNat(to_nat(d) + 2) if ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains(d) else d
 
-def encode93_precond(message: str_t): prop =
+def encode93_precond(message: str): prop =
   true_prop
 
-def encode93_postcond(message: str_t, result: str_t, h_precond: encode93_precond(message)) =
-  (len(result) == len(message)) and (forall i: (i < len(message)) ==> (list(result)[i] == encChar(list(message)[i])))
+def encode93_postcond(message: str, result: str, h_precond: encode93_precond(message)) =
+  len(result) == len(message) and (forall i: i < len(message) ==> list(result)[i] == encChar(list(message)[i]))

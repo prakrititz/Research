@@ -6,4 +6,4 @@ def List.myprod: list[int] ==> int
   | x :: xs => x * xs.myprod
 
 def productExceptSelf_postcond(nums: list[int], result: list[int], h_precond: productExceptSelf_precond(nums)): prop =
-  (len(nums) == len(result)) and range(len(nums)).all(lambda i: result[i] == some(List.take(i, nums).myprod * List.drop(i + 1, nums).myprod))
+  len(nums) == len(result) and range(len(nums)).all(lambda i: result[i] == some(List.take(i, nums).myprod * List.drop(i + 1, nums).myprod))

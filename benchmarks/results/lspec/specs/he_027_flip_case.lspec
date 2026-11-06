@@ -1,8 +1,8 @@
 def flipChar(c: char): char =
   c.toLower if c.isUpper else c.toUpper if c.isLower else c
 
-def flipCase_precond(string: str_t): prop =
+def flipCase_precond(string: str): prop =
   true_prop
 
-def flipCase_postcond(string: str_t, result: str_t, h_precond: flipCase_precond(`string`)) =
-  (len(result) == len(`string`)) and (forall i: (i < len(`string`)) ==> (list(result)[i] == flipChar(list(`string`)[i])))
+def flipCase_postcond(string: str, result: str, h_precond: flipCase_precond(`string`)) =
+  len(result) == len(`string`) and (forall i: i < len(`string`) ==> list(result)[i] == flipChar(list(`string`)[i]))

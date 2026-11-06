@@ -2,7 +2,7 @@ def gridCells(n: nat): list[tuple[nat, nat]] =
   range(n).flat_map(lambda i: range(n).map(lambda j: (i, j)))
 
 def stepsFrom(n: nat, p: tuple[nat, nat]): list[tuple[nat, nat]] =
-  gridCells(n).filter(lambda q: ((q.1 == p.1) and ((q.2 == (p.2 + 1)) or ((q.2 + 1) == p.2))) or ((q.2 == p.2) and ((q.1 == (p.1 + 1)) or ((q.1 + 1) == p.1))))
+  gridCells(n).filter(lambda q: q.1 == p.1 and (q.2 == p.2 + 1 or q.2 + 1 == p.2) or q.2 == p.2 and (q.1 == p.1 + 1 or q.1 + 1 == p.1))
 
 def walksOf(n: nat): nat ==> list[list[tuple[nat, nat]]]
   | 0 => [[]]
@@ -13,7 +13,7 @@ def cellAt(g: list[list[nat]], p: tuple[nat, nat]): nat =
   g[p.1][p.2]
 
 def minPath_precond(grid: list[list[nat]], k: nat): prop =
-  (len(grid) >= 2) and ((forall r in grid: len(r) == len(grid)) and (grid.flatten.isPerm(List.range'(1, len(grid) * len(grid))) and (k >= 1)))
+  len(grid) >= 2 and (forall r in grid: len(r) == len(grid)) and grid.flatten.isPerm(List.range'(1, len(grid) * len(grid))) and k >= 1
 
 def minPath_postcond(grid: list[list[nat]], k: nat, result: list[nat], h_precond: minPath_precond(grid, k)) =
   (exists w in walksOf(len(grid), k): w.map(cellAt(grid)) == result) and (forall w in walksOf(len(grid), k): not (w.map(cellAt(grid)) < result))

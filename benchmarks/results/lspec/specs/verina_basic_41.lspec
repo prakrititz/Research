@@ -1,5 +1,5 @@
 def hasOnlyOneDistinctElement_precond(a: array[int]): prop =
   size(a) > 0
 
-def hasOnlyOneDistinctElement_postcond(a: array[int], result: bool_t, h_precond: hasOnlyOneDistinctElement_precond(a)) =
+def hasOnlyOneDistinctElement_postcond(a: array[int], result: bool, h_precond: hasOnlyOneDistinctElement_precond(a)) =
   let l = list(a); (result ==> pairwise(lambda _c1, _c2: _c1 == _c2, l)) and ((not result) ==> l.any(lambda x: x != l[0]))

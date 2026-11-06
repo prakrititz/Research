@@ -1,5 +1,5 @@
-def checkIfLastCharIsALetter_precond(txt: str_t): prop =
+def checkIfLastCharIsALetter_precond(txt: str): prop =
   true_prop
 
-def checkIfLastCharIsALetter_postcond(txt: str_t, result: bool_t, h_precond: checkIfLastCharIsALetter_precond(txt)) =
-  (result == True) <==> ((len(txt) >= 1) and ((list(txt)[len(txt) - 1].isAlpha == True) and ((len(txt) == 1) or (list(txt)[len(txt) - 2] == ' '))))
+def checkIfLastCharIsALetter_postcond(txt: str, result: bool, h_precond: checkIfLastCharIsALetter_precond(txt)) =
+  result == True <==> len(txt) >= 1 and list(txt)[len(txt) - 1].isAlpha == True and (len(txt) == 1 or list(txt)[len(txt) - 2] == ' ')

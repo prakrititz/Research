@@ -2,4 +2,4 @@ def lastPosition_precond(arr: array[int], elem: int): prop =
   pairwise(lambda _c1, _c2: _c1 <= _c2, list(arr))
 
 def lastPosition_postcond(arr: array[int], elem: int, result: int, h_precond: lastPosition_precond(arr, `elem`)) =
-  ((result == (-1)) or (result >= 0)) and (((result >= 0) ==> ((to_nat(result) < size(arr)) and ((arr[to_nat(result)] == `elem`) and list(arr)[to_nat(result) + 1:].all(lambda _c1: _c1 != `elem`)))) and ((result == (-1)) ==> list(arr).all(lambda _c1: _c1 != `elem`)))
+  (result == (-1) or result >= 0) and (result >= 0 ==> to_nat(result) < size(arr) and arr[to_nat(result)] == `elem` and list(arr)[to_nat(result) + 1:].all(lambda _c1: _c1 != `elem`)) and (result == (-1) ==> list(arr).all(lambda _c1: _c1 != `elem`))

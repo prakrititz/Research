@@ -1,5 +1,5 @@
 def hasCommonElement_precond(a: array[int], b: array[int]): prop =
-  (size(a) > 0) and (size(b) > 0)
+  size(a) > 0 and size(b) > 0
 
-def hasCommonElement_postcond(a: array[int], b: array[int], result: bool_t, h_precond: hasCommonElement_precond(a, b)) =
-  (exists i, j: (i < size(a)) and ((j < size(b)) and (a[i] == b[j]))) <==> result
+def hasCommonElement_postcond(a: array[int], b: array[int], result: bool, h_precond: hasCommonElement_precond(a, b)) =
+  (exists i, j: i < size(a) and j < size(b) and a[i] == b[j]) <==> result

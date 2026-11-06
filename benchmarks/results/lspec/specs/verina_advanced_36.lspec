@@ -1,5 +1,5 @@
 def majorityElement_precond(xs: list[nat]): prop =
-  (len(xs) > 0) and xs.any(lambda x: xs.count(x) > (len(xs) / 2))
+  len(xs) > 0 and xs.any(lambda x: xs.count(x) > len(xs) / 2)
 
 def majorityElement_postcond(xs: list[nat], result: nat, h_precond: majorityElement_precond(xs)): prop =
-  let count = xs.count(result); count > (len(xs) / 2)
+  let count = xs.count(result); count > len(xs) / 2

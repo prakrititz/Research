@@ -8,26 +8,26 @@ def hexDigit(n: nat): char =
   list("0123456789abcdef")[n]
 
 def md5Pad(msg: list[UInt8]): list[UInt8] =
-  let l = len(msg); ((msg ++ [0x80]) ++ replicate(((55 + 64) - (l % 64)) % 64, 0)) ++ range(8).map(lambda i: UInt8.ofNat(((l * 8) / (256 ** i)) % 256))
+  let l = len(msg); msg ++ [0x80] ++ replicate((55 + 64 - l % 64) % 64, 0) ++ range(8).map(lambda i: UInt8.ofNat(l * 8 / 256 ** i % 256))
 
 def md5Word(blk: list[UInt8], j: nat): UInt32 =
-  ((blk[4 * j].toUInt32 ||| (blk[(4 * j) + 1].toUInt32 <<< 8)) ||| (blk[(4 * j) + 2].toUInt32 <<< 16)) ||| (blk[(4 * j) + 3].toUInt32 <<< 24)
+  blk[4 * j].toUInt32 ||| blk[4 * j + 1].toUInt32 <<< 8 ||| blk[4 * j + 2].toUInt32 <<< 16 ||| blk[4 * j + 3].toUInt32 <<< 24
 
 def md5Step(m: array[UInt32], st: tuple[UInt32, UInt32, UInt32, UInt32], i: nat): tuple[UInt32, UInt32, UInt32, UInt32] =
-  let a = st.1; let b = st.2.1; let c = st.2.2.1; let d = st.2.2.2; let fg: tuple[UInt32, nat] = ((b &&& c) ||| ((~~~b) &&& d), i) if i < 16 else ((d &&& b) ||| ((~~~d) &&& c), ((5 * i) + 1) % 16) if i < 32 else ((b xor c) xor d, ((3 * i) + 5) % 16) if i < 48 else (c xor (b ||| (~~~d)), (7 * i) % 16); let f = ((fg.1 + a) + md5K[i]) + m[fg.2]; let s = md5S[i]; (d, b + ((f <<< s) ||| (f >>> (32 - s))), b, c)
+  let a = st.1; let b = st.2.1; let c = st.2.2.1; let d = st.2.2.2; let fg: tuple[UInt32, nat] = (b &&& c ||| (~~~b) &&& d, i) if i < 16 else (d &&& b ||| (~~~d) &&& c, (5 * i + 1) % 16) if i < 32 else (b xor c xor d, (3 * i + 5) % 16) if i < 48 else (c xor (b ||| (~~~d)), 7 * i % 16); let f = fg.1 + a + md5K[i] + m[fg.2]; let s = md5S[i]; (d, b + (f <<< s ||| f >>> (32 - s)), b, c)
 
 def md5Block(st: tuple[UInt32, UInt32, UInt32, UInt32], blk: list[UInt8]): tuple[UInt32, UInt32, UInt32, UInt32] =
   let m: array[UInt32] = array_of(range(16).map(md5Word(blk))); let r = range(64).foldl(md5Step(m), st); (st.1 + r.1, st.2.1 + r.2.1, st.2.2.1 + r.2.2.1, st.2.2.2 + r.2.2.2)
 
-def md5Blocks: nat ==> (list[UInt8] ==> ((tuple[UInt32, UInt32, UInt32, UInt32]) ==> (tuple[UInt32, UInt32, UInt32, UInt32])))
+def md5Blocks: nat ==> list[UInt8] ==> tuple[UInt32, UInt32, UInt32, UInt32] ==> tuple[UInt32, UInt32, UInt32, UInt32]
   | 0, _, st => st
   | fuel + 1, bytes, st => st if len(bytes) < 64 else md5Blocks(fuel, bytes[64:], md5Block(st, bytes[:64]))
 
-def md5Hex(s: str_t): str_t =
-  let bytes = md5Pad(list(s.toUTF8)); let st = md5Blocks(len(bytes), bytes, (0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476)); let out = [st.1, st.2.1, st.2.2.1, st.2.2.2].flat_map(lambda w: range(4).map(lambda k: to_nat((w >>> (8 * k).toUInt32) &&& 0xff))); string(out.flat_map(lambda b: [hexDigit(b / 16), hexDigit(b % 16)]))
+def md5Hex(s: str): str =
+  let bytes = md5Pad(list(s.toUTF8)); let st = md5Blocks(len(bytes), bytes, (0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476)); let out = [st.1, st.2.1, st.2.2.1, st.2.2.2].flat_map(lambda w: range(4).map(lambda k: to_nat(w >>> (8 * k).toUInt32 &&& 0xff))); string(out.flat_map(lambda b: [hexDigit(b / 16), hexDigit(b % 16)]))
 
-def stringToMd5_precond(text: str_t): prop =
+def stringToMd5_precond(text: str): prop =
   true_prop
 
-def stringToMd5_postcond(text: str_t, result: option[str_t], h_precond: stringToMd5_precond(text)) =
-  ((text == "") ==> (result == none)) and ((text != "") ==> (result == some(md5Hex(text))))
+def stringToMd5_postcond(text: str, result: option[str], h_precond: stringToMd5_precond(text)) =
+  (text == "" ==> result == none) and (text != "" ==> result == some(md5Hex(text)))

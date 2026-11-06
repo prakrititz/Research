@@ -2,4 +2,4 @@ def TestArrayElements_precond(a: array[int], j: nat): prop =
   j < size(a)
 
 def TestArrayElements_postcond(a: array[int], j: nat, result: array[int], h_precond: TestArrayElements_precond(a, j)) =
-  (size(result) == size(a)) and ((result[j] == 60) and (forall k: (k < size(a)) ==> ((k != j) ==> (result[k] == a[k]))))
+  size(result) == size(a) and result[j] == 60 and (forall k: k < size(a) ==> k != j ==> result[k] == a[k])

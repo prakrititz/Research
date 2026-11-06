@@ -5,4 +5,4 @@ def sumTo(a: array[int], n: nat): int =
   0 if n == 0 else sumTo(a, n - 1) + a[n - 1]
 
 def arraySum_postcond(a: array[int], result: int, h_precond: arraySum_precond(a)) =
-  ((result - sumTo(a, size(a))) == 0) and (result >= sumTo(a, size(a)))
+  result - sumTo(a, size(a)) == 0 and result >= sumTo(a, size(a))

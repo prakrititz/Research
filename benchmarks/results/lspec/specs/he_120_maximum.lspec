@@ -2,4 +2,4 @@ def maximum_precond(arr: list[int], k: nat): prop =
   k <= len(arr)
 
 def maximum_postcond(arr: list[int], k: nat, result: list[int], h_precond: maximum_precond(arr, k)) =
-  result.isPerm(sorted(arr, lambda a, b: a >= b)[:k]) and (forall i: (i < (len(result) - 1)) ==> (result[i] <= result[i + 1]))
+  result.isPerm(sorted(arr, lambda a, b: a >= b)[:k]) and (forall i: i < len(result) - 1 ==> result[i] <= result[i + 1])

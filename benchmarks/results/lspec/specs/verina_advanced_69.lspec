@@ -2,4 +2,4 @@ def searchInsert_precond(xs: list[int], target: int): prop =
   pairwise(lambda _c1, _c2: _c1 < _c2, xs)
 
 def searchInsert_postcond(xs: list[int], target: int, result: nat, h_precond: searchInsert_precond(xs, target)): prop =
-  let allBeforeLess = range(result).all(lambda i: xs[i] < target); let inBounds = result <= len(xs); let insertedCorrectly = (result < len(xs)) ==> (target <= xs[result]); inBounds and (allBeforeLess and insertedCorrectly)
+  let allBeforeLess = range(result).all(lambda i: xs[i] < target); let inBounds = result <= len(xs); let insertedCorrectly = result < len(xs) ==> target <= xs[result]; inBounds and allBeforeLess and insertedCorrectly

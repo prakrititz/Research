@@ -2,4 +2,4 @@ def reverseList_precond(l: list[int]): prop =
   true_prop
 
 def reverseList_postcond(l: list[int], result: list[int], h_precond: reverseList_precond(l)) =
-  (len(result) == len(l)) and (forall i: (i < len(l)) ==> (result[i] == l[(len(l) - 1) - i]))
+  len(result) == len(l) and (forall i: i < len(l) ==> result[i] == l[len(l) - 1 - i])

@@ -1,8 +1,8 @@
-def splitWhite(txt: str_t): list[str_t] =
-  txt.map(lambda c: ' ' if ((c === '\n') || (c === '\r')) || (c === '\t') else c).splitOn(" ").filter(lambda w: w !== "")
+def splitWhite(txt: str): list[str] =
+  txt.map(lambda c: ' ' if c === '\n' || c === '\r' || c === '\t' else c).splitOn(" ").filter(lambda w: w !== "")
 
-def splitWords_precond(txt: str_t): prop =
+def splitWords_precond(txt: str): prop =
   true_prop
 
-def splitWords_postcond(txt: str_t, result: list[str_t] ⊕ nat, h_precond: splitWords_precond(txt)) =
-  let hasWhite = list(txt).any(lambda c: (((c === ' ') || (c === '\n')) || (c === '\r')) || (c === '\t')); result == (Sum.inl(splitWhite(txt)) if hasWhite else Sum.inl(txt.splitOn(",")) if list(txt).contains(',') else Sum.inr(len(list(txt).filter(lambda c: c.isLower && (((to_nat(c) - 97) % 2) == 1)))))
+def splitWords_postcond(txt: str, result: list[str] ⊕ nat, h_precond: splitWords_precond(txt)) =
+  let hasWhite = list(txt).any(lambda c: c === ' ' || c === '\n' || c === '\r' || c === '\t'); result == (Sum.inl(splitWhite(txt)) if hasWhite else Sum.inl(txt.splitOn(",")) if list(txt).contains(',') else Sum.inr(len(list(txt).filter(lambda c: c.isLower && (to_nat(c) - 97) % 2 == 1))))

@@ -2,4 +2,4 @@ def derivative_precond(xs: list[int]): prop =
   true_prop
 
 def derivative_postcond(xs: list[int], result: list[int], h_precond: derivative_precond(xs)) =
-  (len(result) == (len(xs) - 1)) and (forall i: (i < (len(xs) - 1)) ==> (result[i] == (xs[i + 1] * ((i as int) + 1))))
+  len(result) == len(xs) - 1 and (forall i: i < len(xs) - 1 ==> result[i] == xs[i + 1] * ((i as int) + 1))

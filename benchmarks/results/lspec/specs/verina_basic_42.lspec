@@ -1,8 +1,8 @@
-def isDigit(c: char): bool_t =
-  ('0' <= c) and (c <= '9')
+def isDigit(c: char): bool =
+  '0' <= c and c <= '9'
 
-def countDigits_precond(s: str_t): prop =
+def countDigits_precond(s: str): prop =
   true_prop
 
-def countDigits_postcond(s: str_t, result: nat, h_precond: countDigits_precond(s)) =
-  ((result - List.length(List.filter(isDigit, list(s)))) == 0) and ((List.length(List.filter(isDigit, list(s))) - result) == 0)
+def countDigits_postcond(s: str, result: nat, h_precond: countDigits_precond(s)) =
+  result - List.length(List.filter(isDigit, list(s))) == 0 and List.length(List.filter(isDigit, list(s))) - result == 0

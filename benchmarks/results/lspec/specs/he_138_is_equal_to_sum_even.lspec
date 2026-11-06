@@ -1,5 +1,5 @@
 def isEqualToSumEven_precond(n: nat): prop =
   true_prop
 
-def isEqualToSumEven_postcond(n: nat, result: bool_t, h_precond: isEqualToSumEven_precond(n)) =
-  (result == True) <==> ((n >= 8) and ((n % 2) == 0))
+def isEqualToSumEven_postcond(n: nat, result: bool, h_precond: isEqualToSumEven_precond(n)) =
+  result == True <==> n >= 8 and n % 2 == 0

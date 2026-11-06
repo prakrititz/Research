@@ -1,5 +1,5 @@
-def totalMatch_precond(lst1: list[str_t], lst2: list[str_t]): prop =
+def totalMatch_precond(lst1: list[str], lst2: list[str]): prop =
   true_prop
 
-def totalMatch_postcond(lst1: list[str_t], lst2: list[str_t], result: list[str_t], h_precond: totalMatch_precond(lst1, lst2)) =
+def totalMatch_postcond(lst1: list[str], lst2: list[str], result: list[str], h_precond: totalMatch_precond(lst1, lst2)) =
   result == (lst1 if sum(lst1.map(String.length)) <= sum(lst2.map(String.length)) else lst2)

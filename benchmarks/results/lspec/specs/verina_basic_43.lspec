@@ -2,4 +2,4 @@ def sumOfFourthPowerOfOddNumbers_precond(n: nat): prop =
   true_prop
 
 def sumOfFourthPowerOfOddNumbers_postcond(n: nat, result: nat, h_precond: sumOfFourthPowerOfOddNumbers_precond(n)) =
-  (15 * result) == ((n * ((2 * n) + 1)) * (((7 + (24 * (n ** 3))) - (12 * (n ** 2))) - (14 * n)))
+  15 * result == n * (2 * n + 1) * (7 + 24 * n ** 3 - 12 * n ** 2 - 14 * n)

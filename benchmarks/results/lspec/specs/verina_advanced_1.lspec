@@ -2,7 +2,7 @@ def filterlist(x: int, nums: list[int]): list[int] =
   let rec aux((lst: list[int])): list[int] = match lst with | [] => [] | y :: ys => y :: aux(ys) if y == x else aux(ys); aux(nums)
 
 def FindSingleNumber_precond(nums: list[int]): prop =
-  let numsCount = nums.map(lambda x: nums.count(x)); numsCount.all(lambda count: (count == 1) or (count == 2)) and (numsCount.count(1) == 1)
+  let numsCount = nums.map(lambda x: nums.count(x)); numsCount.all(lambda count: count == 1 or count == 2) and numsCount.count(1) == 1
 
 def FindSingleNumber_postcond(nums: list[int], result: int, h_precond: FindSingleNumber_precond(nums)): prop =
-  (len(nums) > 0) and ((len(filterlist(result, nums)) == 1) and (forall (x: int): (x in nums) ==> ((x == result) or (len(filterlist(x, nums)) == 2))))
+  len(nums) > 0 and len(filterlist(result, nums)) == 1 and (forall (x: int): x in nums ==> x == result or len(filterlist(x, nums)) == 2)

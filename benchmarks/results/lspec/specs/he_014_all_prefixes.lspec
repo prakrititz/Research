@@ -1,5 +1,5 @@
-def allPrefixes_precond(string: str_t): prop =
+def allPrefixes_precond(string: str): prop =
   true_prop
 
-def allPrefixes_postcond(string: str_t, result: list[str_t], h_precond: allPrefixes_precond(`string`)) =
-  (len(result) == len(`string`)) and (forall i: (i < len(`string`)) ==> (result[i] == string(list(`string`)[:i + 1])))
+def allPrefixes_postcond(string: str, result: list[str], h_precond: allPrefixes_precond(`string`)) =
+  len(result) == len(`string`) and (forall i: i < len(`string`) ==> result[i] == string(list(`string`)[:i + 1]))

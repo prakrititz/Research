@@ -2,4 +2,4 @@ def add_precond(x: int, y: int): prop =
   true_prop
 
 def add_postcond(x: int, y: int, result: int, h_precond: add_precond(x, y)) =
-  result == (x + y)
+  result == x + y

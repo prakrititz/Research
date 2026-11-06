@@ -2,4 +2,4 @@ def mostFrequent_precond(xs: list[int]): prop =
   xs != []
 
 def mostFrequent_postcond(xs: list[int], result: int, h_precond: mostFrequent_precond(xs)): prop =
-  let count = lambda x: xs.count_if(lambda y: y == x); (result in xs) and (xs.all(lambda x: count(x) <= count(result)) and (xs.filter(lambda x: count(x) == count(result)).head? == some(result)))
+  let count = lambda x: xs.count_if(lambda y: y == x); result in xs and xs.all(lambda x: count(x) <= count(result)) and xs.filter(lambda x: count(x) == count(result)).head? == some(result)

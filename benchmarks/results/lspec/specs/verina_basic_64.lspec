@@ -1,5 +1,5 @@
 def insert_precond(oline: array[char], l: nat, nl: array[char], p: nat, atPos: nat): prop =
-  (l <= size(oline)) and ((p <= size(nl)) and (atPos <= l))
+  l <= size(oline) and p <= size(nl) and atPos <= l
 
 def insert_postcond(oline: array[char], l: nat, nl: array[char], p: nat, atPos: nat, result: array[char], h_precond: insert_precond(oline, l, nl, p, atPos)) =
-  (size(result) == (l + p)) and (range(p).all(lambda i: result[atPos + i] == nl[i]) and (range(atPos).all(lambda i: result[i] == oline[i]) and range(l - atPos).all(lambda i: result[(atPos + p) + i] == oline[atPos + i])))
+  size(result) == l + p and range(p).all(lambda i: result[atPos + i] == nl[i]) and range(atPos).all(lambda i: result[i] == oline[i]) and range(l - atPos).all(lambda i: result[atPos + p + i] == oline[atPos + i])

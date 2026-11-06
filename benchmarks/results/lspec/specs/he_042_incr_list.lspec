@@ -2,4 +2,4 @@ def incrList_precond(l: list[int]): prop =
   true_prop
 
 def incrList_postcond(l: list[int], result: list[int], h_precond: incrList_precond(l)) =
-  (len(result) == len(l)) and (forall i: (i < len(l)) ==> (result[i] == (l[i] + 1)))
+  len(result) == len(l) and (forall i: i < len(l) ==> result[i] == l[i] + 1)

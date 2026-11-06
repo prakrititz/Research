@@ -1,12 +1,12 @@
-def romanTable: list[tuple[nat, str_t]] =
+def romanTable: list[tuple[nat, str]] =
   [(1000, "m"), (900, "cm"), (500, "d"), (400, "cd"), (100, "c"), (90, "xc"), (50, "l"), (40, "xl"), (10, "x"), (9, "ix"), (5, "v"), (4, "iv"), (1, "i")]
 
-def romanSpec: nat ==> (nat ==> str_t)
+def romanSpec: nat ==> nat ==> str
   | 0, _ => ""
   | fuel + 1, n => "" if n == 0 else match romanTable.find?(lambda p: bool(p.1 <= n)) with | some(p) => p.2 ++ romanSpec(fuel, n - p.1) | none => ""
 
 def intToMiniRoman_precond(number: nat): prop =
-  (1 <= number) and (number <= 1000)
+  1 <= number and number <= 1000
 
-def intToMiniRoman_postcond(number: nat, result: str_t, h_precond: intToMiniRoman_precond(number)) =
+def intToMiniRoman_postcond(number: nat, result: str, h_precond: intToMiniRoman_precond(number)) =
   result == romanSpec(number, number)

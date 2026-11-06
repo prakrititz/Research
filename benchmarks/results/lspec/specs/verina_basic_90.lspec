@@ -2,7 +2,7 @@ def get2d(a: array[array[int]], i: int, j: int): int =
   a[to_nat_of(i)][to_nat_of(j)]
 
 def SlopeSearch_precond(a: array[array[int]], key: int): prop =
-  (size(a) > 0) and ((size(a[0]) > 0) and (pairwise(lambda _c1, _c2: size(_c1) == size(_c2), list(a)) and (a.all(lambda x: pairwise(lambda _c1, _c2: _c1 <= _c2, list(x))) and range(size(a[0])).all(lambda i: pairwise(lambda _c1, _c2: _c1 <= _c2, list(a.map(lambda x: x[i])))))))
+  size(a) > 0 and size(a[0]) > 0 and pairwise(lambda _c1, _c2: size(_c1) == size(_c2), list(a)) and a.all(lambda x: pairwise(lambda _c1, _c2: _c1 <= _c2, list(x))) and range(size(a[0])).all(lambda i: pairwise(lambda _c1, _c2: _c1 <= _c2, list(a.map(lambda x: x[i]))))
 
 def SlopeSearch_postcond(a: array[array[int]], key: int, result: tuple[int, int], h_precond: SlopeSearch_precond(a, key)) =
-  let (m, n) = result; ((m >= 0) and ((m < size(a)) and ((n >= 0) and ((n < size(a[0])) and (get2d(a, m, n) == key))))) or ((m == (-1)) and ((n == (-1)) and a.all(lambda x: x.all(lambda e: e != key))))
+  let (m, n) = result; m >= 0 and m < size(a) and n >= 0 and n < size(a[0]) and get2d(a, m, n) == key or m == (-1) and n == (-1) and a.all(lambda x: x.all(lambda e: e != key))

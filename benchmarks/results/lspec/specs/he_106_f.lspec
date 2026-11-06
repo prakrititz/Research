@@ -2,4 +2,4 @@ def f106_precond(n: nat): prop =
   true_prop
 
 def f106_postcond(n: nat, result: list[nat], h_precond: f106_precond(n)) =
-  (len(result) == n) and (forall i: (i < n) ==> (result[i] == ((i + 1).factorial if ((i + 1) % 2) == 0 else ((i + 1) * (i + 2)) / 2)))
+  len(result) == n and (forall i: i < n ==> result[i] == ((i + 1).factorial if (i + 1) % 2 == 0 else (i + 1) * (i + 2) / 2))

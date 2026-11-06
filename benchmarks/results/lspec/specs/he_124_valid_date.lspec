@@ -1,11 +1,11 @@
 def natOf(cs: list[char]): nat =
-  cs.foldl(lambda a, c: (a * 10) + (to_nat(c) - 48), 0)
+  cs.foldl(lambda a, c: a * 10 + (to_nat(c) - 48), 0)
 
 def daysIn(m: nat): nat =
   [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1]
 
-def validDate_precond(date: str_t): prop =
+def validDate_precond(date: str): prop =
   true_prop
 
-def validDate_postcond(date: str_t, result: bool_t, h_precond: validDate_precond(date)) =
-  let l = list(date); (result == True) <==> ((len(l) == 10) and ((l[2] == '-') and ((l[5] == '-') and ((l[:2].all(Char.isDigit) == True) and ((l[3:][:2].all(Char.isDigit) == True) and ((l[6:].all(Char.isDigit) == True) and ((1 <= natOf(l[:2])) and ((natOf(l[:2]) <= 12) and ((1 <= natOf(l[3:][:2])) and (natOf(l[3:][:2]) <= daysIn(natOf(l[:2]))))))))))))
+def validDate_postcond(date: str, result: bool, h_precond: validDate_precond(date)) =
+  let l = list(date); result == True <==> len(l) == 10 and l[2] == '-' and l[5] == '-' and l[:2].all(Char.isDigit) == True and l[3:][:2].all(Char.isDigit) == True and l[6:].all(Char.isDigit) == True and 1 <= natOf(l[:2]) and natOf(l[:2]) <= 12 and 1 <= natOf(l[3:][:2]) and natOf(l[3:][:2]) <= daysIn(natOf(l[:2]))

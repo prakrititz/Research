@@ -1,8 +1,8 @@
-def strength(s: str_t): int =
+def strength(s: str): int =
   (len(list(s).filter(Char.isUpper)) as int) - (len(list(s).filter(Char.isLower)) as int)
 
-def strongestExtension_precond(class_name: str_t, extensions: list[str_t]): prop =
+def strongestExtension_precond(class_name: str, extensions: list[str]): prop =
   extensions != []
 
-def strongestExtension_postcond(class_name: str_t, extensions: list[str_t], result: str_t, h_precond: strongestExtension_precond(class_name, extensions)) =
-  exists i: (i < len(extensions)) and ((result == ((class_name ++ ".") ++ extensions[i])) and ((forall j: (j < len(extensions)) ==> (strength(extensions[j]) <= strength(extensions[i]))) and (forall j: (j < i) ==> (strength(extensions[j]) < strength(extensions[i])))))
+def strongestExtension_postcond(class_name: str, extensions: list[str], result: str, h_precond: strongestExtension_precond(class_name, extensions)) =
+  exists i: i < len(extensions) and result == class_name ++ "." ++ extensions[i] and (forall j: j < len(extensions) ==> strength(extensions[j]) <= strength(extensions[i])) and (forall j: j < i ==> strength(extensions[j]) < strength(extensions[i]))

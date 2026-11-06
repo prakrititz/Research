@@ -1,5 +1,5 @@
 def ifPowerOfFour_precond(n: nat): prop =
   true_prop
 
-def ifPowerOfFour_postcond(n: nat, result: bool_t, h_precond: ifPowerOfFour_precond(n)): prop =
-  result <==> (exists (m: nat): n == (4 ** m))
+def ifPowerOfFour_postcond(n: nat, result: bool, h_precond: ifPowerOfFour_precond(n)): prop =
+  result <==> (exists (m: nat): n == 4 ** m)

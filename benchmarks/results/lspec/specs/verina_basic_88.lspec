@@ -2,4 +2,4 @@ def ToArray_precond(xs: list[int]): prop =
   true_prop
 
 def ToArray_postcond(xs: list[int], result: array[int], h_precond: ToArray_precond(xs)) =
-  (size(result) == len(xs)) and (forall (i: nat): (i < len(xs)) ==> (result[i] == xs[i]))
+  size(result) == len(xs) and (forall (i: nat): i < len(xs) ==> result[i] == xs[i])

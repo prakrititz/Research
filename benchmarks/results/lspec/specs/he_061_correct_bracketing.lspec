@@ -1,5 +1,5 @@
-def correctBracketing_precond(brackets: str_t): prop =
+def correctBracketing_precond(brackets: str): prop =
   true_prop
 
-def correctBracketing_postcond(brackets: str_t, result: bool_t, h_precond: correctBracketing_precond(brackets)) =
-  (result == True) <==> ((forall k: (k <= len(brackets)) ==> (list(brackets)[:k].count('(') >= list(brackets)[:k].count(')'))) and (list(brackets).count('(') == list(brackets).count(')')))
+def correctBracketing_postcond(brackets: str, result: bool, h_precond: correctBracketing_precond(brackets)) =
+  result == True <==> (forall k: k <= len(brackets) ==> list(brackets)[:k].count('(') >= list(brackets)[:k].count(')')) and list(brackets).count('(') == list(brackets).count(')')

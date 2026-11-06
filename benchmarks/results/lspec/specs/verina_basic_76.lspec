@@ -2,4 +2,4 @@ def myMin_precond(x: int, y: int): prop =
   true_prop
 
 def myMin_postcond(x: int, y: int, result: int, h_precond: myMin_precond(x, y)) =
-  ((x <= y) ==> (result == x)) and ((x > y) ==> (result == y))
+  (x <= y ==> result == x) and (x > y ==> result == y)

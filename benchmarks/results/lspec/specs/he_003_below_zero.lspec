@@ -1,5 +1,5 @@
 def belowZero_precond(operations: list[int]): prop =
   true_prop
 
-def belowZero_postcond(operations: list[int], result: bool_t, h_precond: belowZero_precond(operations)) =
-  (result == True) <==> (exists k: (k <= len(operations)) and (sum(operations[:k]) < 0))
+def belowZero_postcond(operations: list[int], result: bool, h_precond: belowZero_precond(operations)) =
+  result == True <==> (exists k: k <= len(operations) and sum(operations[:k]) < 0)

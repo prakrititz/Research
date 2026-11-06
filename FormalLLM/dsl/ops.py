@@ -16,13 +16,17 @@ UNOPS = {"¬": "not", "!": "!", "-": "-", "↑": "↑", "~~~": "~~~"}
 #: Lean global (a constant, function or type) -> L_spec name
 NAMES = {
     "true": "True", "false": "False", "True": "true_prop", "False": "false_prop",     # Bool values; propositions
-    "Nat": "nat", "ℕ": "nat", "Int": "int", "ℤ": "int", "Bool": "bool_t", "Char": "char", "String": "str_t",
+    "Nat": "nat", "ℕ": "nat", "Int": "int", "ℤ": "int", "Bool": "bool", "Char": "char", "String": "str",
     "List": "list", "Array": "array", "Option": "option", "Rat": "rat", "ℚ": "rat", "Float": "float", "Prop": "prop",
-    "decide": "bool", "List.range": "range", "toString": "str", "String.mk": "string", "Int.ofNat": "int_of_nat",
+    "List.range": "range", "String.mk": "string", "Int.ofNat": "int_of_nat",
     "Nat.Prime": "is_prime", "Nat.toDigits": "digits", "Nat.sqrt": "isqrt", "Nat.gcd": "gcd", "Int.toNat": "to_nat_of",
     "List.Pairwise": "pairwise", "List.foldl": "foldl", "List.elem": "elem", "List.isPerm": "is_perm",
     "String.singleton": "string1", "List.replicate": "replicate",
 }
+
+#: a type name that, applied, is a conversion (as in Python): `bool` is `Bool` and `bool(p)` is `decide p`; `str` is
+#: `String` and `str(x)` is `toString x`
+CALL_NAMES = {"decide": "bool", "toString": "str"}
 
 #: Lean method (`x.f`) written as a function in L_spec: `x.length` -> `len(x)`, `l.mergeSort c` -> `sorted(l, c)`
 METHOD_FUNCS = {
@@ -49,5 +53,6 @@ UNOPS_INV = _inverse(UNOPS)
 NAMES_INV = _inverse(NAMES)
 METHOD_FUNCS_INV = _inverse(METHOD_FUNCS)
 METHODS_INV = _inverse(METHODS)
+CALL_NAMES_INV = _inverse(CALL_NAMES)
 #: every name L_spec gives a meaning to: a Lean name equal to one of these is escaped when printed
 RESERVED = set(NAMES_INV) | set(METHOD_FUNCS_INV) | KEYWORDS | {"floor", "ceil", "floor_nat", "ceil_nat", "abs", "tuple"}

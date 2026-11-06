@@ -2,4 +2,4 @@ def rollingMax_precond(numbers: list[int]): prop =
   true_prop
 
 def rollingMax_postcond(numbers: list[int], result: list[int], h_precond: rollingMax_precond(numbers)) =
-  (len(result) == len(numbers)) and (forall i: (i < len(numbers)) ==> ((result[i] in numbers[:i + 1]) and (forall x in numbers[:i + 1]: x <= result[i])))
+  len(result) == len(numbers) and (forall i: i < len(numbers) ==> result[i] in numbers[:i + 1] and (forall x in numbers[:i + 1]: x <= result[i]))

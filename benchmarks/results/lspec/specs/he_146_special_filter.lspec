@@ -5,4 +5,4 @@ def specialFilter_precond(nums: list[int]): prop =
   true_prop
 
 def specialFilter_postcond(nums: list[int], result: nat, h_precond: specialFilter_precond(nums)) =
-  result == len(nums.filter(lambda x: (x > 10) and (((firstDigit(abs_nat(x)) % 2) == 1) and (((abs_nat(x) % 10) % 2) == 1))))
+  result == len(nums.filter(lambda x: x > 10 and firstDigit(abs_nat(x)) % 2 == 1 and abs_nat(x) % 10 % 2 == 1))

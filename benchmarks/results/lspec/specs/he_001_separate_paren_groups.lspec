@@ -1,8 +1,8 @@
 def isBalanced(l: list[char]): prop =
-  (forall k: (k <= len(l)) ==> (l[:k].count(')') <= l[:k].count('('))) and (l.count('(') == l.count(')'))
+  (forall k: k <= len(l) ==> l[:k].count(')') <= l[:k].count('(')) and l.count('(') == l.count(')')
 
-def separateParenGroups_precond(paren_string: str_t): prop =
-  isBalanced(list(paren_string).filter(lambda c: c !== ' ')) and list(paren_string).all(lambda c: ((c === '(') || (c === ')')) || (c === ' '))
+def separateParenGroups_precond(paren_string: str): prop =
+  isBalanced(list(paren_string).filter(lambda c: c !== ' ')) and list(paren_string).all(lambda c: c === '(' || c === ')' || c === ' ')
 
-def separateParenGroups_postcond(paren_string: str_t, result: list[str_t], h_precond: separateParenGroups_precond(paren_string)) =
-  (result.map(String.toList).flatten == list(paren_string).filter(lambda c: c !== ' ')) and (forall g in result: (len(g) > 0) and (isBalanced(list(g)) and (forall k: (k < len(g)) ==> ((0 < k) ==> (not isBalanced(list(g)[:k]))))))
+def separateParenGroups_postcond(paren_string: str, result: list[str], h_precond: separateParenGroups_precond(paren_string)) =
+  result.map(String.toList).flatten == list(paren_string).filter(lambda c: c !== ' ') and (forall g in result: len(g) > 0 and isBalanced(list(g)) and (forall k: k < len(g) ==> 0 < k ==> (not isBalanced(list(g)[:k]))))

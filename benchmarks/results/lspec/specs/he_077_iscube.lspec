@@ -1,5 +1,5 @@
 def iscube_precond(a: int): prop =
   true_prop
 
-def iscube_postcond(a: int, result: bool_t, h_precond: iscube_precond(a)) =
-  (result == True) <==> (exists k: (k < (abs_nat(a) + 2)) and ((k ** 3) == abs_nat(a)))
+def iscube_postcond(a: int, result: bool, h_precond: iscube_precond(a)) =
+  result == True <==> (exists k: k < abs_nat(a) + 2 and k ** 3 == abs_nat(a))

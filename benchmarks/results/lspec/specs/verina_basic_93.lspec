@@ -2,4 +2,4 @@ def SwapBitvectors_precond(X: UInt8, Y: UInt8): prop =
   true_prop
 
 def SwapBitvectors_postcond(X: UInt8, Y: UInt8, result: tuple[UInt8, UInt8], h_precond: SwapBitvectors_precond(X, Y)) =
-  (result.fst == Y) and ((result.snd == X) and ((X != Y) ==> ((result.fst != X) and (result.snd != Y))))
+  result.fst == Y and result.snd == X and (X != Y ==> result.fst != X and result.snd != Y)

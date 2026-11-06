@@ -2,4 +2,4 @@ def lengthOfLIS_precond(nums: list[int]): prop =
   true_prop
 
 def lengthOfLIS_postcond(nums: list[int], result: int, h_precond: lengthOfLIS_precond(nums)): prop =
-  let rec isStrictlyIncreasing((l: list[int])): bool_t = match l with | [] | [_] => True | x :: (y :: rest) => (x < y) && isStrictlyIncreasing(y :: rest); let rec subsequences((xs: list[int])): list[list[int]] = match xs with | [] => [[]] | x :: xs' => let rest = subsequences(xs'); rest ++ rest.map(lambda r: x :: r); let allIncreasing = subsequences(nums).filter(lambda l: isStrictlyIncreasing(l)); allIncreasing.any(lambda l: len(l) == result) and allIncreasing.all(lambda l: len(l) <= result)
+  let rec isStrictlyIncreasing((l: list[int])): bool = match l with | [] | [_] => True | x :: y :: rest => x < y && isStrictlyIncreasing(y :: rest); let rec subsequences((xs: list[int])): list[list[int]] = match xs with | [] => [[]] | x :: xs' => let rest = subsequences(xs'); rest ++ rest.map(lambda r: x :: r); let allIncreasing = subsequences(nums).filter(lambda l: isStrictlyIncreasing(l)); allIncreasing.any(lambda l: len(l) == result) and allIncreasing.all(lambda l: len(l) <= result)

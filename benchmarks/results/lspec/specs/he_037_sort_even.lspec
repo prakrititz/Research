@@ -1,8 +1,8 @@
 def atMod(m: nat, x: list[int]): list[int] =
-  range(len(x)).filter(lambda i: (i % m) == 0).map(lambda i: x[i])
+  range(len(x)).filter(lambda i: i % m == 0).map(lambda i: x[i])
 
 def sortEven_precond(l: list[int]): prop =
   true_prop
 
 def sortEven_postcond(l: list[int], result: list[int], h_precond: sortEven_precond(l)) =
-  (len(result) == len(l)) and ((forall i: (i < len(l)) ==> (((i % 2) != 0) ==> (result[i] == l[i]))) and (atMod(2, result).isPerm(atMod(2, l)) and (forall i: (i < (len(atMod(2, result)) - 1)) ==> (atMod(2, result)[i] <= atMod(2, result)[i + 1]))))
+  len(result) == len(l) and (forall i: i < len(l) ==> i % 2 != 0 ==> result[i] == l[i]) and atMod(2, result).isPerm(atMod(2, l)) and (forall i: i < len(atMod(2, result)) - 1 ==> atMod(2, result)[i] <= atMod(2, result)[i + 1])

@@ -1,5 +1,5 @@
 def kthElement_precond(arr: array[int], k: nat): prop =
-  (k >= 1) and (k <= size(arr))
+  k >= 1 and k <= size(arr)
 
 def kthElement_postcond(arr: array[int], k: nat, result: int, h_precond: kthElement_precond(arr, k)) =
-  arr.any(lambda x: (x == result) and (x == arr[k - 1]))
+  arr.any(lambda x: x == result and x == arr[k - 1])

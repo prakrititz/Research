@@ -1,5 +1,5 @@
 def triplesSumToZero_precond(l: list[int]): prop =
   true_prop
 
-def triplesSumToZero_postcond(l: list[int], result: bool_t, h_precond: triplesSumToZero_precond(l)) =
-  (result == True) <==> (exists k: (k < len(l)) and (exists j: (j < k) and (exists i: (i < j) and (((l[i] + l[j]) + l[k]) == 0))))
+def triplesSumToZero_postcond(l: list[int], result: bool, h_precond: triplesSumToZero_precond(l)) =
+  result == True <==> (exists k: k < len(l) and (exists j: j < k and (exists i: i < j and l[i] + l[j] + l[k] == 0)))

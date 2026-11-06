@@ -2,4 +2,4 @@ def doubleTheDifference_precond(lst: list[int ⊕ rat]): prop =
   true_prop
 
 def doubleTheDifference_postcond(lst: list[int ⊕ rat], result: int, h_precond: doubleTheDifference_precond(lst)) =
-  result == sum(lst.map(Sum.elim(lambda (x: int): x * x if (x > 0) and ((x % 2) == 1) else 0, lambda (_: rat): 0)))
+  result == sum(lst.map(Sum.elim(lambda (x: int): x * x if x > 0 and x % 2 == 1 else 0, lambda (_: rat): 0)))

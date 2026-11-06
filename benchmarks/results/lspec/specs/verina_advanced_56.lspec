@@ -5,8 +5,8 @@ def countVal(val: int): list[int] ==> nat
   | [] => 0
   | x :: xs => let rest = countVal(val, xs); rest + 1 if x == val else rest
 
-def isSubsequence(xs: list[int], ys: list[int]): bool_t =
+def isSubsequence(xs: list[int], ys: list[int]): bool =
   match xs, ys with | [], _ => True | _ :: _, [] => False | x :: xt, y :: yt => isSubsequence(xt, yt) if x == y else isSubsequence(xs, yt)
 
 def moveZeroes_postcond(xs: list[int], result: list[int], h_precond: moveZeroes_precond(xs)): prop =
-  (isSubsequence(xs.filter(lambda x: x != 0), result) == True) and (result.dropWhile(lambda x: x != 0).all(lambda x: x == 0) and ((countVal(0, xs) == countVal(0, result)) and (len(xs) == len(result))))
+  isSubsequence(xs.filter(lambda x: x != 0), result) == True and result.dropWhile(lambda x: x != 0).all(lambda x: x == 0) and countVal(0, xs) == countVal(0, result) and len(xs) == len(result)

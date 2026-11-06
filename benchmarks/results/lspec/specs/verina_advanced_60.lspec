@@ -2,4 +2,4 @@ def partitionEvensOdds_precond(nums: list[nat]): prop =
   true_prop
 
 def partitionEvensOdds_postcond(nums: list[nat], result: tuple[list[nat], list[nat]], h_precond: partitionEvensOdds_precond(nums)): prop =
-  let evens = result.fst; let odds = result.snd; ((evens ++ odds) == (nums.filter(lambda n: (n % 2) === 0) ++ nums.filter(lambda n: (n % 2) === 1))) and (evens.all(lambda n: (n % 2) === 0) and odds.all(lambda n: (n % 2) === 1))
+  let evens = result.fst; let odds = result.snd; evens ++ odds == nums.filter(lambda n: n % 2 === 0) ++ nums.filter(lambda n: n % 2 === 1) and evens.all(lambda n: n % 2 === 0) and odds.all(lambda n: n % 2 === 1)

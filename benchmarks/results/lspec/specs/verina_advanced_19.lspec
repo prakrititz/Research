@@ -1,10 +1,10 @@
-def isUpperAlpha(c: char): bool_t =
-  ('A' <= c) and (c <= 'Z')
+def isUpperAlpha(c: char): bool =
+  'A' <= c and c <= 'Z'
 
-def isLowerAlpha(c: char): bool_t =
-  ('a' <= c) and (c <= 'z')
+def isLowerAlpha(c: char): bool =
+  'a' <= c and c <= 'z'
 
-def isAlpha(c: char): bool_t =
+def isAlpha(c: char): bool =
   isUpperAlpha(c) or isLowerAlpha(c)
 
 def toLower(c: char): char =
@@ -13,11 +13,11 @@ def toLower(c: char): char =
 def normalizeChar(c: char): option[char] =
   some(toLower(c)) if isAlpha(c) else none
 
-def normalizeString(s: str_t): list[char] =
+def normalizeString(s: str): list[char] =
   list(s).foldr(lambda c, acc: match normalizeChar(c) with | some(c') => c' :: acc | none => acc, [])
 
-def isCleanPalindrome_precond(s: str_t): prop =
+def isCleanPalindrome_precond(s: str): prop =
   true_prop
 
-def isCleanPalindrome_postcond(s: str_t, result: bool_t, h_precond: isCleanPalindrome_precond(s)): prop =
-  let norm = normalizeString(s); ((result == True) ==> (norm == reversed(norm))) and ((result == False) ==> (norm != reversed(norm)))
+def isCleanPalindrome_postcond(s: str, result: bool, h_precond: isCleanPalindrome_precond(s)): prop =
+  let norm = normalizeString(s); (result == True ==> norm == reversed(norm)) and (result == False ==> norm != reversed(norm))

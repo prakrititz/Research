@@ -1,5 +1,5 @@
-def replaceChars_precond(s: str_t, oldChar: char, newChar: char): prop =
+def replaceChars_precond(s: str, oldChar: char, newChar: char): prop =
   true_prop
 
-def replaceChars_postcond(s: str_t, oldChar: char, newChar: char, result: str_t, h_precond: replaceChars_precond(s, oldChar, newChar)) =
-  let cs = list(s); let cs' = list(result); (len(result) == len(s)) and (forall i: (i < len(cs)) ==> (((cs[i] == oldChar) ==> (cs'[i] == newChar)) and ((cs[i] != oldChar) ==> (cs'[i] == cs[i]))))
+def replaceChars_postcond(s: str, oldChar: char, newChar: char, result: str, h_precond: replaceChars_precond(s, oldChar, newChar)) =
+  let cs = list(s); let cs' = list(result); len(result) == len(s) and (forall i: i < len(cs) ==> (cs[i] == oldChar ==> cs'[i] == newChar) and (cs[i] != oldChar ==> cs'[i] == cs[i]))

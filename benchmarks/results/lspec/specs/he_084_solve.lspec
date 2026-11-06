@@ -1,8 +1,8 @@
 def isBinary(m: list[char], v: nat): prop =
-  (m.all(lambda c: (c === '0') || (c === '1')) == True) and ((m.foldl(lambda acc, c: (2 * acc) + (1 if c === '1' else 0), 0) == v) and (((v == 0) ==> (m == ['0'])) and ((v > 0) ==> (m.head! == '1'))))
+  m.all(lambda c: c === '0' || c === '1') == True and m.foldl(lambda acc, c: 2 * acc + (1 if c === '1' else 0), 0) == v and (v == 0 ==> m == ['0']) and (v > 0 ==> m.head! == '1')
 
 def solve84_precond(N: nat): prop =
   true_prop
 
-def solve84_postcond(N: nat, result: str_t, h_precond: solve84_precond(N)) =
+def solve84_postcond(N: nat, result: str, h_precond: solve84_precond(N)) =
   isBinary(list(result), sum(list(str(N)).map(lambda c: to_nat(c) - to_nat('0'))))

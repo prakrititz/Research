@@ -2,4 +2,4 @@ def UpdateElements_precond(a: array[int]): prop =
   size(a) >= 8
 
 def UpdateElements_postcond(a: array[int], result: array[int], h_precond: UpdateElements_precond(a)) =
-  (size(result) == size(a)) and ((result[4] == (a[4] + 3)) and ((result[7] == 516) and (forall i: (i < size(a)) ==> ((i != 4) ==> ((i != 7) ==> (result[i] == a[i]))))))
+  size(result) == size(a) and result[4] == a[4] + 3 and result[7] == 516 and (forall i: i < size(a) ==> i != 4 ==> i != 7 ==> result[i] == a[i])

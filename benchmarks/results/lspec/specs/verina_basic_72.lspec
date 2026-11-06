@@ -2,4 +2,4 @@ def append_precond(a: array[int], b: int): prop =
   true_prop
 
 def append_postcond(a: array[int], b: int, result: array[int], h_precond: append_precond(a, b)) =
-  List.range'(0, size(a)).all(lambda i: result[i] == a[i]) and ((result[size(a)] == b) and (size(result) == (size(a) + 1)))
+  List.range'(0, size(a)).all(lambda i: result[i] == a[i]) and result[size(a)] == b and size(result) == size(a) + 1

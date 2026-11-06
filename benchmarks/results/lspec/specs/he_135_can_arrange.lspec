@@ -2,4 +2,4 @@ def canArrange_precond(arr: list[int]): prop =
   arr.Nodup
 
 def canArrange_postcond(arr: list[int], result: int, h_precond: canArrange_precond(arr)) =
-  ((result == (-1)) and (forall i: (i < len(arr)) ==> ((1 <= i) ==> (arr[i - 1] <= arr[i])))) or (exists i: (i < len(arr)) and ((1 <= i) and ((result == (i as int)) and ((arr[i] < arr[i - 1]) and (forall j: (j < len(arr)) ==> ((i < j) ==> (arr[j - 1] <= arr[j])))))))
+  result == (-1) and (forall i: i < len(arr) ==> 1 <= i ==> arr[i - 1] <= arr[i]) or (exists i: i < len(arr) and 1 <= i and result == (i as int) and arr[i] < arr[i - 1] and (forall j: j < len(arr) ==> i < j ==> arr[j - 1] <= arr[j]))

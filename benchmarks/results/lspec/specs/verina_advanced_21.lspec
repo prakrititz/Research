@@ -1,5 +1,5 @@
-def isPalindrome_precond(s: str_t): prop =
+def isPalindrome_precond(s: str): prop =
   true_prop
 
-def isPalindrome_postcond(s: str_t, result: bool_t, h_precond: isPalindrome_precond(s)): prop =
-  (result ==> (list(s) === reversed(list(s)))) and ((not result) ==> ((list(s) != []) and (list(s) !== reversed(list(s)))))
+def isPalindrome_postcond(s: str, result: bool, h_precond: isPalindrome_precond(s)): prop =
+  (result ==> list(s) === reversed(list(s))) and ((not result) ==> list(s) != [] and list(s) !== reversed(list(s)))

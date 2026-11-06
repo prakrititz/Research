@@ -1,5 +1,5 @@
 def isMultiplyPrime_precond(a: nat): prop =
   a < 100
 
-def isMultiplyPrime_postcond(a: nat, result: bool_t, h_precond: isMultiplyPrime_precond(a)) =
-  (result == True) <==> (exists p: (p < (a + 1)) and (exists q: (q < (a + 1)) and (exists r: (r < (a + 1)) and ((((p * q) * r) == a) and (is_prime(p) and (is_prime(q) and is_prime(r)))))))
+def isMultiplyPrime_postcond(a: nat, result: bool, h_precond: isMultiplyPrime_precond(a)) =
+  result == True <==> (exists p: p < a + 1 and (exists q: q < a + 1 and (exists r: r < a + 1 and p * q * r == a and is_prime(p) and is_prime(q) and is_prime(r))))

@@ -1,5 +1,5 @@
-def sameChars_precond(s0: str_t, s1: str_t): prop =
+def sameChars_precond(s0: str, s1: str): prop =
   true_prop
 
-def sameChars_postcond(s0: str_t, s1: str_t, result: bool_t, h_precond: sameChars_precond(s0, s1)) =
-  (result == True) <==> ((forall c in list(s0): c in list(s1)) and (forall c in list(s1): c in list(s0)))
+def sameChars_postcond(s0: str, s1: str, result: bool, h_precond: sameChars_precond(s0, s1)) =
+  result == True <==> (forall c in list(s0): c in list(s1)) and (forall c in list(s1): c in list(s0))

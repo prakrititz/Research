@@ -1,5 +1,5 @@
 def canCompleteCircuit_precond(gas: list[int], cost: list[int]): prop =
-  (len(gas) > 0) and (len(gas) == len(cost))
+  len(gas) > 0 and len(gas) == len(cost)
 
 def canCompleteCircuit_postcond(gas: list[int], cost: list[int], result: int, h_precond: canCompleteCircuit_precond(gas, cost)): prop =
-  let valid((start: nat)) = range(len(gas)).all(lambda i: let acc = range(i + 1).foldl(lambda t, j: let jdx = (start + j) % len(gas); (t + gas[jdx]) - cost[jdx], 0); acc >= 0); (result >= (-1)) and (((result == (-1)) ==> range(len(gas)).all(lambda start: not valid(start))) and ((result >= 0) ==> ((result < len(gas)) and (valid(to_nat(result)) and range(to_nat(result)).all(lambda start: not valid(start))))))
+  let valid((start: nat)) = range(len(gas)).all(lambda i: let acc = range(i + 1).foldl(lambda t, j: let jdx = (start + j) % len(gas); t + gas[jdx] - cost[jdx], 0); acc >= 0); result >= (-1) and (result == (-1) ==> range(len(gas)).all(lambda start: not valid(start))) and (result >= 0 ==> result < len(gas) and valid(to_nat(result)) and range(to_nat(result)).all(lambda start: not valid(start)))

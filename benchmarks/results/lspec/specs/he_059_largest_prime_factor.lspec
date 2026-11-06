@@ -1,5 +1,5 @@
 def largestPrimeFactor_precond(n: nat): prop =
-  (n > 1) and (not is_prime(n))
+  n > 1 and (not is_prime(n))
 
 def largestPrimeFactor_postcond(n: nat, result: nat, h_precond: largestPrimeFactor_precond(n)) =
-  is_prime(result) and ((result divides n) and (forall q: (q < (n + 1)) ==> (is_prime(q) ==> ((q divides n) ==> (q <= result)))))
+  is_prime(result) and result divides n and (forall q: q < n + 1 ==> is_prime(q) ==> q divides n ==> q <= result)

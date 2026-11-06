@@ -4,5 +4,5 @@ def countDigits(n: nat): nat =
 def isArmstrong_precond(n: nat): prop =
   true_prop
 
-def isArmstrong_postcond(n: nat, result: bool_t, h_precond: isArmstrong_precond(n)): prop =
-  let n' = foldl(lambda acc, d: acc + (d ** countDigits(n)), 0, List.map(lambda c: to_nat(c) - to_nat('0'), list(str(n)))); (result ==> (n == n')) and ((not result) ==> (n != n'))
+def isArmstrong_postcond(n: nat, result: bool, h_precond: isArmstrong_precond(n)): prop =
+  let n' = foldl(lambda acc, d: acc + d ** countDigits(n), 0, List.map(lambda c: to_nat(c) - to_nat('0'), list(str(n)))); (result ==> n == n') and ((not result) ==> n != n')

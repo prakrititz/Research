@@ -2,4 +2,4 @@ def singleDigitPrimeFactor_precond(n: nat): prop =
   true_prop
 
 def singleDigitPrimeFactor_postcond(n: nat, result: nat, h_precond: singleDigitPrimeFactor_precond(n)): prop =
-  (result in [0, 2, 3, 5, 7]) and (((result == 0) ==> ((n == 0) or [2, 3, 5, 7].all(lambda _c1: (n % _c1) != 0))) and ((result != 0) ==> ((n != 0) and (((n % result) === 0) and range(result).all(lambda x: (x in [2, 3, 5, 7]) ==> ((n % x) != 0))))))
+  result in [0, 2, 3, 5, 7] and (result == 0 ==> n == 0 or [2, 3, 5, 7].all(lambda _c1: n % _c1 != 0)) and (result != 0 ==> n != 0 and n % result === 0 and range(result).all(lambda x: x in [2, 3, 5, 7] ==> n % x != 0))

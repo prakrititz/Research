@@ -1,5 +1,5 @@
 def elementWiseModulo_precond(a: array[int], b: array[int]): prop =
-  (size(a) == size(b)) and ((size(a) > 0) and (forall i: (i < size(b)) ==> (b[i] != 0)))
+  size(a) == size(b) and size(a) > 0 and (forall i: i < size(b) ==> b[i] != 0)
 
 def elementWiseModulo_postcond(a: array[int], b: array[int], result: array[int], h_precond: elementWiseModulo_precond(a, b)) =
-  (size(result) == size(a)) and (forall i: (i < size(result)) ==> (result[i] == (a[i] % b[i])))
+  size(result) == size(a) and (forall i: i < size(result) ==> result[i] == a[i] % b[i])

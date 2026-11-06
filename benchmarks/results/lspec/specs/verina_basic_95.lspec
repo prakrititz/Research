@@ -1,5 +1,5 @@
 def swap_precond(arr: array[int], i: int, j: int): prop =
-  (i >= 0) and ((j >= 0) and ((to_nat_of(i) < size(arr)) and (to_nat_of(j) < size(arr))))
+  i >= 0 and j >= 0 and to_nat_of(i) < size(arr) and to_nat_of(j) < size(arr)
 
 def swap_postcond(arr: array[int], i: int, j: int, result: array[int], h_precond: swap_precond(arr, i, j)) =
-  (size(result) == size(arr)) and ((result[to_nat_of(i)] == arr[to_nat_of(j)]) and ((result[to_nat_of(j)] == arr[to_nat_of(i)]) and (forall (k: nat): (k < size(arr)) ==> ((k != to_nat_of(i)) ==> ((k != to_nat_of(j)) ==> (result[k] == arr[k]))))))
+  size(result) == size(arr) and result[to_nat_of(i)] == arr[to_nat_of(j)] and result[to_nat_of(j)] == arr[to_nat_of(i)] and (forall (k: nat): k < size(arr) ==> k != to_nat_of(i) ==> k != to_nat_of(j) ==> result[k] == arr[k])

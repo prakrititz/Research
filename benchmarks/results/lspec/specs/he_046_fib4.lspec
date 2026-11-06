@@ -3,7 +3,7 @@ def fib4Spec: nat ==> nat
   | 1 => 0
   | 2 => 2
   | 3 => 0
-  | n + 4 => ((fib4Spec(n + 3) + fib4Spec(n + 2)) + fib4Spec(n + 1)) + fib4Spec(n)
+  | n + 4 => fib4Spec(n + 3) + fib4Spec(n + 2) + fib4Spec(n + 1) + fib4Spec(n)
 
 def fib4_precond(n: nat): prop =
   true_prop

@@ -1,5 +1,5 @@
-def primeLength_precond(string: str_t): prop =
+def primeLength_precond(string: str): prop =
   true_prop
 
-def primeLength_postcond(string: str_t, result: bool_t, h_precond: primeLength_precond(`string`)) =
-  (result == True) <==> is_prime(len(`string`))
+def primeLength_postcond(string: str, result: bool, h_precond: primeLength_precond(`string`)) =
+  result == True <==> is_prime(len(`string`))

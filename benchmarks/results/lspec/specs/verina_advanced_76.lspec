@@ -2,4 +2,4 @@ def topKFrequent_precond(nums: list[int], k: nat): prop =
   k <= len(nums.eraseDups)
 
 def topKFrequent_postcond(nums: list[int], k: nat, result: list[int], h_precond: topKFrequent_precond(nums, k)): prop =
-  (len(result) == k) and (result.all(lambda _c1: _c1 in nums) and (pairwise(lambda _c1, _c2: _c1 != _c2, result) and (result.all(lambda x: nums.all(lambda y: (y in result) or (nums.count(x) >= nums.count(y)))) and pairwise(lambda (x, i), (y, j): (i < j) ==> (nums.count(x) >= nums.count(y)), result.zipIdx))))
+  len(result) == k and result.all(lambda _c1: _c1 in nums) and pairwise(lambda _c1, _c2: _c1 != _c2, result) and result.all(lambda x: nums.all(lambda y: y in result or nums.count(x) >= nums.count(y))) and pairwise(lambda (x, i), (y, j): i < j ==> nums.count(x) >= nums.count(y), result.zipIdx)

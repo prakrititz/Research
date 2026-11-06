@@ -1,5 +1,5 @@
 def semiOrderedPermutation_precond(nums: list[int]): prop =
-  let n = len(nums); (n > 0) and (List.Nodup(nums) and nums.all(lambda x: (1 <= x) and (x <= int_of_nat(n))))
+  let n = len(nums); n > 0 and List.Nodup(nums) and nums.all(lambda x: 1 <= x and x <= int_of_nat(n))
 
 def semiOrderedPermutation_postcond(nums: list[int], result: int, h_precond: semiOrderedPermutation_precond(nums)): prop =
-  let n = len(nums); let pos1 = nums.index(1); let posn = nums.index(int_of_nat(n)); (pos1 + n) == ((result + 2) + posn) if pos1 > posn else (pos1 + n) == ((result + 1) + posn)
+  let n = len(nums); let pos1 = nums.index(1); let posn = nums.index(int_of_nat(n)); pos1 + n == result + 2 + posn if pos1 > posn else pos1 + n == result + 1 + posn

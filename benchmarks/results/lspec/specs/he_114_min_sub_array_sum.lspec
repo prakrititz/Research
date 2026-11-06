@@ -2,4 +2,4 @@ def minSubArraySum_precond(nums: list[int]): prop =
   nums != []
 
 def minSubArraySum_postcond(nums: list[int], result: int, h_precond: minSubArraySum_precond(nums)) =
-  (exists j: (j <= len(nums)) and (exists i: (i < j) and (sum(nums[i:][:j - i]) == result))) and (forall j: (j <= len(nums)) ==> (forall i: (i < j) ==> (result <= sum(nums[i:][:j - i]))))
+  (exists j: j <= len(nums) and (exists i: i < j and sum(nums[i:][:j - i]) == result)) and (forall j: j <= len(nums) ==> (forall i: i < j ==> result <= sum(nums[i:][:j - i])))

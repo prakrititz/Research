@@ -2,4 +2,4 @@ def countUpTo_precond(n: nat): prop =
   true_prop
 
 def countUpTo_postcond(n: nat, result: list[nat], h_precond: countUpTo_precond(n)) =
-  (forall p in result: (p < n) and is_prime(p)) and ((forall p: (p < n) ==> (is_prime(p) ==> (p in result))) and (forall i: (i < (len(result) - 1)) ==> (result[i] < result[i + 1])))
+  (forall p in result: p < n and is_prime(p)) and (forall p: p < n ==> is_prime(p) ==> p in result) and (forall i: i < len(result) - 1 ==> result[i] < result[i + 1])

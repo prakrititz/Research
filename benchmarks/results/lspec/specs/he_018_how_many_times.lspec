@@ -1,5 +1,5 @@
-def howManyTimes_precond(string: str_t, substring: str_t): prop =
+def howManyTimes_precond(string: str, substring: str): prop =
   true_prop
 
-def howManyTimes_postcond(string: str_t, substring: str_t, result: nat, h_precond: howManyTimes_precond(`string`, substring)) =
+def howManyTimes_postcond(string: str, substring: str, result: nat, h_precond: howManyTimes_precond(`string`, substring)) =
   result == len(range(len(`string`)).filter(lambda i: list(substring).isPrefixOf(list(`string`)[i:])))

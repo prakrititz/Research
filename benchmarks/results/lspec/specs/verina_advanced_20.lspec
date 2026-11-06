@@ -1,5 +1,5 @@
 def isItEight_precond(n: int): prop =
   true_prop
 
-def isItEight_postcond(n: int, result: bool_t, h_precond: isItEight_precond(n)): prop =
-  let absN = Int.natAbs(n); (((n % 8) === 0) or (exists i: ((absN / (10 ** i)) % 10) === 8)) <==> result
+def isItEight_postcond(n: int, result: bool, h_precond: isItEight_precond(n)): prop =
+  let absN = Int.natAbs(n); n % 8 === 0 or (exists i: absN / 10 ** i % 10 === 8) <==> result

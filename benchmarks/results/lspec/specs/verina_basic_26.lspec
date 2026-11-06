@@ -1,5 +1,5 @@
 def isEven_precond(n: int): prop =
   true_prop
 
-def isEven_postcond(n: int, result: bool_t, h_precond: isEven_precond(n)) =
-  (result ==> ((n % 2) == 0)) and ((not result) ==> ((n % 2) != 0))
+def isEven_postcond(n: int, result: bool, h_precond: isEven_precond(n)) =
+  (result ==> n % 2 == 0) and ((not result) ==> n % 2 != 0)

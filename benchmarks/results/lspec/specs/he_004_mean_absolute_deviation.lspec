@@ -2,4 +2,4 @@ def meanAbsoluteDeviation_precond(numbers: list[rat]): prop =
   numbers != []
 
 def meanAbsoluteDeviation_postcond(numbers: list[rat], result: rat, h_precond: meanAbsoluteDeviation_precond(numbers)) =
-  abs(result - (sum(numbers.map(lambda x: abs(x - (sum(numbers) / (len(numbers) as rat))))) / (len(numbers) as rat))) <= (1 / 1000000 as rat)
+  abs(result - sum(numbers.map(lambda x: abs(x - sum(numbers) / (len(numbers) as rat)))) / (len(numbers) as rat)) <= (1 / 1000000 as rat)

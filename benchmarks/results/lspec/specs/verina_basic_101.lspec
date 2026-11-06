@@ -2,4 +2,4 @@ def Triple_precond(x: int): prop =
   true_prop
 
 def Triple_postcond(x: int, result: int, h_precond: Triple_precond(x)) =
-  ((result / 3) == x) and (((result / 3) * 3) == result)
+  result / 3 == x and result / 3 * 3 == result

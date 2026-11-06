@@ -1,9 +1,9 @@
 def listToNat: list[nat] ==> nat
   | [] => 0
-  | d :: ds => d + (10 * listToNat(ds))
+  | d :: ds => d + 10 * listToNat(ds)
 
 def addTwoNumbers_precond(l1: list[nat], l2: list[nat]): prop =
-  (len(l1) > 0) and ((len(l2) > 0) and ((forall d in l1: d < 10) and ((forall d in l2: d < 10) and (((l1.getLast! != 0) or (l1 == [0])) and ((l2.getLast! != 0) or (l2 == [0]))))))
+  len(l1) > 0 and len(l2) > 0 and (forall d in l1: d < 10) and (forall d in l2: d < 10) and (l1.getLast! != 0 or l1 == [0]) and (l2.getLast! != 0 or l2 == [0])
 
 def addTwoNumbers_postcond(l1: list[nat], l2: list[nat], result: list[nat], h_precond: addTwoNumbers_precond(l1, l2)): prop =
-  (listToNat(result) == (listToNat(l1) + listToNat(l2))) and ((forall d in result: d < 10) and ((result.getLast! != 0) or ((l1 == [0]) and ((l2 == [0]) and (result == [0])))))
+  listToNat(result) == listToNat(l1) + listToNat(l2) and (forall d in result: d < 10) and (result.getLast! != 0 or l1 == [0] and l2 == [0] and result == [0])

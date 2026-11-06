@@ -2,4 +2,4 @@ def findClosestElements_precond(numbers: list[rat]): prop =
   len(numbers) >= 2
 
 def findClosestElements_postcond(numbers: list[rat], result: tuple[rat, rat], h_precond: findClosestElements_precond(numbers)) =
-  (exists j: (j < len(numbers)) and (exists i: (i < j) and (((result.1 == numbers[i]) and (result.2 == numbers[j])) or ((result.1 == numbers[j]) and (result.2 == numbers[i]))))) and ((result.1 <= result.2) and (forall j: (j < len(numbers)) ==> (forall i: (i < j) ==> ((result.2 - result.1) <= abs(numbers[i] - numbers[j])))))
+  (exists j: j < len(numbers) and (exists i: i < j and (result.1 == numbers[i] and result.2 == numbers[j] or result.1 == numbers[j] and result.2 == numbers[i]))) and result.1 <= result.2 and (forall j: j < len(numbers) ==> (forall i: i < j ==> result.2 - result.1 <= abs(numbers[i] - numbers[j])))

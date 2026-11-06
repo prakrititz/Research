@@ -1,8 +1,8 @@
-def isSpaceCommaDot(c: char): bool_t =
+def isSpaceCommaDot(c: char): bool =
   True if c == ' ' else True if c == ',' else True if c == '.' else False
 
-def replaceWithColon_precond(s: str_t): prop =
+def replaceWithColon_precond(s: str): prop =
   true_prop
 
-def replaceWithColon_postcond(s: str_t, result: str_t, h_precond: replaceWithColon_precond(s)) =
-  let cs = list(s); let cs' = list(result); (len(result) == len(s)) and (forall i: (i < len(s)) ==> ((isSpaceCommaDot(cs[i]) ==> (cs'[i] == ':')) and ((not isSpaceCommaDot(cs[i])) ==> (cs'[i] == cs[i]))))
+def replaceWithColon_postcond(s: str, result: str, h_precond: replaceWithColon_precond(s)) =
+  let cs = list(s); let cs' = list(result); len(result) == len(s) and (forall i: i < len(s) ==> (isSpaceCommaDot(cs[i]) ==> cs'[i] == ':') and ((not isSpaceCommaDot(cs[i])) ==> cs'[i] == cs[i]))

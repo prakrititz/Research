@@ -1,8 +1,8 @@
-def parseDec(s: str_t): rat =
-  let neg = s.startsWith("-"); let body = string(list(s)[1:]) if neg else s; let parts = body.splitOn("."); let ip = parts[0]; let fp = parts[1] if len(parts) > 1 else ""; let iv: rat = ((list(ip).foldl(lambda acc, c: (acc * 10) + (to_nat(c) - 48), 0) as nat) as rat); let fv: rat = ((list(fp).foldl(lambda acc, c: (acc * 10) + (to_nat(c) - 48), 0) as nat) as rat) / (10 ** len(fp)); (-1 if neg else 1) * (iv + fv)
+def parseDec(s: str): rat =
+  let neg = s.startsWith("-"); let body = string(list(s)[1:]) if neg else s; let parts = body.splitOn("."); let ip = parts[0]; let fp = parts[1] if len(parts) > 1 else ""; let iv: rat = ((list(ip).foldl(lambda acc, c: acc * 10 + (to_nat(c) - 48), 0) as nat) as rat); let fv: rat = ((list(fp).foldl(lambda acc, c: acc * 10 + (to_nat(c) - 48), 0) as nat) as rat) / 10 ** len(fp); (-1 if neg else 1) * (iv + fv)
 
-def closestInteger_precond(value: str_t): prop =
-  let body = string(list(value)[1:]) if value.startsWith("-") else value; ((body.all(lambda c: c.isDigit || (c === '.')) && (len(list(body).filter(lambda c: c === '.')) <= 1)) && list(body).any(Char.isDigit)) == True
+def closestInteger_precond(value: str): prop =
+  let body = string(list(value)[1:]) if value.startsWith("-") else value; (body.all(lambda c: c.isDigit || c === '.') && len(list(body).filter(lambda c: c === '.')) <= 1 && list(body).any(Char.isDigit)) == True
 
-def closestInteger_postcond(value: str_t, result: int, h_precond: closestInteger_precond(value)) =
-  let q = parseDec(value); (abs(q - (result as rat)) < (1 / 2)) or ((abs(q - (result as rat)) == (1 / 2)) and (abs(q) < abs((result as rat))))
+def closestInteger_postcond(value: str, result: int, h_precond: closestInteger_precond(value)) =
+  let q = parseDec(value); abs(q - (result as rat)) < 1 / 2 or abs(q - (result as rat)) == 1 / 2 and abs(q) < abs((result as rat))

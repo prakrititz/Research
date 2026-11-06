@@ -1,5 +1,5 @@
 def ComputeIsEven_precond(x: int): prop =
   true_prop
 
-def ComputeIsEven_postcond(x: int, result: bool_t, h_precond: ComputeIsEven_precond(x)) =
-  (result == True) <==> (exists (k: int): x == (2 * k))
+def ComputeIsEven_postcond(x: int, result: bool, h_precond: ComputeIsEven_precond(x)) =
+  result == True <==> (exists (k: int): x == 2 * k)

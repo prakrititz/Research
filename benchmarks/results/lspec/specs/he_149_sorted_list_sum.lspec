@@ -1,5 +1,5 @@
-def sortedListSum_precond(lst: list[str_t]): prop =
+def sortedListSum_precond(lst: list[str]): prop =
   true_prop
 
-def sortedListSum_postcond(lst: list[str_t], result: list[str_t], h_precond: sortedListSum_precond(lst)) =
-  List.Perm(result, lst.filter(lambda s: (len(s) % 2) == 0)) and (forall i: (i < (len(result) - 1)) ==> ((len(result[i]) < len(result[i + 1])) or ((len(result[i]) == len(result[i + 1])) and (not (result[i + 1] < result[i])))))
+def sortedListSum_postcond(lst: list[str], result: list[str], h_precond: sortedListSum_precond(lst)) =
+  List.Perm(result, lst.filter(lambda s: len(s) % 2 == 0)) and (forall i: i < len(result) - 1 ==> len(result[i]) < len(result[i + 1]) or len(result[i]) == len(result[i + 1]) and (not (result[i + 1] < result[i])))

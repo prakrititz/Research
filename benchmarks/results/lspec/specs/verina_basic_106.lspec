@@ -2,4 +2,4 @@ def arraySum_precond(a: array[int], b: array[int]): prop =
   size(a) == size(b)
 
 def arraySum_postcond(a: array[int], b: array[int], result: array[int], h_precond: arraySum_precond(a, b)) =
-  (size(result) == size(a)) and (forall (i: nat): (i < size(a)) ==> ((a[i] + b[i]) == result[i]))
+  size(result) == size(a) and (forall (i: nat): i < size(a) ==> a[i] + b[i] == result[i])

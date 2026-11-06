@@ -5,4 +5,4 @@ def sortArray116_precond(arr: list[int]): prop =
   true_prop
 
 def sortArray116_postcond(arr: list[int], result: list[int], h_precond: sortArray116_precond(arr)) =
-  result.isPerm(arr) and (forall i: (i < (len(result) - 1)) ==> ((ones(result[i]) < ones(result[i + 1])) or ((ones(result[i]) == ones(result[i + 1])) and (result[i] <= result[i + 1]))))
+  result.isPerm(arr) and (forall i: i < len(result) - 1 ==> ones(result[i]) < ones(result[i + 1]) or ones(result[i]) == ones(result[i + 1]) and result[i] <= result[i + 1])

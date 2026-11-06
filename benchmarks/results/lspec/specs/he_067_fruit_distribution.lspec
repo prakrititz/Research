@@ -1,5 +1,5 @@
-def fruitDistribution_precond(s: str_t, n: nat): prop =
-  let w = s.splitOn(" "); (len(w) >= 4) and ((w[0] != "") and ((w[3] != "") and ((w[0].all(Char.isDigit) == True) and ((w[3].all(Char.isDigit) == True) and ((w[0].toNat! + w[3].toNat!) <= n)))))
+def fruitDistribution_precond(s: str, n: nat): prop =
+  let w = s.splitOn(" "); len(w) >= 4 and w[0] != "" and w[3] != "" and w[0].all(Char.isDigit) == True and w[3].all(Char.isDigit) == True and w[0].toNat! + w[3].toNat! <= n
 
-def fruitDistribution_postcond(s: str_t, n: nat, result: nat, h_precond: fruitDistribution_precond(s, n)) =
-  let w = s.splitOn(" "); result == ((n - w[0].toNat!) - w[3].toNat!)
+def fruitDistribution_postcond(s: str, n: nat, result: nat, h_precond: fruitDistribution_precond(s, n)) =
+  let w = s.splitOn(" "); result == n - w[0].toNat! - w[3].toNat!

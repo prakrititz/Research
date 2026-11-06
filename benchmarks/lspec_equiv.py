@@ -39,6 +39,19 @@ elab "#lspec_same " a:term:max b:term:max : command => liftTermElabM do
   unless ea == eb do
     throwError m!"lspec_differ:\n{ea}\n----\n{eb}"
 
+open Lean Elab Command Term Meta in
+/-- `#lspec_same_beta a b`: structurally equal once every `(fun x => t) v` is reduced (for a goal shown with the
+lambda already applied; nothing else is unfolded). -/
+elab "#lspec_same_beta " a:term:max b:term:max : command => liftTermElabM do
+  let ea ← elabTerm a none
+  synthesizeSyntheticMVarsNoPostponing
+  let ea ← Core.betaReduce (← instantiateMVars ea)
+  let eb ← elabTerm b none
+  synthesizeSyntheticMVarsNoPostponing
+  let eb ← Core.betaReduce (← instantiateMVars eb)
+  unless ea == eb do
+    throwError m!"lspec_differ:\n{ea}\n----\n{eb}"
+
 open Lean Elab Command Meta in
 /-- `#lspec_same_consts a b`: the constants `a` and `b`, and every constant declared under them (the functions a
 `let rec` lifts out, matchers, equation helpers), are equal once the prefix `b` is read as `a`. For terms that declare

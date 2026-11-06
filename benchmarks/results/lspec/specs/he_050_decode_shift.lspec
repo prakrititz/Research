@@ -1,8 +1,8 @@
 def shiftChar(c: char): char =
-  Char.ofNat((((to_nat(c) - 97) + 5) % 26) + 97)
+  Char.ofNat((to_nat(c) - 97 + 5) % 26 + 97)
 
-def decodeShift_precond(s: str_t): prop =
+def decodeShift_precond(s: str): prop =
   list(s).all(lambda c: c.isLower) == True
 
-def decodeShift_postcond(s: str_t, result: str_t, h_precond: decodeShift_precond(s)) =
-  (list(result).all(lambda c: c.isLower) == True) and (list(result).map(shiftChar) == list(s))
+def decodeShift_postcond(s: str, result: str, h_precond: decodeShift_precond(s)) =
+  list(result).all(lambda c: c.isLower) == True and list(result).map(shiftChar) == list(s)

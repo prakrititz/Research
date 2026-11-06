@@ -1,5 +1,5 @@
-def correctBracketing56_precond(brackets: str_t): prop =
-  list(brackets).all(lambda c: (c === '<') || (c === '>')) == True
+def correctBracketing56_precond(brackets: str): prop =
+  list(brackets).all(lambda c: c === '<' || c === '>') == True
 
-def correctBracketing56_postcond(brackets: str_t, result: bool_t, h_precond: correctBracketing56_precond(brackets)) =
-  (result == True) <==> ((forall k: (k <= len(brackets)) ==> (list(brackets)[:k].count('>') <= list(brackets)[:k].count('<'))) and (list(brackets).count('<') == list(brackets).count('>')))
+def correctBracketing56_postcond(brackets: str, result: bool, h_precond: correctBracketing56_precond(brackets)) =
+  result == True <==> (forall k: k <= len(brackets) ==> list(brackets)[:k].count('>') <= list(brackets)[:k].count('<')) and list(brackets).count('<') == list(brackets).count('>')

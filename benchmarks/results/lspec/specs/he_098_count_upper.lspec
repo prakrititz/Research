@@ -1,5 +1,5 @@
-def countUpper_precond(s: str_t): prop =
+def countUpper_precond(s: str): prop =
   true_prop
 
-def countUpper_postcond(s: str_t, result: nat, h_precond: countUpper_precond(s)) =
-  result == len(range(len(s)).filter(lambda i: ((i % 2) == 0) and (list(s)[i] in ['A', 'E', 'I', 'O', 'U'])))
+def countUpper_postcond(s: str, result: nat, h_precond: countUpper_precond(s)) =
+  result == len(range(len(s)).filter(lambda i: i % 2 == 0 and list(s)[i] in ['A', 'E', 'I', 'O', 'U']))

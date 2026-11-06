@@ -1,5 +1,5 @@
-def findFirstRepeatedChar_precond(s: str_t): prop =
+def findFirstRepeatedChar_precond(s: str): prop =
   true_prop
 
-def findFirstRepeatedChar_postcond(s: str_t, result: option[char], h_precond: findFirstRepeatedChar_precond(s)) =
-  let cs = list(s); match result with | some(c) => (let secondIdx = cs.zipIdx.findIdx(lambda (x, i): (x == c) && (i != cs.index(c))); (cs.count(c) >= 2) and pairwise(lambda _c1, _c2: _c1 != _c2, cs[:secondIdx])) | none => pairwise(lambda _c1, _c2: _c1 != _c2, cs)
+def findFirstRepeatedChar_postcond(s: str, result: option[char], h_precond: findFirstRepeatedChar_precond(s)) =
+  let cs = list(s); match result with | some(c) => (let secondIdx = cs.zipIdx.findIdx(lambda (x, i): x == c && i != cs.index(c)); cs.count(c) >= 2 and pairwise(lambda _c1, _c2: _c1 != _c2, cs[:secondIdx])) | none => pairwise(lambda _c1, _c2: _c1 != _c2, cs)

@@ -1,5 +1,5 @@
 def secondSmallest_precond(s: array[int]): prop =
-  (size(s) > 1) and (exists i, j: (i < size(s)) and ((j < size(s)) and (s[i] != s[j])))
+  size(s) > 1 and (exists i, j: i < size(s) and j < size(s) and s[i] != s[j])
 
 def secondSmallest_postcond(s: array[int], result: int, h_precond: secondSmallest_precond(s)) =
-  (exists i: (i < size(s)) and (s[i] == result)) and (exists j: (j < size(s)) and ((s[j] < result) and (forall k: (k < size(s)) ==> ((s[k] != s[j]) ==> (s[k] >= result)))))
+  (exists i: i < size(s) and s[i] == result) and (exists j: j < size(s) and s[j] < result and (forall k: k < size(s) ==> s[k] != s[j] ==> s[k] >= result))

@@ -2,4 +2,4 @@ def maxProfit_precond(prices: list[nat]): prop =
   true_prop
 
 def maxProfit_postcond(prices: list[nat], result: nat, h_precond: maxProfit_precond(prices)): prop =
-  pairwise(lambda ⟨pi, i⟩, ⟨pj, j⟩: (i < j) ==> ((pj - pi) <= result), prices.zipIdx) and (((result == 0) <==> ((len(prices) <= 1) or prices.zipIdx.all(lambda ⟨pi, i⟩: prices.zipIdx.all(lambda ⟨pj, j⟩: (i >= j) or (pj <= pi))))) and ((result > 0) ==> prices.zipIdx.any(lambda ⟨pi, i⟩: prices.zipIdx.any(lambda ⟨pj, j⟩: (i < j) and ((pj - pi) == result)))))
+  pairwise(lambda ⟨pi, i⟩, ⟨pj, j⟩: i < j ==> pj - pi <= result, prices.zipIdx) and (result == 0 <==> len(prices) <= 1 or prices.zipIdx.all(lambda ⟨pi, i⟩: prices.zipIdx.all(lambda ⟨pj, j⟩: i >= j or pj <= pi))) and (result > 0 ==> prices.zipIdx.any(lambda ⟨pi, i⟩: prices.zipIdx.any(lambda ⟨pj, j⟩: i < j and pj - pi == result)))

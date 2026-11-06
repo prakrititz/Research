@@ -13,8 +13,8 @@ def divideOut : Nat → Nat → Nat
     else n
 termination_by n p => n
 
-def isUgly(x: nat): bool_t =
+def isUgly(x: nat): bool =
   False if x == 0 else let n1 = divideOut(x, 2); let n2 = divideOut(n1, 3); let n3 = divideOut(n2, 5); n3 == 1
 
 def nthUglyNumber_postcond(n: nat, result: nat, h_precond: nthUglyNumber_precond(n)): prop =
-  (isUgly(result) == True) and (len(range(result).filter(lambda i: isUgly(i))) == (n - 1))
+  isUgly(result) == True and len(range(result).filter(lambda i: isUgly(i))) == n - 1

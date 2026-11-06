@@ -1,5 +1,5 @@
 def isPrime_precond(n: nat): prop =
   n >= 2
 
-def isPrime_postcond(n: nat, result: bool_t, h_precond: isPrime_precond(n)) =
-  (result ==> List.range'(2, n - 2).all(lambda k: (n % k) != 0)) and ((not result) ==> List.range'(2, n - 2).any(lambda k: (n % k) == 0))
+def isPrime_postcond(n: nat, result: bool, h_precond: isPrime_precond(n)) =
+  (result ==> List.range'(2, n - 2).all(lambda k: n % k != 0)) and ((not result) ==> List.range'(2, n - 2).any(lambda k: n % k == 0))

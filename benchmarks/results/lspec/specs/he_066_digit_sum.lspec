@@ -1,5 +1,5 @@
-def digitSum_precond(s: str_t): prop =
+def digitSum_precond(s: str): prop =
   true_prop
 
-def digitSum_postcond(s: str_t, result: nat, h_precond: digitSum_precond(s)) =
+def digitSum_postcond(s: str, result: nat, h_precond: digitSum_precond(s)) =
   result == sum(list(s).filter(Char.isUpper).map(Char.toNat))

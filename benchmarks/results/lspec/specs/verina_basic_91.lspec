@@ -2,4 +2,4 @@ def Swap_precond(X: int, Y: int): prop =
   true_prop
 
 def Swap_postcond(X: int, Y: int, result: tuple[int, int], h_precond: Swap_precond(X, Y)) =
-  (result.fst == Y) and ((result.snd == X) and ((X != Y) ==> ((result.fst != X) and (result.snd != Y))))
+  result.fst == Y and result.snd == X and (X != Y ==> result.fst != X and result.snd != Y)

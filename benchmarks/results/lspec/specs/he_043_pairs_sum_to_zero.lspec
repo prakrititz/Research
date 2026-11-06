@@ -1,5 +1,5 @@
 def pairsSumToZero_precond(l: list[int]): prop =
   true_prop
 
-def pairsSumToZero_postcond(l: list[int], result: bool_t, h_precond: pairsSumToZero_precond(l)) =
-  (result == True) <==> (exists j: (j < len(l)) and (exists i: (i < j) and ((l[i] + l[j]) == 0)))
+def pairsSumToZero_postcond(l: list[int], result: bool, h_precond: pairsSumToZero_precond(l)) =
+  result == True <==> (exists j: j < len(l) and (exists i: i < j and l[i] + l[j] == 0))

@@ -2,4 +2,4 @@ def reverse_precond(a: array[int]): prop =
   true_prop
 
 def reverse_postcond(a: array[int], result: array[int], h_precond: reverse_precond(a)) =
-  (size(result) == size(a)) and (forall (i: nat): (i < size(a)) ==> (result[i] == a[(size(a) - 1) - i]))
+  size(result) == size(a) and (forall (i: nat): i < size(a) ==> result[i] == a[size(a) - 1 - i])

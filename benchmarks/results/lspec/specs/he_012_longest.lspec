@@ -1,5 +1,5 @@
-def longest_precond(strings: list[str_t]): prop =
+def longest_precond(strings: list[str]): prop =
   true_prop
 
-def longest_postcond(strings: list[str_t], result: option[str_t], h_precond: longest_precond(strings)) =
-  match result with | none => strings == [] | some(s) => exists i: (i < len(strings)) and ((strings[i] == s) and ((forall t in strings: len(t) <= len(s)) and (forall j: (j < i) ==> (len(strings[j]) < len(s)))))
+def longest_postcond(strings: list[str], result: option[str], h_precond: longest_precond(strings)) =
+  match result with | none => strings == [] | some(s) => exists i: i < len(strings) and strings[i] == s and (forall t in strings: len(t) <= len(s)) and (forall j: j < i ==> len(strings[j]) < len(s))

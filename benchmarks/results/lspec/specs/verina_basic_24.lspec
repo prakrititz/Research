@@ -1,11 +1,11 @@
-def isEven(n: int): bool_t =
-  (n % 2) === 0
+def isEven(n: int): bool =
+  n % 2 === 0
 
-def isOdd(n: int): bool_t =
-  (n % 2) !== 0
+def isOdd(n: int): bool =
+  n % 2 !== 0
 
 def firstEvenOddDifference_precond(a: array[int]): prop =
-  (size(a) > 1) and ((exists x in a: isEven(x)) and (exists x in a: isOdd(x)))
+  size(a) > 1 and (exists x in a: isEven(x)) and (exists x in a: isOdd(x))
 
 def firstEvenOddDifference_postcond(a: array[int], result: int, h_precond: firstEvenOddDifference_precond(a)) =
-  exists i, j: (i < size(a)) and ((j < size(a)) and (isEven(a[i]) and (isOdd(a[j]) and ((result == (a[i] - a[j])) and ((forall k: (k < i) ==> isOdd(a[k])) and (forall k: (k < j) ==> isEven(a[k])))))))
+  exists i, j: i < size(a) and j < size(a) and isEven(a[i]) and isOdd(a[j]) and result == a[i] - a[j] and (forall k: k < i ==> isOdd(a[k])) and (forall k: k < j ==> isEven(a[k]))

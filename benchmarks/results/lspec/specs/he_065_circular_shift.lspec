@@ -1,5 +1,5 @@
 def circularShift_precond(x: nat, shift: nat): prop =
   true_prop
 
-def circularShift_postcond(x: nat, shift: nat, result: str_t, h_precond: circularShift_precond(x, shift)) =
-  let d = list(str(x)); let n = len(d); list(result) == (reversed(d) if shift > n else d[n - (shift % n):] ++ d[:n - (shift % n)])
+def circularShift_postcond(x: nat, shift: nat, result: str, h_precond: circularShift_precond(x, shift)) =
+  let d = list(str(x)); let n = len(d); list(result) == (reversed(d) if shift > n else d[n - shift % n:] ++ d[:n - shift % n])

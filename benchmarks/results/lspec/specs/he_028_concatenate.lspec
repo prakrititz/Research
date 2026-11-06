@@ -1,5 +1,5 @@
-def concatenate_precond(strings: list[str_t]): prop =
+def concatenate_precond(strings: list[str]): prop =
   true_prop
 
-def concatenate_postcond(strings: list[str_t], result: str_t, h_precond: concatenate_precond(strings)) =
+def concatenate_postcond(strings: list[str], result: str, h_precond: concatenate_precond(strings)) =
   result == String.join(strings)

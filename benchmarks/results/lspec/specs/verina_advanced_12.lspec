@@ -2,7 +2,7 @@ def firstDuplicate_precond(lst: list[int]): prop =
   true_prop
 
 def secondOccIdx(lst: list[int], v: int): nat =
-  let first = lst.index(v); (first + 1) + lst[first + 1:].index(v)
+  let first = lst.index(v); first + 1 + lst[first + 1:].index(v)
 
 def firstDuplicate_postcond(lst: list[int], result: option[int], h_precond: firstDuplicate_precond(lst)): prop =
-  match result with | none => List.Nodup(lst) | some(x) => (lst.count(x) > 1) and lst.all(lambda y: (lst.count(y) == 1) or (secondOccIdx(lst, x) <= secondOccIdx(lst, y)))
+  match result with | none => List.Nodup(lst) | some(x) => lst.count(x) > 1 and lst.all(lambda y: lst.count(y) == 1 or secondOccIdx(lst, x) <= secondOccIdx(lst, y))

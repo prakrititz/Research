@@ -2,4 +2,4 @@ def strangeSortList_precond(lst: list[int]): prop =
   true_prop
 
 def strangeSortList_postcond(lst: list[int], result: list[int], h_precond: strangeSortList_precond(lst)) =
-  let s = sorted(lst, lambda a, b: a <= b); result == range(len(lst)).map(lambda k: s[k / 2] if (k % 2) == 0 else s[(len(lst) - 1) - (k / 2)])
+  let s = sorted(lst, lambda a, b: a <= b); result == range(len(lst)).map(lambda k: s[k / 2] if k % 2 == 0 else s[len(lst) - 1 - k / 2])

@@ -2,4 +2,4 @@ def skjkasdkd_precond(lst: list[nat]): prop =
   exists x in lst: is_prime(x)
 
 def skjkasdkd_postcond(lst: list[nat], result: nat, h_precond: skjkasdkd_precond(lst)) =
-  exists p in lst: is_prime(p) and ((forall x in lst: is_prime(x) ==> (x <= p)) and (result == sum(list(str(p)).map(lambda c: to_nat(c) - to_nat('0')))))
+  exists p in lst: is_prime(p) and (forall x in lst: is_prime(x) ==> x <= p) and result == sum(list(str(p)).map(lambda c: to_nat(c) - to_nat('0')))

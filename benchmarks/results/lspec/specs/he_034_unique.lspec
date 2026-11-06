@@ -2,4 +2,4 @@ def unique_precond(l: list[int]): prop =
   true_prop
 
 def unique_postcond(l: list[int], result: list[int], h_precond: unique_precond(l)) =
-  (forall i: (i < (len(result) - 1)) ==> (result[i] < result[i + 1])) and ((forall x in result: x in l) and (forall x in l: x in result))
+  (forall i: i < len(result) - 1 ==> result[i] < result[i + 1]) and (forall x in result: x in l) and (forall x in l: x in result)

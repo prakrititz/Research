@@ -1,8 +1,8 @@
-def isOdd(n: int): bool_t =
-  (n % 2) === 1
+def isOdd(n: int): bool =
+  n % 2 === 1
 
 def isOddAtIndexOdd_precond(a: array[int]): prop =
   true_prop
 
-def isOddAtIndexOdd_postcond(a: array[int], result: bool_t, h_precond: isOddAtIndexOdd_precond(a)) =
+def isOddAtIndexOdd_postcond(a: array[int], result: bool, h_precond: isOddAtIndexOdd_precond(a)) =
   result <==> (forall i: forall (hi: i < size(a)): isOdd(i) ==> isOdd(a[[i]]))

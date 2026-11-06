@@ -2,4 +2,4 @@ def largestDivisor_precond(n: nat): prop =
   n > 1
 
 def largestDivisor_postcond(n: nat, result: nat, h_precond: largestDivisor_precond(n)) =
-  (result > 0) and ((result < n) and (((n % result) == 0) and (forall d: (d < n) ==> ((result < d) ==> ((n % d) != 0)))))
+  result > 0 and result < n and n % result == 0 and (forall d: d < n ==> result < d ==> n % d != 0)

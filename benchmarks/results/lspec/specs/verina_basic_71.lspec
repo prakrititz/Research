@@ -2,4 +2,4 @@ def LongestCommonPrefix_precond(str1: list[char], str2: list[char]): prop =
   true_prop
 
 def LongestCommonPrefix_postcond(str1: list[char], str2: list[char], result: list[char], h_precond: LongestCommonPrefix_precond(str1, str2)) =
-  (len(result) <= len(str1)) and ((result == str1[:len(result)]) and ((len(result) <= len(str2)) and ((result == str2[:len(result)]) and ((len(result) == len(str1)) or ((len(result) == len(str2)) or (str1[len(result)]? != str2[len(result)]?))))))
+  len(result) <= len(str1) and result == str1[:len(result)] and len(result) <= len(str2) and result == str2[:len(result)] and (len(result) == len(str1) or len(result) == len(str2) or str1[len(result)]? != str2[len(result)]?)

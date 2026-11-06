@@ -2,4 +2,4 @@ def concat_precond(a: array[int], b: array[int]): prop =
   true_prop
 
 def concat_postcond(a: array[int], b: array[int], result: array[int], h_precond: concat_precond(a, b)) =
-  (size(result) == (size(a) + size(b))) and ((forall k: (k < size(a)) ==> (result[k] == a[k])) and (forall k: (k < size(b)) ==> (result[k + size(a)] == b[k])))
+  size(result) == size(a) + size(b) and (forall k: k < size(a) ==> result[k] == a[k]) and (forall k: k < size(b) ==> result[k + size(a)] == b[k])

@@ -1,5 +1,5 @@
 def modify_array_element_precond(arr: array[array[nat]], index1: nat, index2: nat, val: nat): prop =
-  (index1 < size(arr)) and (index2 < size(arr[index1]))
+  index1 < size(arr) and index2 < size(arr[index1])
 
 def modify_array_element_postcond(arr: array[array[nat]], index1: nat, index2: nat, val: nat, result: array[array[nat]], h_precond: modify_array_element_precond(arr, index1, index2, val)) =
-  (size(result) == size(arr)) and ((size(result[index1]) == size(arr[index1])) and ((forall i: (i < size(arr)) ==> ((i != index1) ==> (result[i] == arr[i]))) and ((forall j: (j < size(arr[index1])) ==> ((j != index2) ==> (result[index1][j] == arr[index1][j]))) and (result[index1][index2] == val))))
+  size(result) == size(arr) and size(result[index1]) == size(arr[index1]) and (forall i: i < size(arr) ==> i != index1 ==> result[i] == arr[i]) and (forall j: j < size(arr[index1]) ==> j != index2 ==> result[index1][j] == arr[index1][j]) and result[index1][index2] == val

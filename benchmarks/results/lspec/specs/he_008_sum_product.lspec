@@ -2,4 +2,4 @@ def sumProduct_precond(numbers: list[int]): prop =
   true_prop
 
 def sumProduct_postcond(numbers: list[int], result: tuple[int, int], h_precond: sumProduct_precond(numbers)) =
-  (result.1 == sum(numbers)) and (result.2 == product(numbers))
+  result.1 == sum(numbers) and result.2 == product(numbers)

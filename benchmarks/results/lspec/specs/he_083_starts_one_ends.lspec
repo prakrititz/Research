@@ -2,4 +2,4 @@ def startsOneEnds_precond(n: nat): prop =
   n >= 1
 
 def startsOneEnds_postcond(n: nat, result: nat, h_precond: startsOneEnds_precond(n)) =
-  result == len(range(10 ** n).filter(lambda m: ((10 ** (n - 1)) <= m) and (((m / (10 ** (n - 1))) == 1) or ((m % 10) == 1))))
+  result == len(range(10 ** n).filter(lambda m: 10 ** (n - 1) <= m and (m / 10 ** (n - 1) == 1 or m % 10 == 1)))

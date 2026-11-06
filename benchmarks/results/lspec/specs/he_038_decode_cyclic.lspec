@@ -1,9 +1,9 @@
 def encodeGroups: list[char] ==> list[char]
-  | a :: (b :: (c :: rest)) => b :: (c :: (a :: encodeGroups(rest)))
+  | a :: b :: c :: rest => b :: c :: a :: encodeGroups(rest)
   | l => l
 
-def decodeCyclic_precond(s: str_t): prop =
+def decodeCyclic_precond(s: str): prop =
   true_prop
 
-def decodeCyclic_postcond(s: str_t, result: str_t, h_precond: decodeCyclic_precond(s)) =
+def decodeCyclic_postcond(s: str, result: str, h_precond: decodeCyclic_precond(s)) =
   encodeGroups(list(result)) == list(s)

@@ -1,5 +1,5 @@
 def isSorted_precond(a: array[int]): prop =
   true_prop
 
-def isSorted_postcond(a: array[int], result: bool_t, h_precond: isSorted_precond(a)) =
-  (forall i: forall (hi: i < (size(a) - 1)): a[[i]] <= a[[i + 1]]) <==> result
+def isSorted_postcond(a: array[int], result: bool, h_precond: isSorted_precond(a)) =
+  (forall i: forall (hi: i < size(a) - 1): a[[i]] <= a[[i + 1]]) <==> result

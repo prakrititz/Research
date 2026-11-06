@@ -2,4 +2,4 @@ def task_code_precond(sequence: list[int]): prop =
   len(sequence) > 0
 
 def task_code_postcond(sequence: list[int], result: int, h_precond: task_code_precond(sequence)): prop =
-  let subArrays = range(len(sequence) + 1).flat_map(lambda start: range((len(sequence) - start) + 1).map(lambda len: sequence[start:][:`len`])); let subArraySums = subArrays.filter(lambda _c1: _c1 != []).map(lambda _c1: sum(_c1)); subArraySums.contains(result) and subArraySums.all(lambda _c1: _c1 <= result)
+  let subArrays = range(len(sequence) + 1).flat_map(lambda start: range(len(sequence) - start + 1).map(lambda len: sequence[start:][:`len`])); let subArraySums = subArrays.filter(lambda _c1: _c1 != []).map(lambda _c1: sum(_c1)); subArraySums.contains(result) and subArraySums.all(lambda _c1: _c1 <= result)

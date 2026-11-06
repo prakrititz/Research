@@ -1,12 +1,12 @@
-def parseQ(s: str_t): rat =
-  match s.map(lambda c: '.' if c === ',' else c).splitOn(".") with | [w] => (w.toNat! as rat) | [w, f] => (w.toNat! as rat) + ((f.toNat! as rat) / ((10 as rat) ** len(f))) | _ => 0
+def parseQ(s: str): rat =
+  match s.map(lambda c: '.' if c === ',' else c).splitOn(".") with | [w] => (w.toNat! as rat) | [w, f] => (w.toNat! as rat) + (f.toNat! as rat) / (10 as rat) ** len(f) | _ => 0
 
-def valQ: (rat ⊕ str_t) ==> rat
+def valQ: rat ⊕ str ==> rat
   | Sum.inl(q) => q
   | Sum.inr(s) => parseQ(s)
 
-def compareOne_precond(a: rat ⊕ str_t, b: rat ⊕ str_t): prop =
+def compareOne_precond(a: rat ⊕ str, b: rat ⊕ str): prop =
   true_prop
 
-def compareOne_postcond(a: rat ⊕ str_t, b: rat ⊕ str_t, result: option[rat ⊕ str_t], h_precond: compareOne_precond(a, b)) =
-  ((valQ(a) == valQ(b)) ==> (result == none)) and (((valQ(b) < valQ(a)) ==> (result == some(a))) and ((valQ(a) < valQ(b)) ==> (result == some(b))))
+def compareOne_postcond(a: rat ⊕ str, b: rat ⊕ str, result: option[rat ⊕ str], h_precond: compareOne_precond(a, b)) =
+  (valQ(a) == valQ(b) ==> result == none) and (valQ(b) < valQ(a) ==> result == some(a)) and (valQ(a) < valQ(b) ==> result == some(b))

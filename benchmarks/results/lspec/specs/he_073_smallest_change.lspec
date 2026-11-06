@@ -2,4 +2,4 @@ def smallestChange_precond(arr: list[int]): prop =
   true_prop
 
 def smallestChange_postcond(arr: list[int], result: nat, h_precond: smallestChange_precond(arr)) =
-  result == len(range(len(arr) / 2).filter(lambda i: arr[i] != arr[(len(arr) - 1) - i]))
+  result == len(range(len(arr) / 2).filter(lambda i: arr[i] != arr[len(arr) - 1 - i]))

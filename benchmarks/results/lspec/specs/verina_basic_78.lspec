@@ -2,4 +2,4 @@ def MultipleReturns_precond(x: int, y: int): prop =
   true_prop
 
 def MultipleReturns_postcond(x: int, y: int, result: tuple[int, int], h_precond: MultipleReturns_precond(x, y)) =
-  (result.1 == (x + y)) and ((result.2 + y) == x)
+  result.1 == x + y and result.2 + y == x

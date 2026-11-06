@@ -1,5 +1,5 @@
 def intersection_precond(interval1: tuple[int, int], interval2: tuple[int, int]): prop =
-  (interval1.1 <= interval1.2) and (interval2.1 <= interval2.2)
+  interval1.1 <= interval1.2 and interval2.1 <= interval2.2
 
-def intersection_postcond(interval1: tuple[int, int], interval2: tuple[int, int], result: str_t, h_precond: intersection_precond(interval1, interval2)) =
-  let `len` = min(interval1.2, interval2.2) - max(interval1.1, interval2.1); ((result == "YES") or (result == "NO")) and ((result == "YES") <==> ((`len` >= 2) and is_prime(to_nat(`len`))))
+def intersection_postcond(interval1: tuple[int, int], interval2: tuple[int, int], result: str, h_precond: intersection_precond(interval1, interval2)) =
+  let `len` = min(interval1.2, interval2.2) - max(interval1.1, interval2.1); (result == "YES" or result == "NO") and (result == "YES" <==> `len` >= 2 and is_prime(to_nat(`len`)))

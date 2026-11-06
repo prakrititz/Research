@@ -1,11 +1,11 @@
-def isVowelC(c: char): bool_t =
+def isVowelC(c: char): bool =
   ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains(c)
 
 def goodAt(w: list[char], i: nat): prop =
-  (1 <= i) and (((i + 1) < len(w)) and ((isVowelC(w[i]) == True) and ((isVowelC(w[i - 1]) == False) and (isVowelC(w[i + 1]) == False))))
+  1 <= i and i + 1 < len(w) and isVowelC(w[i]) == True and isVowelC(w[i - 1]) == False and isVowelC(w[i + 1]) == False
 
-def getClosestVowel_precond(word: str_t): prop =
+def getClosestVowel_precond(word: str): prop =
   true_prop
 
-def getClosestVowel_postcond(word: str_t, result: str_t, h_precond: getClosestVowel_precond(word)) =
-  let w = list(word); ((result == "") <==> (forall i: (i < len(w)) ==> (not goodAt(w, i)))) and ((result != "") ==> (exists i: (i < len(w)) and (goodAt(w, i) and ((result == string1(w[i])) and (forall j: (j < len(w)) ==> ((i < j) ==> (not goodAt(w, j))))))))
+def getClosestVowel_postcond(word: str, result: str, h_precond: getClosestVowel_precond(word)) =
+  let w = list(word); (result == "" <==> (forall i: i < len(w) ==> (not goodAt(w, i)))) and (result != "" ==> (exists i: i < len(w) and goodAt(w, i) and result == string1(w[i]) and (forall j: j < len(w) ==> i < j ==> (not goodAt(w, j)))))

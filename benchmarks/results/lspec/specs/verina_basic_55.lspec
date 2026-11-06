@@ -1,5 +1,5 @@
 def Compare_precond(a: int, b: int): prop =
   true_prop
 
-def Compare_postcond(a: int, b: int, result: bool_t, h_precond: Compare_precond(a, b)) =
-  ((a == b) ==> (result == True)) and ((a != b) ==> (result == False))
+def Compare_postcond(a: int, b: int, result: bool, h_precond: Compare_precond(a, b)) =
+  (a == b ==> result == True) and (a != b ==> result == False)

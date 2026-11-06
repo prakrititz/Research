@@ -1,8 +1,8 @@
 def longestConsecutive_precond(nums: list[int]): prop =
   List.Nodup(nums)
 
-def isConsecutive(seq: list[int]): bool_t =
-  (len(seq) == 0) or seq.zipIdx.all(lambda (x, i): x == (i + seq[0]))
+def isConsecutive(seq: list[int]): bool =
+  len(seq) == 0 or seq.zipIdx.all(lambda (x, i): x == i + seq[0])
 
 def longestConsecutive_postcond(nums: list[int], result: nat, h_precond: longestConsecutive_precond(nums)): prop =
-  let sorted_nums = sorted(nums); let consec_sublist_lens = range(len(nums)).flat_map(lambda start: range((len(nums) - start) + 1).map(lambda len: sorted_nums.extract(start, start + `len`))).filter(isConsecutive).map(lambda _c1: len(_c1)); ((nums == []) ==> (result == 0)) and ((nums != []) ==> (consec_sublist_lens.contains(result) and consec_sublist_lens.all(lambda _c1: _c1 <= result)))
+  let sorted_nums = sorted(nums); let consec_sublist_lens = range(len(nums)).flat_map(lambda start: range(len(nums) - start + 1).map(lambda len: sorted_nums.extract(start, start + `len`))).filter(isConsecutive).map(lambda _c1: len(_c1)); (nums == [] ==> result == 0) and (nums != [] ==> consec_sublist_lens.contains(result) and consec_sublist_lens.all(lambda _c1: _c1 <= result))

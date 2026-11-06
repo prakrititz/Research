@@ -1,5 +1,5 @@
 def IsPalindrome_precond(x: list[char]): prop =
   true_prop
 
-def IsPalindrome_postcond(x: list[char], result: bool_t, h_precond: IsPalindrome_precond(x)) =
-  result <==> (forall (i: nat): (i < len(x)) ==> (x[i] == x[(len(x) - i) - 1]))
+def IsPalindrome_postcond(x: list[char], result: bool, h_precond: IsPalindrome_precond(x)) =
+  result <==> (forall (i: nat): i < len(x) ==> x[i] == x[len(x) - i - 1])

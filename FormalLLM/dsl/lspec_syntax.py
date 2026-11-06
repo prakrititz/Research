@@ -6,7 +6,8 @@ changes (``ops.BINOPS``); names come from the registry (``ops.py``). The constru
     lambda acc, (s, e): acc + (e - s)          forall i < len(l): l[i] >= 0          exists x in l: x % 2 == 0
     a if c else b                               let m = len(l); m * 2                  match v with | some x => x | none => 0
     l[i]  (l[i]! in Lean)   l[i]?   l[:k] (take)   l[k:] (drop)   len(l)   sorted(l, c)   x.map(f)   (e as int)
-    list[int]   tuple[nat, bool]   abs(x)   floor(x)   bool(p) (decide)   True / False   `name` (a name L_spec reserves)
+    list[int]   tuple[nat, bool]   abs(x)   floor(x)   bool(p) (decide; `bool` alone is the type)   True / False
+    `name` (a name L_spec reserves)
 """
 import re
 from typing import List, Optional
@@ -38,6 +39,23 @@ def _name(lean: str) -> str:
 def _arg(node: Node) -> str:
     text = show(node)
     return text if isinstance(node, _ATOMS) else f"({text})"
+
+
+_ATOM_OPS = ("×", "<|", "$")                               # printed as `tuple[...]` / a call: never need parentheses
+
+
+def _operand(child: Node, op: str, side: str) -> str:
+    """An operand of ``op``: an operator expression is parenthesised only when Lean's precedences would group it
+    differently without (the parser reads with the same table, so the text reads back to the same tree)."""
+    if isinstance(child, BinOp) and child.op in _ATOM_OPS:
+        return show(child)
+    if isinstance(child, BinOp) and child.op in INFIX and op in INFIX:
+        prec, right_assoc = INFIX[op]
+        inner, _ = INFIX[child.op]
+        if inner > prec or inner == prec and (side == "left") != right_assoc:
+            return show(child)
+        return f"({show(child)})"
+    return _arg(child)
 
 
 def _low(node: Node) -> str:
@@ -82,6 +100,8 @@ def show(node: Node) -> str:
             return f"{_arg(fn.obj)}.{_method(fn.field)}({', '.join(args)})"
         if isinstance(fn, Name) and fn.id in TYPE_CTORS and len(args) == 1:
             return f"{_name(fn.id)}[{args[0]}]"
+        if isinstance(fn, Name) and fn.id in ops.CALL_NAMES:          # `decide p` is `bool(p)`
+            return f"{ops.CALL_NAMES[fn.id]}({', '.join(args)})"
         head = _name(fn.id) if isinstance(fn, Name) else f"({show(fn)})"
         return f"{head}({', '.join(args)})"
     if isinstance(node, Dot):
@@ -96,7 +116,7 @@ def show(node: Node) -> str:
             return "tuple[" + ", ".join(show(p) for p in _product(node)) + "]"
         if node.op in ("<|", "$"):
             return show(App(node.left, [node.right]))
-        return f"{_arg(node.left)} {ops.BINOPS.get(node.op, node.op)} {_arg(node.right)}"
+        return f"{_operand(node.left, node.op, 'left')} {ops.BINOPS.get(node.op, node.op)} {_operand(node.right, node.op, 'right')}"
     if isinstance(node, UnOp):
         op = ops.UNOPS[node.op]
         return f"{op}{' ' if op.isalpha() else ''}{_arg(node.arg)}"
@@ -327,6 +347,8 @@ class _Parser:
         if isinstance(fn, _SpecName) and fn.id in ops.METHOD_FUNCS_INV and args:     # `len(l)` is `l.length`
             dot = Dot(args[0], ops.METHOD_FUNCS_INV[fn.id])
             return App(dot, args[1:]) if len(args) > 1 else dot
+        if isinstance(fn, _SpecName) and fn.id in ops.CALL_NAMES_INV and args:      # `bool(p)` is `decide p`
+            return App(Name(ops.CALL_NAMES_INV[fn.id]), args)
         if isinstance(fn, _SpecName) and fn.id in ABS_INV and len(args) == 1:
             return Abs(args[0], ABS_INV[fn.id])
         fn = _resolve(fn)

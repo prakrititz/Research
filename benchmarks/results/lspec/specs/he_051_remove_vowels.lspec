@@ -1,5 +1,5 @@
-def removeVowels_precond(text: str_t): prop =
+def removeVowels_precond(text: str): prop =
   true_prop
 
-def removeVowels_postcond(text: str_t, result: str_t, h_precond: removeVowels_precond(text)) =
+def removeVowels_postcond(text: str, result: str, h_precond: removeVowels_precond(text)) =
   list(result) == list(text).filter(lambda c: !['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'].contains(c))

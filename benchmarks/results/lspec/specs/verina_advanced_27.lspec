@@ -1,5 +1,5 @@
-def longestCommonSubsequence_precond(s1: str_t, s2: str_t): prop =
+def longestCommonSubsequence_precond(s1: str, s2: str): prop =
   true_prop
 
-def longestCommonSubsequence_postcond(s1: str_t, s2: str_t, result: str_t, h_precond: longestCommonSubsequence_precond(s1, s2)): prop =
+def longestCommonSubsequence_postcond(s1: str, s2: str, result: str, h_precond: longestCommonSubsequence_precond(s1, s2)): prop =
   let allSubseq((arr: list[char])) = (arr.foldl(lambda acc, x: acc ++ acc.map(lambda sub: x :: sub)))([[]]).map(List.reverse); let subseqA = allSubseq(list(s1)); let subseqB = allSubseq(list(s2)); let commonSubseq = subseqA.filter(lambda l: subseqB.contains(l)); commonSubseq.contains(list(result)) and commonSubseq.all(lambda l: len(l) <= len(result))
