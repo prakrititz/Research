@@ -1,5 +1,5 @@
-{"id": "classic_fast_power", "same": true, "obligations": 9, "differing": 8, "errors": [], "seconds": 1.1}
-{"id": "classic_isqrt", "same": true, "obligations": 5, "differing": 5, "errors": [], "seconds": 0.2}
-{"id": "classic_reverse", "same": true, "obligations": 6, "differing": 4, "errors": [], "seconds": 0.5}
-{"id": "classic_sort_list", "same": true, "obligations": 2, "differing": 1, "errors": [], "seconds": 0.5}
-{"id": "classic_sqrt_approx", "same": true, "obligations": 6, "differing": 7, "errors": [], "seconds": 1.2}
+{"id": "classic_fast_power", "same": true, "obligations": 9, "differing": 8, "errors": [], "seconds": 0.7}
+{"id": "classic_isqrt", "same": true, "obligations": 5, "differing": 5, "errors": [], "seconds": 0.1}
+{"id": "classic_reverse", "same": true, "obligations": 6, "differing": 4, "errors": [], "seconds": 0.2}
+{"id": "classic_sort_list", "same": true, "obligations": 2, "differing": 1, "errors": [], "seconds": 0.3}
+{"id": "classic_sqrt_approx", "same": true, "obligations": 6, "differing": 7, "errors": [], "seconds": 0.7}

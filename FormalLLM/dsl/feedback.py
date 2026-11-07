@@ -85,6 +85,8 @@ def closed_statement(obligation) -> str:
 SYNTAX_HINTS = [
     (r"'\?'(?!\w)", "A conditional is written `a if c else b` (or `if c then a else b`), not `c ? a : b`."),
     (r"'s\.t\.?'|'such'", "Write `exists j: j < i and ...`, not `s.t.`."),
+    (r"trailing '='", "Equality is `==` (`=` only appears in `let x = v; ...`)."),
+    (r"'where'", "Put the condition in the body: `forall x in l: cond ==> ...`."),
 ]
 
 #: (pattern in Lean's error, hint): the usual reasons a type-correct-looking step is not
@@ -95,12 +97,23 @@ TYPE_HINTS = [
     (r"HAdd (str|\(?list)", "Strings and lists are joined with `++`, not `+`."),
     (r"GetElem\?? \(?list[^,]*\)? int", "A list index is a `nat`: convert an `int` with `to_nat(i)`."),
     (r"Inhabited", "This type has no default value, so `l[i]` cannot be used on its lists: use `l[i]?` (an option)."),
+    (r"GetElem\?? str ", "A `str` is not indexed directly: index its characters, `list(s)[i]`."),
+    (r"Unknown identifier `(\w+)\.", "`{0}` is not defined at this step: only the goal's inputs, its assumptions and "
+                                     "the variables this step introduces can be used."),
+    (r"Function expected at\s+(\w+)\b", "`{0}` is a value here, not a function: a variable of the goal named `{0}` "
+                                         "hides the library name (write the library function as in Lean, e.g. "
+                                         "`String.mk(...)`), or the call has too many arguments."),
 ]
 
 
 def hints(message: str, table) -> str:
+    """The hints whose pattern occurs in ``message``; ``{0}`` in a hint is the pattern's first group."""
     import re
-    found = [hint for pattern, hint in table if re.search(pattern, message)]
+    found = []
+    for pattern, hint in table:
+        m = re.search(pattern, message)
+        if m:
+            found.append(hint.format(*m.groups()))
     return "".join(f"\n  Hint: {h}" for h in found)
 
 

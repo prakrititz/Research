@@ -106,7 +106,8 @@ def to_engine(step: dict, scope=()) -> dict:
         inner.add(step["var"])
     for field, kind in fields_for(law):
         if field not in step:
-            raise StepError(field, "missing")
+            raise StepError(field, f"missing: a `{law}` step has the fields "
+                                   + ", ".join(f"`{f}`" for f, _ in fields_for(law)))
         value = step[field]
         if kind == "name":
             out[field] = _name(value, field)

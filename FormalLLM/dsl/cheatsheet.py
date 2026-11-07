@@ -81,6 +81,10 @@ PYTHON_FORMS = [
     ("`a // b`", "`a / b` (integer division)"),
     ("`max(l)`, `min(l)` of a list", "the largest / smallest element (the type's default, e.g. `0`, if `l` is empty)"),
     ("`if c then a else b`", "`a if c else b` (Lean's spelling; `else` reaches as far right as it can)"),
+    ("`if c then p` (no else)", "`c ==> p` (a statement)"),
+    ("`p implies q`", "`p ==> q`"),
+    ("`'text'`", "`\"text\"` (one character, `'a'`, is a `char`; as the argument of `split`, `join`, `startswith`, "
+     "`endswith` it is a string)"),
     ("`map(f, l)`, `filter(p, l)`", "`l.map(f)`, `l.filter(p)`"),
     ("`s.upper()`, `sep.join(l)`, `s.split(sep)`, `s.strip()`, `s.startswith(t)`", "the string methods"),
     ("`let x := v; body`", "`let x = v; body`"),

@@ -237,3 +237,39 @@ def test_a_reused_name_shadows_the_goal_variable():
 def test_hints_name_the_usual_fix(message, table, expected):
     found = feedback.hints(message, table)
     assert (expected in found) if expected else found == ""
+
+
+@pytest.mark.parametrize("spec, lean", [
+    ("s.split(' ').filter(lambda g: g !== '')", "(s.splitOn \" \").filter (fun g => g != \"\")"),
+    ("','.join(ws)", "\",\".intercalate ws"),
+    ("x == 'o|' or c == 'o'", "x = \"o|\" ∨ c = 'o'"),                     # one character is a char
+    ("p and (if n > 1 then q)", "p ∧ (n > 1 → q)"),                        # if without else: a statement
+    ("p implies q", "p → q"),
+])
+def test_more_python_spellings(spec, lean):
+    assert lean_syntax.parse(steps.to_lean(spec, "x", ["s", "ws", "x", "c", "p", "n", "q"])) == lean_syntax.parse(lean)
+
+
+def test_missing_field_names_the_law_fields():
+    with pytest.raises(steps.StepError, match="`expr`"):
+        steps.to_engine({"law": "term", "var": "x", "type": "int", "prop": "x == 1"})
+    assert "`string` is a value here" in feedback.hints("Function expected at\n  string\nbut this term", feedback.TYPE_HINTS)
+
+
+@pytest.mark.parametrize("spec, lean", [
+    ("forall j: nat, j < i ==> l[j] >= 0", "∀ (j : Nat), j < i → l[j]! ≥ 0"),       # Lean's typed binder
+    ("exists k: int, k * k == n", "∃ (k : Int), k * k = n"),
+    ("(lambda x: x + 1, 2)", "(fun x => x + 1, 2)"),                              # a lambda in a tuple is not
+    ("¬ (a ≤ b) ∧ (p → q) ∨ a ≠ b", "¬ (a ≤ b) ∧ (p → q) ∨ a ≠ b"),               # Lean's symbols
+])
+def test_lean_binders_and_symbols(spec, lean):
+    assert lean_syntax.parse(steps.to_lean(spec, "x", ["i", "l", "n", "a", "b", "p", "q"])) == lean_syntax.parse(lean)
+
+
+@pytest.mark.parametrize("message, table, expected", [
+    ("Unsupported: trailing '='", feedback.SYNTAX_HINTS, "`==`"),
+    ("failed to synthesize instance of type class GetElem? str nat ?m.5", feedback.TYPE_HINTS, "list(s)[i]"),
+    ("Unknown identifier `result.length`", feedback.TYPE_HINTS, "`result` is not defined"),
+])
+def test_more_hints(message, table, expected):
+    assert expected in feedback.hints(message, table)

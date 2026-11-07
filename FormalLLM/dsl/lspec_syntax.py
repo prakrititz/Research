@@ -24,6 +24,8 @@ BOUNDS = {"∈": "in", "∉": "not in", "<": "<", "≤": "<=", ">": ">", "≥": 
 BOUNDS_INV = {v: k for k, v in BOUNDS.items()}
 #: Python's function form, read as the method (never printed): `map(f, l)` is `l.map(f)`, `filter(p, l)` is `l.filter(p)`
 PY_FUNCS = {"map", "filter"}
+#: String methods whose arguments are strings in Lean: a one-character literal there is a string, as in Python
+STRING_ARGS = {"splitOn", "startsWith", "endsWith", "intercalate"}
 #: comparisons that chain as in Python (`a < b <= c` is `a < b and b <= c`)
 CHAIN = {"=", "≠", "<", ">", "≤", "≥"}
 
@@ -183,16 +185,20 @@ _TOKEN = re.compile(r"""
     (?P<ws>\s+)
   | (?P<num>0[xX][0-9a-fA-F]+|0[bB][01]+|\d+(?:\.\d+)?)
   | (?P<char>'(?:\\.|[^'\\])')
+  | (?P<sstr>'(?:\\.|[^'\\])*')
   | (?P<str>"(?:\\.|[^"\\])*")
   | (?P<esc>`[^`]+`)
   | (?P<op><==>|==>|===|!==|&&&|\|\|\||>>>|<<<|~~~|//|:=|=>|==|!=|<=|>=|\*\*|\+\+|::|&&|\|\||[-+*/%<>!↑·=|⊕])
   | (?P<punct>\#\[|[()\[\]{},:;.⟨⟩?])
+  | (?P<lean>[¬∧∨→↔≤≥≠])
   | (?P<ident>[^\W\d][\w']*(?:\.[^\W\d][\w']*)*(?:[!?](?![\w=]))?)
 """, re.VERBOSE | re.UNICODE)
 
 #: L_spec infix spelling -> Lean operator
 _INFIX = {ops.BINOPS.get(op, op): op for op in INFIX if op not in ("<|", "|>", "$", "×")}
-_INFIX.update({"<=": "≤", ">=": "≥", "//": "/"})                 # Python's `//`: integer division
+_INFIX.update({"<=": "≤", ">=": "≥", "//": "/", "implies": "→"})  # Python's `//`: integer division
+#: Lean's logical and comparison symbols, read as their L_spec spelling
+_LEAN_SYMBOLS = {"¬": "not", "∧": "and", "∨": "or", "→": "==>", "↔": "<==>", "≤": "<=", "≥": ">=", "≠": "!="}
 
 
 def tokenize(text: str):
@@ -204,7 +210,13 @@ def tokenize(text: str):
         pos = m.end()
         if m.lastgroup == "ws":
             continue
-        out.append(m.group())
+        if m.lastgroup == "sstr":                          # Python's 'text' (not one character): a string
+            inner = m.group()[1:-1].replace("\\'", "'").replace('"', '\\"')
+            out.append(f'"{inner}"')
+        elif m.lastgroup == "lean":                        # Lean's symbol: the same operator
+            out.append(_LEAN_SYMBOLS[m.group()])
+        else:
+            out.append(m.group())
         spans.append((m.start(), m.end()))
     return out, spans
 
@@ -287,6 +299,8 @@ class _Parser:
             cond = self.expr(0)
             self.expect("then")
             then = self.expr(0)
+            if self.peek() != "else" and hyp is None:      # `if c then p` with no else: a statement, `c ==> p`
+                return BinOp("→", cond, then)
             self.expect("else")
             return If(cond, then, self.expr(0), hyp)
         if tok == "match":
@@ -404,6 +418,10 @@ class _Parser:
                 return App(Dot(arg.source_list(), fn.id), [arg.lam(arg.elem)])
             return App(Dot(arg, fn.id), [Binder("fun", [("_b", None)], None, Name("_b"))])
         args = [a.as_list() if isinstance(a, _Gen) else a for a in args]
+        if isinstance(fn, Dot) and fn.field in STRING_ARGS:     # Python's ' ' is a str: `s.split(' ')`, `','.join(l)`
+            args = [Str(a.text) if isinstance(a, Char) else a for a in args]
+            if fn.field == "intercalate" and isinstance(fn.obj, Char):
+                fn = Dot(Str(fn.obj.text), fn.field)
         if isinstance(fn, _SpecName) and fn.id == "range" and len(args) > 1:         # `range(a, b)`
             if len(args) > 2:
                 raise Unsupported("`range` with a step: write `range(n).map(lambda k: a + k * step)`")
@@ -533,7 +551,12 @@ class _Parser:
                 spelled = "not in"
             bound = (BOUNDS_INV[spelled], self.binops(51))
         self.expect(":")
-        return Binder(kind, names, bound, self.expr())
+        body = self.expr()
+        if (kind != "fun" and self.peek() == "," and bound is None and len(names) == 1 and names[0][1] is None
+                and not names[0][0].startswith(("<", "[", "{"))):        # Lean's `forall j: nat, body`
+            self.next()
+            names, body = [(names[0][0], body)], self.expr()
+        return Binder(kind, names, bound, body)
 
     def assign(self):
         """`=` in a `let`; Lean's `:=` is accepted too (models write it)."""
