@@ -45,6 +45,19 @@ def test_the_false_parts_are_read_off_the_trace_and_removed_from_it():
     assert dynamic.PART + "acc = 0" in shown
 
 
+@pytest.fixture(scope="module")
+def lean_session():
+    """A REPL with all of Mathlib, as the benchmarks run the engine: the lemma library and the tasks' definitions need
+    more than the shared fixture's small imports ("unknown tactic")."""
+    from FormalLLM.lean.session import FULL_IMPORTS, LeanSession, LeanUnavailable
+    try:
+        session = LeanSession(imports=FULL_IMPORTS, startup_timeout=1200)
+    except LeanUnavailable as error:
+        pytest.skip(str(error))
+    yield session
+    session.close()
+
+
 def library(task_id):
     directory = os.path.join(LIBRARY, task_id)
     if not os.path.isdir(directory):
