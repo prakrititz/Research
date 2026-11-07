@@ -27,16 +27,119 @@ PLAUSIBLE_CONFIG = "(config := { randomSeed := some 20261008, numInst := 200 })"
 OPTIONS = "set_option synthInstance.maxSize 100000 in\nset_option synthInstance.maxHeartbeats 0 in\n"
 
 
+PART = "false part of the invariant: "      # a line ``feedback.describe`` shows in L_spec (the part is Lean text)
+
+
 @dataclass
 class Finding:
     inputs: str                       # ``operations := [0]`` as ``plausible`` prints it
     trace: List[str] = field(default_factory=list)
     kind: str = ""                    # init | step | exit
+    failing: List[str] = field(default_factory=list)    # the top-level conjuncts of the invariant that are false
 
     def text(self) -> str:
         lines = [f"counter-example (found by running the loop): {self.inputs}"]
         lines += ["    " + line for line in self.trace[:12]]
+        lines += ["    " + PART + part for part in self.failing[:3]]
         return "\n".join(lines)
+
+
+_OPEN, _CLOSE = "([{⟨", ")]}⟩"
+_LOOSE = re.compile(r"∀|∃|\bfun\b|λ|→|↔|∨|\bif\b|\blet\b|\bmatch\b|<\||\$|\|\||&&|=>|,")
+
+
+def _depth0(text: str) -> str:
+    """``text`` with everything inside brackets or string literals blanked: what is left is the top level."""
+    out, depth, quoted = [], 0, False
+    for k, ch in enumerate(text):
+        if quoted:
+            quoted = not (ch == '"' and text[k - 1] != "\\")
+            out.append(" ")
+            continue
+        if ch == '"':
+            quoted = True
+            out.append(" ")
+            continue
+        if ch in _OPEN:
+            depth += 1
+            out.append(" ")
+            continue
+        if ch in _CLOSE:
+            depth -= 1
+            out.append(" ")
+            continue
+        out.append(ch if depth == 0 else " ")
+    return "".join(out)
+
+
+def _closer(text: str, start: int) -> int:
+    """The index of the bracket closing the one at ``start`` (-1 if unbalanced); string literals are skipped."""
+    depth, quoted = 0, False
+    for k in range(start, len(text)):
+        ch = text[k]
+        if quoted:
+            quoted = not (ch == '"' and text[k - 1] != "\\")
+        elif ch == '"':
+            quoted = True
+        elif ch in _OPEN:
+            depth += 1
+        elif ch in _CLOSE:
+            depth -= 1
+            if depth == 0:
+                return k
+    return -1
+
+
+def _unwrap(text: str) -> str:
+    """Drop parentheses around the whole of ``text`` (not those of ``(a) ∧ (b)``)."""
+    text = text.strip()
+    while text.startswith("(") and text.endswith(")") and _closer(text, 0) == len(text) - 1:
+        text = text[1:-1].strip()
+    return text
+
+
+def conjuncts(prop: str) -> List[str]:
+    """The top-level ``∧`` parts of a Lean proposition, nested conjunctions flattened. A part is split off only when
+    nothing at the top level binds looser than ``∧`` (a binder, an implication, a disjunction, a lambda): otherwise the
+    proposition is one part."""
+    text = _unwrap(prop)
+    top = _depth0(text)
+    if "∧" not in top or _LOOSE.search(top):
+        return [text]
+    cuts = [k for k, ch in enumerate(top) if ch == "∧"]
+    pieces = [text[a + 1:b] for a, b in zip([-1] + cuts, cuts + [len(text)])]
+    return [part for piece in pieces for part in conjuncts(piece)]
+
+
+def _false_parts(goal: Goal, law: Loop) -> str:
+    """``dyn_false``: the 1-based numbers of the invariant's conjuncts that are false in a state (empty: one part)."""
+    ctx = " ".join(f"({n} : {t})" for n, t in goal.ctx)
+    parts = conjuncts(law.invariant)
+    body = (" ++ ".join(f"(if decide ({p}) then [] else [{k + 1}])" for k, p in enumerate(parts))
+            if len(parts) > 1 else "[]")
+    return f"def dyn_false {ctx} {_state_binders(law)} : List Nat := {body}"
+
+
+def _falses(goal: Goal, law: Loop, args: str) -> str:
+    names = " ".join(n for n, _ in goal.ctx)
+    return f'"; false parts: " ++ toString (dyn_false {names} {args})'
+
+
+_FALSE_PARTS = re.compile(r";? false parts: \[([0-9, ]*)\]")
+
+
+def _read_parts(trace: List[str], law: Loop):
+    """Strip the ``false parts: [2]`` markers from the trace; the conjuncts they name (at the first failure)."""
+    parts, failing, out = conjuncts(law.invariant), [], []
+    for line in trace:
+        match = _FALSE_PARTS.search(line)
+        if match:
+            if not failing and len(parts) > 1:
+                failing = [parts[int(k) - 1] for k in match.group(1).replace(" ", "").split(",")
+                           if k and 0 < int(k) <= len(parts)]
+            line = line[:match.start()] + line[match.end():]
+        out.append(line)
+    return out, failing
 
 
 def _state_binders(law: Loop) -> str:
@@ -117,12 +220,12 @@ def trace_source(goal: Goal, law: Loop, step: str, inputs: str) -> Optional[str]
         f"    | 0, _ => [\"(stopped after {FUEL} iterations)\"]",
         f"    | fuel + 1, s =>",
         f"      let head := \"state (\" ++ ({fmt_s}) ++ \")  invariant \" ++ toString (dyn_inv {names} {s_args}) ++ \"  guard \" ++ toString (dyn_guard {names} {s_args})",
-        f"      if !(dyn_inv {names} {s_args}) then [head ++ \"   <- the invariant is false here\"]",
+        f"      if !(dyn_inv {names} {s_args}) then [head ++ \"   <- the invariant is false here\" ++ {_falses(goal, law, s_args)}]",
         f"      else if dyn_guard {names} {s_args} then",
         f"        let r := dyn_step {names} {s_args}",
         f"        let next := \"  your step gives (\" ++ ({fmt_r}) ++ \")  invariant \" ++ toString (dyn_inv {names} {r_args}) ++ \"  variant \" ++ toString (dyn_var {names} {s_args}) ++ \" -> \" ++ toString (dyn_var {names} {r_args})",
         f"        if dyn_inv {names} {r_args} && decide (dyn_var {names} {r_args} < dyn_var {names} {s_args}) then head :: next :: go fuel r",
-        f"        else [head, next ++ (if !(dyn_inv {names} {r_args}) then \"   <- the invariant is false after your step\" else \"   <- the variant does not decrease\")]",
+        f"        else [head, next ++ (if !(dyn_inv {names} {r_args}) then \"   <- the invariant is false after your step\" ++ {_falses(goal, law, r_args)} else \"   <- the variant does not decrease\")]",
         f"      else [head, \"  the loop exits\"]",
         f"  go {FUEL} {init}",
         f"#eval (dyn_trace {' '.join('(' + v + ')' for v in values)}).foldl (fun acc line => acc ++ line ++ \"\\n\") \"\"",
@@ -150,22 +253,44 @@ def loop_finding(derivation, goal: Goal, law: Loop, step: Optional[str]) -> Opti
             return None
         if reply.counterexample:
             finding = Finding(inputs=reply.counterexample, kind="step" if step is not None else "init")
-            if step is not None:
-                code = trace_source(goal, law, step, reply.counterexample)
-                if code:
-                    shown = derivation._run(_definitions(goal, law, step) + code)
-                    if shown.infos:
-                        finding.trace = [line for line in shown.infos[0].replace("\\n", "\n").strip('"').splitlines() if line.strip()]
+            code = (trace_source(goal, law, step, reply.counterexample) if step is not None
+                    else init_source(goal, law, reply.counterexample))
+            if code:
+                shown = derivation._run(_definitions(goal, law, step) + code)
+                if not shown.infos:              # a part that does not elaborate alone: the trace without the parts
+                    shown = derivation._run(_definitions(goal, law, step, parts=False) + code)
+                if shown.infos:
+                    lines = [line for line in shown.infos[0].replace("\\n", "\n").strip('"').splitlines() if line.strip()]
+                    finding.trace, finding.failing = _read_parts(lines, law)
             return finding
         return None
     return None
 
 
-def _definitions(goal: Goal, law: Loop, step: str) -> str:
+def init_source(goal: Goal, law: Loop, inputs: str) -> Optional[str]:
+    """``#eval`` of the initial state on the inputs ``plausible`` found, and which parts of the invariant it breaks."""
+    values = parse_inputs(inputs, [n for n, _ in goal.ctx])
+    if values is None:
+        return None
+    ctx = " ".join(f"({n} : {t})" for n, t in goal.ctx)
+    names = " ".join(n for n, _ in goal.ctx)
+    init = "(" + ", ".join(f"({e})" for e in law.init) + ")" if len(law.init) > 1 else f"({law.init[0]})"
+    s_args = _args(law, "s")
+    return "\n".join([
+        f"def dyn_initial {ctx} : String :=",
+        f"  let s : {law.state_type} := {init}",
+        f"  \"initial state (\" ++ ({_format_state(law, 's')}) ++ \")  invariant \" ++ toString (dyn_inv {names} {s_args})"
+        f" ++ {_falses(goal, law, s_args)}",
+        f"#eval dyn_initial {' '.join('(' + v + ')' for v in values)}",
+    ]) + "\n"
+
+
+def _definitions(goal: Goal, law: Loop, step: Optional[str], parts: bool = True) -> str:
     ctx = " ".join(f"({n} : {t})" for n, t in goal.ctx)
     state = _state_binders(law)
     return "\n".join([
         f"def dyn_inv {ctx} {state} : Bool := decide ({law.invariant})",
         f"def dyn_guard {ctx} {state} : Bool := decide ({law.guard})",
         f"def dyn_var {ctx} {state} : Nat := {law.variant}",
-        f"def dyn_step {ctx} {state} : {law.state_type} := {step}", ""])
+        _false_parts(goal, law) if parts else f"def dyn_false {ctx} {state} : List Nat := []",
+        *([f"def dyn_step {ctx} {state} : {law.state_type} := {step}"] if step is not None else []), ""])

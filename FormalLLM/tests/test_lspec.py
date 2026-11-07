@@ -273,3 +273,60 @@ def test_lean_binders_and_symbols(spec, lean):
 ])
 def test_more_hints(message, table, expected):
     assert expected in feedback.hints(message, table)
+
+
+# --- conversions the translator inserts (repair.py) ------------------------------------------------------------------
+
+def _repaired(step, error):
+    from FormalLLM.dsl import repair
+    return [({k: v for k, v in new.items() if new.get(k) != step.get(k)}, why) for new, why in repair.repairs(step, error)]
+
+
+def test_repair_bind_value_read_as_equation():
+    step = {"law": "bind", "var": "j_next", "type": "Nat", "prop": "if found = true then j + 1 else l.length"}
+    found = _repaired(step, "Type mismatch\n  if found = true then j + 1 else l.length\nhas type\n  ℕ : Type\n"
+                            "but is expected to have type\n  Prop : Type")
+    assert lean_syntax.parse(found[0][0]["prop"]) == lean_syntax.parse("j_next = (if found = true then j + 1 else l.length)")
+    # a prop that mentions the variable is a statement about it: never read as its value (`lo = lo` says nothing)
+    assert _repaired({"law": "bind", "var": "lo", "type": "Rat", "prop": "lo"},
+                     "Type mismatch\n  lo\nhas type\n  ℚ\nbut is expected to have type\n  Prop") == []
+
+
+@pytest.mark.parametrize("expr, error, expected", [
+    ("List.drop 1 s.toList ++ List.take 1 s.toList",
+     "Type mismatch\n  List.drop 1 s.toList ++ List.take 1 s.toList\nhas type\n  List Char : Type\nbut is expected to have "
+     "type\n  String : Type", "String.mk (List.drop 1 s.toList ++ List.take 1 s.toList)"),
+    ("if p then strings[i]! else []",
+     "Application type mismatch: The argument\n  []\nhas type\n  List ?m.52 : Type ?u\nbut is expected to have type\n"
+     "  String : Type\nin the application", 'if p then strings[i]! else ""'),
+    ("List.foldl (fun acc c => acc + (c ∈ ['a', 'e'])) 0 s.toList",
+     "failed to synthesize instance of type class\n  HAdd ℕ Prop ?m.118",
+     "List.foldl (fun acc c => acc + (if c ∈ ['a', 'e'] then 1 else 0)) 0 s.toList"),
+    ("(lst[i]!).toNat + 1", "Invalid field `toNat`: The environment does not contain `Nat.toNat`, so it is not "
+     "possible to project the field `toNat` from an expression\n  lst[i]!\nof type `ℕ`", "lst[i]! + 1"),
+])
+def test_repair_conversions(expr, error, expected):
+    found = _repaired({"law": "term", "expr": expr}, error)
+    assert lean_syntax.parse(found[0][0]["expr"]) == lean_syntax.parse(expected)
+
+
+def test_repair_char_one_occurrence_offered():
+    step = {"law": "term", "expr": "(s.splitOn 'o').length + s.toList.count 'o'"}
+    found = _repaired(step, "Type mismatch\n  'o'\nhas type\n  Char\nbut is expected to have type\n  String")
+    shown = [f["expr"] for f, _ in found]
+    assert len(shown) == 3                                  # both, the first only, the second only
+    assert lean_syntax.parse(shown[1]) == lean_syntax.parse("(s.splitOn \"o\").length + s.toList.count 'o'")
+
+
+def test_repair_needs_a_rejection():
+    from FormalLLM.dsl import repair
+    assert repair.repairs({"law": "term", "expr": "s ++ t"}, "unknown identifier `t`") == []
+
+
+@pytest.mark.parametrize("spec, lean", [
+    ("l.sorted()", "l.mergeSort"),                         # a function written as a method
+    ("l.len()", "l.length"),
+    ("l.indexOf(x)", "l.idxOf x"),                         # another language's spelling
+])
+def test_method_spellings(spec, lean):
+    assert lean_syntax.parse(steps.to_lean(spec, "x", ["l", "x"])) == lean_syntax.parse(lean)

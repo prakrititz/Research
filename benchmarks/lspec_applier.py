@@ -32,7 +32,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 sys.path.insert(0, os.path.join(ROOT, "benchmarks"))
 
-from FormalLLM.dsl import feedback, prompts, steps  # noqa: E402
+from FormalLLM.dsl import examples, feedback, prompts, steps  # noqa: E402
 
 LEVELS = ("translate", "elaborate", "prove")
 
@@ -53,9 +53,32 @@ class Gold:
         return json.dumps(steps.from_engine(self.current, self.scope), ensure_ascii=False)
 
 
+class Replay:
+    """Answers with the replies a model gave in an earlier run (``--model replay:<results.jsonl>``), in order, so a
+    change to the translator or the checks is measured on the same answers without calling the model. A step whose
+    earlier replies run out gets an empty answer."""
+
+    def __init__(self, path: str):
+        self.name = "replay"
+        self.replies = {}
+        for line in open(path, encoding="utf8"):
+            row = json.loads(line)
+            if row.get("path") is not None:
+                self.replies[(row["id"], row["path"])] = [t["reply"] for t in row["tries"] if "reply" in t]
+        self.queue = []
+
+    def at(self, task_id: str, path: str):
+        self.queue = list(self.replies.get((task_id, path), []))
+
+    def generate(self, prompt: str, max_tokens=None) -> str:
+        return self.queue.pop(0) if self.queue else ""
+
+
 def make_model(spec: str, args):
     if spec == "gold":
         return Gold()
+    if spec.startswith("replay:"):
+        return Replay(spec.partition(":")[2])
     kind, _, config = spec.partition(":")
     from benchmarks import run_bench
     cfg = run_bench.CONFIGS[config]
@@ -143,35 +166,17 @@ class Positioned:
 
 # --- one step ---------------------------------------------------------------------------------------------------------
 
+REPAIR = True                                              # --no-repair: Lean's verdict on the step as written
+EXAMPLES, POOL = 0, "cross"                                # --examples / --pool: worked examples in the prompt
+
+
 def check(pos: Positioned, node, written: dict, level: str):
-    """Translate ``written`` and check it at ``node`` to ``level``: (kind, message)."""
-    from FormalLLM.lean.laws import IllFormed, law_from_json
-    try:
-        law = law_from_json(steps.to_engine(written, scope_of(node.goal)))
-        expansion = law.expand(node.goal, lambda: 10 ** 6)
-    except (steps.StepError, IllFormed, KeyError, TypeError, ValueError) as error:
-        return feedback.UNREADABLE, feedback.unreadable(error)
-    if level == "translate":
-        return feedback.ACCEPTED, ""
-    d = pos.d
-    if level == "elaborate":
-        for k, ob in enumerate(expansion.obligations):
-            if ob.body is not None:
-                verdict = d._check(ob, f"wf{node.goal.id}_{k}")
-                error = None if verdict.proved else (verdict.message or verdict.status)
-            else:
-                reply = d._run(f"example {ob.binders} :\n    {ob.statement} := by\n  sorry\n")
-                error = "timeout" if reply.timed_out else (reply.errors[0] if reply.errors else None)
-            if error:
-                shown = feedback.lean_error(error)
-                return feedback.UNREADABLE, (f"Lean cannot read the step: {ob.description}: this does not type-check.\n"
-                                             f"  {feedback._lspec(feedback.closed_statement(ob), scope_of(node.goal))}\n"
-                                             f"  Lean's error: {shown}" + feedback.hints(shown, feedback.TYPE_HINTS))
-        return feedback.ACCEPTED, ""
-    result = d.apply(node.goal.id, law)
+    """Translate ``written`` and check it at ``node`` to ``level`` (``lspec_agent.judge``): (kind, message, note)."""
+    from FormalLLM.lean.lspec_agent import judge
     loop_body = any(getattr(n.law, "kind", "") == "loop" and n.children and n.children[0] is node
-                    for n in d.nodes.values())
-    return feedback.kind_of(result), feedback.describe(result, loop_body, scope_of(node.goal))
+                    for n in pos.d.nodes.values())
+    verdict = judge(pos.d, node.goal, written, level, loop_body, REPAIR)
+    return verdict.kind, verdict.message, verdict.note
 
 
 def scope_of(goal) -> list:
@@ -189,7 +194,7 @@ def run_step(model, workflow: str, task, pos: Positioned, path: str, sub: dict, 
     try:
         for attempt in range(attempts):
             if workflow == "split" and (attempt == 0 or (tries and tries[-1]["to"] == "selector")):
-                reply = ask(model, prompts.selector_prompt(task, shown, failures))
+                reply = ask(model, prompts.selector_prompt(task, shown, failures, examples.for_prompt(task, shown, None, EXAMPLES, POOL)))
                 try:
                     chosen = prompts.parse_reply(reply)
                     law, plan = str(chosen.get("law")), chosen.get("plan")
@@ -200,19 +205,20 @@ def run_step(model, workflow: str, task, pos: Positioned, path: str, sub: dict, 
                     failures.append(f"Attempt {attempt + 1}: {tries[-1]['feedback']}")
                     continue
             if workflow == "joint":
-                reply = ask(model, prompts.joint_prompt(task, shown, failures))
+                reply = ask(model, prompts.joint_prompt(task, shown, failures, examples.for_prompt(task, shown, None, EXAMPLES, POOL)))
             else:
-                reply = ask(model, prompts.applier_prompt(task, shown, law, plan, failures))
+                reply = ask(model, prompts.applier_prompt(task, shown, law, plan, failures,
+                                                          examples.for_prompt(task, shown, law, EXAMPLES, POOL)))
             try:
                 written = prompts.parse_reply(reply)
                 if workflow != "joint":
                     written["law"] = law
-                kind, message = check(pos, node, written, level)
+                kind, message, note = check(pos, node, written, level)
             except steps.StepError as error:
-                written, kind, message = None, feedback.UNREADABLE, feedback.unreadable(error)
+                written, kind, message, note = None, feedback.UNREADABLE, feedback.unreadable(error), ""
             to = feedback.recipient(kind, attempt + 1) if workflow == "split" else "applier"
             tries.append({"law": (written or {}).get("law"), "reply": reply[:1500], "kind": kind,
-                          "feedback": message[:1500], "to": to})
+                          "feedback": message[:1500], "to": to, **({"repaired": note} if note else {})})
             if kind == feedback.ACCEPTED:
                 break
             failures.append(f"Attempt {attempt + 1}: {prompts.show_step(written) if written else reply[:300]}\n{message}")
@@ -235,13 +241,23 @@ def main():
     ap.add_argument("--temperature", type=float, default=0.2)
     ap.add_argument("--max-usd", type=float, default=None)
     ap.add_argument("--paid-ok", action="store_true")
+    ap.add_argument("--no-repair", action="store_true", help="no conversions inserted (repair.py): Lean's verdict as written")
+    ap.add_argument("--examples", type=int, default=0, help="worked examples from other tasks in each prompt")
+    ap.add_argument("--pool", default="cross", choices=["cross", "others"])
     args = ap.parse_args()
+    global REPAIR, EXAMPLES, POOL
+    REPAIR, EXAMPLES, POOL = not args.no_repair, args.examples, args.pool
     from lspec_steps import walk
     from FormalLLM.lean.dataset import resolve
     model = make_model(args.model, args)
     trees = json.load(open(os.path.join(ROOT, "exports", "all_derivations.json"), encoding="utf8"))[args.dataset]
-    ids = [t for t in trees if not args.only or t in args.only][:args.limit]
-    tag = args.model.replace(":", "-")
+    only = args.only
+    if isinstance(model, Replay) and not only:
+        only = sorted({task for task, _ in model.replies})
+    ids = [t for t in trees if not only or t in only][:args.limit]
+    tag = (f"replay-{os.path.splitext(os.path.basename(args.model[7:]))[0]}" if isinstance(model, Replay)
+           else args.model.replace(":", "-")) + ("_norepair" if args.no_repair else "") + (
+           f"_ex{args.examples}{args.pool}" if args.examples else "")
     out = os.path.join(ROOT, "benchmarks", "results", "lspec",
                        f"applier_{args.dataset}_{tag}_{args.workflow}_{args.level}.jsonl")
     done = set()
@@ -257,6 +273,8 @@ def main():
                 task = resolve(task_id).load(task_id)
                 pos = Positioned(task, trees[task_id], lean)
                 for path, node, sub, state in list(walk(pos.d.root, trees[task_id])):
+                    if isinstance(model, Replay):
+                        model.at(task_id, path)
                     row = run_step(model, args.workflow, task, pos, path, sub, state, args.level, args.attempts)
                     rows.append({"id": task_id, "path": path, **row})
             except Exception as error:

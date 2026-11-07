@@ -77,8 +77,8 @@ def _low(node: Node) -> str:
 def _method(field: str) -> str:
     if field in ops.METHODS:
         return ops.METHODS[field]
-    if field in ops.METHODS_INV:
-        return f"`{field}`"
+    if field in ops.METHODS_INV or ops.METHOD_FUNCS_INV.get(field, field) != field or field in ops.METHOD_ALIASES:
+        return f"`{field}`"                                # a Lean field the reader would take for another one
     return field
 
 
@@ -402,7 +402,10 @@ class _Parser:
             elif tok == "." and self.adjacent():
                 self.next()
                 field = self.next()
-                field = field[1:-1] if field.startswith("`") else ops.METHODS_INV.get(field, field)
+                if field.startswith("`"):
+                    field = field[1:-1]
+                else:
+                    field = _lean_field(field)
                 for part in field.split("."):
                     node = Dot(_resolve(node), part)
             elif tok == "[" and self.adjacent():
@@ -661,8 +664,14 @@ def _resolve(node: Node) -> Node:
 def _rename_fields(node: Node) -> Node:
     """`l.index` read as one dotted name: its fields are methods, renamed back to Lean's (`idxOf`)."""
     if isinstance(node, Dot):
-        return Dot(_rename_fields(node.obj), ops.METHODS_INV.get(node.field, node.field))
+        return Dot(_rename_fields(node.obj), _lean_field(node.field))
     return node
+
+
+def _lean_field(field: str) -> str:
+    """The Lean field an L_spec method name stands for: `index` is `idxOf`; a function written as a method,
+    `l.sorted()` / `l.len()`, is the function (`sorted(l)`); another language's spelling, `indexOf`, is read too."""
+    return ops.METHODS_INV.get(field, ops.METHOD_FUNCS_INV.get(field, ops.METHOD_ALIASES.get(field, field)))
 
 
 def show_name(node: Node) -> str:

@@ -64,7 +64,7 @@ def describe(step, loop_body: bool = False, scope=()) -> str:
         lines.append(f"- {MEANING.get(key, verdict.obligation.description)}")
         lines.append(f"  To prove: {_lspec(closed_statement(verdict.obligation), scope)}")
         if verdict.counterexample:
-            lines.append("  It is false: " + verdict.counterexample.replace("\n", "\n  "))
+            lines.append("  It is false: " + _counterexample(verdict.counterexample, scope).replace("\n", "\n  "))
         elif verdict.status == "TIMEOUT":
             lines.append("  The prover ran out of time (the statement may still be true).")
         elif verdict.status == "ILL_FORMED":
@@ -72,6 +72,17 @@ def describe(step, loop_body: bool = False, scope=()) -> str:
         else:
             lines.append("  The prover could not prove it (it may still be true; make the step simpler or more explicit).")
     return "\n".join(lines) or (step.message or step.status)
+
+
+def _counterexample(text: str, scope=()) -> str:
+    """A counter-example as the model reads it: the parts of the invariant a run of the loop found false (Lean text
+    after ``dynamic.PART``) in L_spec."""
+    from FormalLLM.lean.dynamic import PART
+    out = []
+    for line in text.split("\n"):
+        at = line.find(PART)
+        out.append(line[:at + len(PART)] + _lspec(line[at + len(PART):], scope) if at >= 0 else line)
+    return "\n".join(out)
 
 
 def closed_statement(obligation) -> str:

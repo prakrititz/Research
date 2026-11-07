@@ -50,6 +50,13 @@ def specification(prelude: str) -> str:
                                and item.source.split()[0] in ("open", "set_option", "namespace", "end", "section")))
 
 
+def _examples(shown: List[str]) -> List[str]:
+    if not shown:
+        return []
+    return ["Worked examples: steps from other tasks' derivations whose goals look like this one (for the form of "
+            "a good step; this task is different):", *shown, ""]
+
+
 def _context(task, goal_text: str, failures: List[str]) -> List[str]:
     parts = [f"Task: {task.name}", task.description[:1500].strip(), "",
              "Specification (L_spec):", specification(task.prelude)[-3000:], "",
@@ -59,23 +66,26 @@ def _context(task, goal_text: str, failures: List[str]) -> List[str]:
     return parts
 
 
-def joint_prompt(task, goal_text: str, failures: List[str] = ()) -> str:
-    """Workflow ``joint``: choose a law and write it."""
-    return "\n".join([LAWS, "", EXAMPLE, "", cheatsheet.sheet(), ""] + _context(task, goal_text, list(failures))
+def joint_prompt(task, goal_text: str, failures: List[str] = (), examples: List[str] = ()) -> str:
+    """Workflow ``joint``: choose a law and write it. ``examples``: worked examples (``examples.for_prompt``)."""
+    return "\n".join([LAWS, "", EXAMPLE, "", cheatsheet.sheet(), ""] + _examples(list(examples))
+                     + _context(task, goal_text, list(failures))
                      + ["", "Your step (one JSON object, nothing else):"])
 
 
-def selector_prompt(task, goal_text: str, failures: List[str] = ()) -> str:
+def selector_prompt(task, goal_text: str, failures: List[str] = (), examples: List[str] = ()) -> str:
     """Workflow ``split``, first call: which law, and how (one sentence). No L_spec is written here."""
-    return "\n".join([LAWS, "", EXAMPLE, ""] + _context(task, goal_text, list(failures)) + [
+    return "\n".join([LAWS, "", EXAMPLE, ""] + _examples(list(examples)) + _context(task, goal_text, list(failures)) + [
         "", 'Choose the law for this goal. Answer {"law": "<term|cases|bind|loop>", "plan": "<one sentence: what the '
         'value, condition, intermediate value or loop is>"} and nothing else.'])
 
 
-def applier_prompt(task, goal_text: str, law: str, plan: Optional[str] = None, failures: List[str] = ()) -> str:
+def applier_prompt(task, goal_text: str, law: str, plan: Optional[str] = None, failures: List[str] = (),
+                   examples: List[str] = ()) -> str:
     """Workflow ``split``, second call: write the chosen law's fields in L_spec."""
     fields = ", ".join(f'"{f}"' for f, _ in steps.fields_for(law))
-    return "\n".join([LAWS, "", EXAMPLE, "", cheatsheet.sheet(), ""] + _context(task, goal_text, list(failures)) + [
+    return "\n".join([LAWS, "", EXAMPLE, "", cheatsheet.sheet(), ""] + _examples(list(examples))
+                     + _context(task, goal_text, list(failures)) + [
         "", f"The law for this goal is `{law}`." + (f" Plan: {plan}" if plan else ""),
         f'Write it: one JSON object {{"law": "{law}", {fields}}} with every expression in L_spec, nothing else.'])
 

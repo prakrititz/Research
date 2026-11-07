@@ -24,6 +24,27 @@ def test_nested_projections_follow_the_shape_of_a_right_nested_tuple():
     assert dynamic._nested("s", 0, 1) == "s"
 
 
+def test_the_invariant_is_split_into_its_top_level_conjuncts_only():
+    assert dynamic.conjuncts("i ≤ n ∧ (acc = (l.take i).sum ∧ ok = true) ∧ (∀ k < i, l[k]! > 0)") == \
+        ["i ≤ n", "acc = (l.take i).sum", "ok = true", "∀ k < i, l[k]! > 0"]
+    assert dynamic.conjuncts("(a) ∧ (b)") == ["a", "b"]
+    assert dynamic.conjuncts("∀ k, a k ∧ b k") == ["∀ k, a k ∧ b k"]      # under a binder: one part
+    assert dynamic.conjuncts("a ∧ b → c") == ["a ∧ b → c"]                # an implication binds looser
+    assert dynamic.conjuncts('s = "x ∧ y" ∧ t') == ['s = "x ∧ y"', "t"]   # not inside a string
+    assert dynamic._unwrap("(a)(b)") == "(a)(b)"
+
+
+def test_the_false_parts_are_read_off_the_trace_and_removed_from_it():
+    class Law:
+        invariant = "i ≤ n ∧ acc = 0 ∧ ok"
+    trace = ["state (i = 0)  invariant false  guard true   <- the invariant is false here; false parts: [2, 3]"]
+    lines, failing = dynamic._read_parts(trace, Law)
+    assert lines == ["state (i = 0)  invariant false  guard true   <- the invariant is false here"]
+    assert failing == ["acc = 0", "ok"]
+    shown = dynamic.Finding("l := [1]", lines, "step", failing).text()
+    assert dynamic.PART + "acc = 0" in shown
+
+
 def library(task_id):
     directory = os.path.join(LIBRARY, task_id)
     if not os.path.isdir(directory):
@@ -50,6 +71,8 @@ def test_a_wrong_step_is_refused_with_a_run_that_shows_the_invariant_breaking(le
     assert "found by running the loop" in verdict.counterexample and "operations := [0]" in verdict.counterexample
     assert "state (i = 0, bal = 0, neg = false)  invariant true" in verdict.counterexample
     assert "the invariant is false after your step" in verdict.counterexample
+    assert dynamic.PART + "neg = true ↔" in verdict.counterexample                # the part that breaks, by name
+    assert dynamic.PART + "bal =" not in verdict.counterexample
 
 
 def test_a_wrong_initial_value_is_caught_before_any_step(lean_session):
@@ -59,6 +82,8 @@ def test_a_wrong_initial_value_is_caught_before_any_step(lean_session):
     assert step.status == "unproved"
     init = [v for v in step.verdicts if v.obligation.kind == "init"][0]
     assert not init.proved and init.counterexample and "n :=" in init.counterexample
+    assert "initial state (i = 1, s = 0)  invariant false" in init.counterexample
+    assert dynamic.PART + "s * 2 = i * (i + 1)" in init.counterexample
 
 
 def test_a_correct_loop_has_no_finding(lean_session):
