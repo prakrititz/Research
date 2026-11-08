@@ -237,11 +237,27 @@ class LeanSession:
         reply, _ = self._run(command, timeout, self.env if env is None else env)
         return reply
 
-    def load(self, command: str, timeout: Optional[float] = None) -> "tuple[LeanReply, Optional[int]]":
+    def load(self, command: str, timeout: Optional[float] = None,
+             env: Optional[int] = None) -> "tuple[LeanReply, Optional[int]]":
         """Elaborate ``command`` and keep what it declares: returns the reply and the id of the extended environment
-        (``None`` if it failed). Environment ids are void after a restart (compare :attr:`restarts`)."""
-        reply, new_env = self._run(command, timeout, self.env)
+        (``None`` if it failed), on top of ``env`` (default: the imports). Environment ids are void after a restart
+        (compare :attr:`restarts`)."""
+        reply, new_env = self._run(command, timeout, self.env if env is None else env)
         return reply, (None if reply.errors or reply.timed_out else new_env)
+
+    def library_env(self, library: str, timeout: float = 1200.0) -> Optional[int]:
+        """The environment with ``library`` (the engine's lemma library, ~140k characters) elaborated, once per process
+        (again after a restart). Every task builds on it: re-elaborating the library for each task's environment and
+        twice more for its certificate took ~80 s each time (2026-11-08: he_002 spent 246 s in Lean, 0.2 s of it on
+        its one obligation). ``None`` if it does not load (the caller then falls back to sending the text)."""
+        cache = self.__dict__.setdefault("_libraries", {})
+        key = (hash(library), self.restarts)
+        if key not in cache:
+            reply, env = self.load(library, timeout=timeout)
+            if env is None:
+                return None
+            cache[key] = env
+        return cache[key]
 
     def _run(self, command: str, timeout: Optional[float], env: Optional[int]):
         started = time.time()

@@ -126,7 +126,9 @@ retrying only costs time.
   lemmas (all verified in a fresh process). The gold subset run (interrupted after he_004; resumable) (first 20 HumanEval tasks, strict, then `--lemmas` on the
   failures, then split on 3) measures how many tasks the prover can finish **without** helper lemmas: the most a model
   can score under the strict rule. 49 of the 159 HumanEval and 97 of the 177 Verina derivations use helper lemmas.
-* Speed: 5–60 minutes per task on the Windows PC (the same he_001 certificate takes 17.5 s on the Mac).
+* Speed: was 5–60 minutes per task on the Windows PC, almost all of it re-elaborating the lemma library in every
+  environment and certificate. Since 2026-11-08 the library is elaborated once per REPL and imported as a compiled
+  module in the fresh-process check: he_002 went from 334 s to 50 s end to end (`HANDOFF.md` §5.1).
 
 ## Next
 

@@ -92,33 +92,46 @@ meaning is unchanged: steps 381/11/323, derivations 159/5/177, definitions 390/1
 at the first attempt 102 → 140, 0 lost. Added since, not yet measured on the replay: the `}`-for-`)` typo rule, the
 "your reply was cut off" message, the `indexOf`/`sorted`/`len` method spellings.
 
-**End to end with the gold steps** (`benchmarks/results/lspec/run_humaneval_gold_*.jsonl`):
+**End to end with the gold steps** (`benchmarks/results/lspec/run_humaneval_gold_*.jsonl`, first 20 HumanEval tasks):
 
-| task | strict (no helper lemmas) | with `--lemmas` |
-|---|---|---|
-| he_000_has_close_elements | SOLVED, 333 s | |
-| he_001_separate_paren_groups | not solved: the exit obligation needs the gold helper lemmas | SOLVED, 1879 s |
-| he_002_truncate_number | SOLVED, 334 s | |
-| he_003_below_zero | SOLVED, 668 s | |
-| he_004_mean_absolute_deviation | SOLVED, 530 s | |
+| run | result |
+|---|---|
+| strict (no helper lemmas), joint | **18/20** solved and verified in a fresh process |
+| the 2 strict failures (he_001, he_020) with `--lemmas` | 2/2 solved: blocked only by helper lemmas (§5.3) |
+| split workflow, he_000–he_002 | 2/3 (he_001 needs its lemmas, as in joint): split works end to end |
 
-The gold subset run was **interrupted after he_004** (session ended). Resume it (rows already done are skipped):
-
-```bash
-python benchmarks/lspec_run.py --dataset humaneval --model gold --limit 20 --attempts 1 --retractions 0
-# then --lemmas --only <the strict failures>, then --workflow split --limit 3 (split is still untested end to end)
-```
+Time per task after the speed fix: 1–6 minutes (58–357 s) including the fresh-process check, against 5–60 minutes
+before. Next for the ceiling: the same strict run on all 159 (`--limit` off), then `--lemmas` on its failures.
 
 **Model runs:** none end to end yet. The remote server (`https://broodless-alethia-nipping.ngrok-free.dev`) was offline
 (`ERR_NGROK_3200`) on 2026-11-08; `python benchmarks/remote_check.py` tells when it is back.
 
 ## 5. Fixing the prover: what to do, in order
 
-### 5.1 Speed (the most urgent)
+### 5.1 Speed — main cause found and fixed (2026-11-08)
 
-On the Windows PC one task took 5–60 minutes (he_001: 3679 s to accept 4 steps, then the REPL certificate timed out at
-317 s although the same file compiles in 109 s with `lake env lean`; on the Mac the oracle certified he_001 in 17.5 s).
-First find out whether the new machine is simply faster: time the setup check's gold run. Then measure where time goes:
+**Cause:** the engine's lemma library (`lemmas.py` + `AUTO_CLOSE`, ~140k characters) was elaborated again in every
+call that built an environment: the task's environment (~80 s), the REPL certificate (~85 s), its tests (~85 s), and
+again for each helper lemma, plus once more in the fresh-process check. Profile of he_002 (one step): 246 s in Lean,
+**0.2 s** of it proving its obligation.
+
+**Fix:**
+* `LeanSession.library_env(text)` elaborates the library once per REPL process (again after a restart); a task's
+  environment and its certificate are built on top of it (`Derivation._library_env`, `source(library=False)`).
+* The fresh-process check imports the library from a compiled module, `LeanEnv/RefineLib.lean` in the Lean project
+  (`lspec_run.library_module`, built by `lake build LeanEnv.RefineLib`, rebuilt only when the text changes).
+
+**Result** (same session): he_002 steps 0.3 s + certificate 11 s (was 76 s + 170 s); he_000 (5 steps) 2.3 s + 14 s;
+end to end with the fresh-process check, he_002 50 s (was 334 s), file check 39–46 s (was ~110 s). What is left per
+task is mostly Mathlib's import in the fresh process (~40 s) and the one-time library load (~85 s per REPL start).
+
+**Remaining ideas**, if needed:
+* start the REPL with `import LeanEnv.RefineLib` too (`FORMALLLM_LEAN_IMPORTS`), so even the one-time 85 s goes;
+* run the fresh-process checks of finished tasks in parallel with the next task (they are separate processes; watch
+  memory: each holds ~3 GB);
+* the earlier ideas below, for tasks whose obligations really are slow.
+
+Where to measure, for a slow task:
 
 * per obligation: `Derivation.lean_seconds` is the total; add per-verdict timing around the proving in `engine.py`
   (the cascade `_cascade_groups`, line ~164; the generic closers and `try?`, lines ~544–558);

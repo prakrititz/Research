@@ -408,16 +408,29 @@ class Derivation:
     def _environment(self) -> int:
         """The Lean environment holding the task's definitions (loaded once; again after a restart of the session)."""
         if self._env_id is None or self._env_restarts != self.lean.restarts:
-            source = self.lemmas + "\n" + self.task.prelude + "\n" + self._helper_text()
-            reply, env = self.lean.load(source, timeout=self._replay_timeout())
+            base = self._library_env()
+            source = ("" if base is not None else self.lemmas + "\n") + self.task.prelude + "\n" + self._helper_text()
+            reply, env = self._load_on(source, base, self._replay_timeout())
             if env is None and reply.timed_out:
                 # a starved or bloated REPL times out on a load that normally takes seconds; the session restarted itself
                 # on the timeout, so try once more on the fresh process (with more time) before calling it a failure
-                reply, env = self.lean.load(source, timeout=max(300.0, self.lean.command_timeout * 2))
+                base = self._library_env()
+                source = ("" if base is not None else self.lemmas + "\n") + self.task.prelude + "\n" + self._helper_text()
+                reply, env = self._load_on(source, base, max(300.0, self.lean.command_timeout * 2))
             if env is None:
                 raise ValueError("the task's own definitions do not compile: " + (reply.errors or ["?"])[0][:300])
             self._env_id, self._env_restarts = env, self.lean.restarts
         return self._env_id
+
+    def _library_env(self) -> Optional[int]:
+        """The session's environment with the lemma library elaborated once (``LeanSession.library_env``); ``None``
+        for a session without it, and the library text is then sent with the task as before."""
+        library_env = getattr(self.lean, "library_env", None)
+        return library_env(self.lemmas) if library_env is not None else None
+
+    def _load_on(self, source: str, base: Optional[int], timeout: Optional[float]):
+        return self.lean.load(source, timeout=timeout) if base is None else self.lean.load(source, timeout=timeout,
+                                                                                            env=base)
 
     def _replay_timeout(self) -> Optional[float]:
         """Time to re-check the helper lemmas: ``refine_portfolio`` proofs replay their closers (``grind +suggestions``,
@@ -746,8 +759,9 @@ class Derivation:
         parts = [self._render(child, tactic) for child in node.children]
         return node.law.render(node.goal, [c.goal for c in node.children], parts, tactic)
 
-    def source(self) -> str:
-        """The Lean file: prelude, loop definitions, the derived subtype value, the plain function, its specification theorem."""
+    def source(self, library: bool = True) -> str:
+        """The Lean file: prelude, loop definitions, the derived subtype value, the plain function, its specification
+        theorem. ``library=False`` leaves out the lemma library, for elaborating on top of an environment that has it."""
         task, goal = self.task, self.root.goal
         rendered = self._render(self.root, "refine_auto")
         params = goal.binders()
@@ -757,7 +771,7 @@ class Derivation:
         # the cascade is defined once as a tactic, so that each proof site in the file reads ``by refine_auto``
         macro = f'macro "refine_auto" : tactic => `(tactic| ({self.tactic}))\n'
         return "\n".join([
-            self.lemmas, task.prelude, self._helper_text(), "", macro, *rendered.aux, "",
+            *([self.lemmas] if library else []), task.prelude, self._helper_text(), "", macro, *rendered.aux, "",
             f"set_option maxHeartbeats 1000000 in",
             f"def {task.name}_derived {params} : {goal.spec_type} :=",
             f"  {rendered.term}", "",
@@ -770,8 +784,18 @@ class Derivation:
         if not self.complete:
             return Certificate(False, [f"{len(self.open_goals())} goals are still open"])
         started = time.time()
-        source = self.source()
-        reply = self.lean.run(source, timeout=max(self.timeout, 240.0, self._replay_timeout() or 0))
+        # on top of the session's library environment (the library was proved when it was loaded; ``#print axioms``
+        # still follows every dependency), so the ~140k-character library is not elaborated twice more per task; the
+        # self-contained file, library included, is what ``source()`` returns and what the fresh-process check compiles
+        base = self._library_env()
+        source = self.source(library=base is None)
+        limit = max(self.timeout, 240.0, self._replay_timeout() or 0)
+
+        def run(text: str):
+            if base is None:
+                return self.lean.run(text, timeout=limit)
+            return self.lean.run(text, timeout=limit, env=base)
+        reply = run(source)
         certificate = Certificate(not reply.errors and not reply.timed_out, errors=reply.errors[:3])
         theorem = f"'{self.task.name}_spec_satisfied'"
         for info in reply.infos:
@@ -788,7 +812,7 @@ class Derivation:
             tests = self.task.test_commands()
             certificate.tests = len(tests)
             prefix = self.task.compat + "\n" if self.task.compat else ""     # the dataset's prelude (e.g. the witness search)
-            ran = self.lean.run(prefix + source + "\n" + "\n".join(tests), timeout=max(self.timeout, 240.0, self._replay_timeout() or 0))
+            ran = run(prefix + source + "\n" + "\n".join(tests))
             certificate.passed = sum(1 for info in ran.infos if info.strip() == "true")
         certificate.seconds = round(time.time() - started, 2)
         return certificate

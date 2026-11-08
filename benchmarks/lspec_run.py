@@ -35,18 +35,56 @@ def row_of(task_id, trial, result, seconds, model, workflow) -> dict:
             "tree": result.derivation.to_tree() if result.derivation.complete else None}
 
 
+LIBRARY_MODULE = "LeanEnv.RefineLib"
+_BUILT: dict = {}
+
+
+def library_module(lemmas: str):
+    """The engine's lemma library compiled once into a module of the Lean project (``LeanEnv/RefineLib.lean``, built
+    by ``lake build``; rebuilt only when the library text changes), so each task's file imports it instead of
+    elaborating ~140k characters again (~80 s per task on the Windows PC). Lean's kernel checks the module when it is
+    built, and ``#print axioms`` follows dependencies across modules, so the check is as strict. ``None`` if the build
+    fails: the file then carries the library text as before."""
+    import subprocess
+    from FormalLLM.lean.session import FULL_IMPORTS, Toolchain, short_path
+    text = f"{FULL_IMPORTS}\n{lemmas}\n"
+    key = hash(text)
+    if key in _BUILT:
+        return _BUILT[key]
+    tool = Toolchain()
+    path = os.path.join(tool.project, *LIBRARY_MODULE.split(".")) + ".lean"       # LeanEnv/RefineLib.lean
+    old = open(path, encoding="utf8").read() if os.path.exists(path) else None
+    if old != text:                                   # unchanged text keeps lake's trace: no rebuild
+        with open(path, "w", encoding="utf8", newline="\n") as handle:
+            handle.write(text)
+    try:
+        done = subprocess.run([tool.lake, "build", LIBRARY_MODULE], cwd=short_path(tool.project), env=tool.env(),
+                              capture_output=True, text=True, encoding="utf8", timeout=3600)
+        _BUILT[key] = LIBRARY_MODULE if done.returncode == 0 else None
+        if done.returncode != 0:
+            print("the library module did not build; files carry the library text:",
+                  ((done.stdout or "") + (done.stderr or ""))[-300:], flush=True)
+    except (subprocess.TimeoutExpired, OSError) as error:
+        print(f"the library module did not build ({error}); files carry the library text", flush=True)
+        _BUILT[key] = None
+    return _BUILT[key]
+
+
 def file_check(task, derivation, task_id: str, timeout: float = 1800) -> dict:
     """The finished derivation compiled by ``lake env lean`` in a fresh process (``verify_derivations.py``): no error,
     standard axioms only, the dataset's own statement, every test true. The REPL's certificate can time out after an
-    hour of obligations in one session (he_001: over 300 s in the REPL, 109 s as a file)."""
+    hour of obligations in one session (he_001: over 300 s in the REPL, 109 s as a file). The lemma library is
+    imported from its compiled module (``library_module``) when that builds."""
     from FormalLLM.lean.session import FULL_IMPORTS
     from verify_derivations import compile_file, statement_is_datasets_own
-    source, tests = derivation.source(), task.test_commands()
+    module = library_module(derivation.lemmas)
+    source, tests = derivation.source(library=module is None), task.test_commands()
     folder = os.path.join(ROOT, "benchmarks", "results", "lspec", "verified")
     os.makedirs(folder, exist_ok=True)
     path = os.path.join(folder, f"{task_id}.lean")
+    header = FULL_IMPORTS + (f"\nimport {module}" if module else "")
     with open(path, "w", encoding="utf8", newline="\n") as handle:
-        handle.write(f"{FULL_IMPORTS}\n{task.compat}\n{source}\n" + "\n".join(tests) + "\n")
+        handle.write(f"{header}\n{task.compat}\n{source}\n" + "\n".join(tests) + "\n")
     entry = {"file": path, "tests_expected": len(tests),
              "statement_regions_missing": statement_is_datasets_own(task, source)}
     return compile_file(entry, timeout)
