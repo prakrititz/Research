@@ -63,13 +63,14 @@ NO_GRIND_PATTERN = {
     "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "mergeSort_key_le", "mergeSort_key_le_nat",
     "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat",
     "filter_ne_append_filter_eq_perm", "pow_iff_of_factor", "mod_left_of_common_divisors", "mod_right_of_common_divisors",
-    "le_of_common_divisors", "mergeSort_key_then_le",
+    "le_of_common_divisors", "mergeSort_key_then_le", "mergeSort_key_then_not_lt",
     "foldl_pair_count", "foldl_pair_count_fst", "foldl_pair_count_snd"}
 #: ... the rest, as ``grind`` arguments
 LIBRARY_GRIND = ", ".join(f"Refine.{n}" for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES
                           if n not in NO_GRIND_PATTERN)
-#: ``(apply L; all_goals first | assumption | (simp_all; done) | omega) | ...`` for every library lemma (fails fast on a mismatch)
-LIBRARY_APPLY = "".join(f"(apply Refine.{n}; all_goals first | assumption | (simp_all; done) | omega) | "
+#: ``(apply L; all_goals first | assumption | (simp_all; done) | omega | decide) | ...`` for every library lemma (fails fast
+#: on a mismatch; ``decide`` for side goals about the task's constant lists, he_148's ``solarPlanets.length ≤ 8``)
+LIBRARY_APPLY = "".join(f"(apply Refine.{n}; all_goals first | assumption | (simp_all; done) | omega | decide) | "
                         for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
 #: ... and side goals for ``grind`` too; a side goal over members (``∀ g ∈ l, P g``) whose facts the simp set turned into
 #: the index form (``∀ k < l.length, P l[k]``) is bridged by naming the member's index (he_001)
@@ -208,25 +209,52 @@ def _cascade_groups(simp: str, helpers: str, defs_alt: str, pre: str) -> List[st
     return [start + c + ")" for c in chunks if c.strip()]
 
 
-#: ``wit_search``: an existential goal (also nested, also under ``∧``) by trying witnesses: the local variables of the
-#: right type, their successors, and the numerals 0, 1, 2; each choice is finished by ``omega`` or ``grind``. The
-#: cascade never chooses a witness (he_020's loop init: ``∃ b < 2, ∃ a < b, ...`` holds for b = 1, a = 0). Under a
-#: heartbeat budget of its own: unbounded, it ran 970 s on he_001's loop exit
+#: ``wit_search``: an existential goal (also nested, under ``∧``, either side of ``∨``) by trying witnesses: the local variables of the
+#: right type (the goal's context: the witnesses of the hypotheses, once unpacked), their successors, and the numerals 0,
+#: 1, 2; each choice is finished by ``assumption``, ``omega`` or a budgeted ``grind`` (a heartbeat timeout is not an
+#: error a ``try`` catches: one runaway ``grind`` ended the whole search on he_020's inner loop). The cascade never
+#: chooses a witness (he_020's loop init: ``∃ b < 2, ∃ a < b, ...`` holds for b = 1, a = 0). Under a heartbeat budget of
+#: its own: unbounded, it ran 970 s on he_001's loop exit
 WIT_SEARCH = r"""open Lean Elab Tactic Meta in
 partial def Refine.witSearch (depth : Nat) : TacticM Unit := do
   let goal ← getMainGoal
+  goal.withContext do
   let tgt ← whnfR (← instantiateMVars (← goal.getType))
+  if tgt.isForall then
+    let (_, g) ← goal.intro1
+    setGoals [g]
+    Refine.witSearch depth
+    return
   if tgt.isAppOfArity ``And 2 then
     for g in ← goal.apply (mkConst ``And.intro []) do
       setGoals [g]
       Refine.witSearch depth
     return
+  if depth > 0 && tgt.isAppOfArity ``Or 2 then
+    for side in [``Or.inl, ``Or.inr] do
+      let s ← saveState
+      try
+        for g in ← goal.apply (mkConst side []) do
+          setGoals [g]
+          Refine.witSearch (depth - 1)
+        return
+      catch _ => s.restore
   if depth > 0 && tgt.isAppOfArity ``Exists 2 then
     let ty ← instantiateMVars (tgt.getArg! 0)
     let mut cands : Array Expr := #[]
-    for d in (← getLCtx) do
+    for d in (← goal.getDecl).lctx do
       if !d.isImplementationDetail && (← isDefEq d.type ty) then
         cands := cands.push d.toExpr
+    -- the goal's own terms of that type (he_148: the witness is `solarPlanets.idxOf planet1`)
+    let found ← IO.mkRef (#[] : Array Expr)
+    forEachExpr' (← instantiateMVars (tgt.getArg! 1)) fun x => do
+      let subs ← found.get
+      if subs.size < 6 && !x.hasLooseBVars && !x.isFVar && !x.isRawNatLit && x.isApp && !x.isAppOf ``OfNat.ofNat
+          && !(subs.contains x) then
+        if ← isDefEq (← inferType x) ty then
+          found.modify (·.push x)
+      return true
+    cands := cands ++ (← found.get)
     if ← isDefEq ty (mkConst ``Nat) then
       for c in cands do
         cands := cands.push (mkNatAdd c (mkNatLit 1))
@@ -242,11 +270,11 @@ partial def Refine.witSearch (depth : Nat) : TacticM Unit := do
       catch _ => s.restore
     throwError "wit_search: no witness found"
   setGoals [goal]
-  evalTactic (← `(tactic| first | omega | grind))
+  evalTactic (← `(tactic| first | assumption | omega | (intros; omega) | rfl | decide | lib_budget 20 grind | lib_apply))
 
 open Lean Elab Tactic in
-elab "wit_search_core" : tactic => Refine.witSearch 3
-macro "wit_search" : tactic => `(tactic| lib_budget 40 wit_search_core)
+elab "wit_search_core" : tactic => Refine.witSearch 4
+macro "wit_search" : tactic => `(tactic| lib_budget 400 wit_search_core)
 """
 CASCADE, DIAGNOSE = make_cascade()
 #: the library steps as named tactics, defined once. Spelling the 90-lemma library out in every alternative made the cascade
@@ -586,7 +614,12 @@ class Derivation:
         tactics = []
         definition = self.task.prelude.split(f"def {post}", 1)
         if "∃" in obligation.statement or (len(definition) > 1 and "∃" in definition[1].split("\ndef ", 1)[0]):
-            tactics.append(start + "(try intros); (try casesm* _ ∧ _); wit_search")
+            # (a result chosen by ``if``, a postcondition ``A ∨ ∃ i, ...``: he_135's loop exit)
+            tactics.append(start + "(try intros); (try split_ifs) <;> (try casesm* _ ∧ _, Exists _) <;> wit_search")
+            # ... with the disjunctions of the hypotheses split too (he_118: the invariant is "none so far, or the last one
+            # found is c")
+            tactics.append(start + "(try intros); (try split_ifs) <;> (try casesm* _ ∧ _, Exists _, _ ∨ _) <;> "
+                                   "(try subst_vars) <;> wit_search")
         # members to indices, in the hypotheses too, then grind (he_090: the hypotheses state the loop's facts by index,
         # the postcondition by members; the cascade turns only the goal)
         tactics.append(start + "simp only [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.mem_iff_idx] at *; "
@@ -596,6 +629,24 @@ class Derivation:
         tactics.append(start + "(repeat' apply And.intro) <;> (try intros) <;> (try casesm* _ ∧ _) <;> "
                                "first | lib_apply | (simp_all; done) | (subst_vars; decide) | "
                                "(subst_vars; simp; done) | (subst_vars; simp; rfl) | (subst_vars; simp; decide) | lib_grind")
+        # ... or evaluated whole by the construction lemmas (``EVAL_SET``: ``Nat.toDigits 2 v`` is a binary numeral of v,
+        # he_079, he_084, he_103), the rest by grind with the library
+        tactics.append(start + f"simp [{EVAL_SET}] <;> first | done | lib_grind")
+        # characters: a map over a string whose letters all satisfy a class (lowercase, uppercase, digit) is decided letter
+        # by letter on the class's finitely many codes (he_050: shifting by 21 then by 5 is the identity on 'a'..'z').
+        # ``lower_cases`` & co. are not in the library lists: their conclusion ``P c`` would unify with any goal
+        cases = ("first | assumption | exact Refine.lower_cases _ (by decide) | exact Refine.upper_cases _ (by decide) | "
+                 "exact Refine.digit_cases _ (by decide)")
+        tactics.append(start + "(repeat' apply And.intro) <;> (try simp only [List.map_map]) <;> first | "
+                               f"(apply Refine.map_eq_self_of_all <;> {cases}) | (apply Refine.all_map_of_all <;> {cases})")
+        # the task's own non-recursive helpers unfolded, the constructions rewritten by the library (``EVAL_SET``), then
+        # each conjunct by a library lemma or the whole cascade (he_033: ``atMod 3`` of the result is the sorted list
+        # by ``gather_scatter3``, and a sorted list is sorted)
+        plain = [f for f in self._task_defs() if f not in self._recursive_defs()]
+        if plain:
+            tactics.append(f"simp only [{post}, {', '.join(plain)}, List.length_map, List.length_range] at *; "
+                           f"(try simp only [{EVAL_SET}]); (repeat' apply And.intro) <;> (try intros) <;> "
+                           "first | trivial | lib_apply | auto_close")
         # induction along a recursive function of the task (he_038: ``encodeGroups`` applied three times is the identity)
         for f in self._recursive_defs():
             for var, typ in _binder_types(obligation.binders):

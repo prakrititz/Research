@@ -1407,6 +1407,146 @@ theorem append_mk_toList (s : String) (l : List Char) : (s ++ String.mk l).toLis
 theorem append_mk_length (s : String) (l : List Char) : (s ++ String.mk l).length = s.length + l.length := by
   simp [String.length_append, string_length_mk]
 
+-- binary numerals as `Nat.toDigits 2 v` (he_079, he_084, he_103 state them by these four properties)
+theorem toDigits2_facts (v : Nat) :
+    (Nat.toDigits 2 v).all (fun c => c == '0' || c == '1') = true ∧
+    (Nat.toDigits 2 v).foldl (fun acc c => 2 * acc + (if c == '1' then 1 else 0)) 0 = v ∧
+    (v = 0 → Nat.toDigits 2 v = ['0']) ∧ (v > 0 → (Nat.toDigits 2 v).head! = '1') := by
+  induction v using Nat.strong_induction_on with
+  | _ v ih =>
+    by_cases h0 : v = 0
+    · subst h0
+      simp [Nat.toDigits, Nat.toDigitsCore]
+    · by_cases h1 : v / 2 = 0
+      · have hv : v = 1 := by omega
+        subst hv
+        simp [Nat.toDigits, Nat.toDigitsCore]
+      · have hlt : v / 2 < v := by omega
+        have ihv := ih (v / 2) hlt
+        have hsplit : Nat.toDigits 2 v = Nat.toDigits 2 (v / 2) ++ Nat.toDigits 2 (v % 2) := by
+          rw [Nat.toDigits_append_toDigits (by norm_num) (by omega) (by omega)]
+          congr 1; omega
+        have hbit : Nat.toDigits 2 (v % 2) = [if v % 2 = 1 then '1' else '0'] := by
+          rcases Nat.mod_two_eq_zero_or_one v with h | h <;> simp [h, Nat.toDigits, Nat.toDigitsCore]
+        rw [hsplit, hbit]
+        obtain ⟨ha, hf, _, hh⟩ := ihv
+        refine ⟨?_, ?_, ?_, ?_⟩
+        · simp only [List.all_append, Bool.and_eq_true]
+          refine ⟨ha, ?_⟩
+          split <;> simp
+        · rw [List.foldl_append, hf]
+          simp only [List.foldl_cons, List.foldl_nil]
+          split <;> simp_all <;> omega
+        · intro hz; omega
+        · intro _
+          have hh' := hh (by omega)
+          cases hA : Nat.toDigits 2 (v / 2) with
+          | nil => rw [hA] at hh'; simp at hh'
+          | cons a t => rw [hA] at hh'; simpa using hh'
+theorem toDigits2_all01 (v : Nat) : (Nat.toDigits 2 v).all (fun c => c == '0' || c == '1') = true :=
+  (toDigits2_facts v).1
+theorem foldl_toDigits2 (v : Nat) :
+    (Nat.toDigits 2 v).foldl (fun acc c => 2 * acc + (if c == '1' then 1 else 0)) 0 = v :=
+  (toDigits2_facts v).2.1
+theorem toDigits2_zero (v : Nat) (h : v = 0) : Nat.toDigits 2 v = ['0'] := (toDigits2_facts v).2.2.1 h
+theorem toDigits2_head (v : Nat) (h : v > 0) : (Nat.toDigits 2 v).head! = '1' := (toDigits2_facts v).2.2.2 h
+theorem toDigits_length_pos (b v : Nat) : 0 < (Nat.toDigits b v).length :=
+  List.length_pos_iff.mpr Nat.toDigits_ne_nil
+-- sorted by a key, ties in the order of the elements (he_149: strings by length, then alphabetically, the comparator
+-- written `key a < key b || (key a == key b && !(b < a))`)
+theorem mergeSort_key_then_not_lt {α : Type} [Inhabited α] [LinearOrder α] (key : α → Nat) (l : List α) :
+    ∀ i, i < (l.mergeSort (fun a b => decide (key a < key b) || (key a == key b && !decide (b < a)))).length - 1 →
+      key (l.mergeSort (fun a b => decide (key a < key b) || (key a == key b && !decide (b < a))))[i]! <
+          key (l.mergeSort (fun a b => decide (key a < key b) || (key a == key b && !decide (b < a))))[i + 1]! ∨
+        (key (l.mergeSort (fun a b => decide (key a < key b) || (key a == key b && !decide (b < a))))[i]! =
+            key (l.mergeSort (fun a b => decide (key a < key b) || (key a == key b && !decide (b < a))))[i + 1]! ∧
+          ¬ (l.mergeSort (fun a b => decide (key a < key b) || (key a == key b && !decide (b < a))))[i + 1]! <
+            (l.mergeSort (fun a b => decide (key a < key b) || (key a == key b && !decide (b < a))))[i]!) := by
+  intro i hi
+  have := mergeSort_sorted_by l (fun a b => decide (key a < key b) || (key a == key b && !decide (b < a)))
+    (fun a b c h1 h2 => by
+      simp only [Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true, beq_iff_eq, Bool.not_eq_true',
+        decide_eq_false_iff_not, not_lt] at *
+      rcases h1 with h1 | ⟨h1, h1'⟩ <;> rcases h2 with h2 | ⟨h2, h2'⟩
+      · left; omega
+      · left; omega
+      · left; omega
+      · right; exact ⟨by omega, le_trans h1' h2'⟩)
+    (fun a b => by
+      simp only [Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true, beq_iff_eq, Bool.not_eq_true',
+        decide_eq_false_iff_not, not_lt]
+      rcases Nat.lt_trichotomy (key a) (key b) with h | h | h
+      · left; left; exact h
+      · rcases le_total a b with h' | h'
+        · left; right; exact ⟨h, h'⟩
+        · right; right; exact ⟨h.symm, h'⟩
+      · right; left; exact h) i hi
+  simpa using this
+-- the index of a member (he_148: the planets between two named ones)
+theorem getElem_bang_idxOf {α : Type} [Inhabited α] [BEq α] [LawfulBEq α] (l : List α) (x : α) (h : x ∈ l) :
+    l[l.idxOf x]! = x := by
+  rw [getElem!_pos l _ (List.idxOf_lt_length_of_mem h)]; exact List.getElem_idxOf _
+theorem idxOf_lt_length' {α : Type} [BEq α] [LawfulBEq α] (l : List α) (x : α) (h : x ∈ l) : l.idxOf x < l.length :=
+  List.idxOf_lt_length_of_mem h
+theorem idxOf_lt_of_length_le {α : Type} [BEq α] [LawfulBEq α] (l : List α) (x : α) (n : Nat) (h : x ∈ l)
+    (hn : l.length ≤ n) : l.idxOf x < n :=
+  Nat.lt_of_lt_of_le (List.idxOf_lt_length_of_mem h) hn
+-- a property of every lowercase / uppercase letter or digit, checked on its finitely many codes by `decide` (he_050:
+-- shifting a letter by 21 then by 5 gives it back)
+theorem lower_cases (P : Char → Prop) (h : ∀ n, n < 26 → P (Char.ofNat (n + 97))) :
+    ∀ c : Char, c.isLower = true → P c := by
+  intro c hc
+  have ha : ('a' : Char).val.toNat = 97 := by decide
+  have hz : ('z' : Char).val.toNat = 122 := by decide
+  have hl : 97 ≤ c.toNat ∧ c.toNat ≤ 122 := by
+    unfold Char.isLower at hc
+    simp only [Bool.and_eq_true, decide_eq_true_eq, ge_iff_le] at hc
+    obtain ⟨h1, h2⟩ := hc
+    rw [UInt32.le_iff_toNat_le] at h1 h2
+    exact ⟨ha ▸ h1, hz ▸ h2⟩
+  have := h (c.toNat - 97) (by omega)
+  rwa [show c.toNat - 97 + 97 = c.toNat by omega, Char.ofNat_toNat] at this
+theorem upper_cases (P : Char → Prop) (h : ∀ n, n < 26 → P (Char.ofNat (n + 65))) :
+    ∀ c : Char, c.isUpper = true → P c := by
+  intro c hc
+  have ha : ('A' : Char).val.toNat = 65 := by decide
+  have hz : ('Z' : Char).val.toNat = 90 := by decide
+  have hl : 65 ≤ c.toNat ∧ c.toNat ≤ 90 := by
+    unfold Char.isUpper at hc
+    simp only [Bool.and_eq_true, decide_eq_true_eq, ge_iff_le] at hc
+    obtain ⟨h1, h2⟩ := hc
+    rw [UInt32.le_iff_toNat_le] at h1 h2
+    exact ⟨ha ▸ h1, hz ▸ h2⟩
+  have := h (c.toNat - 65) (by omega)
+  rwa [show c.toNat - 65 + 65 = c.toNat by omega, Char.ofNat_toNat] at this
+theorem digit_cases (P : Char → Prop) (h : ∀ n, n < 10 → P (Char.ofNat (n + 48))) :
+    ∀ c : Char, c.isDigit = true → P c := by
+  intro c hc
+  have ha : ('0' : Char).val.toNat = 48 := by decide
+  have hz : ('9' : Char).val.toNat = 57 := by decide
+  have hl : 48 ≤ c.toNat ∧ c.toNat ≤ 57 := by
+    unfold Char.isDigit at hc
+    simp only [Bool.and_eq_true, decide_eq_true_eq, ge_iff_le] at hc
+    obtain ⟨h1, h2⟩ := hc
+    rw [UInt32.le_iff_toNat_le] at h1 h2
+    exact ⟨ha ▸ h1, hz ▸ h2⟩
+  have := h (c.toNat - 48) (by omega)
+  rwa [show c.toNat - 48 + 48 = c.toNat by omega, Char.ofNat_toNat] at this
+-- a map that fixes every element satisfying `p`, on a list whose elements all satisfy `p`; and `all` after a map
+theorem map_eq_self_of_all {α : Type} (l : List α) (f : α → α) (p : α → Bool) (hp : l.all p = true)
+    (h : ∀ x, p x = true → f x = x) : l.map f = l := by
+  induction l with
+  | nil => rfl
+  | cons a t ih =>
+    simp only [List.all_cons, Bool.and_eq_true] at hp
+    simp [h a hp.1, ih hp.2]
+theorem all_map_of_all {α β : Type} (l : List α) (f : α → β) (p : α → Bool) (q : β → Bool) (hp : l.all p = true)
+    (h : ∀ x, p x = true → q (f x) = true) : (l.map f).all q = true := by
+  induction l with
+  | nil => rfl
+  | cons a t ih =>
+    simp only [List.all_cons, Bool.and_eq_true] at hp
+    simp [h a hp.1, ih hp.2]
 end Refine
 '''
 
@@ -1425,10 +1565,13 @@ NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getEle
          "toList_getElem_bang", "forall_mem_toList_iff_idx", "exists_mem_toList_iff_idx", "forall_mem_array_iff_idx",
          "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "getElem_bang_map_range", "getElem_bang_append", "pairwise_le_nodup_lt", "dedup_mergeSort_strict", "mem_dedup_mergeSort", "foldl_max_mem_of_mem", "le_foldl_max", "start_le_foldl_max", "getElem_bang_zero_mem_take", "getElem_bang_zero_mem_take'", "getElem_bang_zero_mem_take_of_lt", "getElem_bang_cons", "getElem_bang_nil", "mergeSort_isPerm", "isPerm_mergeSort", "mergeSort_le_int", "mergeSort_ge_int", "mergeSort_le_nat", "mergeSort_key_le", "mergeSort_key_le_nat", "mergeSort_length'", "mem_mergeSort'", "mod_gcd_left", "mod_gcd_right", "mod_eq_zero_of_dvd'", "dvd_of_mod_eq_zero'", "le_of_dvd_pos", "mergeSort_ge_nat", "foldl_min_facts", "foldl_min_mem_of_mem", "foldl_min_le", "foldl_min_le_start", "le_gcd_of_mod_left", "le_gcd_of_mod_right", "mergeSort_perm'", "perm_mergeSort'", "filter_mergeSort_perm", "length_filter_range_succ", "count_take_succ", "countP_take_succ", "take_succ_getElem?", "pairwise_mergeSort_le_int", "pairwise_mergeSort_le_nat", "pairwise_mergeSort_ge_int", "pairwise_mergeSort_ge_nat", "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "digitChar_toNat", "mem_toDigits_lt", "toDigits_all_digit", "toDigits_idx_digit", "foldl_toDigits", "foldl_toDigits'", "toDigits_head_ne_zero", "toDigits_getElem_zero_ne_zero", "prime_of_min_divisor", "not_dvd_div_of_not_dvd", "div_one_or_ge_of_min_divisor", "sorted_append_ge", "map_toList_mk", "map_comp_toList_mk", "count_flatten_eq", "rest_nil_of_counts", "flatten_eq_of_balanced", "closed_group_balanced", "closed_group_prefix", "closed_group_minimal", "open_group_extend", "open_group_extend_at", "filter_range_mod2", "filter_range_mod3", "gather_scatter2", "gather_scatter3", "mergeSort_le_int'", "mergeSort_le_nat'", "ite_ge_eq_max", "ite_gt_eq_max", "ite_le_eq_max", "ite_lt_eq_max", "ite_le_eq_min", "ite_lt_eq_min", "ite_ge_eq_min", "ite_gt_eq_min", "foldr_max_facts", "foldr_min_facts", "foldl_max_head_mem", "foldl_min_head_mem", "foldr_max_head_mem", "foldr_min_head_mem", "le_foldr_max", "foldr_min_le", "foldl_int_add", "pairwise_eq_of_all_eq_head", "pairwise_eq_of_all_eq_head_arr", "not_exists_sq_of_bounds", "sq_search_exit", "exists_sq_iff_of_bounds", "sorted_take_succ_all_lt", "sorted_drop_all_ge", "foldl_push_filter", "arr_foldl_push_filter", "idxOf_filter_le", "idxOf_append_not_mem", "idxOf_filter_ne_append", "filter_ne_append_filter_eq_perm", "eq_one_of_mul_pow_eq_pow", "pow_iff_of_factor", "mod_left_of_common_divisors", "mod_right_of_common_divisors", "le_of_common_divisors", "arr_all_foldl_push_filter",
          "reverse_isPerm", "sorted_reverse_of_ge", "sorted_reverse_take_mergeSort_ge", "reverse_eq_self_iff_idx", "reverse_beq_self_iff_idx", "reverse_eq_self_iff_idx'", "mergeSort_key_then_le",
-         "foldl_pair_count", "foldl_pair_count_fst", "foldl_pair_count_snd", "floor_add_half_spec", "asString_toList'", "asString_length'", "append_mk_toList", "append_mk_length")
+         "toDigits2_facts", "toDigits2_all01", "foldl_toDigits2", "toDigits2_zero", "toDigits2_head", "toDigits_length_pos",
+         "map_eq_self_of_all", "all_map_of_all", "getElem_bang_idxOf", "idxOf_lt_length'", "idxOf_lt_of_length_le", "mergeSort_key_then_not_lt", "foldl_pair_count", "foldl_pair_count_fst", "foldl_pair_count_snd", "floor_add_half_spec", "asString_toList'", "asString_length'", "append_mk_toList", "append_mk_length")
 
 #: "Evaluation" rewrites only: an index into a construction becomes its value (``((range n).map f)[i]! = f i``). Unlike
 #: ``SIMP_SET`` they do not unfold ``take (i + 1)`` or turn ``∀ x ∈ l`` into the index form (right for loop steps, wrong for a
 #: closed-form value, where the library lemmas are stated over ``take (i + 1)`` and members): found on he_009, 2026-10-27.
 EVAL_SET = ", ".join(["Refine.getElem_bang_map_range", "Refine.getElem_bang_append", "Refine.getElem_bang_cons", "Refine.getElem_bang_nil", "Refine.mergeSort_isPerm", "Refine.isPerm_mergeSort", "Refine.mem_mergeSort'", "Refine.mergeSort_length'", "Refine.mem_dedup_mergeSort", "Refine.toList_getElem_bang",
-                      "Refine.string_toList_mk", "Refine.string_length_mk", "List.length_map", "List.length_range", "Refine.foldl_int_add", "Refine.asString_toList'", "Refine.asString_length'"])
+                      "Refine.string_toList_mk", "Refine.string_length_mk", "List.length_map", "List.length_range", "Refine.foldl_int_add", "Refine.asString_toList'", "Refine.asString_length'",
+                      "Refine.toDigits2_all01", "Refine.foldl_toDigits2", "Refine.toDigits2_head", "Refine.toDigits_length_pos",
+                      "Refine.gather_scatter2", "Refine.gather_scatter3"])
