@@ -22,7 +22,7 @@ import time
 from collections import defaultdict
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from FormalLLM.lean.laws import (Goal, HOLE, IllFormed, Law, Obligation, Rendered, RESULT, law_from_json, with_bound)
 
@@ -77,6 +77,22 @@ LIBRARY_APPLY_GRIND = "".join(
     f"(apply Refine.{n}; all_goals first | assumption | (simp_all; done) | omega | grind | "
     f"(intro _ hmem; obtain ⟨_, _, rfl⟩ := List.getElem_of_mem hmem; grind)) | "
     for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
+
+
+def _binder_types(binders: str) -> List[Tuple[str, str]]:
+    """``(a b : List Int) (s : String)`` -> ``[("a", "List Int"), ("b", "List Int"), ("s", "String")]``."""
+    out, depth, start = [], 0, None
+    for k, ch in enumerate(binders):
+        if ch == "(":
+            if depth == 0:
+                start = k + 1
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+            if depth == 0 and start is not None and ":" in binders[start:k]:
+                names, typ = binders[start:k].split(":", 1)
+                out += [(n, typ.strip()) for n in names.split() if not n.startswith("h")]
+    return out
 
 
 def make_cascade(extra_simp=(), task_defs=(), pre="True"):
@@ -192,6 +208,46 @@ def _cascade_groups(simp: str, helpers: str, defs_alt: str, pre: str) -> List[st
     return [start + c + ")" for c in chunks if c.strip()]
 
 
+#: ``wit_search``: an existential goal (also nested, also under ``∧``) by trying witnesses: the local variables of the
+#: right type, their successors, and the numerals 0, 1, 2; each choice is finished by ``omega`` or ``grind``. The
+#: cascade never chooses a witness (he_020's loop init: ``∃ b < 2, ∃ a < b, ...`` holds for b = 1, a = 0). Under a
+#: heartbeat budget of its own: unbounded, it ran 970 s on he_001's loop exit
+WIT_SEARCH = r"""open Lean Elab Tactic Meta in
+partial def Refine.witSearch (depth : Nat) : TacticM Unit := do
+  let goal ← getMainGoal
+  let tgt ← whnfR (← instantiateMVars (← goal.getType))
+  if tgt.isAppOfArity ``And 2 then
+    for g in ← goal.apply (mkConst ``And.intro []) do
+      setGoals [g]
+      Refine.witSearch depth
+    return
+  if depth > 0 && tgt.isAppOfArity ``Exists 2 then
+    let ty ← instantiateMVars (tgt.getArg! 0)
+    let mut cands : Array Expr := #[]
+    for d in (← getLCtx) do
+      if !d.isImplementationDetail && (← isDefEq d.type ty) then
+        cands := cands.push d.toExpr
+    if ← isDefEq ty (mkConst ``Nat) then
+      for c in cands do
+        cands := cands.push (mkNatAdd c (mkNatLit 1))
+      cands := cands ++ #[mkNatLit 0, mkNatLit 1, mkNatLit 2]
+    if ← isDefEq ty (mkConst ``Int) then
+      cands := cands ++ #[toExpr (0 : Int), toExpr (1 : Int)]
+    for c in cands do
+      let s ← saveState
+      try
+        setGoals [← goal.existsIntro c]
+        Refine.witSearch (depth - 1)
+        return
+      catch _ => s.restore
+    throwError "wit_search: no witness found"
+  setGoals [goal]
+  evalTactic (← `(tactic| first | omega | grind))
+
+open Lean Elab Tactic in
+elab "wit_search_core" : tactic => Refine.witSearch 3
+macro "wit_search" : tactic => `(tactic| lib_budget 40 wit_search_core)
+"""
 CASCADE, DIAGNOSE = make_cascade()
 #: the library steps as named tactics, defined once. Spelling the 90-lemma library out in every alternative made the cascade
 #: ~28k characters, and parsing it took Lean ~17 s per macro (twice per certificate): a full run would take hours longer
@@ -212,7 +268,8 @@ LIB_MACROS = ('open Lean Elab Tactic in\n'
               # the library's rewrites, for ``refine_portfolio``'s ``unfold_local; (try lib_simp); lib_apply`` (he_033)
               f'macro "lib_simp" : tactic => `(tactic| simp_all [{SIMP_SET}])\n'
               # ``lib_apply`` whose side goals may also need ``grind`` (a hypothesis to project from under a binder: he_001)
-              f'macro "lib_apply_grind" : tactic => `(tactic| first | {LIBRARY_APPLY_GRIND.rstrip(" |")})\n')
+              f'macro "lib_apply_grind" : tactic => `(tactic| first | {LIBRARY_APPLY_GRIND.rstrip(" |")})\n'
+              + WIT_SEARCH)
 #: the library cascade as a named tactic in every task environment (see ``Derivation.__init__``)
 AUTO_CLOSE = LIB_MACROS + f'macro "auto_close" : tactic => `(tactic| ({CASCADE}))\n'
 LEMMA_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_']*")
@@ -516,6 +573,48 @@ class Derivation:
                  for v in candidates[-4:][::-1]]
         return "first | " + " | ".join(tries)
 
+    def _shape_tactics(self, obligation: Obligation) -> List[str]:
+        """Tactics for shapes the common cascade handles badly, each tried as a command of its own (a proof found becomes a
+        helper lemma, as for the other specials). They start by unfolding only the pre/postcondition: the cascade's
+        ``dsimp``/``simp_all`` first unfolds ``String.mk``, ``Nat.toDigits`` and the task's functions too, and on closed
+        forms that ran out of heartbeats before any library lemma was tried (he_038, he_044, he_079, he_087)."""
+        if obligation.body is not None:
+            return []
+        post, pre = self.task.post_name, self.task.pre_name
+        start = (f"(try unfold {post} {pre} at *); (try simp only [{post}] at *); "
+                 "(try simp only [Refine.string_toList_mk, Refine.string_length_mk] at *); ")
+        tactics = []
+        definition = self.task.prelude.split(f"def {post}", 1)
+        if "∃" in obligation.statement or (len(definition) > 1 and "∃" in definition[1].split("\ndef ", 1)[0]):
+            tactics.append(start + "(try intros); (try casesm* _ ∧ _); wit_search")
+        # members to indices, in the hypotheses too, then grind (he_090: the hypotheses state the loop's facts by index,
+        # the postcondition by members; the cascade turns only the goal)
+        tactics.append(start + "simp only [Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx, Refine.mem_iff_idx] at *; "
+                               "first | grind | wit_search")
+        # the conjuncts of a closed form one by one, by a library lemma, by evaluation once the variables are
+        # substituted, or by grind with the library
+        tactics.append(start + "(repeat' apply And.intro) <;> (try intros) <;> (try casesm* _ ∧ _) <;> "
+                               "first | lib_apply | (simp_all; done) | (subst_vars; decide) | "
+                               "(subst_vars; simp; done) | (subst_vars; simp; rfl) | (subst_vars; simp; decide) | lib_grind")
+        # induction along a recursive function of the task (he_038: ``encodeGroups`` applied three times is the identity)
+        for f in self._recursive_defs():
+            for var, typ in _binder_types(obligation.binders):
+                if typ.startswith("List"):
+                    tactics.append(start + f"induction {var} using {f}.induct <;> first | (simp_all [{f}]; done) | grind [{f}]")
+                elif typ == "String":
+                    tactics.append(start + f"generalize {var}.toList = l at *; induction l using {f}.induct <;> "
+                                           f"first | (simp_all [{f}]; done) | grind [{f}]")
+        return tactics
+
+    def _recursive_defs(self) -> List[str]:
+        """The task's own functions defined by recursion on their argument (they have an ``.induct`` principle)."""
+        out = []
+        for name in self._task_defs():
+            body = re.split(rf"(?m)^\s*(?:@\[[^\]]*\]\s*)?def\s+{re.escape(name)}\b", self.task.prelude, maxsplit=1)
+            if len(body) > 1 and re.search(rf"\b{re.escape(name)}\b", re.split(r"(?m)^\S", body[1], maxsplit=1)[0]):
+                out.append(name)
+        return out
+
     def _cases_tactic(self, obligation: Obligation) -> Optional[str]:
         """A postcondition over inputs of a sum type (HumanEval's ``PyVal``, ``Option``, ``Bool``, or an ``inductive`` of the
         task): case-split those inputs, then simplify (he_092: ``cases x <;> cases y <;> cases z <;> simp``)."""
@@ -596,6 +695,7 @@ class Derivation:
             return verdict                              # proved, ill-formed, or false: no prover can do more
         # tactics the common cascade does not contain (they depend on this obligation): each proof found becomes a helper
         specials = [t for t in (self._witness_tactic(obligation), self._cases_tactic(obligation)) if t]
+        specials += self._shape_tactics(obligation)
         with self.phase("specials"):
             if any(self._prove_as_helper(obligation, f"{name}_s{k}", t) for k, t in enumerate(specials)):
                 return Verdict(obligation, "PROVED", seconds=verdict.seconds)

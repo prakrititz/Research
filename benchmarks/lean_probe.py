@@ -10,7 +10,8 @@ tactic), plus the cascade's unsolved goals in a comment.
 
 ``serve`` keeps one REPL with the lemma library and each task's definitions loaded, and runs every new
 ``DIR/<task>__*.lean`` (or ``DIR/lib__*.lean`` for the library alone) once, writing the errors, infos and goals to the
-``.out`` file next to it. Rewriting a ``.lean`` file runs it again. Stop it with ``DIR/STOP``."""
+``.out`` file next to it. Rewriting a ``.lean`` file runs it again. Stop it with ``DIR/STOP``. Each file gets
+``PROBE_TIMEOUT`` seconds (default 180)."""
 import argparse
 import glob
 import os
@@ -65,7 +66,15 @@ def serve(folder):
         print("ready", flush=True)
         while not os.path.exists(os.path.join(folder, "STOP")):
             for path in sorted(glob.glob(os.path.join(folder, "*__*.lean"))):
-                stamp = os.path.getmtime(path)
+                try:
+                    stamp = os.path.getmtime(path)
+                    text = open(path, encoding="utf8").read()
+                except OSError:                       # removed since the listing
+                    continue
+                out = path[:-5] + ".out"
+                if path not in seen and os.path.exists(out) and os.path.getmtime(out) >= stamp:
+                    seen[path] = stamp                # answered by an earlier server
+                    continue
                 if seen.get(path) == stamp:
                     continue
                 seen[path] = stamp
@@ -80,7 +89,7 @@ def serve(folder):
                             raise ValueError("; ".join(reply.errors[:2]))
                         envs[(task_id, lean.restarts)] = env
                     env = library if task_id == "lib" else envs[(task_id, lean.restarts)]
-                    reply = lean.run(open(path, encoding="utf8").read(), env=env, timeout=600)
+                    reply = lean.run(text, env=env, timeout=float(os.environ.get("PROBE_TIMEOUT", "180")))
                     lines = [f"{'OK' if reply.ok and not reply.goals else 'FAIL'} {time.time() - started:.1f}s"
                              + (" TIMEOUT" if reply.timed_out else "")]
                     lines += ["ERROR: " + e[:3000] for e in reply.errors[:6]]
