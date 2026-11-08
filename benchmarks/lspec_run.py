@@ -32,7 +32,8 @@ def row_of(task_id, trial, result, seconds, model, workflow) -> dict:
             "certificate": None if cert is None else {"compiles": cert.compiles, "axioms": cert.axioms,
                                                       "tests": cert.tests, "passed": cert.passed,
                                                       "errors": cert.errors[:2]},
-            "tree": result.derivation.to_tree() if result.derivation.complete else None}
+            "tree": result.derivation.to_tree() if result.derivation.complete else None,
+            "timing": result.derivation.timing_report()}
 
 
 LIBRARY_MODULE = "LeanEnv.RefineLib"
@@ -52,11 +53,24 @@ def library_module(lemmas: str):
     if key in _BUILT:
         return _BUILT[key]
     tool = Toolchain()
+    package = LIBRARY_MODULE.split(".")[0]
+    lakefile = os.path.join(tool.project, "lakefile.toml")
+    lakefile_text = open(lakefile, encoding="utf8").read() if os.path.exists(lakefile) else ""
+    if f'name = "{package}"' not in lakefile_text and os.path.exists(lakefile):
+        # a Lean project made before the module existed has no library target to build it in (this Mac's): add one
+        with open(lakefile, "a", encoding="utf8", newline="\n") as handle:
+            handle.write(f'\n[[lean_lib]]\nname = "{package}"\n')
     path = os.path.join(tool.project, *LIBRARY_MODULE.split(".")) + ".lean"       # LeanEnv/RefineLib.lean
-    old = open(path, encoding="utf8").read() if os.path.exists(path) else None
-    if old != text:                                   # unchanged text keeps lake's trace: no rebuild
-        with open(path, "w", encoding="utf8", newline="\n") as handle:
-            handle.write(text)
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        old = open(path, encoding="utf8").read() if os.path.exists(path) else None
+        if old != text:                               # unchanged text keeps lake's trace: no rebuild
+            with open(path, "w", encoding="utf8", newline="\n") as handle:
+                handle.write(text)
+    except OSError as error:
+        print(f"the library module could not be written ({error}); files carry the library text", flush=True)
+        _BUILT[key] = None
+        return None
     try:
         done = subprocess.run([tool.lake, "build", LIBRARY_MODULE], cwd=short_path(tool.project), env=tool.env(),
                               capture_output=True, text=True, encoding="utf8", timeout=3600)
@@ -113,6 +127,7 @@ def main():
     ap.add_argument("--temperature", type=float, default=0.2)
     ap.add_argument("--max-usd", type=float, default=None)
     ap.add_argument("--paid-ok", action="store_true")
+    ap.add_argument("--tag", default="", help="suffix of the results file (a separate file for timing or ablation runs)")
     args = ap.parse_args()
 
     from FormalLLM.lean.dataset import resolve
@@ -124,7 +139,7 @@ def main():
     gold = args.model == "gold"
     provider = None if gold else make_model(args.model, args)
     tag = (args.model.replace(":", "-") + ("_norepair" if args.no_repair else "")
-           + (f"_ex{args.examples}{args.pool}" if args.examples else "") + (f"_n{args.samples}" if args.samples > 1 else "") + ("_lemmas" if args.lemmas else ""))
+           + (f"_ex{args.examples}{args.pool}" if args.examples else "") + (f"_n{args.samples}" if args.samples > 1 else "") + ("_lemmas" if args.lemmas else "") + (f"_{args.tag}" if args.tag else ""))
     out = os.path.join(ROOT, "benchmarks", "results", "lspec", f"run_{args.dataset}_{tag}_{args.workflow}.jsonl")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     done = set()
@@ -148,6 +163,7 @@ def main():
                     if check is not None:                 # the fresh-process check decides: stricter than the REPL's
                         row["verified"] = check["verified"]
                         row["outcome"] = "SOLVED" if check["verified"] else "UNVERIFIED"
+                        row.setdefault("timing", {})["file_check"] = {"seconds": check.get("seconds"), "commands": 1}
                         row["file_check"] = {k: check.get(k) for k in ("verified", "exit_code", "errors", "axioms",
                                                                         "statement_regions_missing", "tests_true",
                                                                         "tests_expected", "seconds")}

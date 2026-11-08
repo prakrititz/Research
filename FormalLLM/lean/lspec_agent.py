@@ -42,6 +42,11 @@ def scope_of(goal) -> list:
 def elaboration_error(d: Derivation, goal, engine: dict):
     """The first obligation of ``engine`` (an engine step) at ``goal`` that does not type-check, with Lean's error;
     None when all do."""
+    with d.phase("step_elaborate"):
+        return _elaboration_error(d, goal, engine)
+
+
+def _elaboration_error(d: Derivation, goal, engine: dict):
     expansion = law_from_json(engine).expand(goal, lambda: 10 ** 6)
     for k, ob in enumerate(expansion.obligations):
         if ob.body is not None:

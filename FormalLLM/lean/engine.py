@@ -18,6 +18,8 @@ import json
 import os
 import re
 import time
+from collections import defaultdict
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
@@ -361,6 +363,27 @@ class Derivation:
         self._env_id: Optional[int] = None
         self._env_restarts = -1
         self.lean_seconds = 0.0
+        # where the Lean time goes, by phase (``phase``); written into every run row (``lspec_run.row_of``)
+        self.timing: Dict[str, float] = defaultdict(float)
+        self.counts: Dict[str, int] = defaultdict(int)
+        self._phase = "cascade"
+
+    @contextmanager
+    def phase(self, name: str):
+        """Attribute the Lean time of the commands run inside to ``name`` (``timing``, ``counts``)."""
+        old, self._phase = self._phase, name
+        try:
+            yield
+        finally:
+            self._phase = old
+
+    def _account(self, name: str, started: float) -> None:
+        self.timing[name] += time.time() - started
+        self.counts[name] += 1
+
+    def timing_report(self) -> dict:
+        return {k: {"seconds": round(v, 1), "commands": self.counts[k]}
+                for k, v in sorted(self.timing.items(), key=lambda kv: -kv[1])}
 
     def _fresh(self) -> int:
         self._next += 1
@@ -408,9 +431,13 @@ class Derivation:
     def _environment(self) -> int:
         """The Lean environment holding the task's definitions (loaded once; again after a restart of the session)."""
         if self._env_id is None or self._env_restarts != self.lean.restarts:
+            started = time.time()
             base = self._library_env()
+            self._account("library_load", started)
+            started = time.time()
             source = ("" if base is not None else self.lemmas + "\n") + self.task.prelude + "\n" + self._helper_text()
             reply, env = self._load_on(source, base, self._replay_timeout())
+            self._account("env_load", started)
             if env is None and reply.timed_out:
                 # a starved or bloated REPL times out on a load that normally takes seconds; the session restarted itself
                 # on the timeout, so try once more on the fresh process (with more time) before calling it a failure
@@ -440,8 +467,11 @@ class Derivation:
 
     def _run(self, source: str, timeout: Optional[float] = None):
         started = time.time()
-        reply = self.lean.run(source, timeout=timeout or self.timeout, env=self._environment())
+        env = self._environment()
+        started = time.time()
+        reply = self.lean.run(source, timeout=timeout or self.timeout, env=env)
         self.lean_seconds += time.time() - started
+        self._account(self._phase, started)
         return reply
 
     def _witness_tactic(self, obligation: Obligation) -> Optional[str]:
@@ -542,13 +572,16 @@ class Derivation:
             return verdict                              # proved, ill-formed, or false: no prover can do more
         # tactics the common cascade does not contain (they depend on this obligation): each proof found becomes a helper
         specials = [t for t in (self._witness_tactic(obligation), self._cases_tactic(obligation)) if t]
-        if any(self._prove_as_helper(obligation, f"{name}_s{k}", t) for k, t in enumerate(specials)):
-            return Verdict(obligation, "PROVED", seconds=verdict.seconds)
-        if ("resource limit" in verdict.message or "proof failed" in verdict.message) and self._portfolio_prove(obligation, name):
-            return Verdict(obligation, "PROVED", seconds=verdict.seconds)
-        if HAMMER and any(self._prove_as_helper(obligation, f"{name}_h{k}", t)
-                          for k, t in enumerate(self._hammer_tactics(obligation))):
-            return Verdict(obligation, "PROVED", seconds=verdict.seconds)
+        with self.phase("specials"):
+            if any(self._prove_as_helper(obligation, f"{name}_s{k}", t) for k, t in enumerate(specials)):
+                return Verdict(obligation, "PROVED", seconds=verdict.seconds)
+        with self.phase("portfolio_groups"):
+            if ("resource limit" in verdict.message or "proof failed" in verdict.message) and self._portfolio_prove(obligation, name):
+                return Verdict(obligation, "PROVED", seconds=verdict.seconds)
+        with self.phase("hammer"):
+            if HAMMER and any(self._prove_as_helper(obligation, f"{name}_h{k}", t)
+                              for k, t in enumerate(self._hammer_tactics(obligation))):
+                return Verdict(obligation, "PROVED", seconds=verdict.seconds)
         return verdict
 
     def _hammer_tactics(self, obligation: Obligation) -> List[str]:
@@ -606,13 +639,15 @@ class Derivation:
 
     def _elaborates(self, obligation: Obligation) -> bool:
         """The obligation's statement type-checks (its proof aside)."""
-        reply = self._run(f"example {obligation.binders} :\n    {obligation.statement} := by\n  sorry\n")
+        with self.phase("elaborates"):
+            reply = self._run(f"example {obligation.binders} :\n    {obligation.statement} := by\n  sorry\n")
         return not reply.timed_out and not reply.errors
 
     def _counterexample(self, obligation: Obligation, name: str) -> Optional[str]:
         source = (TESTING + f"theorem {name}_cex {obligation.binders} :\n    {obligation.statement} := by\n"
                   f"  (try dsimp only at *); plausible {PLAUSIBLE_CONFIG}\n")
-        reply = self._run(source)
+        with self.phase("plausible"):
+            reply = self._run(source)
         return reply.counterexample
 
     def _small_scope(self, obligation: Obligation) -> Optional[str]:
@@ -620,7 +655,8 @@ class Derivation:
         source = smallscope.falsifier(obligation.binders, obligation.statement)
         if source is None:
             return None
-        reply = self._run(source, timeout=60.0)
+        with self.phase("smallscope"):
+            reply = self._run(source, timeout=60.0)
         if reply.timed_out or reply.errors:
             return None
         found = smallscope.parse("\n".join(reply.infos))
@@ -632,7 +668,8 @@ class Derivation:
             return Verdict(Obligation("lemma", f"helper lemma {lemma.name}", "", lemma.statement), "ILL_FORMED",
                            f"a helper lemma named {lemma.name} already exists")
         obligation = Obligation("lemma", f"helper lemma {lemma.name}", "", lemma.statement)
-        reply = self._run(lemma.source(), timeout=PORTFOLIO_TIMEOUT if "refine_portfolio" in lemma.proof else None)
+        with self.phase("admit_" + self._phase):
+            reply = self._run(lemma.source(), timeout=PORTFOLIO_TIMEOUT if "refine_portfolio" in lemma.proof else None)
         if reply.timed_out:
             return Verdict(obligation, "TIMEOUT", "Lean gave no answer within the time limit", seconds=reply.seconds)
         if reply.errors or reply.goals:
@@ -654,12 +691,13 @@ class Derivation:
         from FormalLLM.lean.laws import Loop, Term
         finding = None
         try:
-            if isinstance(law, Term):
-                parent = self._parent_of(node.goal.id)
-                if parent is not None and isinstance(parent.law, Loop) and parent.children[0].goal.id == node.goal.id:
-                    finding = dynamic.loop_finding(self, parent.goal, parent.law, law.expr)
-            elif isinstance(law, Loop) and any(v.obligation.kind == "init" for v in bad):
-                finding = dynamic.loop_finding(self, node.goal, law, None)
+            with self.phase("dynamic"):
+                if isinstance(law, Term):
+                    parent = self._parent_of(node.goal.id)
+                    if parent is not None and isinstance(parent.law, Loop) and parent.children[0].goal.id == node.goal.id:
+                        finding = dynamic.loop_finding(self, parent.goal, parent.law, law.expr)
+                elif isinstance(law, Loop) and any(v.obligation.kind == "init" for v in bad):
+                    finding = dynamic.loop_finding(self, node.goal, law, None)
         except Exception:                               # a harness that does not elaborate must never hide the real verdict
             finding = None
         if finding is not None:
@@ -795,10 +833,19 @@ class Derivation:
             if base is None:
                 return self.lean.run(text, timeout=limit)
             return self.lean.run(text, timeout=limit, env=base)
-        reply = run(source)
-        certificate = Certificate(not reply.errors and not reply.timed_out, errors=reply.errors[:3])
+        # one command: the term, then the tests (an earlier version compiled the whole file a second time for the tests);
+        # messages are told apart by line, so a test that does not run never counts against the term
+        prefix = self.task.compat + "\n" if self.task.compat else ""     # the dataset's prelude (e.g. the witness search)
+        tests = self.task.test_commands() if run_tests else []
+        body = prefix + source
+        reply = run(body + ("\n" + "\n".join(tests) if tests else ""))
+        self._account("certify", started)
+        first_test = body.count("\n") + 2 if tests else 10 ** 9
+        errors = [e for e, line in zip(reply.errors, reply.error_lines or [0] * len(reply.errors)) if line < first_test]
+        infos = [(i, line) for i, line in zip(reply.infos, reply.info_lines or [0] * len(reply.infos))]
+        certificate = Certificate(not errors and not reply.timed_out, errors=errors[:3])
         theorem = f"'{self.task.name}_spec_satisfied'"
-        for info in reply.infos:
+        for info in [i for i, line in infos if line < first_test]:
             if theorem not in info:
                 continue
             found = PRINT_AXIOMS.search(info)
@@ -808,11 +855,8 @@ class Derivation:
                 certificate.axioms = ""
         if reply.timed_out:
             certificate.errors = ["timeout"]
-        if run_tests and certificate.compiles:
-            tests = self.task.test_commands()
+        if tests and certificate.compiles:
             certificate.tests = len(tests)
-            prefix = self.task.compat + "\n" if self.task.compat else ""     # the dataset's prelude (e.g. the witness search)
-            ran = run(prefix + source + "\n" + "\n".join(tests))
-            certificate.passed = sum(1 for info in ran.infos if info.strip() == "true")
+            certificate.passed = sum(1 for i, line in infos if line >= first_test and i.strip() == "true")
         certificate.seconds = round(time.time() - started, 2)
         return certificate

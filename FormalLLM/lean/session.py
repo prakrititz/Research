@@ -98,6 +98,8 @@ class LeanReply:
     goals: List[str] = field(default_factory=list)          # one per ``sorry``
     seconds: float = 0.0
     timed_out: bool = False
+    error_lines: List[int] = field(default_factory=list)    # the line of each error, in the order of ``errors``
+    info_lines: List[int] = field(default_factory=list)     # the line of each info, in the order of ``infos``
 
     @property
     def ok(self) -> bool:
@@ -267,8 +269,14 @@ class LeanSession:
             return LeanReply(errors=["timeout"], seconds=time.time() - started, timed_out=True), None
         reply = LeanReply(seconds=time.time() - started)
         for message in raw.get("messages", []):
-            bucket = {"error": reply.errors, "warning": reply.warnings, "info": reply.infos}.get(message.get("severity"))
+            severity = message.get("severity")
+            bucket = {"error": reply.errors, "warning": reply.warnings, "info": reply.infos}.get(severity)
             if bucket is not None:
                 bucket.append(message.get("data", ""))
+                line = (message.get("pos") or {}).get("line", 0)
+                if severity == "error":
+                    reply.error_lines.append(line)
+                elif severity == "info":
+                    reply.info_lines.append(line)
         reply.goals = [s.get("goal", "") for s in (raw.get("sorries") or [])]
         return reply, raw.get("env")
