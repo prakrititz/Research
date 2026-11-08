@@ -191,6 +191,24 @@ def remote_model_id(default: str) -> str:
     return os.environ.get("FORMALLLM_REMOTE_MODEL") or default
 
 
+def _is_openai(base_url: str) -> bool:
+    """Is ``base_url`` OpenAI's own API (the only host the OpenAI key may be sent to)?"""
+    import urllib.parse
+    host = (urllib.parse.urlparse(base_url).hostname or "").lower()
+    return host == "openai.com" or host.endswith(".openai.com")
+
+
+SELF_HOSTED = ("localhost", "127.0.0.1", "::1", ".ngrok-free.dev", ".ngrok-free.app", ".ngrok.io", ".ngrok.app")
+
+
+def is_self_hosted(base_url: str) -> bool:
+    """A server on this machine or behind an ngrok tunnel (the remote gpt-oss): free. Any other host (OpenAI,
+    OpenRouter, Groq, ...) is treated as paid: it needs a spending cap and is charged at the table's rates."""
+    import urllib.parse
+    host = (urllib.parse.urlparse(base_url).hostname or "").lower()
+    return any(host == h or (h.startswith(".") and host.endswith(h)) for h in SELF_HOSTED)
+
+
 class OpenAIChatProvider(LLMProvider):
     """Connects to any OpenAI-compatible ``/v1/chat/completions`` endpoint.
 
@@ -255,12 +273,16 @@ class OpenAIChatProvider(LLMProvider):
         self.reasoning_effort = reasoning_effort
         self.base_url = base_url.rstrip("/")
         
-        # Resolve authentication: explicit -> env auth_env -> OPENAI_API_KEY -> ~/.formalllm credentials
+        # Resolve authentication: explicit -> env auth_env -> the credentials of this host only. The OpenAI key
+        # (OPENAI_API_KEY, ~/.formalllm/openai_key) goes to api.openai.com and nowhere else; any other server gets
+        # ~/.formalllm/remote_auth ("user:password" for HTTP Basic, or a token). Before 2026-11-08 the OpenAI key was
+        # tried first for every host, so a remote server would have been sent it.
         resolved_auth = auth if auth is not None else os.environ.get(auth_env)
-        if not resolved_auth:
+        openai_host = _is_openai(self.base_url)
+        if not resolved_auth and openai_host:
             resolved_auth = os.environ.get("OPENAI_API_KEY")
         if not resolved_auth:
-            for candidate in ("openai_key", "remote_auth"):
+            for candidate in (("openai_key",) if openai_host else ("remote_auth",)):
                 cred_path = os.path.join(os.path.expanduser("~"), ".formalllm", candidate)
                 if os.path.exists(cred_path):
                     try:
@@ -297,6 +319,8 @@ class OpenAIChatProvider(LLMProvider):
         p_tokens = usage.get("prompt_tokens") or 0
         c_tokens = usage.get("completion_tokens") or 0
         p_rate, c_rate = self.MODEL_RATES.get(self.model_name, self.UNKNOWN_RATE)
+        if is_self_hosted(self.base_url):
+            p_rate = c_rate = 0.0                   # a self-hosted server (the remote gpt-oss, Ollama /v1) costs nothing
         call_cost = (p_tokens * p_rate) + (c_tokens * c_rate)
         OpenAIChatProvider.CUMULATIVE_COST_USD += call_cost
         print(f"\n[Usage: {p_tokens} prompt + {c_tokens} completion tokens | Call: ${call_cost:.5f} | "

@@ -85,28 +85,42 @@ class Judgement:
     engine: Optional[dict] = None               # the step as applied (Lean text)
 
 
+def _read(written: dict, goal, scope):
+    """The step in Lean and its law, expanded at ``goal`` (raises when it cannot be read)."""
+    engine = steps.to_engine(written, scope)
+    law = law_from_json(engine)
+    law.expand(goal, lambda: 10 ** 6)
+    return engine, law
+
+
 def judge(d: Derivation, goal, written: dict, level: str = "prove", loop_body: bool = False,
           use_repair: bool = True, lemmas: bool = False) -> Judgement:
     """Translate the model's step ``written`` and check it at ``goal`` to ``level``; at ``prove`` an accepted step
     stays applied in ``d``. Helper lemmas in the step are dropped (the model never writes proofs) unless ``lemmas``
     (checking the hand-written derivations, which bring some)."""
     scope = scope_of(goal)
-    try:
-        engine = steps.to_engine(written, scope)
-        law = law_from_json(engine)
-        law.expand(goal, lambda: 10 ** 6)
-    except (steps.StepError, IllFormed, KeyError, TypeError, ValueError) as error:
-        return Judgement(feedback.UNREADABLE, feedback.unreadable(error))
-    if level == "translate":
-        return Judgement(feedback.ACCEPTED, engine=engine)
     note = ""
+    try:
+        engine, law = _read(written, goal, scope)
+    except (steps.StepError, IllFormed, KeyError, TypeError, ValueError) as error:
+        typo = repair.text_repairs(written) if use_repair else None
+        try:
+            if typo is None:
+                raise error
+            engine, law = _read(typo[0], goal, scope)
+            note = typo[1]
+        except (steps.StepError, IllFormed, KeyError, TypeError, ValueError):
+            return Judgement(feedback.UNREADABLE, feedback.unreadable(error))
+    if level == "translate":
+        return Judgement(feedback.ACCEPTED, note=note, engine=engine)
     failure = elaboration_error(d, goal, engine)
     if failure and use_repair:
         fixed = repaired(d, goal, engine, failure)
         if fixed:
             before, (engine, why) = engine, fixed
             law = law_from_json(engine)
-            note = "; ".join(why) + "\n" + repair.describe(before, engine, lambda t: feedback._lspec(t, scope))
+            note = ("; ".join(([note] if note else []) + list(why)) + "\n"
+                    + repair.describe(before, engine, lambda t: feedback._lspec(t, scope)))
             failure = None
     if failure:
         ob, error = failure

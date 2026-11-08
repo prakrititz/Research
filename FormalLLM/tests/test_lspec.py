@@ -282,6 +282,30 @@ def _repaired(step, error):
     return [({k: v for k, v in new.items() if new.get(k) != step.get(k)}, why) for new, why in repair.repairs(step, error)]
 
 
+def test_repair_closing_brace_typo_only_when_unambiguous():
+    from FormalLLM.dsl import repair
+    he_070 = {"law": "term",
+              "expr": "range(len(lst)).map(lambda k: s[k / 2] if k % 2 == 0 else s[len(lst) - 1 - k / 2]}"}
+    with pytest.raises(steps.StepError):
+        steps.to_engine(he_070, ["lst", "s"])
+    fixed, why = repair.text_repairs(he_070)
+    assert fixed["expr"].endswith("k / 2])") and "`}` read as `)`" in why
+    steps.to_engine(fixed, ["lst", "s"])                                   # now it reads
+    assert repair.text_repairs({"law": "term", "expr": "f({1: 2}"}) is None          # a `{` exists: not a typo
+    assert repair.text_repairs({"law": "term", "expr": "f(x}}"}) is None             # counts do not match
+    loop = {"law": "loop", "state": [["i", "nat", "len(l}"]], "invariant": "True"}
+    assert repair.text_repairs(loop)[0]["state"][0][2] == "len(l)"
+
+
+def test_a_cut_off_reply_is_told_so():
+    from FormalLLM.dsl import prompts
+    with pytest.raises(steps.StepError, match="cut off"):
+        prompts.parse_reply('{"law": "loop", "state": [["i", "nat", "0"], ["m", "')      # probe v6, he_020
+    with pytest.raises(steps.StepError, match="no JSON object found"):
+        prompts.parse_reply("I think the loop should count down.")
+    assert prompts.parse_reply('{"law": "term", "expr": "\\"}\\""}')["expr"] == '"}"'  # a brace in a string
+
+
 def test_repair_bind_value_read_as_equation():
     step = {"law": "bind", "var": "j_next", "type": "Nat", "prop": "if found = true then j + 1 else l.length"}
     found = _repaired(step, "Type mismatch\n  if found = true then j + 1 else l.length\nhas type\n  ℕ : Type\n"

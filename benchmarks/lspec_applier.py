@@ -82,12 +82,15 @@ def make_model(spec: str, args):
     kind, _, config = spec.partition(":")
     from benchmarks import run_bench
     cfg = run_bench.CONFIGS[config]
-    if cfg["kind"] != "ollama":
-        if args.max_usd is None or not args.paid_ok:
-            raise SystemExit(f"{config} is a paid model: pass --max-usd <cap> and --paid-ok (after approval)")
-        from FormalLLM.llm.provider import OpenAIChatProvider
-        OpenAIChatProvider.MAX_BUDGET_USD = args.max_usd
+    from FormalLLM.llm.provider import OpenAIChatProvider, is_self_hosted
     provider = run_bench.make_provider(cfg, args.temperature)
+    # the server actually called decides: the remote gpt-oss behind ngrok (or localhost) is free; OpenAI, OpenRouter
+    # and the like need a cap
+    if cfg["kind"] != "ollama" and not is_self_hosted(provider.base_url):
+        if args.max_usd is None or not args.paid_ok:
+            raise SystemExit(f"{config} is a paid model ({provider.base_url}): pass --max-usd <cap> and --paid-ok "
+                             "(after approval)")
+        OpenAIChatProvider.MAX_BUDGET_USD = args.max_usd
     if cfg["kind"] == "ollama":
         provider.response_format = "json"
     provider.name = config

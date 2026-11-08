@@ -95,8 +95,32 @@ def parse_reply(reply: str) -> dict:
     from FormalLLM.lean.agent import extract_json
     found = extract_json(reply)
     if found is None:
+        if _cut_off(reply):
+            raise steps.StepError("reply", f"your answer stops before its JSON object is closed (after {len(reply)} "
+                                           "characters): the reply was cut off; write a shorter step, without "
+                                           "explanations, and close every bracket and string")
         raise steps.StepError("reply", "no JSON object found; answer with one JSON object")
     return found
+
+
+def _cut_off(reply: str) -> bool:
+    """A reply that opens a JSON object and never closes it (generation stopped: 4 of the 39 refusals of probe v6)."""
+    text = reply.strip()
+    start = text.find("{")
+    if start < 0:
+        return False
+    depth, quoted, escaped = 0, False, False
+    for ch in text[start:]:
+        if quoted:
+            escaped, quoted = (not escaped and ch == "\\"), quoted and not (ch == '"' and not escaped)
+            continue
+        if ch == '"':
+            quoted = True
+        elif ch in "{[":
+            depth += 1
+        elif ch in "}]":
+            depth -= 1
+    return depth > 0 or quoted
 
 
 def show_step(step: dict) -> str:

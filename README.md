@@ -133,6 +133,22 @@ with LeanSession() as lean:
 ```
 Pieces: `session.py` (managed Lean REPL), `task.py`, `laws.py`, `engine.py`, `lemmas.py` (proved list lemmas for the tactic cascade), `agent.py` (model-driven loop with Lean's feedback). `benchmarks/datasets/lean_specs.py` holds 37 HumanEval problems and 5 classic algorithms (among them the paper's square-root example) specified in Lean, validated against HumanEval/EvalPlus data and hand-written tests; `lean_oracle.py` has a hand-written derivation for 36 of them, `verina_oracle.py` for 19 of Verina's own tasks. Design and results: `Reading Material/22`–`24`. Tests: `FormalLLM/tests/test_lean_core.py`, `test_lean_agent.py`, `test_lean_specs.py`.
 
+## L_spec on the Lean prover (`FormalLLM/dsl/`, `FormalLLM/lean/lspec_agent.py`)
+The model reads goals and writes steps in **L_spec**, a Python-like surface whose meaning is Lean's; it never writes a
+proof. A translator turns each step into Lean (with conversions inserted only when Lean refuses a step for a
+Python-vs-Lean distinction), the Lean engine proves the obligations, and refusals come back in L_spec, with a run of the
+loop that names the part of the invariant that breaks. The translation is itself checked by Lean on every hand-written
+derivation (715/715 steps, 341/341 derivations, 799/799 definitions unchanged in meaning). A task counts as solved when
+its Lean file compiles in a fresh process with standard axioms only, the dataset's own statement, and all tests true.
+
+```bash
+python benchmarks/lspec_run.py --dataset humaneval --model gold --limit 20 --attempts 1 --retractions 0   # no model
+python benchmarks/lspec_run.py --dataset humaneval --model remote:gpt-oss-120b --workflow split --examples 2
+python benchmarks/remote_check.py                                                                         # server up?
+```
+Switches for the ablation: `--workflow joint|split`, `--no-repair`, `--examples k`, `--samples n`, `--max-binds k`,
+`--lemmas` (helper lemmas, gold check only). Full guide: [`Reading Material/29`](Reading%20Material/29_LSpec_Workflow.md).
+
 ## Benchmarking
 The `benchmarks/` directory contains an extensive test suite used to evaluate how well different local LLMs (like Llama 3.1, Qwen 3.5) navigate the formal refinement process.
 

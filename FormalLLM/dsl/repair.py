@@ -256,3 +256,35 @@ def describe(before: dict, after: dict, to_lspec: Callable[[str], str]) -> str:
             else:
                 lines.append(f"  {field}: {to_lspec(after[field])}")
     return "\n".join(lines)
+
+
+# --- the written text, before translation ------------------------------------------------------------------------------
+
+def _closing_typo(text: str) -> Optional[str]:
+    """``}`` typed for ``)``: only when the text has no ``{`` at all (so a ``}`` closes nothing else) and the counts
+    say each ``}`` closes an open ``(`` (he_070: ``range(n).map(lambda k: ... }``)."""
+    if "}" not in text or "{" in text or text.count("(") != text.count(")") + text.count("}"):
+        return None
+    return text.replace("}", ")")
+
+
+def text_repairs(written: dict) -> Optional[Tuple[dict, str]]:
+    """A step whose L_spec text does not parse, with an unambiguous typo corrected (the step is then translated and
+    checked as usual); ``None`` if there is none."""
+    fixed, changed = dict(written), []
+    for field in EXPR_FIELDS:
+        value = written.get(field)
+        if isinstance(value, str) and _closing_typo(value) is not None:
+            fixed[field] = _closing_typo(value)
+            changed.append(field)
+    if isinstance(written.get("state"), list):
+        state = []
+        for entry in written["state"]:
+            if isinstance(entry, list) and len(entry) == 3 and isinstance(entry[2], str) and _closing_typo(entry[2]):
+                entry = [entry[0], entry[1], _closing_typo(entry[2])]
+                changed.append(f"initial value of {entry[0]}")
+            state.append(entry)
+        fixed["state"] = state
+    if not changed:
+        return None
+    return fixed, "`}` read as `)` in " + ", ".join(changed)
