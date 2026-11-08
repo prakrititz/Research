@@ -69,8 +69,9 @@ NO_GRIND_PATTERN = {
 LIBRARY_GRIND = ", ".join(f"Refine.{n}" for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES
                           if n not in NO_GRIND_PATTERN)
 #: ``(apply L; all_goals first | assumption | (simp_all; done) | omega | decide) | ...`` for every library lemma (fails fast
-#: on a mismatch; ``decide`` for side goals about the task's constant lists, he_148's ``solarPlanets.length ≤ 8``)
-LIBRARY_APPLY = "".join(f"(apply Refine.{n}; all_goals first | assumption | (simp_all; done) | omega | decide) | "
+#: on a mismatch; ``decide`` for side goals about the task's constant lists, he_148's ``solarPlanets.length ≤ 8``, under a
+#: budget: a ``decide`` that runs out of heartbeats is not caught by ``first`` and would end the whole cascade)
+LIBRARY_APPLY = "".join(f"(apply Refine.{n}; all_goals first | assumption | (simp_all; done) | omega | lib_budget 5 decide) | "
                         for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
 #: ... and side goals for ``grind`` too; a side goal over members (``∀ g ∈ l, P g``) whose facts the simp set turned into
 #: the index form (``∀ k < l.length, P l[k]``) is bridged by naming the member's index (he_001)
@@ -270,7 +271,8 @@ partial def Refine.witSearch (depth : Nat) : TacticM Unit := do
       catch _ => s.restore
     throwError "wit_search: no witness found"
   setGoals [goal]
-  evalTactic (← `(tactic| first | assumption | omega | (intros; omega) | rfl | decide | lib_budget 20 grind | lib_apply))
+  evalTactic (← `(tactic| first | assumption | omega | (intros; omega) | rfl | lib_budget 5 decide | lib_budget 20 grind |
+    lib_apply))
 
 open Lean Elab Tactic in
 elab "wit_search_core" : tactic => Refine.witSearch 4

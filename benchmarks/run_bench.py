@@ -40,6 +40,8 @@ CONFIGS = {
     "qwen3.5-think": dict(kind="ollama", model="qwen3.5:latest", think=True),
     "ornith": dict(kind="ollama", model="ornith:9b", think=None),
     "ornith-think": dict(kind="ollama", model="ornith:9b", think=True),
+    # the model installed on the 2026-11 Mac: a free end-to-end check of the model loop before a remote/paid run
+    "gemma4": dict(kind="ollama", model="gemma4:e4b", think=None),
     # Same model as llama3.1, run with a larger per-trial call budget (see --budget).
     "llama3.1-wide": dict(kind="ollama", model="llama3.1:latest", think=None),
 
