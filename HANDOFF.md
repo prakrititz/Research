@@ -101,10 +101,26 @@ at the first attempt 102 → 140, 0 lost. Added since, not yet measured on the r
 | split workflow, he_000–he_002 | 2/3 (he_001 needs its lemmas, as in joint): split works end to end |
 
 Time per task after the speed fix: 1–6 minutes (58–357 s) including the fresh-process check, against 5–60 minutes
-before. Next for the ceiling: the same strict run on all 159 (`--limit` off), then `--lemmas` on its failures.
+before.
 
-**Model runs:** none end to end yet. The remote server (`https://broodless-alethia-nipping.ngrok-free.dev`) was offline
-(`ERR_NGROK_3200`) on 2026-11-08; `python benchmarks/remote_check.py` tells when it is back.
+**Update 2026-11-09 — strict gold on all 159 HumanEval tasks: 150/159** solved and verified in a fresh process
+(`run_humaneval_gold_v3_joint.jsonl`; 135/159 before the prover work below). Still failing: he_001, 025, 059, 071,
+087, 099, 111, 114, 129 (paren groups, prime factors, rounding a square root / a decimal, nested flatMap, foldl
+min/max over a computed list). What was added (`engine.py` `_shape_tactics`, `lemmas.py`):
+* `wit_search`: existential goals by trying the context's variables, the goal's own terms, successors, 0/1/2; either
+  side of `∨`; binders introduced; each choice closed cheaply or by a budgeted `grind`;
+* members turned into indices in the hypotheses too, then `grind`; closed forms split conjunct by conjunct after
+  unfolding only the pre/postcondition; the task's non-recursive helpers unfolded; induction along its recursive ones;
+* library: binary numerals of `Nat.toDigits 2`, sorts by a key then the order, `idxOf` of a member, letter/digit
+  classes decided on their codes (`lower_cases` & co., kept out of `lib_apply`), `lib_apply` side goals by `decide`;
+* speed: the library imported from the compiled module `LeanEnv.RefineLib`, an obligation cache
+  (`~/.formalllm/cache/obligations.sqlite`, `FORMALLLM_CACHE=0` turns it off), fresh-process checks after the run
+  (`--file-check end`, default); `benchmarks/lean_probe.py dump|serve` to work on refused obligations.
+
+**Model runs:** a free local check passed (`--model ollama:gemma4`, he_002 and he_003: 2/2 solved and verified,
+`run_humaneval_ollama-gemma4_smoke_joint.jsonl`). On the Mac, `z3-solver` had to be installed (the model path imports
+it) and `~/.formalllm/remote_auth` does not exist yet: create it before a remote run. `python benchmarks/remote_check.py`
+tells whether the remote server is up.
 
 ## 5. Fixing the prover: what to do, in order
 
