@@ -14,6 +14,7 @@ proved on their own, so a wrong step is rejected where it is made; (2) the finis
 ``{ ρ : T // post }`` whose elaboration re-checks every obligation in context; (3) ``#print axioms`` must not list
 ``sorryAx``, and the program is run on the task's tests.
 """
+import hashlib
 import json
 import os
 import re
@@ -41,7 +42,7 @@ def _binder_names(binders: str) -> Optional[List[str]]:
             if depth == 0 and start is not None:
                 names += binders[start:k].split(":", 1)[0].split()
     return names
-from FormalLLM.lean import smallscope
+from FormalLLM.lean import cache, smallscope
 from FormalLLM.lean.lemmas import EVAL_SET, LEMMAS, SIMP_SET
 from FormalLLM.lean.session import LeanSession
 from FormalLLM.lean.task import LeanTask
@@ -381,6 +382,16 @@ class Derivation:
         self.timing[name] += time.time() - started
         self.counts[name] += 1
 
+    def _context_hash(self) -> str:
+        """What every verdict in this derivation's environment depends on besides the obligation itself (``cache.py``)."""
+        text = "\x00".join([self.lemmas, self.task.compat, self.task.prelude, self._helper_text()])
+        return hashlib.sha256(text.encode("utf8")).hexdigest()
+
+    @staticmethod
+    def _normalise(source: str, name: str) -> str:
+        """The command with its theorem name made neutral (goal ids differ between runs for the same obligation)."""
+        return re.sub(r"\b" + re.escape(name) + r"\b", "OBLIGATION", source)
+
     def timing_report(self) -> dict:
         return {k: {"seconds": round(v, 1), "commands": self.counts[k]}
                 for k, v in sorted(self.timing.items(), key=lambda kv: -kv[1])}
@@ -543,8 +554,18 @@ class Derivation:
         source = obligation.source(f"{name}_alt", tactic)
         if portfolio:
             source = source.replace("set_option maxHeartbeats 200000 in", "set_option maxHeartbeats 0 in", 1)
+        ckey = cache.key("helper", self._context_hash(), self._normalise(source, f"{name}_alt"))
+        hit = cache.get(ckey)
+        if hit is not None:
+            self.counts["cache_hit"] += 1
+            if not hit.get("ok"):
+                return False
+            return self._admit(HelperLemma(f"auto_{len(self.helpers)}_{name}"[:60], hit["statement"], hit["proof"])) is None
         reply = self._run(source, timeout=PORTFOLIO_TIMEOUT if portfolio else None)
-        if reply.timed_out or reply.errors or reply.goals:
+        if reply.timed_out:
+            return False
+        if reply.errors or reply.goals:
+            cache.put(ckey, {"ok": False})
             return False
         if portfolio:
             # replay only the alternatives that closed a goal (the lemma is re-proved on every reload and in the certificate)
@@ -556,7 +577,10 @@ class Derivation:
         intro = f"  intro {' '.join(names)}\n" if names else ""
         lemma = HelperLemma(f"auto_{len(self.helpers)}_{name}"[:60], statement,
                             f"by\n{intro}  {with_bound(tactic, obligation.bound)}")
-        return self._admit(lemma) is None
+        accepted = self._admit(lemma) is None
+        if accepted:
+            cache.put(ckey, {"ok": True, "statement": lemma.statement, "proof": lemma.proof})
+        return accepted
 
     def _portfolio_prove(self, obligation: Obligation, name: str) -> bool:
         """The combined cascade died on a Lean resource limit: run its groups one by one (each its own command and budget).
@@ -607,6 +631,14 @@ class Derivation:
         source = obligation.source(name, self.diagnose)
         if source in self._memo:
             return self._memo[source]
+        ckey = cache.key("check", self._context_hash(), self._normalise(source, name))
+        hit = cache.get(ckey)
+        if hit is not None:
+            self.counts["cache_hit"] += 1
+            verdict = Verdict(obligation, hit["status"], hit.get("message", ""), hit.get("unsolved", []),
+                              hit.get("counterexample"))
+            self._memo[source] = verdict
+            return verdict
         reply = self._run(source)
         if reply.timed_out:
             verdict = Verdict(obligation, "TIMEOUT", "Lean gave no answer within the time limit", seconds=reply.seconds)
@@ -635,6 +667,11 @@ class Derivation:
         if verdict.status == "UNPROVED" and self.counterexamples and not verdict.counterexample:
             verdict.counterexample = self._small_scope(obligation)
         self._memo[source] = verdict
+        if verdict.status != "TIMEOUT" and self.counterexamples:
+            # (without the counter-example search a verdict lacks its counter-example: not stored, so that a later run
+            # with the search still gets one)
+            cache.put(ckey, {"status": verdict.status, "message": verdict.message, "unsolved": verdict.unsolved,
+                             "counterexample": verdict.counterexample})
         return verdict
 
     def _elaborates(self, obligation: Obligation) -> bool:

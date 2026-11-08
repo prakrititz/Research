@@ -255,11 +255,29 @@ class LeanSession:
         cache = self.__dict__.setdefault("_libraries", {})
         key = (hash(library), self.restarts)
         if key not in cache:
-            reply, env = self.load(library, timeout=timeout)
+            env = self._library_from_module(library, timeout)
+            if env is None:
+                reply, env = self.load(library, timeout=timeout)
             if env is None:
                 return None
             cache[key] = env
         return cache[key]
+
+    def _library_from_module(self, library: str, timeout: float) -> Optional[int]:
+        """The library imported from its compiled module (``library_module.py``) instead of elaborated: the REPL is
+        restarted every few tasks to bound its memory, and re-elaborating the library took ~37 s each time (Mac,
+        2026-11-08). ``None`` when the module cannot be built or imported (the text is elaborated as before)."""
+        if os.environ.get("FORMALLLM_LIBRARY_MODULE", "1") == "0" or self.imports.strip() != FULL_IMPORTS.strip():
+            return None                     # the module imports FULL_IMPORTS: only for a session with exactly those
+        try:
+            from FormalLLM.lean.library_module import ensure
+            module = ensure(library)
+        except Exception:
+            return None
+        if module is None:
+            return None
+        reply, env = self._run(f"{self.imports}\nimport {module}", timeout, None)
+        return None if reply.errors or reply.timed_out else env
 
     def _run(self, command: str, timeout: Optional[float], env: Optional[int]):
         started = time.time()
