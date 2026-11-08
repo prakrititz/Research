@@ -351,6 +351,11 @@ class OpenAIChatProvider(LLMProvider):
         return headers
 
     def generate(self, prompt: str, max_tokens: int = None) -> str:
+        # checked before the call too: a caller that catches the exception and calls again must not be charged again
+        if OpenAIChatProvider.CUMULATIVE_COST_USD >= OpenAIChatProvider.MAX_BUDGET_USD:
+            raise LLMBudgetExhausted(
+                f"Global budget ceiling reached (${OpenAIChatProvider.CUMULATIVE_COST_USD:.2f} >= "
+                f"${OpenAIChatProvider.MAX_BUDGET_USD:.2f}); no call made")
         try:
             print("\n" + "="*50)
             print("=== LLM PROMPT ===")

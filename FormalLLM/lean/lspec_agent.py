@@ -28,6 +28,7 @@ from FormalLLM.dsl import feedback, prompts, repair, steps
 from FormalLLM.lean.agent import EXHAUSTED, NETWORK, SOLVED, AgentResult, Call
 from FormalLLM.lean.engine import Derivation
 from FormalLLM.lean.laws import IllFormed, law_from_json
+from FormalLLM.llm.provider import LLMBudgetExhausted
 from FormalLLM.llm.transport import ENDPOINT_CUTOFF_MARKS, TRANSPORT_FAILURE_MARK
 
 LEVELS = ("translate", "elaborate", "prove")
@@ -243,6 +244,8 @@ class LSpecAgent:
             shown = steps.goal_text(steps.goal_to_lspec(goal, state))
             try:
                 calls = self._one_call(d, task, goal, shown, state, failures, chosen, to_selector)
+            except LLMBudgetExhausted:                     # the whole run's money is spent: stop, never call again
+                raise
             except Exception as error:                     # the provider raises once its own retries are used up
                 message = str(error)
                 result.calls.append(LSpecCall(goal.id, "", "", "network", message[:200]))

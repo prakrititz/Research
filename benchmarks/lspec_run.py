@@ -147,6 +147,7 @@ def main():
     from FormalLLM.lean.dataset import resolve
     from FormalLLM.lean.lspec_agent import GoldModel, LSpecAgent
     from FormalLLM.lean.session import FULL_IMPORTS, LeanSession
+    from FormalLLM.llm.provider import LLMBudgetExhausted
     from lspec_applier import make_model
     trees = json.load(open(os.path.join(ROOT, "exports", "all_derivations.json"), encoding="utf8"))[args.dataset]
     ids = [t for t in trees if not args.only or t in args.only][:args.limit]
@@ -182,6 +183,10 @@ def main():
                         else:
                             row["file_check_pending"] = entry
                             row["outcome"] = "CERTIFIED" if row["verified"] else row["outcome"]
+                except LLMBudgetExhausted as error:  # no row: the task was cut off by money, a rerun with more resumes it
+                    print(f"{task_id:34s} {trial} stopped: {error}", flush=True)
+                    stopped = True
+                    break
                 except Exception as error:
                     row = {"id": task_id, "trial": trial, "model": args.model, "workflow": args.workflow,
                            "outcome": "ERROR", "verified": False, "detail": f"{type(error).__name__}: {str(error)[:300]}",
