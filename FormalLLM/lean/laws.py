@@ -337,16 +337,33 @@ class Loop(Law):
                 "invariant": self.invariant, "guard": self.guard, "variant": self.variant, "result": self.result}
 
 
+_CLASSICAL = re.compile(r"(?<![\w.])Classical\.")
+
+
+def _runs(text: str, what: str):
+    """A field that becomes program code must compile to code: ``Classical.choose`` and its kin compile only as
+    ``noncomputable``, which the certificate rejects at the very end (he_069, gpt-5.4-mini, 2026-11-10). Refused at the
+    step instead, where the model can still choose another one."""
+    if _CLASSICAL.search(text):
+        raise IllFormed(f"{what} uses `Classical`, which cannot run, and the program must run. Compute the value: pick "
+                        f"an element with `l.find?`, or search with a loop.")
+
+
 def law_from_json(data: dict) -> Law:
     kind = data.get("law")
     try:
         if kind == "term":
+            _runs(str(data["expr"]), "the value")
             return Term(str(data["expr"]))
         if kind == "cases":
+            _runs(str(data["cond"]), "the condition")
             return Cases(str(data["cond"]))
         if kind == "bind":
             return Bind(str(data["var"]), str(data["type"]), str(data["prop"]))
         if kind == "loop":
+            for text, what in [(str(e), "an initial value") for e in data["init"]] + [
+                    (str(data["guard"]), "the guard"), (str(data["result"]), "the result")]:
+                _runs(text, what)
             return Loop(tuple((str(n), str(t)) for n, t in data["state"]), tuple(str(e) for e in data["init"]),
                         str(data["invariant"]), str(data["guard"]), str(data["variant"]), str(data["result"]))
     except KeyError as missing:

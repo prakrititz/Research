@@ -42,14 +42,13 @@ def library_module(lemmas: str):
     return ensure(lemmas)
 
 
-def check_entry(task, derivation, task_id: str) -> dict:
-    """Write the finished derivation as a self-contained Lean file (``verified/<task>.lean``) and return what
+def check_entry(task, derivation, task_id: str, folder: str) -> dict:
+    """Write the finished derivation as a self-contained Lean file (``<folder>/<task>.lean``) and return what
     ``compile_file`` needs to check it."""
     from FormalLLM.lean.session import FULL_IMPORTS
     from verify_derivations import statement_is_datasets_own
     module = library_module(derivation.lemmas)
     source, tests = derivation.source(library=module is None), task.test_commands()
-    folder = os.path.join(ROOT, "benchmarks", "results", "lspec", "verified")
     os.makedirs(folder, exist_ok=True)
     path = os.path.join(folder, f"{task_id}.lean")
     header = FULL_IMPORTS + (f"\nimport {module}" if module else "")
@@ -67,7 +66,7 @@ def apply_check(row: dict, check: dict) -> None:
     row["verified"] = check["verified"]
     row["outcome"] = "SOLVED" if check["verified"] else "UNVERIFIED"
     row.setdefault("timing", {})["file_check"] = {"seconds": check.get("seconds"), "commands": 1}
-    row["file_check"] = {k: check.get(k) for k in CHECK_FIELDS}
+    row["file_check"] = {"file": check.get("file"), **{k: check.get(k) for k in CHECK_FIELDS}}
     row.pop("file_check_pending", None)
 
 
@@ -84,7 +83,7 @@ def finish_pending(path: str, timeout: float = 1800) -> int:
         entry = dict(row["file_check_pending"])
         if not os.path.exists(entry["file"]):
             continue
-        apply_check(row, compile_file(entry, timeout))
+        apply_check(row, {"file": entry["file"], **compile_file(entry, timeout)})
         print(f"{row['id']:34s} {row['trial']} {row['outcome']:9s} file check {row['file_check']['seconds']}s", flush=True)
     if pending:
         tmp = path + ".tmp"
@@ -138,6 +137,8 @@ def main():
     ap.add_argument("--temperature", type=float, default=0.2)
     ap.add_argument("--max-usd", type=float, default=None)
     ap.add_argument("--paid-ok", action="store_true")
+    ap.add_argument("--trees", default=None, help="with --model gold: replay the derivation trees of this results "
+                    "file instead of the hand-written ones (rebuilds that run's certificates; use with --tag)")
     ap.add_argument("--tag", default="", help="suffix of the results file (a separate file for timing or ablation runs)")
     ap.add_argument("--file-check", default="end", choices=["end", "each"],
                     help="when the fresh-process check runs: after all tasks, with the REPL closed (default; much faster "
@@ -150,6 +151,10 @@ def main():
     from FormalLLM.llm.provider import LLMBudgetExhausted
     from lspec_applier import make_model
     trees = json.load(open(os.path.join(ROOT, "exports", "all_derivations.json"), encoding="utf8"))[args.dataset]
+    if args.trees:                               # a run's own derivations, replayed by the gold model: no model calls
+        saved = {r["id"]: r["tree"] for r in map(json.loads, open(args.trees, encoding="utf8")) if r.get("tree")}
+        trees = {k: v for k, v in trees.items() if k in saved}
+        trees.update({k: saved[k] for k in trees})
     ids = [t for t in trees if not args.only or t in args.only][:args.limit]
     gold = args.model == "gold"
     provider = None if gold else make_model(args.model, args)
@@ -157,6 +162,10 @@ def main():
            + (f"_ex{args.examples}{args.pool}" if args.examples else "") + (f"_n{args.samples}" if args.samples > 1 else "") + ("_lemmas" if args.lemmas else "") + (f"_{args.tag}" if args.tag else ""))
     out = os.path.join(ROOT, "benchmarks", "results", "lspec", f"run_{args.dataset}_{tag}_{args.workflow}.jsonl")
     os.makedirs(os.path.dirname(out), exist_ok=True)
+    # each run's certificates in its own folder: gold's (strict, untagged) are the committed `verified/<task>.lean`
+    folder = os.path.join(ROOT, "benchmarks", "results", "lspec", "verified")
+    if not (gold and tag == "gold"):
+        folder = os.path.join(folder, f"{args.dataset}_{tag}_{args.workflow}")
     done = set()
     if os.path.exists(out):
         done = {(r["id"], r["trial"]) for r in map(json.loads, open(out, encoding="utf8")) if r.get("id")}
@@ -176,10 +185,10 @@ def main():
                     result = agent.solve(task, lean)
                     row = row_of(task_id, trial, result, time.time() - started, args.model, args.workflow)
                     if result.derivation.complete:      # the fresh-process check decides: stricter than the REPL's
-                        entry = check_entry(task, result.derivation, task_id)
+                        entry = check_entry(task, result.derivation, task_id, folder)
                         if args.file_check == "each":
                             from verify_derivations import compile_file
-                            apply_check(row, compile_file(entry, 1800))
+                            apply_check(row, {"file": entry["file"], **compile_file(entry, 1800)})
                         else:
                             row["file_check_pending"] = entry
                             row["outcome"] = "CERTIFIED" if row["verified"] else row["outcome"]

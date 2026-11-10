@@ -41,8 +41,8 @@ METHODS = {"idxOf": "index", "headD": "head_or", "getD": "get_or", "flatMap": "f
            "isLower": "islower", "isWhitespace": "isspace"}
 
 #: method spellings from other languages, read as the L_spec method (`l.indexOf(x)` is `l.index(x)`, `l.sort()` is
-#: `sorted(l)`); only read, never printed
-METHOD_ALIASES = {"indexOf": "idxOf", "sort": "mergeSort", "toUpperCase": "toUpper", "toLowerCase": "toLower"}
+#: `sorted(l)`, `l.find(p)` is `l.find?(p)`: Lean has no `List.find`); only read, never printed
+METHOD_ALIASES = {"indexOf": "idxOf", "sort": "mergeSort", "find": "find?", "toUpperCase": "toUpper", "toLowerCase": "toLower"}
 
 #: L_spec reserved words (an L_spec name that would collide with one of these is written `` `name` ``)
 KEYWORDS = {"lambda", "forall", "exists", "if", "else", "let", "match", "with", "and", "or", "not", "in", "as", "for", "then", "implies",

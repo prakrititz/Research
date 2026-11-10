@@ -56,6 +56,19 @@ def _table(rows, head=("L_spec", "Lean"), code_first=True) -> str:
 
 
 #: where Lean's meaning differs from what the Python spelling suggests
+#: what a library function returns, where Python would suggest otherwise (each checked in Lean, 2026-11-10); also
+#: shown to the split workflow's selector, since they decide between a library term and a loop
+LIBRARY_FACTS = [
+    "`digits(b, n)` is the list of digit *characters*, most significant first: `digits(2, 6) == ['1', '1', '0']`, "
+    "`digits(10, 0) == ['0']`, so `string(digits(b, n))` is `n` written in base `b`. For digit *values* use "
+    "`Nat.digits(10, n)`: numbers, least significant first (`Nat.digits(10, 305) == [5, 0, 3]`, `[]` for `0`).",
+    "`l.find?(p)` is the first element satisfying `p` as `some(x)`, or `none`; there is no `find`. Every value must "
+    "run: to pick an element with a property, use `find?` or a loop, never `Classical.choose`.",
+    "`l.index(x)` is the position of the first `x`, or `len(l)` when `x` is absent; its argument is an element, not "
+    "a condition.",
+    "`s.split(\" \")` keeps empty pieces: `\"a  b\".split(\" \") == [\"a\", \"\", \"b\"]`; filter out `\"\"` for words.",
+]
+
 MEANING = [
     "`nat` subtraction stops at zero: `2 - 5 == 0`. Write `(a as int) - b` for a signed difference.",
     "`/` on `nat` and `int` is integer division (`7 / 2 == 3`, `x / 0 == 0`); on `rat` it is exact.",
@@ -68,6 +81,8 @@ MEANING = [
         "`==` is equality as a proposition; `===` is the Boolean test (Lean's `==`). "
     "A Boolean `b` used as a condition is written `b == True`.",
     "`forall`/`exists`/`lambda` bodies extend to the end of the expression: parenthesise them inside larger ones.",
+] + LIBRARY_FACTS + [
+    "Calls are `f(x, y)` or `x.m(y)`, never Lean's `f x y`; a type is given as `x as int`, never `(x : int)`.",
 ]
 
 

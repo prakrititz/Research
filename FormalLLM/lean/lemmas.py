@@ -1482,6 +1482,38 @@ theorem mergeSort_key_then_not_lt {α : Type} [Inhabited α] [LinearOrder α] (k
         · right; right; exact ⟨h.symm, h'⟩
       · right; left; exact h) i hi
   simpa using this
+-- the same two sorts with the comparator as one `decide` of a proposition, as the translation of L_spec's
+-- `bool(k(a) < k(b) or k(a) == k(b) and a <= b)` gives it: the prover's verdict must not depend on which of the two
+-- equivalent forms is written (gpt-5.4-mini, he_116 and he_149, 2026-11-10)
+theorem mergeSort_key_then_le_prop (key : Int → Nat) (l : List Int) :
+    ∀ i, i < (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b))).length - 1 →
+      key (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i]! <
+          key (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i + 1]! ∨
+        (key (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i]! =
+            key (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i + 1]! ∧
+          (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i]! ≤
+            (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i + 1]!) := by
+  have h : (fun a b : Int => decide (key a < key b ∨ key a = key b ∧ a ≤ b)) =
+      (fun a b => decide (key a < key b) || (key a == key b && decide (a ≤ b))) := by
+    funext a b; rw [Bool.eq_iff_iff]
+    simp only [Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true, beq_iff_eq, Bool.not_eq_true',
+      decide_eq_false_iff_not, not_lt]
+  rw [h]; exact mergeSort_key_then_le key l
+
+theorem mergeSort_key_then_not_lt_prop {α : Type} [Inhabited α] [LinearOrder α] (key : α → Nat) (l : List α) :
+    ∀ i, i < (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b))).length - 1 →
+      key (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i]! <
+          key (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i + 1]! ∨
+        (key (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i]! =
+            key (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i + 1]! ∧
+          ¬ (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i + 1]! <
+            (l.mergeSort (fun a b => decide (key a < key b ∨ key a = key b ∧ a ≤ b)))[i]!) := by
+  have h : (fun a b : α => decide (key a < key b ∨ key a = key b ∧ a ≤ b)) =
+      (fun a b => decide (key a < key b) || (key a == key b && !decide (b < a))) := by
+    funext a b; rw [Bool.eq_iff_iff]
+    simp only [Bool.or_eq_true, decide_eq_true_eq, Bool.and_eq_true, beq_iff_eq, Bool.not_eq_true',
+      decide_eq_false_iff_not, not_lt]
+  rw [h]; exact mergeSort_key_then_not_lt key l
 -- the index of a member (he_148: the planets between two named ones)
 theorem getElem_bang_idxOf {α : Type} [Inhabited α] [BEq α] [LawfulBEq α] (l : List α) (x : α) (h : x ∈ l) :
     l[l.idxOf x]! = x := by
@@ -1566,7 +1598,7 @@ NAMES = ("forall_mem_iff_idx", "exists_mem_iff_idx", "getElem_bang_mem", "getEle
          "exists_mem_array_iff_idx", "forall_mem_drop_iff", "exists_mem_drop_iff", "forall_mem_take_iff", "arr_all_take_iff", "arr_all_drop_iff", "sorted_arr_le", "foldl_max_facts", "maxlist_nat", "maxlist_int", "allsub_nil_mem", "allsub_nil_mem_arr", "allsub_rev_nil_mem", "longest_facts", "longest_spec", "maxlist_int_any", "maxlen_spec", "filter_pair_le", "count_pair_le", "find_some_of_any", "find_majority", "ts_inner_init", "ts_outer_init", "ts_inner_step", "ts_inner_exit", "ts_outer_step", "ts_lex_all", "ts_pairwise_none", "getElem_bang_map_range", "getElem_bang_append", "pairwise_le_nodup_lt", "dedup_mergeSort_strict", "mem_dedup_mergeSort", "foldl_max_mem_of_mem", "le_foldl_max", "start_le_foldl_max", "getElem_bang_zero_mem_take", "getElem_bang_zero_mem_take'", "getElem_bang_zero_mem_take_of_lt", "getElem_bang_cons", "getElem_bang_nil", "mergeSort_isPerm", "isPerm_mergeSort", "mergeSort_le_int", "mergeSort_ge_int", "mergeSort_le_nat", "mergeSort_key_le", "mergeSort_key_le_nat", "mergeSort_length'", "mem_mergeSort'", "mod_gcd_left", "mod_gcd_right", "mod_eq_zero_of_dvd'", "dvd_of_mod_eq_zero'", "le_of_dvd_pos", "mergeSort_ge_nat", "foldl_min_facts", "foldl_min_mem_of_mem", "foldl_min_le", "foldl_min_le_start", "le_gcd_of_mod_left", "le_gcd_of_mod_right", "mergeSort_perm'", "perm_mergeSort'", "filter_mergeSort_perm", "length_filter_range_succ", "count_take_succ", "countP_take_succ", "take_succ_getElem?", "pairwise_mergeSort_le_int", "pairwise_mergeSort_le_nat", "pairwise_mergeSort_ge_int", "pairwise_mergeSort_ge_nat", "pairwise_mergeSort_key_le", "filter_mergeSort_key", "filter_mergeSort_key_int", "filter_mergeSort_key_nat", "digitChar_toNat", "mem_toDigits_lt", "toDigits_all_digit", "toDigits_idx_digit", "foldl_toDigits", "foldl_toDigits'", "toDigits_head_ne_zero", "toDigits_getElem_zero_ne_zero", "prime_of_min_divisor", "not_dvd_div_of_not_dvd", "div_one_or_ge_of_min_divisor", "sorted_append_ge", "map_toList_mk", "map_comp_toList_mk", "count_flatten_eq", "rest_nil_of_counts", "flatten_eq_of_balanced", "closed_group_balanced", "closed_group_prefix", "closed_group_minimal", "open_group_extend", "open_group_extend_at", "filter_range_mod2", "filter_range_mod3", "gather_scatter2", "gather_scatter3", "mergeSort_le_int'", "mergeSort_le_nat'", "ite_ge_eq_max", "ite_gt_eq_max", "ite_le_eq_max", "ite_lt_eq_max", "ite_le_eq_min", "ite_lt_eq_min", "ite_ge_eq_min", "ite_gt_eq_min", "foldr_max_facts", "foldr_min_facts", "foldl_max_head_mem", "foldl_min_head_mem", "foldr_max_head_mem", "foldr_min_head_mem", "le_foldr_max", "foldr_min_le", "foldl_int_add", "pairwise_eq_of_all_eq_head", "pairwise_eq_of_all_eq_head_arr", "not_exists_sq_of_bounds", "sq_search_exit", "exists_sq_iff_of_bounds", "sorted_take_succ_all_lt", "sorted_drop_all_ge", "foldl_push_filter", "arr_foldl_push_filter", "idxOf_filter_le", "idxOf_append_not_mem", "idxOf_filter_ne_append", "filter_ne_append_filter_eq_perm", "eq_one_of_mul_pow_eq_pow", "pow_iff_of_factor", "mod_left_of_common_divisors", "mod_right_of_common_divisors", "le_of_common_divisors", "arr_all_foldl_push_filter",
          "reverse_isPerm", "sorted_reverse_of_ge", "sorted_reverse_take_mergeSort_ge", "reverse_eq_self_iff_idx", "reverse_beq_self_iff_idx", "reverse_eq_self_iff_idx'", "mergeSort_key_then_le",
          "toDigits2_facts", "toDigits2_all01", "foldl_toDigits2", "toDigits2_zero", "toDigits2_head", "toDigits_length_pos",
-         "map_eq_self_of_all", "all_map_of_all", "getElem_bang_idxOf", "idxOf_lt_length'", "idxOf_lt_of_length_le", "mergeSort_key_then_not_lt", "foldl_pair_count", "foldl_pair_count_fst", "foldl_pair_count_snd", "floor_add_half_spec", "asString_toList'", "asString_length'", "append_mk_toList", "append_mk_length")
+         "map_eq_self_of_all", "all_map_of_all", "getElem_bang_idxOf", "idxOf_lt_length'", "idxOf_lt_of_length_le", "mergeSort_key_then_not_lt", "mergeSort_key_then_le_prop", "mergeSort_key_then_not_lt_prop", "foldl_pair_count", "foldl_pair_count_fst", "foldl_pair_count_snd", "floor_add_half_spec", "asString_toList'", "asString_length'", "append_mk_toList", "append_mk_length")
 
 #: "Evaluation" rewrites only: an index into a construction becomes its value (``((range n).map f)[i]! = f i``). Unlike
 #: ``SIMP_SET`` they do not unfold ``take (i + 1)`` or turn ``∀ x ∈ l`` into the index form (right for loop steps, wrong for a

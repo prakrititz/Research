@@ -71,7 +71,22 @@ def to_lean(text: str, field: str, scope=()) -> str:
     try:
         return lean_syntax.show(lspec_syntax.parse(text, scope))
     except Exception as error:                            # the parser's message, attributed to the field
-        raise StepError(field, f"{type(error).__name__}: {error}") from None
+        raise StepError(field, f"{type(error).__name__}: {error}" + _syntax_hint(text, str(error))) from None
+
+
+#: the parser stopping at a name, a number, a string or `(` right after a complete expression: Lean's `f x y`
+_JUXTAPOSED = re.compile(r"""(?:trailing|found) '(?:[A-Za-z_0-9][^']*|\(|"[^']*)'""")
+
+
+def _syntax_hint(text: str, message: str) -> str:
+    """What to write instead, for the two mistakes a model makes most (gpt-5.4-mini, HumanEval, 2026-11-10): Lean's
+    application syntax, and `Classical` (which cannot run)."""
+    if "Classical" in text:
+        return (". `Classical.choose` cannot run, and every value must run: pick the element with `l.find?(p)` "
+                "(`some(x)` or `none`) or compute it with a `loop`")
+    if _JUXTAPOSED.search(message):
+        return ". L_spec calls are written `f(x, y)` and `x.m(y)`; Lean's `f x y` is not read"
+    return ""
 
 
 def to_lspec(text: str, field: str = "?", scope=()) -> str:

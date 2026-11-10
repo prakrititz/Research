@@ -75,7 +75,9 @@ def joint_prompt(task, goal_text: str, failures: List[str] = (), examples: List[
 
 def selector_prompt(task, goal_text: str, failures: List[str] = (), examples: List[str] = ()) -> str:
     """Workflow ``split``, first call: which law, and how (one sentence). No L_spec is written here."""
-    return "\n".join([LAWS, "", EXAMPLE, ""] + _examples(list(examples)) + _context(task, goal_text, list(failures)) + [
+    facts = ["Library facts (one library call may make a loop unnecessary):"] + [f"- {f}" for f in cheatsheet.LIBRARY_FACTS]
+    return "\n".join([LAWS, "", EXAMPLE, ""] + facts + [""] + _examples(list(examples))
+                     + _context(task, goal_text, list(failures)) + [
         "", 'Choose the law for this goal. Answer {"law": "<term|cases|bind|loop>", "plan": "<one sentence: what the '
         'value, condition, intermediate value or loop is>"} and nothing else.'])
 

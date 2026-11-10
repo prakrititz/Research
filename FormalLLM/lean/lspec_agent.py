@@ -33,6 +33,15 @@ from FormalLLM.llm.transport import ENDPOINT_CUTOFF_MARKS, TRANSPORT_FAILURE_MAR
 
 LEVELS = ("translate", "elaborate", "prove")
 
+#: the refusal of a bind past ``max_binds``: in ``split`` it goes back to the selector at once, since the applier is
+#: held to the law `bind` and could only write another one
+BIND_DEPTH = "bind_depth"
+
+
+def bind_refusal(max_binds: int) -> str:
+    return (f"Refused: this goal is already inside {max_binds} `bind` steps. A bind names a value to use later; another "
+            f"one only postpones the goal. Write the value (`term`), split on a condition (`cases`) or write a `loop`.")
+
 
 # --- one step --------------------------------------------------------------------------------------------------------
 
@@ -284,6 +293,11 @@ class LSpecAgent:
                 failures.setdefault(goal.id, []).append(f"Attempt: {reply[:300]}\n{text}")
                 to_selector[goal.id] = True
                 return [LSpecCall(goal.id, prompt, reply, "unreadable", text)]
+            if law == "bind" and binds_above(d, goal.id) >= self.max_binds:   # refused here: no applier call spent
+                text = bind_refusal(self.max_binds)
+                failures.setdefault(goal.id, []).append(f"Attempt: law bind\n{text}")
+                to_selector[goal.id] = True
+                return [LSpecCall(goal.id, prompt, reply, "refused", text, law="bind")]
             chosen[goal.id] = (law, plan)
             return [LSpecCall(goal.id, prompt, reply, "selected", law=law)]
         if self.workflow == "split":
@@ -301,7 +315,8 @@ class LSpecAgent:
                 refused.append((text, kind))
         for text, kind in refused[:2]:                     # what the model reads next time: at most two refusals
             failures.setdefault(goal.id, []).append(text)
-            if self.workflow == "split" and feedback.recipient(kind, len(failures[goal.id])) == "selector":
+            if self.workflow == "split" and (kind == BIND_DEPTH
+                                             or feedback.recipient(kind, len(failures[goal.id])) == "selector"):
                 to_selector[goal.id] = True
         return calls
 
@@ -317,11 +332,9 @@ class LSpecAgent:
             return LSpecCall(goal.id, prompt, reply, "unreadable", text), f"Attempt: {reply[:300]}\n{text}", \
                 feedback.UNREADABLE
         if written.get("law") == "bind" and binds_above(d, goal.id) >= self.max_binds:
-            text = (f"Refused: this goal is already inside {self.max_binds} `bind` steps. A bind names a value to use "
-                    f"later; another one only postpones the goal. Write the value (`term`), split on a condition "
-                    f"(`cases`) or write a `loop`.")
+            text = bind_refusal(self.max_binds)
             return (LSpecCall(goal.id, prompt, reply, "refused", text, law="bind"),
-                    f"Attempt: {prompts.show_step(written)}\n{text}", feedback.UNREADABLE)
+                    f"Attempt: {prompts.show_step(written)}\n{text}", BIND_DEPTH)
         verdict = judge(d, goal, written, "prove", loop_body=state is not None, use_repair=self.use_repair,
                         lemmas=self.lemmas)
         call = LSpecCall(goal.id, prompt, reply, "applied" if verdict.kind == feedback.ACCEPTED else verdict.kind,

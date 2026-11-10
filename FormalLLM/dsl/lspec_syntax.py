@@ -320,7 +320,7 @@ class _Parser:
                 self.next()
                 return Name("()")
             first = self.expr()
-            if self.peek() == "as":
+            if self.peek() in ("as", ":"):                   # `(x as int)`; Lean's `(x : int)` read the same
                 self.next()
                 node = Ascribe(first, self.expr())
                 self.expect(")")
