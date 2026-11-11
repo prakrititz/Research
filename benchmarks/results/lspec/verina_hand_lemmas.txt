@@ -1,0 +1,285 @@
+## verina_advanced_1  steps=1 laws=['term']
+  [fl_eq] ∀ (x : Int) (l : List Int), filterlist x l = l.filter (fun y => decide (y = x))  (proof 177 chars)
+  [fl_count] ∀ (l : List Int) (y : Int), (l.filter (fun z => decide (z = y))).length = l.count y  (proof 53 chars)
+  [pair_le_countP] ∀ (l : List Int) (p : Int → Bool) (x r : Int), x ≠ r → p x = true → p r = true → (l.filter (fun y => decide (y = x))).length + (l.filter (fun y => decide (y = r))).length ≤ l.countP p  (proof 406 chars)
+  [single1] ∀ (nums : List Int) (h : FindSingleNumber_precond nums), FindSingleNumber_postcond nums ((nums.find? (fun x => decide (nums.count x = 1))).getD 0) h  (proof 1494 chars)
+## verina_advanced_10  steps=1 laws=['term']
+  [rpf_eq] ∀ (p : Nat), p.Prime → ∀ (n : Nat), 0 < n → removePrimeFactor n p = n / p ^ (padicValNat p n)  (proof 927 chars)
+  [rpf_dvd] ∀ (p : Nat), p.Prime → ∀ (n : Nat), 0 < n → p ^ padicValNat p n * removePrimeFactor n p = n  (proof 115 chars)
+  [fold_mul] ∀ (l : List (Nat × Nat)) (a : Nat), l.foldl (fun acc (x : Nat × Nat) => acc * x.1 ^ x.2) a = a * l.foldl (fun acc (x : Nat × Nat) => acc * x.1 ^ x.2) 1  (proof 164 chars)
+  [fe_main] ∀ (ps : List Nat) (n : Nat), 0 < n → (∀ p ∈ ps, p.Prime) → ps.Nodup → ps.foldl removePrimeFactor n = 1 → n = (ps.map (fun p => (p, padicValNat p n))).foldl (fun acc (x : Nat × Nat) => acc * x.1 ^ x.2) 1  (proof 1496 chars)
+  [exps10] ∀ (n : Nat) (primes : List Nat) (h : findExponents_precond n primes), findExponents_postcond n primes (primes.map (fun p => (p, padicValNat p n))) h  (proof 454 chars)
+## verina_advanced_11  steps=1 laws=['term']
+  [maj11] ∀ (lst : List Int) (h : findMajorityElement_precond lst) (res : Int), (((∀ x, x ∈ lst → (lst.filter (fun y => y = x)).length ≤ lst.length / 2) ∧ res = -1) ∨ (lst.filter (fun y => y = res)).length > lst.length / 2) → findMajorityEl  (proof 663 chars)
+  [find11] ∀ (lst : List Int) (h : findMajorityElement_precond lst), findMajorityElement_postcond lst ((lst.find? (fun x => decide ((lst.filter (fun y => y = x)).length > lst.length / 2))).getD (-1)) h  (proof 400 chars)
+## verina_advanced_12  steps=1 laws=['term']
+  [argmin_facts] ∀ {α : Type} (f : α → Nat) (L : List α) (b : α), (L.foldl (fun best y => if f y < f best then y else best) b = b ∨ L.foldl (fun best y => if f y < f best then y else best) b ∈ L) ∧ f (L.foldl (fun best y => if f y < f best then y   (proof 774 chars)
+  [first12] ∀ (lst : List Int) (h : firstDuplicate_precond lst), firstDuplicate_postcond lst (match lst.filter (fun y => decide (lst.count y > 1)) with | [] => none | b :: t => some ((b :: t).foldl (fun best y => if secondOccIdx lst y < secon  (proof 1505 chars)
+## verina_advanced_13  steps=1 laws=['term']
+  [has_symm13] ∀ (x y : List Nat), hasChordIntersection_postcond.hasIntersection x y = hasChordIntersection_postcond.hasIntersection y x  (proof 92 chars)
+  [has_irr13] ∀ (x : List Nat), hasChordIntersection_postcond.hasIntersection x x = false  (proof 72 chars)
+  [chord13] ∀ (N : Nat) (chords : List (List Nat)) (h : hasChordIntersection_precond N chords), hasChordIntersection_postcond N chords (let sortedChords := chords.map (fun chord => let a := chord[0]!; let b := chord[1]!; if a > b then [b, a]   (proof 685 chars)
+## verina_advanced_14  steps=1 laws=['term']
+  [pow4_iff] ∀ (n : Nat), (∃ m : Nat, n = 4 ^ m) ↔ (List.range (n + 1)).any (fun m => decide (n = 4 ^ m)) = true  (proof 281 chars)
+  [pow4_ok] ∀ (n : Nat) (h : ifPowerOfFour_precond n), ifPowerOfFour_postcond n ((List.range (n + 1)).any (fun m => decide (n = 4 ^ m))) h  (proof 70 chars)
+## verina_advanced_15  steps=1 laws=['term']
+  [trip15] ∀ (nums : List Int) (h : increasingTriplet_precond nums), increasingTriplet_postcond nums (let nums' := nums.zipIdx; nums'.any (fun (x, i) => nums'.any (fun (y, j) => nums'.any (fun (z, k) => decide (i < j ∧ j < k ∧ x < y ∧ y < z)  (proof 453 chars)
+## verina_advanced_16  steps=1 laws=['term']
+  [sorted_perm] ∀ (xs : List Int), List.Pairwise (· ≤ ·) (xs.mergeSort (fun a b => decide (a ≤ b))) ∧ List.isPerm xs (xs.mergeSort (fun a b => decide (a ≤ b))) = true  (proof 110 chars)
+## verina_advanced_17  steps=1 laws=['term']
+  [sorted_perm] ∀ (l : List Int), List.Pairwise (· ≤ ·) (l.mergeSort (fun a b => decide (a ≤ b))) ∧ List.isPerm l (l.mergeSort (fun a b => decide (a ≤ b))) = true  (proof 107 chars)
+## verina_advanced_2  steps=1 laws=['term']
+  [LongestCommonSubsequence_ok] ∀ (a b : Array Int) (h : LongestCommonSubsequence_precond a b), LongestCommonSubsequence_postcond a b (let allSubseq (arr : Array Int) := (arr.foldl fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse; let   (proof 311 chars)
+## verina_advanced_20  steps=1 laws=['term']
+  [digit8_iff] ∀ (absN : Nat), (∃ i : Nat, absN / (10 ^ i) % 10 = 8) ↔ (List.range (absN + 1)).any (fun i => decide (absN / (10 ^ i) % 10 = 8)) = true  (proof 387 chars)
+  [eight_ok] ∀ (n : Int) (h : isItEight_precond n), isItEight_postcond n ((n % 8 == 0) || (List.range (n.natAbs + 1)).any (fun i => n.natAbs / (10 ^ i) % 10 == 8)) h  (proof 180 chars)
+## verina_advanced_22  steps=1 laws=['term']
+  [peak_ok] ∀ (lst : List Int) (h : isPeakValley_precond lst), isPeakValley_postcond lst (let len := lst.length; let validPeaks := List.range len |>.filter (fun p => 1 ≤ p ∧ p < len - 1 ∧ (List.range p).all (fun i => lst[i]! < lst[i + 1]!) ∧   (proof 228 chars)
+## verina_advanced_23  steps=1 laws=['term']
+  [pow2_iff] ∀ (n : Int), (∃ x : Nat, _root_.pow 2 x = n ∧ n > 0) ↔ (List.range (n.toNat + 1)).any (fun x => decide (_root_.pow 2 x = n ∧ n > 0)) = true  (proof 565 chars)
+  [pow2_ok] ∀ (n : Int) (h : isPowerOfTwo_precond n), isPowerOfTwo_postcond n ((List.range (n.toNat + 1)).any (fun x => decide (_root_.pow 2 x = n ∧ n > 0))) h  (proof 139 chars)
+## verina_advanced_24  steps=1 laws=['term']
+  [sub_nil24] ∀ (xs : List Int), [] ∈ lengthOfLIS_postcond.subsequences xs  (proof 187 chars)
+  [lis24] ∀ (nums : List Int) (h : lengthOfLIS_precond nums), lengthOfLIS_postcond nums (let allIncreasing := lengthOfLIS_postcond.subsequences nums |>.filter (fun l => lengthOfLIS_postcond.isStrictlyIncreasing l); (((allIncreasing.map List  (proof 295 chars)
+## verina_advanced_25  steps=1 laws=['term']
+  [lengthOfLIS_ok] ∀ (nums : List Int) (h : lengthOfLIS_precond nums), lengthOfLIS_postcond nums (let allSubseq := (nums.foldl fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse; let increasingSubseqLens := allSubseq.filter   (proof 196 chars)
+## verina_advanced_26  steps=1 laws=['term']
+  [lc26] ∀ (digits : String) (h : letterCombinations_precond digits), letterCombinations_postcond digits (if digits.isEmpty then [] else if digits.toList.any (λ c => ¬(c ∈ ['2','3','4','5','6','7','8','9'])) then [] else digits.toList.map   (proof 79 chars)
+## verina_advanced_27  steps=1 laws=['term']
+  [lcs_str_spec] ∀ (L : List (List Char)), [] ∈ L → L.contains (String.mk (L.foldl (fun best l => if best.length < l.length then l else best) [])).toList = true ∧ L.all (fun l => decide (l.length ≤ (String.mk (L.foldl (fun best l => if best.length  (proof 118 chars)
+  [lcs_str_ok] ∀ (s1 s2 : String) (h : longestCommonSubsequence_precond s1 s2), longestCommonSubsequence_postcond s1 s2 (let allSubseq (arr : List Char) := (arr.foldl fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse; l  (proof 381 chars)
+## verina_advanced_28  steps=3 laws=['cases', 'term', 'term']
+  [lc28_nil] ∀ (nums : List Int) (h : longestConsecutive_precond nums), nums = [] → longestConsecutive_postcond nums (0) h  (proof 104 chars)
+  [lc28_ne] ∀ (nums : List Int) (h : longestConsecutive_precond nums), ¬ nums = [] → longestConsecutive_postcond nums (let sorted_nums := nums.mergeSort; let consec_sublist_lens := List.range nums.length |>.flatMap (fun start => List.range (n  (proof 468 chars)
+## verina_advanced_29  steps=3 laws=['cases', 'term', 'term']
+  [lg29_nil] ∀ (nums : List Nat) (k : Nat) (h : longestGoodSubarray_precond nums k), nums = [] → longestGoodSubarray_postcond nums k (0) h  (proof 83 chars)
+  [lg29_ne] ∀ (nums : List Nat) (k : Nat) (h : longestGoodSubarray_precond nums k), ¬ nums = [] → longestGoodSubarray_postcond nums k (let subArrays := List.range (nums.length + 1) |>.flatMap (fun start => List.range (nums.length - start + 1)  (proof 397 chars)
+## verina_advanced_3  steps=1 laws=['term']
+  [LongestCommonSubsequence_ok] ∀ (a b : Array Int) (h : LongestCommonSubsequence_precond a b), LongestCommonSubsequence_postcond a b (let allSubseq (arr : Array Int) := (arr.foldl fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse; let   (proof 311 chars)
+## verina_advanced_30  steps=1 laws=['term']
+  [streak30] ∀ (nums : List Int) (h : longestIncreasingStreak_precond nums), longestIncreasingStreak_postcond nums (((List.range (nums.length + 1)).flatMap (fun s => (List.range (nums.length + 1)).filter (fun L => decide (s + L ≤ nums.length ∧  (proof 3355 chars)
+## verina_advanced_31  steps=1 laws=['term']
+  [longestIncreasingSubseqLength_ok] ∀ (xs : List Int) (h : longestIncreasingSubseqLength_precond xs), longestIncreasingSubseqLength_postcond xs (let allSubseq := (xs.foldl fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse; let increasingSub  (proof 210 chars)
+## verina_advanced_32  steps=1 laws=['term']
+  [longestIncreasingSubsequence_ok] ∀ (numbers : List Int) (h : longestIncreasingSubsequence_precond numbers), longestIncreasingSubsequence_postcond numbers (let allSubseq := (numbers.foldl fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse;  (proof 219 chars)
+## verina_advanced_33  steps=1 laws=['term']
+  [longestIncreasingSubsequence_ok] ∀ (nums : List Int) (h : longestIncreasingSubsequence_precond nums), longestIncreasingSubsequence_postcond nums (let allSubseq := (nums.foldl fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse; let increas  (proof 213 chars)
+## verina_advanced_34  steps=1 laws=['term']
+  [longestIncreasingSubsequence_ok] ∀ (nums : List Int) (h : longestIncreasingSubsequence_precond nums), longestIncreasingSubsequence_postcond nums (let allSubseq := (nums.foldl fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse; let increas  (proof 213 chars)
+## verina_advanced_35  steps=1 laws=['term']
+  [maj35] ∀ (nums : List Int) (h : majorityElement_precond nums), majorityElement_postcond nums ((nums.find? (fun x => decide (nums.count x > nums.length / 2))).getD 0) h  (proof 219 chars)
+## verina_advanced_36  steps=1 laws=['term']
+  [maj36] ∀ (xs : List Nat) (h : majorityElement_precond xs), majorityElement_postcond xs ((xs.find? (fun x => decide (xs.count x > xs.length / 2))).getD 0) h  (proof 310 chars)
+## verina_advanced_37  steps=1 laws=['term']
+  [maj37] ∀ (nums : List Int) (h : majorityElement_precond nums), majorityElement_postcond nums ((nums.find? (fun x => decide (nums.count x > nums.length / 2))).getD 0) h  (proof 328 chars)
+## verina_advanced_38  steps=1 laws=['term']
+  [argmax_spec] ∀ (n : Nat) (f : Nat → Nat), 0 < n → ∃ i, i < n ∧ f i = ((List.range n).map f).foldl max 0 ∧ ∀ j, j < n → f j ≤ ((List.range n).map f).foldl max 0  (proof 427 chars)
+  [mc38] ∀ (intervals : List (Prod Nat Nat)) (h : maxCoverageAfterRemovingOne_precond intervals), maxCoverageAfterRemovingOne_postcond intervals (((List.range intervals.length).map (fun (i : Nat) => let remaining := List.eraseIdx intervals  (proof 558 chars)
+## verina_advanced_4  steps=1 laws=['term']
+  [LongestIncreasingSubsequence_ok] ∀ (a : Array Int) (h : LongestIncreasingSubsequence_precond a), LongestIncreasingSubsequence_postcond a (let allSubseq := (a.foldl fun acc x => acc ++ acc.map (fun sub => x :: sub)) [[]] |>.map List.reverse; let increasingSubseqLe  (proof 235 chars)
+## verina_advanced_42  steps=1 laws=['term']
+  [profit42] ∀ (prices : List Nat) (h : maxProfit_precond prices), maxProfit_postcond prices (((List.range prices.length).flatMap (fun i => (List.range prices.length).map (fun j => if i < j then prices[j]! - prices[i]! else 0))).foldl max 0) h  (proof 3405 chars)
+## verina_advanced_43  steps=1 laws=['term']
+  [ms43] ∀ (nums : List Int) (h : maxStrength_precond nums), maxStrength_postcond nums (let sublists := nums.sublists.filter (· ≠ []); let products := sublists.map (List.foldl (· * ·) 1); products.foldl max (products.headD 0)) h  (proof 274 chars)
+## verina_advanced_44  steps=3 laws=['cases', 'term', 'term']
+  [sl44_nil] ∀ (arr : Array Int) (k : Int), (let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (fu  (proof 200 chars)
+  [sl44_ne] ∀ (arr : Array Int) (k : Int), ¬ (let subarrays := List.range (arr.size) |>.flatMap (fun start => List.range (arr.size - start + 1) |>.map (fun len => arr.extract start (start + len))); let divisibleSubarrays := subarrays.filter (  (proof 353 chars)
+## verina_advanced_45  steps=3 laws=['cases', 'term', 'term']
+  [ms45_nil] ∀ (xs : List Int) (h : maxSubarraySum_precond xs), xs = [] → maxSubarraySum_postcond xs (0) h  (proof 66 chars)
+  [ms45_ne] ∀ (xs : List Int) (h : maxSubarraySum_precond xs), xs ≠ [] → maxSubarraySum_postcond xs (let subarray_sums := List.range (xs.length + 1) |>.flatMap (fun start => List.range' 1 (xs.length - start) |>.map (fun len => ((xs.drop start  (proof 310 chars)
+## verina_advanced_46  steps=1 laws=['term']
+  [maxSubarraySum_ok] ∀ (numbers : List Int) (h : maxSubarraySum_precond numbers), maxSubarraySum_postcond numbers (let subArraySums := List.range (numbers.length + 1) |>.flatMap (fun start => List.range (numbers.length - start + 1) |>.map (fun len =>   (proof 230 chars)
+## verina_advanced_48  steps=1 laws=['term']
+  [sorted_perm] ∀ (l : List Int), List.Pairwise (· ≤ ·) (l.mergeSort (fun a b => decide (a ≤ b))) ∧ List.isPerm l (l.mergeSort (fun a b => decide (a ≤ b))) = true  (proof 107 chars)
+## verina_advanced_49  steps=1 laws=['term']
+  [sorted_perm] ∀ (l : List Int), List.Pairwise (· ≤ ·) (l.mergeSort (fun a b => decide (a ≤ b))) ∧ List.isPerm l (l.mergeSort (fun a b => decide (a ≤ b))) = true  (proof 107 chars)
+## verina_advanced_5  steps=1 laws=['term']
+  [l2n] ∀ (l : List Nat), listToNat l = Nat.ofDigits 10 l  (proof 130 chars)
+  [gl_cc] ∀ (a b : Nat) (t : List Nat), (a :: b :: t).getLast! = (b :: t).getLast!  (proof 109 chars)
+  [last_pos] ∀ (l : List Nat), l ≠ [] → l.getLast! ≠ 0 → 0 < listToNat l  (proof 332 chars)
+  [digits_last] ∀ (s : Nat), s ≠ 0 → (Nat.digits 10 s).getLast! ≠ 0  (proof 225 chars)
+  [add5] ∀ (l1 l2 : List Nat) (h : addTwoNumbers_precond l1 l2), addTwoNumbers_postcond l1 l2 (if listToNat l1 + listToNat l2 = 0 then [0] else Nat.digits 10 (listToNat l1 + listToNat l2)) h  (proof 621 chars)
+## verina_advanced_50  steps=1 laws=['term']
+  [ms50] ∀ (a1 a2 : Array Nat) (h : mergeSorted_precond a1 a2), mergeSorted_postcond a1 a2 (((a1.toList ++ a2.toList).mergeSort (fun x y => decide (x ≤ y))).toArray) h  (proof 165 chars)
+## verina_advanced_51  steps=1 laws=['term']
+  [sorted_perm_rev] ∀ (l : List Int), List.Pairwise (· ≤ ·) (l.mergeSort (fun a b => decide (a ≤ b))) ∧ List.isPerm (l.mergeSort (fun a b => decide (a ≤ b))) l = true  (proof 102 chars)
+## verina_advanced_52  steps=2 laws=['loop', 'term']
+  [exit52] ∀ (nums : List Nat) (k : Nat) (h : minOperations_precond nums k) (r : Nat), (r ≤ nums.length ∧ ∀ r', r' < r → ¬ (((List.range k).map (· + 1)).all (fun n => List.elem n ((nums.reverse).take r')) = true)) → ¬ (r < nums.length ∧ ¬ ((  (proof 868 chars)
+  [step52] ∀ (nums : List Nat) (k : Nat) (r : Nat), (r ≤ nums.length ∧ ∀ r', r' < r → ¬ (((List.range k).map (· + 1)).all (fun n => List.elem n ((nums.reverse).take r')) = true)) → (r < nums.length ∧ ¬ (((List.range k).map (· + 1)).all (fun   (proof 191 chars)
+## verina_advanced_53  steps=4 laws=['cases', 'term', 'loop', 'term']
+  [nil53] ∀ (nums : List Int) (h : minimumRightShifts_precond nums), nums.length ≤ 1 → minimumRightShifts_postcond nums 0 h  (proof 85 chars)
+  [exit53] ∀ (nums : List Int) (h : minimumRightShifts_precond nums) (j : Nat), ¬ nums.length ≤ 1 → (j ≤ nums.length ∧ ∀ k, k < j → ¬ List.Pairwise (· ≤ ·) (nums.rotateRight k)) → ¬ (j < nums.length ∧ ¬ List.Pairwise (· ≤ ·) (nums.rotateRigh  (proof 656 chars)
+## verina_advanced_54  steps=1 laws=['term']
+  [missing54] ∀ (nums : List Nat) (h : missingNumber_precond nums), missingNumber_postcond nums (((List.range (nums.length + 1)).find? (fun x => decide (x ∉ nums))).getD 0) h  (proof 1436 chars)
+## verina_advanced_55  steps=1 laws=['term']
+  [most55_a] ∀ (xs : List Int) (h : mostFrequent_precond xs) (r : Int), r ∈ xs → (∀ x, x ∈ xs → xs.countP (fun y => y = x) ≤ xs.countP (fun y => y = r)) → xs.find? (fun x => decide (xs.countP (fun y => y = x) = xs.countP (fun y => y = r))) = s  (proof 194 chars)
+  [most55] ∀ (xs : List Int) (h : mostFrequent_precond xs), mostFrequent_postcond xs ((xs.find? (fun x => decide (xs.countP (fun y => y = x) = (xs.map (fun x => xs.countP (fun y => y = x))).foldl max 0))).getD 0) h  (proof 861 chars)
+## verina_advanced_56  steps=1 laws=['term']
+  [isSub_append] ∀ (F Z : List Int), isSubsequence F (F ++ Z) = true  (proof 107 chars)
+  [countVal_eq] ∀ (v : Int) (l : List Int), countVal v l = l.count v  (proof 143 chars)
+  [move56] ∀ (xs : List Int) (h : moveZeroes_precond xs), moveZeroes_postcond xs (xs.filter (fun x => decide (x ≠ 0)) ++ xs.filter (fun x => decide (x = 0))) h  (proof 790 chars)
+## verina_advanced_57  steps=1 laws=['term']
+  [next57_key] ∀ (nums1 nums2 : List Int) (h : nextGreaterElement_precond nums1 nums2) (ng : Int → Int), (∀ val, ng val = (match nums2.findIdx? (fun x => x == val) with | none => -1 | some idx => let nextGreater := (List.range (nums2.length - id  (proof 1641 chars)
+  [next57] ∀ (nums1 nums2 : List Int) (h : nextGreaterElement_precond nums1 nums2), nextGreaterElement_postcond nums1 nums2 (nums1.map (fun val => match nums2.findIdx? (fun x => x == val) with | none => -1 | some idx => let nextGreater := (L  (proof 74 chars)
+## verina_advanced_58  steps=2 laws=['loop', 'term']
+  [step58] ∀ (n x c : Nat), (x ≤ 2 ^ (n - 1) ∧ c = ((List.range x).filter (fun i => isUgly i)).length ∧ c < n) → (x < 2 ^ (n - 1) ∧ ¬ (isUgly x = true ∧ c + 1 = n)) → (x + 1 ≤ 2 ^ (n - 1) ∧ (if isUgly x = true then c + 1 else c) = ((List.ran  (proof 671 chars)
+  [init58] ∀ (n : Nat), nthUglyNumber_precond n → (0 ≤ 2 ^ (n - 1) ∧ 0 = ((List.range 0).filter (fun i => isUgly i)).length ∧ 0 < n)  (proof 50 chars)
+  [exit58] ∀ (n : Nat) (h : nthUglyNumber_precond n) (x c : Nat), (x ≤ 2 ^ (n - 1) ∧ c = ((List.range x).filter (fun i => isUgly i)).length ∧ c < n) → ¬ (x < 2 ^ (n - 1) ∧ ¬ (isUgly x = true ∧ c + 1 = n)) → nthUglyNumber_postcond n x h  (proof 1911 chars)
+## verina_advanced_61  steps=1 laws=['term']
+  [prod61] ∀ (nums : List Int) (h : productExceptSelf_precond nums), productExceptSelf_postcond nums ((List.range nums.length).map (fun i => (nums.take i).myprod * (nums.drop (i + 1)).myprod)) h  (proof 229 chars)
+## verina_advanced_62  steps=1 laws=['term']
+  [nonneg_sw] ∀ (heights : List Int) (w : Nat → Int), (∀ i, 0 ≤ w i) → ∀ (n i : Nat) (acc : Int), heights.length - i ≤ n → 0 ≤ acc → 0 ≤ rain_postcond.sum_water heights w i acc  (proof 334 chars)
+  [rain62] ∀ (heights : List Int) (h : rain_precond heights), rain_postcond heights (if heights.length < 3 then 0 else rain_postcond.sum_water heights (fun i => max 0 (min (rain_postcond.ml heights i 0 0) (rain_postcond.mr heights i 0) - hei  (proof 279 chars)
+## verina_advanced_64  steps=1 laws=['term']
+  [rm64] ∀ (lst : List Nat) (target : Nat) (h : removeElement_precond lst target), removeElement_postcond lst target (lst.filter (fun x => decide (x ≠ target))) h  (proof 214 chars)
+## verina_advanced_66  steps=1 laws=['term']
+  [rev66] ∀ (words_str : String) (h : reverseWords_precond words_str), reverseWords_postcond words_str (String.intercalate " " (((words_str.splitOn " ").filter (fun w => w ≠ "")).reverse)) h  (proof 73 chars)
+## verina_advanced_67  steps=2 laws=['loop', 'term']
+  [str_mk_append] ∀ (a b : List Char), String.mk (a ++ b) = String.mk a ++ String.mk b  (proof 100 chars)
+  [dec_append] ∀ (xs ys : List (Char × Nat)), decodeRLE (xs ++ ys) = decodeRLE xs ++ decodeRLE ys  (proof 184 chars)
+  [dec_single] ∀ (c : Char) (n : Nat), decodeRLE [(c, n)] = String.mk (List.replicate n c)  (proof 34 chars)
+  [dec_rev_cons] ∀ (c : Char) (n : Nat) (rest : List (Char × Nat)), decodeRLE ((c, n) :: rest).reverse = decodeRLE rest.reverse ++ String.mk (List.replicate n c)  (proof 69 chars)
+  [rle_step2] ∀ (cs : List Char) (i : Nat) (acc : List (Char × Nat)), i < cs.length → (i ≤ cs.length ∧ decodeRLE acc.reverse = String.mk (cs.take i) ∧ (∀ p ∈ acc, 0 < p.2) ∧ List.IsChain (fun a b => a.1 ≠ b.1) acc) → (i + 1 ≤ cs.length ∧ decode  (proof 1228 chars)
+  [exit67] ∀ (s : String) (h : runLengthEncode_precond s) (i : Nat) (acc : List (Char × Nat)), (i ≤ s.toList.length ∧ decodeRLE acc.reverse = String.mk (s.toList.take i) ∧ (∀ p ∈ acc, 0 < p.2) ∧ List.IsChain (fun a b => a.1 ≠ b.1) acc) → ¬ i  (proof 750 chars)
+## verina_advanced_71  steps=1 laws=['term']
+  [fold_minkey] ∀ {α β : Type} [LinearOrder β] (f : α → β) (L : List α) (b : α), (L.foldl (fun best y => if f y < f best then y else best) b = b ∨ L.foldl (fun best y => if f y < f best then y else best) b ∈ L) ∧ f (L.foldl (fun best y => if f y   (proof 824 chars)
+  [min71] ∀ (targets : List String), (let res := (match targets with | [] => "" | b :: t => (b :: t).foldl (fun best y => if toLex (y.length, y) < toLex (best.length, best) then y else best) b); (res = "" ∧ targets = []) ∨ (res ∈ targets ∧   (proof 656 chars)
+  [short71] ∀ (s : String) (k : Nat) (h : shortestBeautifulSubstring_precond s k), shortestBeautifulSubstring_postcond s k (let chars := s.data; let substrings := (List.range chars.length).flatMap (fun i => (List.range (chars.length - i + 1))  (proof 136 chars)
+## verina_advanced_73  steps=2 laws=['loop', 'term']
+  [foldl_max_nat] ∀ (l : List Nat) (m : Nat), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l  (proof 625 chars)
+  [mem_le_max] ∀ (s : List Nat) (v : Nat), v ∈ s → v ≤ s.foldl max 0  (proof 70 chars)
+## verina_advanced_74  steps=1 laws=['term']
+  [seq74] ∀ (nums : List Nat), solution_postcond nums (let n := nums.length; let getSubarray_local := fun (i j : Nat) => (nums.drop i).take (j - i + 1); let distinctCount_local := fun (l : List Nat) => let foldFn := fun (seen : List Nat) (x  (proof 91 chars)
+## verina_advanced_75  steps=1 laws=['term']
+  [ms75] ∀ (sequence : List Int) (h : task_code_precond sequence), task_code_postcond sequence (let subArrays := List.range (sequence.length + 1) |>.flatMap (fun start => List.range (sequence.length - start + 1) |>.map (fun len => sequence  (proof 372 chars)
+## verina_advanced_76  steps=1 laws=['term']
+  [nodup_eraseDups_aux] ∀ (n : Nat) (l : List Int), l.length ≤ n → l.eraseDups.Nodup  (proof 484 chars)
+  [nodup_eraseDups] ∀ (l : List Int), l.eraseDups.Nodup  (proof 61 chars)
+  [topk76] ∀ (nums : List Int) (k : Nat) (h : topKFrequent_precond nums k), topKFrequent_postcond nums k ((nums.eraseDups.mergeSort (fun x y => decide (nums.count y ≤ nums.count x))).take k) h  (proof 2103 chars)
+## verina_advanced_78  steps=5 laws=['loop', 'bind', 'loop', 'term', 'term']
+  [ts_in_init] ∀ (nums : List Int) (target : Int) (i : Nat), i < nums.length → i + 1 ≤ (i + 1) ∧ (i + 1) ≤ nums.length ∧ (false = true → i < 0 ∧ 0 < nums.length ∧ nums[i]! + nums[0]! = target ∧ ∀ j', i < j' → j' < 0 → nums[i]! + nums[j']! ≠ targ  (proof 111 chars)
+  [ts_in_step] ∀ (nums : List Int) (target : Int) (i j jb : Nat) (ok : Bool), (i + 1 ≤ j ∧ j ≤ nums.length ∧ (ok = true → i < jb ∧ jb < nums.length ∧ nums[i]! + nums[jb]! = target ∧ ∀ j', i < j' → j' < jb → nums[i]! + nums[j']! ≠ target) ∧ (ok =  (proof 137 chars)
+  [ts_in_exit] ∀ (nums : List Int) (target : Int) (i j jb : Nat) (ok : Bool), (i + 1 ≤ j ∧ j ≤ nums.length ∧ (ok = true → i < jb ∧ jb < nums.length ∧ nums[i]! + nums[jb]! = target ∧ ∀ j', i < j' → j' < jb → nums[i]! + nums[j']! ≠ target) ∧ (ok =  (proof 137 chars)
+  [ts_out_init] ∀ (nums : List Int) (target : Int), 0 ≤ nums.length ∧ (false = true → 0 < 0 ∧ 0 < nums.length ∧ nums[0]! + nums[0]! = target ∧ (∀ i' j', i' < 0 → i' < j' → j' < nums.length → nums[i']! + nums[j']! ≠ target) ∧ ∀ j', 0 < j' → j' < 0  (proof 101 chars)
+  [ts_out_step] ∀ (nums : List Int) (target : Int) (i a b : Nat) (found : Bool) (jr : Nat × Bool), (i ≤ nums.length ∧ (found = true → a < b ∧ b < nums.length ∧ nums[a]! + nums[b]! = target ∧ (∀ i' j', i' < a → i' < j' → j' < nums.length → nums[i'  (proof 155 chars)
+  [exists78] ∀ (nums : List Int) (target : Int), (let pairwiseSum := List.range nums.length |>.flatMap (fun i => nums.drop (i + 1) |>.map (fun y => nums[i]! + y)); nums.length > 1 ∧ pairwiseSum.count target = 1) → ∃ i j, i < j ∧ j < nums.lengt  (proof 556 chars)
+  [exit78] ∀ (nums : List Int) (target : Int) (h : twoSum_precond nums target) (i a b : Nat) (found : Bool), (i ≤ nums.length ∧ (found = true → a < b ∧ b < nums.length ∧ nums[a]! + nums[b]! = target ∧ (∀ i' j', i' < a → i' < j' → j' < nums.l  (proof 457 chars)
+## verina_advanced_79  steps=5 laws=['loop', 'bind', 'loop', 'term', 'term']
+  [ts_in_init] ∀ (nums : List Int) (target : Int) (i : Nat), i < nums.length → i + 1 ≤ (i + 1) ∧ (i + 1) ≤ nums.length ∧ (false = true → i < 0 ∧ 0 < nums.length ∧ nums[i]! + nums[0]! = target ∧ ∀ j', i < j' → j' < 0 → nums[i]! + nums[j']! ≠ targ  (proof 111 chars)
+  [ts_in_step] ∀ (nums : List Int) (target : Int) (i j jb : Nat) (ok : Bool), (i + 1 ≤ j ∧ j ≤ nums.length ∧ (ok = true → i < jb ∧ jb < nums.length ∧ nums[i]! + nums[jb]! = target ∧ ∀ j', i < j' → j' < jb → nums[i]! + nums[j']! ≠ target) ∧ (ok =  (proof 137 chars)
+  [ts_in_exit] ∀ (nums : List Int) (target : Int) (i j jb : Nat) (ok : Bool), (i + 1 ≤ j ∧ j ≤ nums.length ∧ (ok = true → i < jb ∧ jb < nums.length ∧ nums[i]! + nums[jb]! = target ∧ ∀ j', i < j' → j' < jb → nums[i]! + nums[j']! ≠ target) ∧ (ok =  (proof 137 chars)
+  [ts_out_init] ∀ (nums : List Int) (target : Int), 0 ≤ nums.length ∧ (false = true → 0 < 0 ∧ 0 < nums.length ∧ nums[0]! + nums[0]! = target ∧ (∀ i' j', i' < 0 → i' < j' → j' < nums.length → nums[i']! + nums[j']! ≠ target) ∧ ∀ j', 0 < j' → j' < 0  (proof 101 chars)
+  [ts_out_step] ∀ (nums : List Int) (target : Int) (i a b : Nat) (found : Bool) (jr : Nat × Bool), (i ≤ nums.length ∧ (found = true → a < b ∧ b < nums.length ∧ nums[a]! + nums[b]! = target ∧ (∀ i' j', i' < a → i' < j' → j' < nums.length → nums[i'  (proof 155 chars)
+  [exit79] ∀ (nums : List Int) (target : Int) (h : twoSum_precond nums target) (i a b : Nat) (found : Bool), (i ≤ nums.length ∧ (found = true → a < b ∧ b < nums.length ∧ nums[a]! + nums[b]! = target ∧ (∀ i' j', i' < a → i' < j' → j' < nums.l  (proof 559 chars)
+## verina_advanced_8  steps=2 laws=['loop', 'term']
+  [exit8] ∀ (gas cost : List Int) (h : canCompleteCircuit_precond gas cost) (s : Nat), (s ≤ gas.length ∧ ∀ k, k < s → ¬ ((List.range gas.length).all (fun i => decide ((List.range (i + 1)).foldl (fun t j => t + gas[(k + j) % gas.length]! - c  (proof 986 chars)
+  [step8] ∀ (gas cost : List Int) (s : Nat), (s ≤ gas.length ∧ ∀ k, k < s → ¬ ((List.range gas.length).all (fun i => decide ((List.range (i + 1)).foldl (fun t j => t + gas[(k + j) % gas.length]! - cost[(k + j) % gas.length]!) 0 ≥ 0)) = true  (proof 186 chars)
+## verina_advanced_80  steps=5 laws=['loop', 'bind', 'loop', 'term', 'term']
+  [ts_in_init] ∀ (nums : Array Int) (target : Int) (i : Nat), i < nums.size → i + 1 ≤ (i + 1) ∧ (i + 1) ≤ nums.size ∧ (false = true → i < 0 ∧ 0 < nums.size ∧ nums[i]! + nums[0]! = target ∧ ∀ j', i < j' → j' < 0 → nums[i]! + nums[j']! ≠ target) ∧  (proof 109 chars)
+  [ts_in_step] ∀ (nums : Array Int) (target : Int) (i j jb : Nat) (ok : Bool), (i + 1 ≤ j ∧ j ≤ nums.size ∧ (ok = true → i < jb ∧ jb < nums.size ∧ nums[i]! + nums[jb]! = target ∧ ∀ j', i < j' → j' < jb → nums[i]! + nums[j']! ≠ target) ∧ (ok = fa  (proof 135 chars)
+  [ts_in_exit] ∀ (nums : Array Int) (target : Int) (i j jb : Nat) (ok : Bool), (i + 1 ≤ j ∧ j ≤ nums.size ∧ (ok = true → i < jb ∧ jb < nums.size ∧ nums[i]! + nums[jb]! = target ∧ ∀ j', i < j' → j' < jb → nums[i]! + nums[j']! ≠ target) ∧ (ok = fa  (proof 135 chars)
+  [ts_out_init] ∀ (nums : Array Int) (target : Int), 0 ≤ nums.size ∧ (false = true → 0 < 0 ∧ 0 < nums.size ∧ nums[0]! + nums[0]! = target ∧ (∀ i' j', i' < 0 → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target) ∧ ∀ j', 0 < j' → j' < 0 → nu  (proof 99 chars)
+  [ts_out_step] ∀ (nums : Array Int) (target : Int) (i a b : Nat) (found : Bool) (jr : Nat × Bool), (i ≤ nums.size ∧ (found = true → a < b ∧ b < nums.size ∧ nums[a]! + nums[b]! = target ∧ (∀ i' j', i' < a → i' < j' → j' < nums.size → nums[i']! +   (proof 153 chars)
+  [exit80] ∀ (nums : Array Int) (target : Int) (h : twoSum_precond nums target) (i a b : Nat) (found : Bool), (i ≤ nums.size ∧ (found = true → a < b ∧ b < nums.size ∧ nums[a]! + nums[b]! = target ∧ (∀ i' j', i' < a → i' < j' → j' < nums.size  (proof 772 chars)
+## verina_advanced_81  steps=1 laws=['term']
+  [sorted_perm] ∀ (l : List Int), List.Pairwise (· ≤ ·) (l.mergeSort (fun a b => decide (a ≤ b))) ∧ List.isPerm l (l.mergeSort (fun a b => decide (a ≤ b))) = true  (proof 107 chars)
+## verina_basic_102  steps=5 laws=['loop', 'bind', 'loop', 'term', 'term']
+  [ts_in_init] ∀ (nums : Array Int) (target : Int) (i : Nat), i < nums.size → i + 1 ≤ (i + 1) ∧ (i + 1) ≤ nums.size ∧ (false = true → i < 0 ∧ 0 < nums.size ∧ nums[i]! + nums[0]! = target ∧ ∀ j', i < j' → j' < 0 → nums[i]! + nums[j']! ≠ target) ∧  (proof 109 chars)
+  [ts_in_step] ∀ (nums : Array Int) (target : Int) (i j jb : Nat) (ok : Bool), (i + 1 ≤ j ∧ j ≤ nums.size ∧ (ok = true → i < jb ∧ jb < nums.size ∧ nums[i]! + nums[jb]! = target ∧ ∀ j', i < j' → j' < jb → nums[i]! + nums[j']! ≠ target) ∧ (ok = fa  (proof 135 chars)
+  [ts_in_exit] ∀ (nums : Array Int) (target : Int) (i j jb : Nat) (ok : Bool), (i + 1 ≤ j ∧ j ≤ nums.size ∧ (ok = true → i < jb ∧ jb < nums.size ∧ nums[i]! + nums[jb]! = target ∧ ∀ j', i < j' → j' < jb → nums[i]! + nums[j']! ≠ target) ∧ (ok = fa  (proof 135 chars)
+  [ts_out_init] ∀ (nums : Array Int) (target : Int), 0 ≤ nums.size ∧ (false = true → 0 < 0 ∧ 0 < nums.size ∧ nums[0]! + nums[0]! = target ∧ (∀ i' j', i' < 0 → i' < j' → j' < nums.size → nums[i']! + nums[j']! ≠ target) ∧ ∀ j', 0 < j' → j' < 0 → nu  (proof 99 chars)
+  [ts_out_step] ∀ (nums : Array Int) (target : Int) (i a b : Nat) (found : Bool) (jr : Nat × Bool), (i ≤ nums.size ∧ (found = true → a < b ∧ b < nums.size ∧ nums[a]! + nums[b]! = target ∧ (∀ i' j', i' < a → i' < j' → j' < nums.size → nums[i']! +   (proof 153 chars)
+  [exit102] ∀ (nums : Array Int) (target : Int) (h : twoSum_precond nums target) (i a b : Nat) (found : Bool), (i ≤ nums.size ∧ (found = true → a < b ∧ b < nums.size ∧ nums[a]! + nums[b]! = target ∧ (∀ i' j', i' < a → i' < j' → j' < nums.size  (proof 1239 chars)
+## verina_basic_104  steps=1 laws=['term']
+  [find_key] ∀ (l : List (Int × Int)), (l.map Prod.fst).Nodup → ∀ (p : Int × Int), p ∈ l → l.find? (fun q => q.1 == p.1) = some p  (proof 534 chars)
+  [upd104] ∀ (m1 m2 : Map Int Int) (h : update_map_precond m1 m2), update_map_postcond m1 m2 (Map.mk (((m1.entries.filter (fun p => !(m2.entries.any (fun q => q.1 == p.1)))) ++ m2.entries).mergeSort (fun a b => decide (a.1 ≤ b.1)))) h  (proof 3386 chars)
+## verina_basic_108  steps=4 laws=['bind', 'loop', 'term', 'term']
+  [exit108] ∀ (ops : List Int) (s : Array Int) (h : below_zero_precond ops), (s.size = ops.length + 1 ∧ s[0]! = 0 ∧ ∀ i, i < ops.length → s[i+1]! = s[i]! + ops[i]!) → below_zero_postcond ops (s, (List.range ops.length).any (fun i => decide (s  (proof 822 chars)
+## verina_basic_22  steps=1 laws=['term']
+  [inArray_iff] ∀ (a : Array Int) (x : Int), inArray a x = true ↔ x ∈ a.toList  (proof 213 chars)
+  [diss22] ∀ (a b : Array Int) (h : dissimilarElements_precond a b), dissimilarElements_postcond a b (((a.toList.filter (fun x => !inArray b x) ++ b.toList.filter (fun x => !inArray a x)).dedup.mergeSort (fun x y => decide (x ≤ y))).toArray)  (proof 2688 chars)
+## verina_basic_24  steps=7 laws=['bind', 'loop', 'term', 'bind', 'loop', 'term', 'term']
+  [odd_not_even] ∀ (n : Int), isOdd n = true → ¬ isEven n = true  (proof 56 chars)
+  [not_odd_even] ∀ (n : Int), ¬ isOdd n = true → isEven n = true  (proof 52 chars)
+  [not_even_odd] ∀ (n : Int), ¬ isEven n = true → isOdd n = true  (proof 52 chars)
+  [first_even_exit] ∀ (a : Array Int) (n : Nat), (∃ x ∈ a, isEven x = true) → (n ≤ a.size ∧ ∀ k, k < n → isOdd a[k]! = true) → ¬ (n < a.size ∧ isOdd a[n]! = true) → (n < a.size ∧ isEven a[n]! = true ∧ ∀ k, k < n → isOdd a[k]! = true)  (proof 275 chars)
+  [first_odd_exit] ∀ (a : Array Int) (n : Nat), (∃ x ∈ a, isOdd x = true) → (n ≤ a.size ∧ ∀ k, k < n → isEven a[k]! = true) → ¬ (n < a.size ∧ isEven a[n]! = true) → (n < a.size ∧ isOdd a[n]! = true ∧ ∀ k, k < n → isEven a[k]! = true)  (proof 274 chars)
+## verina_basic_27  steps=1 laws=['term']
+  [idxOf_le_of_getElem_c] ∀ (s : List Char) (k : Nat) (a : Char), s[k]? = some a → s.idxOf a ≤ k  (proof 281 chars)
+  [nodup_of_no_rep] ∀ (cs : List Char) (n : Nat), n ≤ cs.length → (∀ i, i < n → cs[i]! ∉ cs.take i) → List.Pairwise (· ≠ ·) (cs.take n)  (proof 330 chars)
+  [rep27] ∀ (s : String) (h : findFirstRepeatedChar_precond s), findFirstRepeatedChar_postcond s (match (List.range s.toList.length).find? (fun i => decide (s.toList[i]! ∈ s.toList.take i)) with | none => none | some i => some s.toList[i]!)  (proof 3305 chars)
+## verina_basic_3  steps=1 laws=['term']
+  [div11_ok] ∀ (n : Int), (decide (n % 11 = 0) = true → ∃ k : Int, n = 11 * k) ∧ (¬ decide (n % 11 = 0) = true → ∀ k : Int, ¬ n = 11 * k)  (proof 155 chars)
+## verina_basic_33  steps=2 laws=['loop', 'term']
+  [foldl_max_nat] ∀ (l : List Nat) (m : Nat), (List.foldl max m l = m ∨ List.foldl max m l ∈ l) ∧ m ≤ List.foldl max m l ∧ ∀ x ∈ l, x ≤ List.foldl max m l  (proof 625 chars)
+  [elem_le_max] ∀ (s : List Nat) (v : Nat), List.elem v s = true → v ≤ s.foldl max 0  (proof 109 chars)
+## verina_basic_34  steps=2 laws=['loop', 'term']
+  [idxOf_filter_mono] ∀ (p : Int → Bool) (l : List Int) (x y : Int), p x = true → p y = true → l.idxOf x ≤ l.idxOf y → (l.filter p).idxOf x ≤ (l.filter p).idxOf y  (proof 874 chars)
+  [fen_exit] ∀ (arr result : Array Int) (h : findEvenNumbers_precond arr), result.toList = arr.toList.filter isEven → findEvenNumbers_postcond arr result h  (proof 729 chars)
+  [exit34] ∀ (arr acc : Array Int) (i : Nat) (h : findEvenNumbers_precond arr), (i ≤ arr.size ∧ acc.toList = (arr.toList.take i).filter isEven) → ¬ i < arr.size → findEvenNumbers_postcond arr acc h  (proof 242 chars)
+## verina_basic_35  steps=1 laws=['term']
+  [moveZeroes_ok] ∀ (arr : Array Int) (h : MoveZeroesToEnd_precond arr), MoveZeroesToEnd_postcond arr (Array.mk (arr.toList.filter (· ≠ 0) ++ arr.toList.filter (· = 0))) h  (proof 809 chars)
+## verina_basic_38  steps=2 laws=['loop', 'term']
+  [allsame_pairwise] ∀ (l : List Char), (∀ k, k < l.length → l[k]! = l[0]!) → List.Pairwise (· = ·) l  (proof 205 chars)
+  [allsame_not] ∀ (l : List Char), ¬ (∀ k, k < l.length → l[k]! = l[0]!) → l ≠ [] ∧ l.any (fun x => decide (x ≠ l[0]!)) = true  (proof 233 chars)
+## verina_basic_39  steps=3 laws=['cases', 'term', 'term']
+  [rotate_ok] ∀ (l : List Int) (n : Nat) (h : rotateRight_precond l n), l.length ≠ 0 → rotateRight_postcond l n ((List.range l.length).map (fun i : Nat => l.getD (Int.toNat ((Int.ofNat i - Int.ofNat n + Int.ofNat l.length) % Int.ofNat l.length)  (proof 610 chars)
+## verina_basic_4  steps=1 laws=['term']
+  [kth4] ∀ (arr : Array Int) (k : Nat) (h : kthElement_precond arr k), kthElement_postcond arr k (arr[k - 1]!) h  (proof 307 chars)
+## verina_basic_40  steps=5 laws=['bind', 'loop', 'term', 'loop', 'term']
+  [exit40] ∀ (s : Array Int) (m r : Int) (found : Bool) (i : Nat) (h : secondSmallest_precond s), ((∃ idx, idx < s.size ∧ s[idx]! = m) ∧ ∀ k, k < s.size → m ≤ s[k]!) → (i ≤ s.size ∧ (found = true → (∃ idx, idx < i ∧ s[idx]! = r) ∧ m < r ∧ ∀   (proof 605 chars)
+  [step40] ∀ (s : Array Int) (m r : Int) (found : Bool) (i : Nat), ((∃ idx, idx < s.size ∧ s[idx]! = m) ∧ ∀ k, k < s.size → m ≤ s[k]!) → i < s.size → (i ≤ s.size ∧ (found = true → (∃ idx, idx < i ∧ s[idx]! = r) ∧ m < r ∧ ∀ k, k < i → m < s[k  (proof 1173 chars)
+## verina_basic_41  steps=2 laws=['loop', 'term']
+  [allsame_arr_pairwise] ∀ (a : Array Int), (∀ k, k < a.size → a[k]! = a[0]!) → List.Pairwise (· = ·) a.toList  (proof 383 chars)
+  [allsame_arr_not] ∀ (a : Array Int), 0 < a.size → ¬ (∀ k, k < a.size → a[k]! = a[0]!) → a.toList.any (fun x => decide (x ≠ a.toList[0]!)) = true  (proof 324 chars)
+## verina_basic_43  steps=2 laws=['loop', 'term']
+  [step43] ∀ (i acc : Nat), 15*acc = i*(2*i+1)*(7+24*i^3-12*i^2-14*i) → 15*(acc + (2*i+1)^4) = (i+1)*(2*(i+1)+1)*(7+24*(i+1)^3-12*(i+1)^2-14*(i+1))  (proof 846 chars)
+## verina_basic_45  steps=1 laws=['term']
+  [findproduct_post] ∀ (lst : List Int) (h : findProduct_precond lst), findProduct_postcond lst (match firstEvenOddIndices lst with | some (ei, oi) => lst[ei]! * lst[oi]! | none => 0) h  (proof 142 chars)
+## verina_basic_46  steps=2 laws=['loop', 'term']
+  [exit46] ∀ (arr : Array Int) (elem : Int) (i : Nat) (pos : Int) (h : lastPosition_precond arr elem), (i ≤ arr.size ∧ (pos = -1 ∨ (0 ≤ pos ∧ pos.toNat < i ∧ arr[pos.toNat]! = elem)) ∧ (pos = -1 → ∀ k, k < i → arr[k]! ≠ elem) ∧ (0 ≤ pos → ∀   (proof 732 chars)
+## verina_basic_47  steps=2 laws=['loop', 'term']
+  [sumTo_zero] ∀ (a : Array Int), sumTo a 0 = 0  (proof 28 chars)
+  [sumTo_succ] ∀ (a : Array Int) (i : Nat), sumTo a (i + 1) = sumTo a i + a[i]!  (proof 30 chars)
+## verina_basic_48  steps=4 laws=['bind', 'loop', 'term', 'term']
+  [sq48] ∀ (n r : Nat), (r * r ≤ n ∧ n < (r + 1) * (r + 1)) → (decide (r * r = n) = true ↔ ∃ i : Nat, i * i = n)  (proof 256 chars)
+  [sq48_ok] ∀ (n r : Nat), (r * r ≤ n ∧ n < (r + 1) * (r + 1)) → isPerfectSquare_postcond n (decide (r * r = n))  (proof 69 chars)
+## verina_basic_51  steps=2 laws=['loop', 'term']
+  [exit51] ∀ (a : Array Int) (key : Int) (i : Nat) (h : BinarySearch_precond a key), (i ≤ a.size ∧ ∀ k, k < i → a[k]! < key) → ¬ (i < a.size ∧ a[i]! < key) → BinarySearch_postcond a key i h  (proof 426 chars)
+## verina_basic_54  steps=5 laws=['loop', 'bind', 'loop', 'term', 'term']
+  [exit54] ∀ (a b : Array Int) (i best : Nat) (h : CanyonSearch_precond a b), (i ≤ a.size ∧ (∃ ii, ii < a.size ∧ ∃ jj, jj < b.size ∧ best = (a[ii]! - b[jj]!).natAbs) ∧ ∀ k, k < i → ∀ j, j < b.size → best ≤ (a[k]! - b[j]!).natAbs) → ¬ i < a.s  (proof 772 chars)
+## verina_basic_56  steps=2 laws=['loop', 'term']
+  [set_bang_get] ∀ (r : Array Int) (p : Nat) (v : Int) (k : Nat), p < r.size → (r.set! p v)[k]! = if p = k then v else r[k]!  (proof 421 chars)
+  [step56] ∀ (src dest r : Array Int) (sStart dStart len i : Nat), copy_precond src sStart dest dStart len → i < len → (i ≤ len ∧ r.size = dest.size ∧ (∀ k, k < dStart → r[k]! = dest[k]!) ∧ (∀ k, dStart + i ≤ k → k < r.size → r[k]! = dest[k]  (proof 652 chars)
+  [exit56] ∀ (src dest r : Array Int) (sStart dStart len i : Nat) (h : copy_precond src sStart dest dStart len), (i ≤ len ∧ r.size = dest.size ∧ (∀ k, k < dStart → r[k]! = dest[k]!) ∧ (∀ k, dStart + i ≤ k → k < r.size → r[k]! = dest[k]!) ∧ (  (proof 180 chars)
+## verina_basic_60  steps=2 laws=['loop', 'term']
+  [exit60] ∀ (arr acc : Array Int) (i : Nat) (h : FindEvenNumbers_precond arr), (i ≤ arr.size ∧ acc.toList = (arr.toList.take i).filter isEven) → ¬ i < arr.size → FindEvenNumbers_postcond arr acc h  (proof 474 chars)
+## verina_basic_66  steps=1 laws=['term']
+  [even_ok] ∀ (x : Int), (decide (x % 2 = 0) = true ↔ ∃ k : Int, x = 2 * k)  (proof 144 chars)
+## verina_basic_7  steps=2 laws=['loop', 'term']
+  [step7] ∀ (i acc : Nat), 3*acc = i*(2*i-1)*(2*i+1) → 3*(acc + (2*i+1)*(2*i+1)) = (i+1)*(2*(i+1)-1)*(2*(i+1)+1)  (proof 193 chars)
+## verina_basic_71  steps=2 laws=['loop', 'term']
+  [step71] ∀ (l1 l2 : List Char) (idx : Nat), (idx ≤ min l1.length l2.length ∧ l1.take idx = l2.take idx) → (idx < min l1.length l2.length ∧ l1[idx]! = l2[idx]!) → (idx + 1 ≤ min l1.length l2.length ∧ l1.take (idx + 1) = l2.take (idx + 1))  (proof 217 chars)
+## verina_basic_81  steps=3 laws=['cases', 'term', 'term']
+  [divmod_ok] ∀ (x y : Nat), y ≠ 0 → (Int.ofNat (x / y) * Int.ofNat y + Int.ofNat (x % y) = Int.ofNat x ∧ (0 ≤ Int.ofNat (x % y) ∧ Int.ofNat (x % y) < Int.ofNat y) ∧ 0 ≤ Int.ofNat (x / y))  (proof 388 chars)
+## verina_basic_87  steps=1 laws=['term']
+  [sort_array_ok] ∀ (l : List Int), List.Pairwise (· ≤ ·) ((l.mergeSort (fun x y => decide (x ≤ y))).toArray.toList) ∧ List.isPerm l ((l.mergeSort (fun x y => decide (x ≤ y))).toArray.toList) = true  (proof 384 chars)
+## verina_basic_89  steps=2 laws=['loop', 'term']
+  [idxOf_le_of_getElem] ∀ (s : List Int) (k : Nat) (a : Int), s[k]? = some a → s.idxOf a ≤ k  (proof 278 chars)
+  [idxOf_take_lt] ∀ (s : List Int) (i : Nat) (a : Int), a ∈ s.take i → s.idxOf a < i  (proof 298 chars)
+  [idxOf_ge_of_not_mem_take] ∀ (s : List Int) (i : Nat) (x : Int), s[i]? = some x → x ∉ s.take i → i ≤ s.idxOf x  (proof 327 chars)
+  [step89] ∀ (s : List Int) (i : Nat) (acc : List Int), (i ≤ s.length ∧ (∀ x, x ∈ acc ↔ x ∈ s.take i) ∧ acc.Nodup ∧ List.Pairwise (fun a b => s.idxOf a < s.idxOf b) acc) → i < s.length → (i + 1 ≤ s.length ∧ (∀ x, x ∈ (if acc.contains s[i]! t  (proof 1375 chars)
+  [exit89] ∀ (s : List Int) (h : SetToSeq_precond s) (i : Nat) (acc : List Int), (i ≤ s.length ∧ (∀ x, x ∈ acc ↔ x ∈ s.take i) ∧ acc.Nodup ∧ List.Pairwise (fun a b => s.idxOf a < s.idxOf b) acc) → ¬ i < s.length → SetToSeq_postcond s acc h  (proof 527 chars)
+## verina_basic_90  steps=5 laws=['loop', 'bind', 'loop', 'term', 'term']
+  [exit90] ∀ (a : Array (Array Int)) (key : Int) (h : SlopeSearch_precond a key) (i : Nat) (mm nn : Int), (i ≤ a.size ∧ ((0 ≤ mm ∧ mm < a.size ∧ 0 ≤ nn ∧ nn < (a[0]!).size ∧ get2d a mm nn = key) ∨ (mm = -1 ∧ nn = -1 ∧ ∀ k, k < i → ∀ j, j < (  (proof 519 chars)
+  [width90] ∀ (a : Array (Array Int)) (key : Int), SlopeSearch_precond a key → ∀ i, i < a.size → (a[i]!).size = (a[0]!).size  (proof 275 chars)
+  [inner90] ∀ (a : Array (Array Int)) (key : Int), SlopeSearch_precond a key → ∀ (i : Nat), i < a.size → ∀ (j : Nat), (j ≤ (a[i]!).size ∧ ∀ j', j' < j → (a[i]!)[j']! ≠ key) → ¬ (j < (a[i]!).size ∧ (a[i]!)[j]! ≠ key) → ((((if j < (a[i]!).size   (proof 444 chars)
+  [step90] ∀ (a : Array (Array Int)) (key : Int) (i : Nat) (mm nn jr : Int), (i ≤ a.size ∧ ((0 ≤ mm ∧ mm < a.size ∧ 0 ≤ nn ∧ nn < (a[0]!).size ∧ get2d a mm nn = key) ∨ (mm = -1 ∧ nn = -1 ∧ ∀ k, k < i → ∀ j, j < (a[k]!).size → (a[k]!)[j]! ≠ k  (proof 639 chars)
+## verina_basic_91  steps=1 laws=['term']
+  [swap_ok] ∀ (X Y : Int) (h : Swap_precond X Y), Swap_postcond X Y (Y, X) h  (proof 111 chars)
+## verina_basic_92  steps=1 laws=['term']
+  [swaparithmetic_ok] ∀ (X Y : Int) (h : SwapArithmetic_precond X Y), SwapArithmetic_postcond X Y (Y, X) h  (proof 121 chars)
+## verina_basic_93  steps=1 laws=['term']
+  [swapbitvectors_ok] ∀ (X Y : UInt8) (h : SwapBitvectors_precond X Y), SwapBitvectors_postcond X Y (Y, X) h  (proof 121 chars)
+## verina_basic_96  steps=1 laws=['term']
+  [swapsimultaneous_ok] ∀ (X Y : Int) (h : SwapSimultaneous_precond X Y), SwapSimultaneous_postcond X Y (Y, X) h  (proof 123 chars)
