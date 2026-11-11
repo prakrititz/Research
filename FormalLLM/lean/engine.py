@@ -654,6 +654,37 @@ class Derivation:
             tactics.append(f"simp only [{post}, {', '.join(plain)}, List.length_map, List.length_range] at *; "
                            f"(try simp only [{EVAL_SET}]); (repeat' apply And.intro) <;> (try intros) <;> "
                            "first | trivial | lib_apply | auto_close")
+        # the maximum of a list the postcondition builds by brute force (all subarrays, subsequences, common subsequences):
+        # ``L.foldl max d`` is a member of L and bounds it once L is not empty (``maxlist_*``); L is not empty by its length,
+        # by a witness (the empty subarray, the empty subsequence, a one-element list after splitting an input list), or
+        # after a split on the input's ``match`` (Verina advanced_2, 3, 4, 28, 29, 43, 45, 46, 75)
+        if "foldl max" in obligation.statement:
+            tactics.append(self._max_tactic(obligation, plain))
+        # a bounded search for a witness, ``(range (n + 1)).any p`` against the postcondition's ``∃ m, p m``: equivalent once
+        # every witness is at most n (``any_range_iff``), a power ``b ^ m`` is at least m and a digit past the number's
+        # length is 0 (Verina advanced_14, advanced_20)
+        if "List.range" in obligation.statement and ".any" in obligation.statement:
+            bound = ("intro m hm; simp only [beq_iff_eq, decide_eq_true_eq, Bool.and_eq_true] at hm; first "
+                     "| (rw [hm]; apply Refine.le_pow_self'; norm_num; done) | (rw [← hm]; apply Refine.le_pow_self'; norm_num; done) "
+                     "| (by_contra hc; rw [Refine.div_pow_eq_zero_of_lt] at hm <;> first | (simp at hm; done) | norm_num | omega) "
+                     "| omega")
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); "
+                           "(try simp only [Bool.or_eq_true, Bool.and_eq_true, beq_iff_eq, decide_eq_true_eq]); "
+                           "rw [Refine.any_range_iff]; all_goals first | (simp [eq_comm]; done) | (simp; done) | "
+                           f"exact Iff.rfl | ({bound})")
+        split = "(try intros); (repeat' apply And.intro) <;> (try intros) <;> (try casesm* _ ∧ _)"
+        # a polynomial identity over Nat with a subtraction (``2 * i - 1``): split the variable at 0, then the subtraction
+        # normalises away and ``nlinarith`` closes the step (Verina basic_7: a sum of odd squares)
+        if " - " in obligation.statement and "*" in obligation.statement:
+            for var, typ in _binder_types(obligation.binders)[:3]:
+                if typ in ("Nat", "ℕ"):
+                    tactics.append(start + f"{split} <;> first | omega | (rcases {var} with _ | {var} <;> "
+                                           "norm_num [Nat.mul_add, Nat.add_mul] at * <;> nlinarith)")
+        # an ordering kept as a ``Pairwise`` fact implies a weaker ``Pairwise`` (Verina basic_89: ``a`` before ``b`` in the
+        # input, so also when ``a`` is before ``b`` in the result)
+        if "Pairwise" in obligation.statement or "Pairwise" in self.task.prelude:
+            tactics.append(start + f"{split} <;> first | (apply List.Pairwise.imp _ ‹List.Pairwise _ _›; intros; assumption) "
+                                   "| grind")
         # induction along a recursive function of the task (he_038: ``encodeGroups`` applied three times is the identity)
         for f in self._recursive_defs():
             for var, typ in _binder_types(obligation.binders):
@@ -663,6 +694,23 @@ class Derivation:
                     tactics.append(start + f"generalize {var}.toList = l at *; induction l using {f}.induct <;> "
                                            f"first | (simp_all [{f}]; done) | grind [{f}]")
         return tactics
+
+    def _max_tactic(self, obligation: Obligation, plain: List[str]) -> str:
+        post, pre = self.task.post_name, self.task.pre_name
+        simp = f"simp [{', '.join(plain)}]" if plain else "simp"
+        lists = [v for v, typ in _binder_types(obligation.binders) if typ.startswith("List")]
+        cases = "".join(f" | (cases {v} <;> simp_all <;> wit_search)" for v in lists)
+        # each alternative ends in ``done``: one that leaves goals would otherwise win the ``first``
+        nonempty = ("first | (apply List.ne_nil_of_length_pos; simp; done) | (simp; done) "
+                    "| (intro hnil; have := congrArg List.length hnil; simp at this; done) "
+                    f"| ({simp} <;> first | (refine ⟨[], ?_⟩; simp [Refine.allsub_nil_mem_arr, Refine.allsub_nil_mem]; done) "
+                    f"| wit_search{cases})")
+        member = f"first | (simp; done) | ({simp} <;> wit_search)"
+        apply = (f"first | (refine Refine.maxlist_int _ ?_; {nonempty}) | (refine Refine.maxlist_nat _ ?_; {nonempty}) "
+                 f"| (refine Refine.maxlist_int_any _ ?_; {nonempty}) | (refine Refine.maxlen_spec _ ?_; {member})")
+        return (f"unfold {post}; (try unfold {pre} at *); (try dsimp only at *); (try intros); (try split) <;> "
+                f"(try (exfalso; simp_all; done)) <;> first | ({apply}) | ((repeat' apply And.intro) <;> (try intros) <;> "
+                f"first | (exfalso; contradiction) | ({apply}) | (left; exact ⟨‹_›, rfl⟩) | (right; refine ⟨‹_›, ?_⟩; {apply}))")
 
     def _recursive_defs(self) -> List[str]:
         """The task's own functions defined by recursion on their argument (they have an ``.induct`` principle)."""

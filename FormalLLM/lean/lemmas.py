@@ -1583,6 +1583,19 @@ theorem all_map_of_all {α β : Type} (l : List α) (f : α → β) (p : α → 
   | cons a t ih =>
     simp only [List.all_cons, Bool.and_eq_true] at hp
     simp [h a hp.1, ih hp.2]
+-- a bounded search for a witness: ``(range (n + 1)).any p`` decides ``∃ m, p m`` once every witness is at most n
+-- (Verina advanced_14: a power of 4, advanced_20: a decimal digit 8); used by the engine's bounded-search shape tactic
+theorem any_range_iff (p : Nat → Bool) (n : Nat) (hb : ∀ m, p m = true → m ≤ n) :
+    (List.range (n + 1)).any p = true ↔ ∃ m, p m = true := by
+  simp only [List.any_eq_true, List.mem_range]
+  constructor
+  · rintro ⟨m, _, hm⟩; exact ⟨m, hm⟩
+  · rintro ⟨m, hm⟩; exact ⟨m, by have := hb m hm; omega, hm⟩
+theorem lt_pow_self' (b m : Nat) (hb : 2 ≤ b) : m < b ^ m := Nat.lt_pow_self (by omega)
+theorem le_pow_self' (b m : Nat) (hb : 2 ≤ b) : m ≤ b ^ m := (lt_pow_self' b m hb).le
+-- a digit past the number's length is 0
+theorem div_pow_eq_zero_of_lt (a b i : Nat) (hb : 2 ≤ b) (h : a < i) : a / b ^ i = 0 :=
+  Nat.div_eq_of_lt (lt_trans h (lt_pow_self' b i hb))
 end Refine
 '''
 
