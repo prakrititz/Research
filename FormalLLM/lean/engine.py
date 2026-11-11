@@ -685,6 +685,35 @@ class Derivation:
         if "Pairwise" in obligation.statement or "Pairwise" in self.task.prelude:
             tactics.append(start + f"{split} <;> first | (apply List.Pairwise.imp _ ‹List.Pairwise _ _›; intros; assumption) "
                                    "| grind")
+        # conjunctions split through their implications, arrays to indices, then by arithmetic: Nat casts into Int
+        # (Verina basic_81: ``x / y * y + x % y = x`` and ``x % y < y`` as Int), a position and what follows it in an
+        # array (basic_46)
+        through = (f"(try unfold {post} {pre} at *); (try simp only [{post}] at *); "
+                   "(repeat' (first | apply And.intro | intro)) <;> (try casesm* _ ∧ _)")
+        tactics.append(through + " <;> (try simp only [Int.ofNat_eq_coe, List.all_eq_true, decide_eq_true_eq, "
+                       "Refine.forall_mem_drop_toList_iff, Refine.forall_mem_toList_iff_idx] at *) <;> first "
+                       "| (exfalso; contradiction) | omega | positivity | (norm_cast; apply Nat.div_add_mod') "
+                       "| (norm_cast; apply Nat.mod_lt; omega) | grind")
+        binders = _binder_types(obligation.binders)
+        # an array result kept as ``acc.toList = <list>``: every array taken apart into its list, so the facts are about
+        # lists (Verina basic_60: the exit of a filter loop, ``take i`` of the whole input is the input)
+        arrays = [v for v, typ in binders if typ.startswith("Array")]
+        if arrays and 0 < len(arrays) <= 3:
+            parts = " <;> ".join(f"rcases {v} with ⟨{v}⟩" for v in arrays)
+            tactics.append(through + f" <;> {parts} <;> simp_all <;> (try simp (disch := omega) only [List.take_of_length_le]) "
+                           "<;> first | done | exact List.filter_sublist | rw [List.countP_eq_length_filter] | grind")
+        # a loop with a Bool flag ("found"): split on the flag; found, the invariant's facts are the postcondition (with
+        # ``ts_lex_all`` for "no earlier pair"), not found, no pair exists (``ts_pairwise_none``), or the precondition
+        # says one does (``pairsum_exists_of_count``) (Verina advanced_78, 79: two-sum)
+        flags = [v for v, typ in binders if typ == "Bool"]
+        if flags and obligation.kind == "exit":
+            tactics.append(f"(try unfold {post} at *); (try simp only [{pre}] at h_precond); (try dsimp only at *); "
+                           f"(try intros); (try casesm* _ ∧ _); cases {flags[0]} <;> simp only [Bool.false_eq_true, "
+                           "↓reduceIte, true_implies, false_implies, forall_const, if_true, if_false, Bool.true_eq_false, "
+                           f"reduceCtorEq, and_true, not_and, not_lt] at * <;> (try simp only [{post}]) <;> "
+                           "(try casesm* _ ∧ _) <;> first | (exact ⟨‹_›, ‹_›, ‹_›, Refine.ts_lex_all _ _ _ _ ‹_› ‹_› ‹_›⟩) "
+                           "| (exact ⟨‹_›, by omega, ‹_›, ‹_›⟩) | (apply Refine.ts_pairwise_none; intro i2 j2 hij hj; grind) "
+                           "| (exfalso; obtain ⟨i2, j2, h1, h2, h3⟩ := Refine.pairsum_exists_of_count _ _ ‹_›; grind)")
         # induction along a recursive function of the task (he_038: ``encodeGroups`` applied three times is the identity)
         for f in self._recursive_defs():
             for var, typ in _binder_types(obligation.binders):
