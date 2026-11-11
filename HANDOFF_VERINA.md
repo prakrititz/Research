@@ -28,7 +28,16 @@ where the benchmark runs stand and what to do for Verina. **Everything is stoppe
 | 3 | direct Lean, one model | not started | — |
 | 4 | direct Lean, two models | **not built**: `LeanAgent` only has a one-model mode | — |
 
-- **Cost:** about **$6.31** of the $15 approved: $4.57 joint, $1.42 for re-runs, $0.04 split, $0.28 Verina.
+- **Baseline (2026-11-11), no refinement:** one prompt per task, one attempt, no feedback. The model writes the Lean
+  function body and passes only if it compiles and passes every test, with no proof.
+  - **HumanEval: 122/163.** On the 159 L_spec tasks it is 121/159, against 147/159 *verified* for L_spec joint.
+  - **Verina: 119/146** (basic 71/83, advanced 48/63).
+  - The task sets are the tasks whose reference solution passes every test on our Lean (`lean_eval.py reference`).
+  - Results are in `benchmarks/results/{humaneval,verina}/{gen,baseline}_gpt-5.4-mini.jsonl`. Cost $1.00.
+  - Command:
+    `FORMALLLM_MAX_BUDGET_USD=1.5 python benchmarks/lean_baseline.py generate|score --dataset D --config gpt-5.4-mini --rounds 1`.
+- **Cost:** about **$7.31** of the $15 approved: $4.57 joint, $1.42 for re-runs, $0.04 split, $0.28 Verina,
+  $1.00 baseline.
 - **HumanEval joint failures:**
   - he_009, he_020 and he_090: the model could have solved them, but the prover could not close its loop or case;
   - he_001, 025, 059, 071, 087, 099, 111, 114 and 129: strict gold fails these too, so they are the ceiling.

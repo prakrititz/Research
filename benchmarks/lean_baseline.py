@@ -101,7 +101,9 @@ def provider_for(cfg, temperature, timeout):
     invent their own JSON schema instead of writing code)."""
     if cfg["kind"] != "ollama":
         from benchmarks import run_bench
-        return run_bench.make_provider(cfg, temperature, timeout)
+        provider = run_bench.make_provider(cfg, temperature, timeout)
+        provider.response_format = None          # free text: OpenAI refuses JSON mode when the prompt never says "json"
+        return provider
     from FormalLLM.llm.provider import OllamaProvider
     return OllamaProvider(model_name=cfg["model"], think=cfg["think"], response_format=None, timeout=timeout,
                           options={"temperature": temperature, "num_predict": 2048, "num_ctx": 8192})
@@ -131,11 +133,15 @@ def generate(args):
                     reply, error = provider.generate(prompt_for(ds, task)), ""
             except Exception as exc:
                 reply, error = "", str(exc)[:120]
+            from FormalLLM.llm.provider import OpenAIChatProvider
             row = {"task": task, "round": rnd, "config": args.config, "reply": reply, "gen_error": error,
-                   "gen_seconds": round(time.time() - started, 1)}
+                   "gen_seconds": round(time.time() - started, 1),
+                   "usd_so_far": round(OpenAIChatProvider.CUMULATIVE_COST_USD, 5)}     # this process's paid total
             with open(path, "a", encoding="utf8") as handle:
                 handle.write(json.dumps(row) + "\n")
-            print(f"{task:30s} r{rnd} {row['gen_seconds']:5.0f}s {len(reply):5d} chars {error}", flush=True)
+            print(f"{task:30s} r{rnd} {row['gen_seconds']:5.0f}s {len(reply):5d} chars ${row['usd_so_far']:.4f} {error}", flush=True)
+            if error and "budget ceiling" in error:
+                raise SystemExit(f"stopped: {error}")
 
 
 def score(args):
