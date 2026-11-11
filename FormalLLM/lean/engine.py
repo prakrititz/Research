@@ -351,7 +351,11 @@ class HelperLemma:
 
 #: ``plausible`` needs instances for long implications; the default size limit is too small for them.
 #: A fixed seed: the same wrong step gets the same counter-example in every run (a result must be replayable).
-PLAUSIBLE_CONFIG = "(config := { randomSeed := some 20261008, numInst := 200 })"
+#: small inputs only (``maxSize``, default 100): a counter-example is almost always small, and a specification that
+#: enumerates subsequences (Verina's LCS / LIS) took 1000-2100 s and pushed the machine into swap at the default size
+PLAUSIBLE_CONFIG = "(config := { randomSeed := some 20261008, numInst := 200, maxSize := 10 })"
+#: the counter-example search's own time limit (it is feedback, not proof)
+PLAUSIBLE_TIMEOUT = 30.0
 TESTING = "set_option synthInstance.maxSize 100000 in\nset_option synthInstance.maxHeartbeats 0 in\n"
 STANDARD_AXIOMS = frozenset({"propext", "Classical.choice", "Quot.sound"})
 PRINT_AXIOMS = re.compile(r"depends on axioms: \[(.*?)\]", re.S)
@@ -838,7 +842,7 @@ class Derivation:
         source = (TESTING + f"theorem {name}_cex {obligation.binders} :\n    {obligation.statement} := by\n"
                   f"  (try dsimp only at *); plausible {PLAUSIBLE_CONFIG}\n")
         with self.phase("plausible"):
-            reply = self._run(source)
+            reply = self._run(source, timeout=PLAUSIBLE_TIMEOUT)
         return reply.counterexample
 
     def _small_scope(self, obligation: Obligation) -> Optional[str]:
