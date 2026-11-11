@@ -106,8 +106,9 @@ advanced_15, 16, 17, 18, 19, 21, 22, 25, 26 and 27.
    python benchmarks/lspec_run.py --dataset verina --model openai:gpt-5.4-mini --workflow joint --examples 2 --max-usd <cap> --paid-ok
    ```
    Use the watchdog from the earlier session. It stops the run when more than 70% of tasks fail (n ≥ 10), after
-   6 failures in a row, or after 3 errors in a row. A copy is not in the repo; it is a 60-line script polling the
-   results jsonl.
+   6 failures in a row, or after 3 errors in a row. It is `benchmarks/watch_run.py <log> <results.jsonl> lspec_run.py`, run in the
+   background next to the run. It is Windows-only as written, since it lists processes with PowerShell; on Linux or
+   macOS, swap in `pgrep -f`.
 
 ## 5. Model-side notes from the one Verina task (verina_advanced_1)
 
