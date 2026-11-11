@@ -176,7 +176,64 @@ should be reported as such.
   (90.7%).
 - **he_069 counts as a failure.** Count it as failed in the main table, but state why: it is the only case where the
   session accepted a derivation the fresh compile rejected.
-- **Certificates are overwritten.** Every `lspec_run.py` run writes its certificates to `verified/<task>.lean` in this
-  folder, replacing whatever is there, including the committed gold files. After this run, those files hold the model's
-  certificates, and he_000/he_001 hold the split run's. Gold can be restored from git. The folder should be named per
-  run before the next run.
+- **The joint run's certificate files are gone.** That run wrote its certificates over the committed gold files in
+  `verified/`. While separating them on 2026-11-10, the model's 137 files were lost, and gold was restored from git.
+  The verdicts (each one a fresh-process compile) and every derivation tree are kept in the results file.
+  `lspec_run.py --model gold --trees <results file> --tag <name>` rebuilds the files with no model calls. Since commit
+  2df2fad, every run writes its certificates to `verified/<dataset>_<tag>_<workflow>/` and records the path in each row.
+
+## 6. Fixes applied, and the re-run of the failures (2026-11-10/11)
+
+### Fixes (commit 2df2fad, plus `append_mk_eq`)
+
+| Fix | Cause | Layer | Reaches |
+|---|---|---|---|
+| Five `MEANING` lines in the cheatsheet: `digits` (characters, most significant first; `Nat.digits` for values), `find?`, `index`, `split` keeps empties, call syntax. Each claim was checked in Lean. | B, C, wasted calls | cheatsheet | L_spec joint and split. The library lines (`LIBRARY_FACTS`) are also in the split **selector** prompt. |
+| `(e : T)` is read as `(e as T)`; `find` is read as `find?`; a parser error caused by Lean-style application or by `Classical` gets a hint saying what to write | C, wasted calls | parser | L_spec |
+| `Classical.` in a field that must run (term, condition, initial value, guard, result) is refused when the step is applied (`laws.py`) | C | engine | all three approaches |
+| In `split`, a refusal of a bind past the depth limit goes to the selector, and a selector that picks `bind` at the limit is refused before any applier call | C | split routing | split |
+| `mergeSort_key_then_le_prop`, `mergeSort_key_then_not_lt_prop`: the two sort lemmas restated for the comparator written as one `decide` of a proposition | D1 | prover | all three |
+| `append_mk_eq`: `s ++ String.mk l = String.mk (s.toList ++ l)`, in both rewrite sets | he_103 (below) | prover | all three |
+
+### Checks made without the model
+
+- **Round trip:** every expression of the corpus still goes Lean → L_spec → Lean unchanged: HumanEval 1238/1238,
+  classic 42/42, Verina 1033/1033, both before and after the parser change.
+- **Gold steps vs. the `Classical` rule:** no step of any gold derivation (HumanEval, classic, Verina) is refused by it.
+- **Gold re-run on the 14 gold-reachable failures** after the prover changes: 14/14 verified in a fresh process
+  (`run_humaneval_gold_recheck1110_joint.jsonl`).
+- **The model's own he_116 and he_149 terms**, replayed with no model calls: 2/2 verified
+  (`run_humaneval_gold_modelterms1110_joint.jsonl`). The prover had refused both 4 times in the joint run.
+
+### Model re-run on the 14 gold-reachable failures
+
+Results files: `run_humaneval_openai-gpt-5.4-mini_ex2cross_fix1110_joint.jsonl` (14 tasks), and
+`..._fix1111_joint.jsonl` (he_103 again, after `append_mk_eq`). Same settings as §1. Cost: $1.40 + $0.01.
+
+**11/14 solved and verified in a fresh process** (10 in the first re-run, then he_103 after `append_mk_eq`). 10 of
+the 11 took at most 9 calls (he_069 took 16). In the joint run, these 14 tasks had used 261 calls with no success.
+
+| Task | Joint run | Re-run | Fix that applies |
+|---|---|---|---|
+| he_037 | exhausted, 28 calls | **solved, 1 call** | cheatsheet (the closed form now proves) |
+| he_044 | exhausted, 4 | **solved, 1** | `digits` line: `string(digits(base, x))` instead of a loop |
+| he_069 | failed the fresh compile (`Classical.choose`) | **solved, 16** | `Classical` refused at the step |
+| he_079 | exhausted, 4 | **solved, 1** | `digits` line |
+| he_084 | exhausted, 4 | **solved, 1** | `digits` line |
+| he_094 | exhausted, 30 | **solved, 9** | `find?`; `Classical` refused |
+| he_116 | exhausted, 8 | **solved, 3** | sort lemma, Prop-form comparator |
+| he_118 | exhausted, 30 | **solved, 9** | (no targeted fix; 3 calls were lost to the network in the joint run) |
+| he_136 | exhausted, 25 | **solved, 2** | (no targeted fix: the model chose a different loop) |
+| he_149 | exhausted, 4 | **solved, 1** | sort lemma, Prop-form comparator |
+| he_009 | exhausted, 27 | exhausted, 23 | — (D2: a loop the prover cannot close) |
+| he_020 | exhausted, 16 | exhausted, 30 | — (D2) |
+| he_090 | exhausted, 30 | exhausted, 30 | — (the 2-element case: `some(max)` is unproved against the specification's form) |
+| he_103 | exhausted, 24 | exhausted, 30; then **solved, 3** (fix1111) | `digits` line, then `append_mk_eq`. In the first re-run the model wrote `some("0b" ++ string(digits(2, …)))` at once, but the prover could not close the string append (gold builds the list inside `String.mk`). With `append_mk_eq`: the replayed model term verified, gold he_079/084/103 still verified (3/3), and the model solved it in 3 calls. |
+
+Two of the 10 (he_118, he_136) have no targeted fix. This is single-trial variance as much as the fixes, and should
+be reported as such.
+
+**Combined count, with a caveat:** joint (136) + re-runs (11) = **147/159**. This mixes versions of the system: the
+136 were solved before the fixes, the 11 after. A clean number for the paper needs one full run on one version. The
+fixes only add facts, rewrites and refusals of non-computable steps, so a task solved before should stay solvable;
+that is likely, not measured.
