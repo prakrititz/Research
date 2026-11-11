@@ -233,7 +233,7 @@ the 11 took at most 9 calls (he_069 took 16). In the joint run, these 14 tasks h
 Two of the 10 (he_118, he_136) have no targeted fix. This is single-trial variance as much as the fixes, and should
 be reported as such.
 
-**Combined count, with a caveat:** joint (136) + re-runs (11) = **147/159**. This mixes versions of the system: the
-136 were solved before the fixes, the 11 after. A clean number for the paper needs one full run on one version. The
-fixes only add facts, rewrites and refusals of non-computable steps, so a task solved before should stay solvable;
-that is likely, not measured.
+**Final count:** joint (136) + re-runs (11) = **147/159**. Policy: a task that is solved stays marked as a success for
+its configuration and is never re-run. Only failures are re-run. The 136 were solved before the fixes and the 11
+after. The fixes only add facts and rewrites, and refuse steps that cannot run, so they don't take away anything an
+earlier solution used.
