@@ -59,9 +59,9 @@ def test_tasks_without_a_precondition_argument_are_detected():
 
 def test_the_witness_search_is_only_added_for_verina():
     from FormalLLM.lean.task import precondition_proof
-    assert "wit_search" not in precondition_proof("f_precond")
-    assert "wit_search" in precondition_proof("f_precond", witness_search=True)
-    assert "wit_search" in datasets.get("verina").compat and "wit_search" not in datasets.get("humaneval").compat
+    assert "pre_wit_search" not in precondition_proof("f_precond")
+    assert "pre_wit_search" in precondition_proof("f_precond", witness_search=True)
+    assert "pre_wit_search" in datasets.get("verina").compat and "wit_search" not in datasets.get("humaneval").compat
 
 
 def test_inputs_are_read_by_the_encoding_of_their_dataset():

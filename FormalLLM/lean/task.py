@@ -31,8 +31,8 @@ def precondition_proof(pre_name: str, witness_search: bool = False) -> str:
     # ``native_decide`` runs the compiled decision procedure: instant, where ``norm_num``/``simp``/``decide`` evaluate a precondition
     # on a nine-element list of rationals symbolically in over a minute
     # ``trivial`` comes after it: it tries ``decide``, which evaluates the precondition by kernel reduction (69 s on nine rationals)
-    # ``wit_search`` (the Verina compat prelude) tries small witnesses for an existential precondition, which is not decidable
-    search = f" | (unfold {pre_name}; wit_search)" if witness_search else ""
+    # ``pre_wit_search`` (the Verina compat prelude) tries small witnesses for an existential precondition, which is not decidable
+    search = f" | (unfold {pre_name}; pre_wit_search)" if witness_search else ""
     return (f"(by first | native_decide | trivial | (norm_num [{pre_name}]; done) | (simp [{pre_name}]; done) | decide | omega{search})")
 
 
@@ -219,7 +219,7 @@ class LeanTask:
         commands = []
         for case in self.tests:
             args = self.call_args(case)
-            proof = precondition_proof(self.pre_name, witness_search='wit_search' in self.compat)
+            proof = precondition_proof(self.pre_name, witness_search='pre_wit_search' in self.compat)
             got, want = f"({self.name} {args}{self.proof_arg(proof)})", render(case["expected"], self.ret)
             check = f"(({got}).isPerm ({want}))" if self.compare == "perm" else same_expr(self.ret, got, want)
             commands.append(f"set_option maxHeartbeats 2000000 in\n#eval {check}")

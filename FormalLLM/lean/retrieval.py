@@ -16,7 +16,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 EXPORTS = os.path.join(ROOT, "exports")
 TOKEN = re.compile(r"[A-Za-z_][A-Za-z0-9_.!?]*|[∀∃↔→∧∨¬≤≥<>=+\-*/%]")
 # lines every Verina prelude shares (compatibility shims, the test tactic): they say nothing about the task
-NOISE = re.compile(r"(?s)namespace Array.*?end Std\.HashSet|syntax \"wit_search\".*?wit_search\)\)|import Mathlib")
+NOISE = re.compile(r"(?s)namespace Array.*?end Std\.HashSet|syntax \"pre_wit_search\".*?pre_wit_search\)\)|import Mathlib")
 
 
 def _postcondition(spec: str) -> str:

@@ -91,20 +91,22 @@ class Dataset:
 #: Verina pins Lean 4.18 (4.24 for ``grind``); this project runs 4.34.1. Two constants its reference code uses were renamed.
 #: Defining them again (same meaning) makes those tasks usable without editing any of Verina's files. Seven tasks
 #: whose reference code is a ``let rec`` without a termination hint still fail on 4.34 (a deterministic ``simp`` timeout in the
-#: automatic termination proof); fixing them means editing Verina's code, which is not done.
+#: automatic termination proof); fixing them means editing Verina's code, which is not done. ``pre_wit_search`` tries
+#: small witnesses for an existential precondition; it must not be called ``wit_search``, the engine's own witness search
+#: (``engine.WIT_SEARCH``): two tactics of one name broke every Verina certificate ("multiple interpretations").
 VERINA_COMPAT = """namespace Array
 def mkArray {α : Type} (n : Nat) (v : α) : Array α := Array.replicate n v
 end Array
 namespace Std.HashSet
 def empty {α : Type} [BEq α] [Hashable α] : Std.HashSet α := {}
 end Std.HashSet
-syntax "wit_search" : tactic
+syntax "pre_wit_search" : tactic
 macro_rules
-  | `(tactic| wit_search) => `(tactic| first
+  | `(tactic| pre_wit_search) => `(tactic| first
       | decide
-      | (refine ⟨?_, ?_⟩ <;> wit_search)
-      | (refine ⟨0, ?_⟩; wit_search) | (refine ⟨1, ?_⟩; wit_search) | (refine ⟨2, ?_⟩; wit_search)
-      | (refine ⟨3, ?_⟩; wit_search) | (refine ⟨4, ?_⟩; wit_search) | (refine ⟨5, ?_⟩; wit_search))"""
+      | (refine ⟨?_, ?_⟩ <;> pre_wit_search)
+      | (refine ⟨0, ?_⟩; pre_wit_search) | (refine ⟨1, ?_⟩; pre_wit_search) | (refine ⟨2, ?_⟩; pre_wit_search)
+      | (refine ⟨3, ?_⟩; pre_wit_search) | (refine ⟨4, ?_⟩; pre_wit_search) | (refine ⟨5, ?_⟩; pre_wit_search))"""
 
 REGISTRY: Dict[str, Dataset] = {d.name: d for d in (
     Dataset("verina", VERINA_ROOT, ("verina_",), "benchmarks.datasets.verina_oracle",

@@ -91,7 +91,7 @@ def validate_task(lean, task: LeanTask, reference_mode: str = "equal", permissiv
     if env is None:
         row["errors"] = [e[:300] for e in (reply.errors or ["timeout"])[:2]]
         return row
-    proof = precondition_proof(task.pre_name, witness_search='wit_search' in task.compat)
+    proof = precondition_proof(task.pre_name, witness_search='pre_wit_search' in task.compat)
     p = task.proof_arg(proof)
 
     def value(command: str) -> Optional[str]:
