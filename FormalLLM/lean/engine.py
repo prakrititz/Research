@@ -666,12 +666,12 @@ class Derivation:
         if "List.range" in obligation.statement and ".any" in obligation.statement:
             bound = ("intro m hm; simp only [beq_iff_eq, decide_eq_true_eq, Bool.and_eq_true] at hm; first "
                      "| (rw [hm]; apply Refine.le_pow_self'; norm_num; done) | (rw [← hm]; apply Refine.le_pow_self'; norm_num; done) "
-                     "| (by_contra hc; rw [Refine.div_pow_eq_zero_of_lt] at hm <;> first | (simp at hm; done) | norm_num | omega) "
+                     "| (by_contra hc; rw [Refine.div_pow_eq_zero_of_lt] at hm <;> first | (simp at hm; done) | omega | (norm_num; done)) "
                      "| omega")
             tactics.append(f"unfold {post}; (try unfold {pre} at *); "
                            "(try simp only [Bool.or_eq_true, Bool.and_eq_true, beq_iff_eq, decide_eq_true_eq]); "
-                           "rw [Refine.any_range_iff]; all_goals first | (simp [eq_comm]; done) | (simp; done) | "
-                           f"exact Iff.rfl | ({bound})")
+                           f"rw [Refine.any_range_iff]; all_goals first | ({bound}) | exact Iff.rfl | (simp; done) | "
+                           "(simp [eq_comm]; done)")
         split = "(try intros); (repeat' apply And.intro) <;> (try intros) <;> (try casesm* _ ∧ _)"
         # a polynomial identity over Nat with a subtraction (``2 * i - 1``): split the variable at 0, then the subtraction
         # normalises away and ``nlinarith`` closes the step (Verina basic_7: a sum of odd squares)
@@ -694,6 +694,26 @@ class Derivation:
                        "Refine.forall_mem_drop_toList_iff, Refine.forall_mem_toList_iff_idx] at *) <;> first "
                        "| (exfalso; contradiction) | omega | positivity | (norm_cast; apply Nat.div_add_mod') "
                        "| (norm_cast; apply Nat.mod_lt; omega) | grind")
+        # ... with ``all``/``any`` over arrays and ranges as quantifiers, and an index split at 0 for a fact stated at ``i + 1``
+        # (Verina basic_108: every prefix sum is ``s[0] = 0`` or ``s[i + 1]``, which is not negative)
+        tactics.append(through + " <;> (try simp only [Array.all_eq_true, List.any_eq_false, List.mem_range, decide_eq_true_eq, "
+                       "not_lt, ge_iff_le] at *) <;> first | omega | grind "
+                       "| (intro k hk; rw [← getElem!_pos _ k hk]; rcases k with _ | k <;> grind)")
+        # a result found by ``find?`` with a default: split on what ``find?`` returns; found, the element satisfies the
+        # predicate and is in the list, not found, no element does; then counting facts (Verina advanced_11: a majority
+        # leaves every other value at most half, ``filter_le_half_or_eq``; advanced_54: a
+        # list of n distinct values up to n misses exactly one of 0..n, ``range_not_subset``, ``missing_unique``)
+        if "find?" in obligation.statement and "getD" in obligation.statement:
+            tactics.append(f"unfold {post}; (try simp only [{pre}] at h_precond); (try dsimp only); (try intros); "
+                           "unfold Option.getD; split <;> (try simp only [List.find?_eq_none] at *) <;> "
+                           "(try (have hfs := List.find?_some ‹List.find? _ _ = some _›; "
+                           "have hfm := List.mem_of_find?_eq_some ‹List.find? _ _ = some _›)) <;> "
+                           "(try simp only [decide_eq_true_eq, List.all_eq_true, not_lt] at *) <;> (try casesm* _ ∧ _) <;> "
+                           "(repeat' (first | apply And.intro | intro)) <;> first | (exfalso; contradiction) | assumption "
+                           "| omega | (left; assumption) | (exact Refine.filter_le_half_or_eq _ _ _ ‹_›) "
+                           "| (right; exact ⟨‹_›, fun _ _ => Refine.filter_le_half_or_eq _ _ _ ‹_›⟩) "
+                           "| (exfalso; exact Refine.range_not_subset _ ‹_›) "
+                           "| (apply Refine.missing_unique _ _ _ _ hfm hfs <;> assumption) | (simp; done) | grind")
         binders = _binder_types(obligation.binders)
         # an array result kept as ``acc.toList = <list>``: every array taken apart into its list, so the facts are about
         # lists (Verina basic_60: the exit of a filter loop, ``take i`` of the whole input is the input)

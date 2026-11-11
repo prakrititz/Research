@@ -1635,6 +1635,36 @@ theorem sq_window (n r : Nat) (h : r * r ≤ n ∧ n < (r + 1) * (r + 1)) : (r *
 theorem sq_window_decide (n r : Nat) (h : r * r ≤ n ∧ n < (r + 1) * (r + 1)) :
     (decide (r * r = n) = true ↔ ∃ i, i * i = n) := by
   simp only [decide_eq_true_eq]; exact sq_window n r h
+-- a majority b leaves every other value at most half (Verina advanced_11)
+theorem filter_le_half_or_eq {α : Type} [DecidableEq α] (l : List α) (a b : α)
+    (hb : (l.filter (fun y => y = b)).length > l.length / 2) :
+    (l.filter (fun y => y = a)).length ≤ l.length / 2 ∨ a = b := by
+  by_cases h : a = b
+  · exact Or.inr h
+  · have := filter_pair_le l a b h; left; omega
+-- n distinct values up to n miss exactly one of 0..n (Verina advanced_54: the missing number)
+theorem range_not_subset (nums : List Nat) : ¬ (∀ x ∈ List.range (nums.length + 1), ¬ x ∉ nums) := by
+  intro h
+  have hsub : List.range (nums.length + 1) ⊆ nums := fun x hx => by have := h x hx; simpa using this
+  have := (List.nodup_range.subperm hsub).length_le
+  simp at this
+theorem missing_unique (nums : List Nat) (hb : ∀ x ∈ nums, x ≤ nums.length) (hnd : nums.Nodup) (r : Nat)
+    (hr : r ∈ List.range (nums.length + 1)) (hrn : r ∉ nums) (x : Nat) (hx : x ∈ List.range (nums.length + 1))
+    (hxr : x ≠ r) : x ∈ nums := by
+  by_contra hxn
+  have hsub : nums ⊆ ((List.range (nums.length + 1)).erase x).erase r := by
+    intro y hy
+    have hyr : y ≠ r := fun e => hrn (e ▸ hy)
+    have hyx : y ≠ x := fun e => hxn (e ▸ hy)
+    rw [List.mem_erase_of_ne hyr, List.mem_erase_of_ne hyx]
+    exact List.mem_range.mpr (by have := hb y hy; omega)
+  have hl := (hnd.subperm hsub).length_le
+  have hrmem : r ∈ (List.range (nums.length + 1)).erase x := (List.mem_erase_of_ne (Ne.symm hxr)).mpr hr
+  rw [List.length_erase_of_mem hrmem, List.length_erase_of_mem hx] at hl
+  simp at hl
+  have := List.mem_range.mp hx
+  have := List.mem_range.mp hr
+  omega
 end Refine
 '''
 
