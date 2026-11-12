@@ -460,6 +460,7 @@ class Derivation:
         self.timing: Dict[str, float] = defaultdict(float)
         self.counts: Dict[str, int] = defaultdict(int)
         self._phase = "cascade"
+        self._libeq_tried = False
 
     @contextmanager
     def phase(self, name: str):
@@ -795,6 +796,16 @@ class Derivation:
                            "List.mem_range, List.mem_filter] at hf)); "
                            "clear hR; obtain ⟨hA, hB⟩ := hf; (repeat' apply And.intro) <;> (try apply Iff.intro) <;> "
                            "(try intros) <;> (try rcases hA with hA | ⟨i0, hi0, j0, hj0, hx0⟩) <;> (try split at hx0) <;> grind")
+        # a bounded search for a power, ``(range (n.toNat + 1)).any (fun x => b ^ x = n ...)``, after the task's own power
+        # function is rewritten to ``^`` (``_library_equations``): a witness is below ``n`` since ``x < b ^ x``
+        # (Verina advanced_23: a power of two)
+        libeq = [h.name for h in self.helpers if h.name.startswith("auto_libeq_")]
+        if libeq and ".any" in obligation.statement and "List.range" in obligation.statement:
+            bound = " | ".join(f"(have := Refine.int_lt_pow {b} x (by norm_num); omega)" for b in (2, 3, 4, 10))
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); (try simp only [{', '.join(libeq)}] at *); split <;> "
+                           "rename_i h <;> simp only [List.any_eq_true, List.mem_range, decide_eq_true_eq] at h ⊢ <;> first "
+                           "| (obtain ⟨x, _, hx⟩ := h; exact ⟨x, hx⟩) "
+                           f"| (rintro ⟨x, hx, hn⟩; apply h; refine ⟨x, ?_, hx, hn⟩; first | {bound})")
         # induction along a recursive function of the task (he_038: ``encodeGroups`` applied three times is the identity)
         for f in self._recursive_defs():
             for var, typ in _binder_types(obligation.binders):
@@ -821,6 +832,44 @@ class Derivation:
         return (f"unfold {post}; (try unfold {pre} at *); (try dsimp only at *); (try intros); (try split) <;> "
                 f"(try (exfalso; simp_all; done)) <;> first | ({apply}) | ((repeat' apply And.intro) <;> (try intros) <;> "
                 f"first | (exfalso; contradiction) | ({apply}) | (left; exact ⟨‹_›, rfl⟩) | (right; refine ⟨‹_›, ?_⟩; {apply}))")
+
+    def _library_equations(self) -> bool:
+        """Recognise the task's own recursive functions as library functions, by their signature, and admit the equation as
+        a helper lemma when Lean proves it: ``f (b : T) (e : Nat) : T`` as ``b ^ e`` (Verina advanced_23), ``f : List Nat →
+        Nat`` as ``Nat.ofDigits`` in base 10 or 2 (advanced_5), ``f (x : T) (l : List T) : List T`` with a ``let rec aux``
+        as ``l.filter (· = x)`` (advanced_1). True when an equation was added."""
+        prelude = self.task.prelude
+        recursive = set(self._recursive_defs())
+        found = False
+        heads = list(re.finditer(r"(?m)^def\s+([A-Za-z_][\w']*)\s*((?:\([^()]*\)\s*)*):\s*([^\n]+?)\s*(?::=|$)", prelude))
+        for m in heads:
+            name, binders, ret = m.group(1), m.group(2), m.group(3).strip()
+            body = re.split(r"(?m)^\S", prelude[m.end():], maxsplit=1)[0]
+            params = [(n, typ.strip()) for names, typ in re.findall(r"\(([^():]+):\s*([^()]+)\)", binders)
+                      for n in names.split()]
+            types = [typ for _, typ in params]
+            f = f"_root_.{name}"
+            cands = []
+            if len(params) == 2 and types == [ret, "Nat"] and ret in ("Int", "Nat") and name in recursive:
+                b, e = params[0][0], params[1][0]
+                cands.append((f"∀ ({b} : {ret}) ({e} : Nat), {f} {b} {e} = {b} ^ {e}",
+                              f"by\n  intro {b} {e}; induction {e} with\n  | zero => simp [{f}]\n"
+                              f"  | succ n ih => simp only [{f}, ih, pow_succ]; ring"))
+            if not params and ret.replace(" ", "") == "ListNat→Nat":
+                for base in (10, 2):
+                    cands.append((f"∀ (l : List Nat), {f} l = Nat.ofDigits {base} l",
+                                  f"by\n  intro l; induction l with\n  | nil => simp [{f}, Nat.ofDigits]\n"
+                                  f"  | cons d ds ih => simp [{f}, Nat.ofDigits, ih]"))
+            if len(params) == 2 and types[1] == f"List {types[0]}" and ret == types[1] and "let rec aux" in body:
+                x, l = params[0][0], params[1][0]
+                cands.append((f"∀ ({x} : {types[0]}) ({l} : {types[1]}), {f} {x} {l} = {l}.filter (fun y => decide (y = {x}))",
+                              f"by\n  intro {x} {l}; unfold {f}; induction {l} with\n  | nil => simp [{f}.aux]\n"
+                              f"  | cons y ys ih => simp only [{f}.aux, List.filter_cons]; split <;> simp_all"))
+            for k, (statement, proof) in enumerate(cands):
+                if self._admit(HelperLemma(f"auto_libeq_{name}_{k}", statement, proof)) is None:
+                    found = True
+                    break
+        return found
 
     def _recursive_defs(self) -> List[str]:
         """The task's own functions defined by recursion on their argument (they have an ``.induct`` principle)."""
@@ -909,6 +958,16 @@ class Derivation:
         verdict = self._check_once(obligation, name)
         if verdict.status != "UNPROVED" or verdict.counterexample:
             return verdict                              # proved, ill-formed, or false: no prover can do more
+        # the task's hand-written recursive helpers recognised as library functions (``pow`` is ``^``, a digit fold is
+        # ``Nat.ofDigits``, a ``let rec`` filter is ``List.filter``): proved once, they join the cascade's rewrite rules
+        if not self._libeq_tried:
+            self._libeq_tried = True
+            with self.phase("library_equations"):
+                added = self._library_equations()
+            if added:
+                verdict = self._check_once(obligation, name)
+                if verdict.status != "UNPROVED" or verdict.counterexample:
+                    return verdict
         # tactics the common cascade does not contain (they depend on this obligation): each proof found becomes a helper
         specials = [t for t in (self._witness_tactic(obligation), self._cases_tactic(obligation)) if t]
         specials += self._shape_tactics(obligation)

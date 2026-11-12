@@ -1744,6 +1744,11 @@ theorem foldl_max_pairs (n m : Nat) (f : Nat → Nat → Nat) (R : Nat)
   · obtain ⟨i, hi, hx⟩ := List.mem_flatMap.mp h1
     obtain ⟨j, hj, hx⟩ := List.mem_map.mp hx
     exact Or.inr ⟨i, List.mem_range.mp hi, j, List.mem_range.mp hj, hx⟩
+-- a natural number is below a power of it with base at least 2, as integers (Verina advanced_23)
+theorem int_lt_pow (b : Int) (x : Nat) (hb : 2 ≤ b) : (x : Int) < b ^ x := by
+  obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le (by omega : (0 : Int) ≤ b)
+  have : x < n ^ x := Nat.lt_pow_self (by omega)
+  exact_mod_cast this
 end Refine
 '''
 
