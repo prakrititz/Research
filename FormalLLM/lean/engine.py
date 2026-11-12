@@ -726,6 +726,21 @@ class Derivation:
         tactics.append(f"(try beta_reduce); (try unfold {post} at *); (try simp only [{pre}] at h_precond); "
                        "(try simp only [Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, "
                        f"Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx{unfold_plain}] at *); grind")
+        # an index taken modulo the length (``(a % len).toNat``): it is in bounds when the list is not empty, so ``getD``
+        # and ``[_]?`` at it are the element (Verina basic_39: rotate right)
+        if "toNat" in obligation.statement and "%" in obligation.statement:
+            tactics.append(f"unfold {post}; (try simp only [{pre}] at *); (repeat' (first | apply And.intro | intro)) <;> "
+                           "simp_all [Refine.getD_emod, Refine.getElem?_emod]")
+        # a result sorted with mergeSort: sorted (``pairwise_mergeSort_le_int``), without repeats when its input was
+        # deduplicated, and membership through the sort, ``dedup``, ``++`` and ``filter`` (Verina basic_22: the sorted
+        # symmetric difference of two arrays)
+        if "mergeSort" in obligation.statement:
+            tactics.append(f"unfold {post}; (try simp only [{pre}] at *); (try simp only [Refine.array_any_eq_iff_mem{unfold_plain}] at *); "
+                           "(repeat' apply And.intro) <;> first | (simpa using Refine.pairwise_mergeSort_le_int _) "
+                           "| (exact (List.mergeSort_perm _ _).nodup_iff.mpr (List.nodup_dedup _)) "
+                           "| (simp only [Array.all_eq_true_iff_forall_mem, List.all_eq_true, List.mem_toArray, List.mem_mergeSort, "
+                           "List.mem_dedup, List.mem_append, List.mem_filter]; intro x hx; simp only [Array.mem_def] at *; "
+                           "(try split) <;> simp at hx ⊢ <;> tauto)")
         binders = _binder_types(obligation.binders)
         # an array result kept as ``acc.toList = <list>``: every array taken apart into its list, so the facts are about
         # lists (Verina basic_60: the exit of a filter loop, ``take i`` of the whole input is the input)
@@ -746,6 +761,26 @@ class Derivation:
                            "(try casesm* _ ∧ _) <;> first | (exact ⟨‹_›, ‹_›, ‹_›, Refine.ts_lex_all _ _ _ _ ‹_› ‹_› ‹_›⟩) "
                            "| (exact ⟨‹_›, by omega, ‹_›, ‹_›⟩) | (apply Refine.ts_pairwise_none; intro i2 j2 hij hj; grind) "
                            "| (exfalso; obtain ⟨i2, j2, h1, h2, h3⟩ := Refine.pairsum_exists_of_count _ _ ‹_›; grind)")
+        # a loop step with a Bool flag: split the step's ``if``, case on the flag, then the invariant's facts for the
+        # first ``i`` elements and the new one (Verina basic_40: second smallest, ``found`` once a larger value is seen)
+        if flags and obligation.kind != "exit" and "if " in obligation.statement:
+            tactics.append(f"(try beta_reduce); (try simp only [{pre}] at h_precond); (try casesm* _ ∧ _); (try split) <;> "
+                           f"cases {flags[0]} <;> simp only [Bool.false_eq_true, Bool.true_eq_false, false_implies, "
+                           "true_implies, forall_const, true_and, and_true, false_or, true_or, or_false, imp_false, not_true, "
+                           "not_false_eq_true] at * <;> grind")
+        # a search loop whose invariant is "found here, or not in the first i rows": on exit each side is one side of
+        # the postcondition; not found, the loop ran to the end, so no row holds the key (``all_all_of_bang``)
+        # (Verina basic_90: search in a sorted 2-D array)
+        if obligation.kind == "exit" and "∨" in obligation.binders:
+            tactics.append(f"unfold {post}; (try simp only [{pre}] at h_precond); (try dsimp only); (try casesm* _ ∧ _); "
+                           "rcases ‹_ ∨ _› with h | h <;> [left; right] <;> (try casesm* _ ∧ _) <;> first "
+                           "| (exact ⟨‹_›, ‹_›, ‹_›, ‹_›, ‹_›⟩) | (exact ⟨‹_›, ‹_›, ‹_›⟩) | (exact ⟨‹_›, ‹_›⟩) "
+                           "| (refine ⟨‹_›, ‹_›, ?_⟩; apply Refine.all_all_of_bang _ _ _ _ ‹_›; omega) | grind")
+        # a 2-D array whose precondition says every row has the same size (``Pairwise (·.size = ·.size)``): every row has
+        # the size of row 0 (``rect_row_size``), then the result's ``if`` split (Verina basic_90: the inner loop's exit)
+        if "Array (Array" in obligation.binders:
+            tactics.append(f"(try beta_reduce); (try simp only [{pre}] at h_precond); (try casesm* _ ∧ _); "
+                           "have hrect := Refine.rect_row_size _ ‹_›; (try split) <;> first | (left; grind) | (right; grind) | grind")
         # induction along a recursive function of the task (he_038: ``encodeGroups`` applied three times is the identity)
         for f in self._recursive_defs():
             for var, typ in _binder_types(obligation.binders):

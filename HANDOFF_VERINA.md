@@ -1,7 +1,10 @@
-# Handoff — 2026-11-11: fix Verina before any paid run
+# Handoff — 2026-11-12: fix Verina before any paid run
 
 Read [`HANDOFF.md`](HANDOFF.md) first for the setup, the layout and how HumanEval was fixed (§4–§5.3). This file covers
 where the benchmark runs stand and what to do for Verina. **Everything is stopped.** No run is active.
+
+**Status 2026-11-12:** §3 is fixed and strict gold on Verina is at **153/177** (it started at 126). §7 has the
+progress, §8 the remaining failures, and §9 the probe workflow used to find each fix.
 
 ## 1. Rules from the owner (binding)
 
@@ -46,7 +49,7 @@ where the benchmark runs stand and what to do for Verina. **Everything is stoppe
 - **Joint certificates:** the 136 `.lean` files from the joint run were lost. Rebuild them for free by replaying the
   saved trees: `--model gold --trees <results.jsonl>`.
 
-## 3. Bug found: two tactics named `wit_search` (fix this first)
+## 3. Bug found: two tactics named `wit_search` (fixed, commit 80a20fe)
 
 **Symptom.** Verina tasks fail with:
 
@@ -138,3 +141,60 @@ advanced_15, 16, 17, 18, 19, 21, 22, 25, 26 and 27.
 | `benchmarks/results/lspec/run_verina_openai-gpt-5.4-mini_ex2cross_joint.jsonl` | the model's 1 Verina row (EXHAUSTED); a failure, so it may be re-run after the fixes |
 | `benchmarks/results/lspec/verina_hand_lemmas.txt` | the 188 Verina hand lemmas by task |
 | `benchmarks/results/lspec/run_humaneval_openai-gpt-5.4-mini_ex2cross_split.jsonl` | split: he_000 CERTIFIED; its file check is still pending |
+
+## 7. Verina strict gold progress (2026-11-11 to 11-12)
+
+Every run is strict gold (`--model gold --attempts 1 --retractions 0`). A task counts only when the fresh-process file
+check says SOLVED. Each fix run covers **only the tasks still failing**; HumanEval is checked after every change on a
+sample of tasks whose proofs use the changed area.
+
+| run (`run_verina_gold_<tag>_joint.jsonl`) | tasks run | solved | total | what changed |
+|---|---|---|---|---|
+| v2 | 177 | 126 | 126 | §3 fixed (`pre_wit_search`); counter-example search limited to maxSize 10 and 30 s |
+| v2fix1 | 51 | 11 | 137 | max of a list (`maxlist_*`), bounded search `(range (n+1)).any` (`any_range_iff`, `le_pow_self'`), Nat polynomial, Pairwise |
+| v2fix2 | 40 | 6 | 143 | flag split (two-sum: `pairsum_exists_of_count`, `ts_*`), arrays as lists, casts and index forms through implications, `sq_window_decide` |
+| v2fix3 | 34 | 4 | 147 | `find?`-split: majority (`filter_le_half_or_eq`), missing number (`range_not_subset`, `missing_unique`); array/range quantifiers split at index 0 |
+| v2fix4 | 30 | 2 | 149 | most frequent (`not_all_ne_max_dec`, `le_foldl_max`), precondition unfolded by name + index forms + `grind` |
+| v2fix5 | 4 | 3 | 152 | index modulo the length (`getD_emod`, `getElem?_emod`), mergeSort result (`array_any_eq_iff_mem`), loop step with a Bool flag |
+| v2fix6 | 1 | 1 | 153 | 2-D search: exit with a disjunctive invariant (`all_all_of_bang`), rows of a rectangular array (`rect_row_size`) |
+
+HumanEval samples after each change (`run_humaneval_gold_recheck1112{,b,c,d,e}_joint.jsonl`): all solved every time.
+
+All new tactics are in `Derivation._shape_tactics` ([`engine.py`](FormalLLM/lean/engine.py)), each gated on the shape of
+the obligation (a word in the statement, the binder types, the obligation kind) and never on a task name. All new
+lemmas are `Refine.*` in [`lemmas.py`](FormalLLM/lean/lemmas.py), each with a comment naming the task that first
+needed it.
+
+## 8. Remaining Verina failures (24)
+
+None of these is a prover bug; each needs a proof the library does not have yet. Grouped by what is missing:
+
+| family | tasks | what is missing |
+|---|---|---|
+| the spec is the brute force over subarrays/pairs, the program a `foldl max` over the same set | advanced_30, 38, 42, 71 | the index/`zipIdx` form of the spec against the flatMap of the program; a `foldl max` attained/upper-bound lemma for flatMap of pairs |
+| sorted by a key, then `take` | advanced_76 (top-k frequent), basic_104 (map update) | `find?` on a list with unique keys through mergeSort and filter; Pairwise of a sort by key on `zipIdx` |
+| `let rec`/recursive task helpers | advanced_1 (`filterlist`), 10 (`removePrimeFactor`, padicValNat), 23 (custom `pow`), 24 (subsequences), 56 (`isSubsequence`), 62 (`ml`/`mr` in the spec) | the helper = a library function, by induction (`fl_eq` style) |
+| loop exit with a task-specific fact | advanced_8 (gas station), 52 (min operations), 58 (ugly number), 67 (run-length decode), basic_89 (idxOf dedup), 102 (array two-sum with lex conditions) | per task. advanced_52 is proved by hand in the probe (take of reverse, `k = 0` when the result is 0) but not as a general tactic |
+| arithmetic / digits | advanced_5 (add two numbers), basic_43 (Nat subtraction polynomial) | advanced_5 is proved by hand in the probe (task `listToNat` = `Nat.ofDigits 10`, then `Nat.digits_ofDigits`, `Nat.ofDigits_digits`, `Nat.getLast_digit_ne_zero`), not yet general |
+| `find?`/second occurrence | advanced_12 (first duplicate), 57 (next greater), 13 (chords), basic_27 (first repeated char) | `idxOf`/`findIdx?` facts |
+
+**Next steps:**
+1. The two hand proofs above (advanced_5, 52) show the facts. Turn them into general lemmas only if a second task uses
+   the same shape, and otherwise add them as `--lemmas` hand lemmas to the gold tree.
+2. The brute-force `foldl max` family (4 tasks) is the largest group, so it is the best next general lemma.
+3. Then propose the paid Verina run (§4, step 6). At 153/177 strict gold, the prover ceiling on Verina is
+   86%, against 150/159 (94%) on HumanEval.
+
+## 9. Probe workflow (how each fix was found)
+
+1. `python benchmarks/lean_probe.py dump <task ids>` writes each failing obligation as
+   `benchmarks/results/lspec/probe/<task>__<obligation>.lean` (the statement with `sorry`).
+2. `python benchmarks/lean_probe.py serve DIR` keeps one REPL with the lemma library and each task's definitions
+   loaded, and runs every `DIR/<task>__*.lean` that appears, writing `.out` next to it (`OK` or the error). It is one
+   Lean process: stop it (`touch DIR/STOP`) before any `lspec_run.py`. It loads `LEMMAS` once, so restart it after
+   changing `lemmas.py`, or prepend the new lemmas to the probe file.
+3. Write the candidate tactic into a copy of the dumped file (replace `sorry`). Use `done` at the end of each
+   `first` alternative: a nested `(by …)` logs its error without failing, so `first` would wrongly accept it.
+4. When it says `OK`, write the tactic without task names (use `{post}`, `{pre}`, `‹_›`, binder types) and add it to
+   `_shape_tactics` with a gate on the obligation's shape. Then run strict gold on the failures only, and a HumanEval
+   sample.

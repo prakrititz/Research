@@ -1680,6 +1680,38 @@ theorem not_all_ne_max {α : Type} (xs : List α) (f : α → Nat) (h : ∀ y �
 theorem not_all_ne_max_dec {α : Type} (xs : List α) (f : α → Nat)
     (h : ∀ y ∈ xs, ¬ decide (f y = (xs.map f).foldl max 0) = true) (hne : xs ≠ []) : False :=
   not_all_ne_max xs f (fun y hy he => h y hy (decide_eq_true he)) hne
+-- an index taken modulo the length is in bounds when the list is not empty (Verina basic_39: rotate right)
+theorem toNat_emod_lt (a : Int) (n : Nat) (h : n ≠ 0) : (a % (n : Int)).toNat < n := by
+  have h1 := Int.emod_nonneg a (by omega : (n : Int) ≠ 0)
+  have h2 := Int.emod_lt_of_pos a (by omega : (0 : Int) < n)
+  omega
+theorem getElem?_emod {α} (l : List α) (a : Int) (h : l.length ≠ 0) :
+    l[(a % (l.length : Int)).toNat]? = some (l[(a % (l.length : Int)).toNat]'(toNat_emod_lt a _ h)) :=
+  List.getElem?_eq_getElem _
+theorem getD_emod {α} (l : List α) (a : Int) (d : α) (h : l.length ≠ 0) :
+    l.getD (a % (l.length : Int)).toNat d = l[(a % (l.length : Int)).toNat]'(toNat_emod_lt a _ h) := by
+  rw [List.getD_eq_getElem?_getD, getElem?_emod l a h]; rfl
+-- ``a.any (· = x)`` is membership (Verina basic_22: ``inArray``)
+theorem array_any_eq_iff_mem {α} [DecidableEq α] (a : Array α) (x : α) : (a.any fun y => decide (y = x)) = decide (x ∈ a) := by
+  rw [Bool.eq_iff_iff, Array.any_eq_true]; simp [Array.mem_iff_getElem, eq_comm]
+-- a property of every entry of a 2-D array, from the index form a row-by-row loop keeps (Verina basic_90)
+theorem all_all_of_bang {α} [Inhabited α] (a : Array (Array α)) (P : α → Prop) [DecidablePred P] (i : Nat)
+    (hi : a.size ≤ i) (h : ∀ k < i, ∀ j < (a[k]!).size, P (a[k]!)[j]!) : (a.all fun x => x.all fun e => decide (P e)) = true := by
+  simp only [Array.all_eq_true, decide_eq_true_eq]
+  intro k hk j hj
+  have h1 := h k (by omega) j (by rw [getElem!_pos a k hk]; exact hj)
+  simp only [getElem!_pos a k hk] at h1
+  rwa [getElem!_pos _ j hj] at h1
+-- a 2-D array whose rows all have the same size: each row has the size of row 0 (Verina basic_90)
+theorem rect_row_size {α} [Inhabited α] (a : Array (Array α)) (h : List.Pairwise (fun x y => x.size = y.size) a.toList) :
+    ∀ i < a.size, (a[i]!).size = (a[0]!).size := by
+  intro i hi
+  rcases Nat.eq_zero_or_pos i with h0 | h0
+  · subst h0; rfl
+  · rw [List.pairwise_iff_getElem] at h
+    have := h 0 i (by simp; omega) (by simpa using hi) h0
+    simp only [Array.getElem_toList] at this
+    rw [getElem!_pos a i hi, getElem!_pos a 0 (by omega)]; exact this.symm
 end Refine
 '''
 
