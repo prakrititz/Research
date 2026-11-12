@@ -702,7 +702,8 @@ class Derivation:
         # a result found by ``find?`` with a default: split on what ``find?`` returns; found, the element satisfies the
         # predicate and is in the list, not found, no element does; then counting facts (Verina advanced_11: a majority
         # leaves every other value at most half, ``filter_le_half_or_eq``; advanced_54: a
-        # list of n distinct values up to n misses exactly one of 0..n, ``range_not_subset``, ``missing_unique``)
+        # list of n distinct values up to n misses exactly one of 0..n, ``range_not_subset``, ``missing_unique``; advanced_55:
+        # the most frequent element, the largest count is attained, ``not_all_ne_max_dec``)
         if "find?" in obligation.statement and "getD" in obligation.statement:
             tactics.append(f"unfold {post}; (try simp only [{pre}] at h_precond); (try dsimp only); (try intros); "
                            "unfold Option.getD; split <;> (try simp only [List.find?_eq_none] at *) <;> "
@@ -713,7 +714,18 @@ class Derivation:
                            "| omega | (left; assumption) | (exact Refine.filter_le_half_or_eq _ _ _ ‹_›) "
                            "| (right; exact ⟨‹_›, fun _ _ => Refine.filter_le_half_or_eq _ _ _ ‹_›⟩) "
                            "| (exfalso; exact Refine.range_not_subset _ ‹_›) "
-                           "| (apply Refine.missing_unique _ _ _ _ hfm hfs <;> assumption) | (simp; done) | grind")
+                           "| (apply Refine.missing_unique _ _ _ _ hfm hfs <;> assumption) "
+                           "| (exfalso; exact Refine.not_all_ne_max_dec _ _ ‹_› ‹_›) "
+                           "| (simp only [List.all_eq_true, decide_eq_true_eq]; intro x hx; rw [of_decide_eq_true hfs]; "
+                           "apply Refine.le_foldl_max; exact List.mem_map_of_mem hx) "
+                           "| (simp only [of_decide_eq_true hfs]; rw [List.head?_filter]; assumption) | (simp; done) | grind")
+        # the precondition unfolded by name (``unfold post pre at *`` stops at the first name it cannot unfold), members of
+        # arrays and lists as indices, the task's plain helpers unfolded, then grind (Verina basic_24: the precondition
+        # has an even element, so a scan that stops at the first non-odd one stops inside the array)
+        unfold_plain = f", {', '.join(plain)}" if plain else ""
+        tactics.append(f"(try beta_reduce); (try unfold {post} at *); (try simp only [{pre}] at h_precond); "
+                       "(try simp only [Refine.forall_mem_array_iff_idx, Refine.exists_mem_array_iff_idx, "
+                       f"Refine.forall_mem_iff_idx, Refine.exists_mem_iff_idx{unfold_plain}] at *); grind")
         binders = _binder_types(obligation.binders)
         # an array result kept as ``acc.toList = <list>``: every array taken apart into its list, so the facts are about
         # lists (Verina basic_60: the exit of a filter loop, ``take i`` of the whole input is the input)

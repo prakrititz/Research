@@ -1665,6 +1665,21 @@ theorem missing_unique (nums : List Nat) (hb : ∀ x ∈ nums, x ≤ nums.length
   have := List.mem_range.mp hx
   have := List.mem_range.mp hr
   omega
+-- the largest value of f over a non-empty list is attained (Verina advanced_55: the most frequent element)
+theorem map_foldl_max_attained {α : Type} (xs : List α) (f : α → Nat) (hne : xs ≠ []) :
+    ∃ y ∈ xs, f y = (xs.map f).foldl max 0 := by
+  have hne' : xs.map f ≠ [] := by simpa using hne
+  obtain ⟨h1, -⟩ := maxlist_nat _ hne'
+  rw [List.contains_iff_mem, List.mem_map] at h1
+  obtain ⟨y, hy, he⟩ := h1
+  exact ⟨y, hy, he⟩
+theorem not_all_ne_max {α : Type} (xs : List α) (f : α → Nat) (h : ∀ y ∈ xs, ¬ f y = (xs.map f).foldl max 0)
+    (hne : xs ≠ []) : False := by
+  obtain ⟨y, hy, he⟩ := map_foldl_max_attained xs f hne
+  exact h y hy he
+theorem not_all_ne_max_dec {α : Type} (xs : List α) (f : α → Nat)
+    (h : ∀ y ∈ xs, ¬ decide (f y = (xs.map f).foldl max 0) = true) (hne : xs ≠ []) : False :=
+  not_all_ne_max xs f (fun y hy he => h y hy (decide_eq_true he)) hne
 end Refine
 '''
 
