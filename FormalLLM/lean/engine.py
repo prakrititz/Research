@@ -781,6 +781,20 @@ class Derivation:
         if "Array (Array" in obligation.binders:
             tactics.append(f"(try beta_reduce); (try simp only [{pre}] at h_precond); (try casesm* _ ∧ _); "
                            "have hrect := Refine.rect_row_size _ ‹_›; (try split) <;> first | (left; grind) | (right; grind) | grind")
+        # the result is the maximum of a brute-force list (``(range n).flatMap (fun i => (range m).map (f i))``,
+        # ``foldl max 0``) and the spec quantifies over ``zipIdx``: indices for ``zipIdx``, the maximum named ``R`` with
+        # its facts (an upper bound of every ``f i j``, and 0 or attained: ``foldl_max_pairs``), then each part
+        # (Verina advanced_42: best stock profit)
+        if "foldl max 0" in obligation.statement and "flatMap" in obligation.statement:
+            tactics.append(f"unfold {post}; (try simp only [{pre}] at *); (try simp only [Refine.pairwise_zipIdx_iff, "
+                           "Refine.zipIdx_all_iff, Refine.zipIdx_any_iff, decide_eq_true_eq]); "
+                           "generalize hR : List.foldl max 0 _ = R; (first "
+                           "| (have hf := Refine.foldl_max_pairs _ _ _ _ hR; beta_reduce at hf) "
+                           "| (have hf := Refine.foldl_max_filter_pairs _ _ _ _ hR; beta_reduce at hf) "
+                           "| (have hf := Refine.foldl_max_facts_eq _ _ hR; simp only [List.mem_flatMap, List.mem_map, "
+                           "List.mem_range, List.mem_filter] at hf)); "
+                           "clear hR; obtain ⟨hA, hB⟩ := hf; (repeat' apply And.intro) <;> (try apply Iff.intro) <;> "
+                           "(try intros) <;> (try rcases hA with hA | ⟨i0, hi0, j0, hj0, hx0⟩) <;> (try split at hx0) <;> grind")
         # induction along a recursive function of the task (he_038: ``encodeGroups`` applied three times is the identity)
         for f in self._recursive_defs():
             for var, typ in _binder_types(obligation.binders):

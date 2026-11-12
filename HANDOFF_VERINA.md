@@ -3,7 +3,7 @@
 Read [`HANDOFF.md`](HANDOFF.md) first for the setup, the layout and how HumanEval was fixed (§4–§5.3). This file covers
 where the benchmark runs stand and what to do for Verina. **Everything is stopped.** No run is active.
 
-**Status 2026-11-12:** §3 is fixed and strict gold on Verina is at **153/177** (it started at 126). §7 has the
+**Status 2026-11-12:** §3 is fixed and strict gold on Verina is at **154/177** (it started at 126). §7 has the
 progress, §8 the remaining failures, and §9 the probe workflow used to find each fix.
 
 ## 1. Rules from the owner (binding)
@@ -157,33 +157,34 @@ sample of tasks whose proofs use the changed area.
 | v2fix4 | 30 | 2 | 149 | most frequent (`not_all_ne_max_dec`, `le_foldl_max`), precondition unfolded by name + index forms + `grind` |
 | v2fix5 | 4 | 3 | 152 | index modulo the length (`getD_emod`, `getElem?_emod`), mergeSort result (`array_any_eq_iff_mem`), loop step with a Bool flag |
 | v2fix6 | 1 | 1 | 153 | 2-D search: exit with a disjunctive invariant (`all_all_of_bang`), rows of a rectangular array (`rect_row_size`) |
+| v2fix7 | 1 | 1 | 154 | maximum of a brute-force list of pairs (`foldl_max_pairs`, `foldl_max_filter_pairs`) with `zipIdx` quantifiers as indices (`pairwise_zipIdx_iff`, `zipIdx_all_iff`, `zipIdx_any_iff`) |
 
-HumanEval samples after each change (`run_humaneval_gold_recheck1112{,b,c,d,e}_joint.jsonl`): all solved every time.
+HumanEval samples after each change (`run_humaneval_gold_recheck1112{,b,c,d,e,f}_joint.jsonl`): all solved every time.
 
 All new tactics are in `Derivation._shape_tactics` ([`engine.py`](FormalLLM/lean/engine.py)), each gated on the shape of
 the obligation (a word in the statement, the binder types, the obligation kind) and never on a task name. All new
 lemmas are `Refine.*` in [`lemmas.py`](FormalLLM/lean/lemmas.py), each with a comment naming the task that first
 needed it.
 
-## 8. Remaining Verina failures (24)
+## 8. Remaining Verina failures (23)
 
 None of these is a prover bug; each needs a proof the library does not have yet. Grouped by what is missing:
 
 | family | tasks | what is missing |
 |---|---|---|
-| the spec is the brute force over subarrays/pairs, the program a `foldl max` over the same set | advanced_30, 38, 42, 71 | the index/`zipIdx` form of the spec against the flatMap of the program; a `foldl max` attained/upper-bound lemma for flatMap of pairs |
+| the spec is the brute force over subarrays/pairs, the program a `foldl max` over the same set | advanced_30, 38, 71 | the max-of-pairs tactic (v2fix7) gives the facts, but the spec also says the best streak cannot be extended (advanced_30: needs the witness shifted one left), or merges intervals (38), or compares strings by `toLex` (71) |
 | sorted by a key, then `take` | advanced_76 (top-k frequent), basic_104 (map update) | `find?` on a list with unique keys through mergeSort and filter; Pairwise of a sort by key on `zipIdx` |
 | `let rec`/recursive task helpers | advanced_1 (`filterlist`), 10 (`removePrimeFactor`, padicValNat), 23 (custom `pow`), 24 (subsequences), 56 (`isSubsequence`), 62 (`ml`/`mr` in the spec) | the helper = a library function, by induction (`fl_eq` style) |
 | loop exit with a task-specific fact | advanced_8 (gas station), 52 (min operations), 58 (ugly number), 67 (run-length decode), basic_89 (idxOf dedup), 102 (array two-sum with lex conditions) | per task. advanced_52 is proved by hand in the probe (take of reverse, `k = 0` when the result is 0) but not as a general tactic |
 | arithmetic / digits | advanced_5 (add two numbers), basic_43 (Nat subtraction polynomial) | advanced_5 is proved by hand in the probe (task `listToNat` = `Nat.ofDigits 10`, then `Nat.digits_ofDigits`, `Nat.ofDigits_digits`, `Nat.getLast_digit_ne_zero`), not yet general |
-| `find?`/second occurrence | advanced_12 (first duplicate), 57 (next greater), 13 (chords), basic_27 (first repeated char) | `idxOf`/`findIdx?` facts |
+| `find?`/second occurrence | advanced_12 (first duplicate), 57 (next greater), 13 (chords), basic_27 (first repeated char) | `idxOf`/`findIdx?` facts. advanced_57's spec repeats the program per element, but its `match` on `find?` depends on the scrutinee, so `split`/`generalize`/`cases` all fail; needs a rewrite of the match first |
 
 **Next steps:**
 1. The two hand proofs above (advanced_5, 52) show the facts. Turn them into general lemmas only if a second task uses
    the same shape, and otherwise add them as `--lemmas` hand lemmas to the gold tree.
 2. The brute-force `foldl max` family (4 tasks) is the largest group, so it is the best next general lemma.
-3. Then propose the paid Verina run (§4, step 6). At 153/177 strict gold, the prover ceiling on Verina is
-   86%, against 150/159 (94%) on HumanEval.
+3. The owner will not run any paid model until Verina is at the HumanEval level (about 94%, so about 166/177). At
+   154/177 the prover ceiling on Verina is 87%.
 
 ## 9. Probe workflow (how each fix was found)
 

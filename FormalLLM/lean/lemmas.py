@@ -1712,6 +1712,38 @@ theorem rect_row_size {α} [Inhabited α] (a : Array (Array α)) (h : List.Pairw
     have := h 0 i (by simp; omega) (by simpa using hi) h0
     simp only [Array.getElem_toList] at this
     rw [getElem!_pos a i hi, getElem!_pos a 0 (by omega)]; exact this.symm
+-- quantifiers over ``zipIdx`` as indices, and the maximum of a list of pairs (Verina advanced_42)
+theorem zipIdx_all_iff {α} [Inhabited α] (l : List α) (p : α × Nat → Bool) :
+    l.zipIdx.all p = true ↔ ∀ i < l.length, p (l[i]!, i) = true := by
+  simp only [List.all_eq_true, List.mem_iff_getElem, List.length_zipIdx]
+  constructor
+  · intro h i hi; have := h _ ⟨i, by simpa using hi, rfl⟩; simpa [List.getElem_zipIdx, getElem!_pos l i hi] using this
+  · rintro h x ⟨i, hi, rfl⟩; have := h i (by simpa using hi); simpa [List.getElem_zipIdx, getElem!_pos l i (by simpa using hi)] using this
+theorem zipIdx_any_iff {α} [Inhabited α] (l : List α) (p : α × Nat → Bool) :
+    l.zipIdx.any p = true ↔ ∃ i < l.length, p (l[i]!, i) = true := by
+  simp only [List.any_eq_true, List.mem_iff_getElem, List.length_zipIdx]
+  constructor
+  · rintro ⟨x, ⟨i, hi, rfl⟩, h⟩; exact ⟨i, by simpa using hi, by simpa [List.getElem_zipIdx, getElem!_pos l i (by simpa using hi)] using h⟩
+  · rintro ⟨i, hi, h⟩; exact ⟨_, ⟨i, by simpa using hi, rfl⟩, by simpa [List.getElem_zipIdx, getElem!_pos l i hi] using h⟩
+theorem pairwise_zipIdx_iff {α} [Inhabited α] (l : List α) (R : α × Nat → α × Nat → Prop) :
+    List.Pairwise R l.zipIdx ↔ ∀ i j, i < j → j < l.length → R (l[i]!, i) (l[j]!, j) := by
+  rw [List.pairwise_iff_getElem]
+  simp only [List.length_zipIdx, List.getElem_zipIdx, Nat.zero_add]
+  constructor
+  · intro h i j hij hj; have := h i j (by omega) hj hij; rwa [getElem!_pos l i (by omega), getElem!_pos l j hj]
+  · intro h i j hi hj hij; have := h i j hij hj; rwa [getElem!_pos l i hi, getElem!_pos l j hj] at this
+theorem foldl_max_facts_eq (l : List Nat) (R : Nat) (h : l.foldl max 0 = R) : (R = 0 ∨ R ∈ l) ∧ ∀ x ∈ l, x ≤ R := by
+  subst h; have := foldl_max_facts l 0; exact ⟨this.1, this.2.2⟩
+theorem foldl_max_pairs (n m : Nat) (f : Nat → Nat → Nat) (R : Nat)
+    (h : ((List.range n).flatMap fun i => (List.range m).map (f i)).foldl max 0 = R) :
+    (R = 0 ∨ ∃ i < n, ∃ j < m, f i j = R) ∧ ∀ i < n, ∀ j < m, f i j ≤ R := by
+  obtain ⟨h1, h2⟩ := foldl_max_facts_eq _ _ h
+  refine ⟨?_, fun i hi j hj => h2 _ (List.mem_flatMap.mpr ⟨i, List.mem_range.mpr hi, List.mem_map.mpr ⟨j, List.mem_range.mpr hj, rfl⟩⟩)⟩
+  rcases h1 with h1 | h1
+  · exact Or.inl h1
+  · obtain ⟨i, hi, hx⟩ := List.mem_flatMap.mp h1
+    obtain ⟨j, hj, hx⟩ := List.mem_map.mp hx
+    exact Or.inr ⟨i, List.mem_range.mp hi, j, List.mem_range.mp hj, hx⟩
 end Refine
 '''
 
