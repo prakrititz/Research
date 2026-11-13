@@ -1939,6 +1939,19 @@ theorem ofDigits_eq_zero_all (b : Nat) (L : List Nat) (hb : 0 < b) (h : Nat.ofDi
 
 theorem getLast_bang_mem {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.getLast! ∈ l := by
   rw [getLast_bang_eq _ h]; exact List.getLast_mem h
+
+-- the maximum of a brute-force list of (start, length) pairs filtered by a property: 0 or attained, and an upper
+-- bound of every length with the property (Verina advanced_30: the longest increasing streak)
+theorem foldl_max_filter_flat (n m : Nat) (P : Nat → Nat → Bool) (R : Nat)
+    (h : ((List.range n).flatMap fun s => (List.range m).filter (fun L => P s L)).foldl max 0 = R) :
+    (R = 0 ∨ ∃ s < n, R < m ∧ P s R = true) ∧ ∀ s < n, ∀ L < m, P s L = true → L ≤ R := by
+  obtain ⟨h1, h2⟩ := Refine.foldl_max_facts_eq _ _ h
+  refine ⟨?_, fun s hs L hL hP => h2 _ (List.mem_flatMap.mpr ⟨s, List.mem_range.mpr hs, List.mem_filter.mpr ⟨List.mem_range.mpr hL, hP⟩⟩)⟩
+  rcases h1 with h1 | h1
+  · exact Or.inl h1
+  · obtain ⟨s, hs, hx⟩ := List.mem_flatMap.mp h1
+    obtain ⟨hx1, hx2⟩ := List.mem_filter.mp hx
+    exact Or.inr ⟨s, List.mem_range.mp hs, List.mem_range.mp hx1, hx2⟩
 end Refine
 '''
 

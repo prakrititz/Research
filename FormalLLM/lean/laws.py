@@ -62,7 +62,7 @@ class Goal:
 def with_bound(tactic: str, bound: Optional[Tuple[str, str]]) -> str:
     """On exit from a loop whose guard is ``v < e`` the invariant (``v ≤ e``) and the negated guard give ``v = e``; try the
     cascade after substituting it, then without (substituting is what lets ``simp`` see that ``∀ k < v`` is ``∀ k < e``)."""
-    if bound is None:
+    if bound is None or "\n" in tactic:          # a multi-line tactic (a shape tactic's own proof) is kept as written
         return tactic
     var, expr = bound
     return f"first | (have hEq : {var} = ({expr}) := (by omega); subst hEq; {tactic}) | ({tactic})"

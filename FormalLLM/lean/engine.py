@@ -92,6 +92,17 @@ LIBRARY_APPLY_GRIND = "".join(
     for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
 
 
+#: the longest run with a property found by brute force over (start, length) pairs (Verina advanced_30): the maximum
+#: is attained by a run that cannot be extended on either side, and no window one longer has the property
+STREAK_TACTIC = 'unfold {post}\n  generalize hR : List.foldl max 0 _ = R\n  obtain ⟨hA, hB⟩ := Refine.foldl_max_filter_flat _ _ _ _ hR\n  simp only [decide_eq_true_eq, List.all_eq_true, List.mem_range] at hA hB\n  have hlen : R ≤ {l}.length := by\n    rcases hA with h0 | ⟨s, hs, hRm, hle, _⟩ <;> omega\n  refine ⟨?_, ?_, ?_⟩\n  · intro hnil; subst hnil; simp at hlen; omega\n  · intro hpos\n    rcases hA with h0 | ⟨s, hs, hRm, hle, hinc⟩\n    · omega\n    · simp only [List.any_eq_true, List.mem_range, decide_eq_true_eq, List.all_eq_true]\n      refine ⟨s, by omega, hle, ?_, ?_, ?_⟩\n      · intro i hi; exact hinc i (by omega) (by omega)\n      · by_contra hc\n        simp only [not_or, not_le] at hc\n        obtain ⟨hs0, hlt⟩ := hc\n        have := hB (s - 1) (by omega) (R + 1) (by omega) ⟨by omega, fun i hi hi1 => by\n          rcases i with _ | i\n          · have e : s - 1 + 0 + 1 = s := by omega\n            simp only [e, Nat.add_zero]; exact hlt\n          · rw [show s - 1 + (i + 1) + 1 = s + i + 1 by omega, show s - 1 + (i + 1) = s + i by omega]\n            exact hinc i (by omega) (by omega)⟩\n        omega\n      · by_contra hc\n        simp only [not_or, not_le] at hc\n        obtain ⟨hne, hlt⟩ := hc\n        have := hB s (by omega) (R + 1) (by omega) ⟨by omega, fun i hi hi1 => by\n          by_cases hiR : i + 1 < R\n          · exact hinc i (by omega) hiR\n          · rw [show s + i + 1 = s + R by omega, show s + i = s + R - 1 by omega]; exact hlt⟩\n        omega\n  · simp only [List.all_eq_true, List.any_eq_true, List.mem_range, decide_eq_true_eq]\n    intro st hst\n    by_contra hc\n    push_neg at hc\n    have hb : st + (R + 1) ≤ {l}.length := by\n      rcases Nat.eq_zero_or_pos R with h | h\n      · omega\n      · have := (hc (R - 1) (by omega)).1; omega\n    have := hB st (by omega) (R + 1) (by omega) ⟨hb, fun i hi hi1 => (hc i (by omega)).2⟩\n    omega'
+#: a run-length encoding loop exit (Verina advanced_67): the decoded prefix is the whole string, counts are positive and
+#: neighbouring characters differ (the invariant's chain, reversed)
+RLE_EXIT_TACTIC = 'unfold {post}\n  obtain ⟨hi, hdec, hpos, hchain⟩ := {hi}\n  have hlen : {i} = {s}.toList.length := by omega\n  rw [hlen, List.take_of_length_le (le_refl _)] at hdec\n  refine ⟨fun p hp => hpos p (List.mem_reverse.mp hp), ?_, ?_⟩\n  · have hc : List.IsChain (fun a b : Char × Nat => a.1 ≠ b.1) {acc}.reverse := by\n      rw [List.isChain_reverse]; exact hchain.imp (fun a b h => Ne.symm h)\n    intro k hk\n    rw [List.isChain_iff_getElem] at hc\n    have := hc k (by omega)\n    rw [getElem!_pos _ k (by omega), getElem!_pos _ (k + 1) (by omega)]; exact this\n  · rw [hdec]; first | rfl | (apply String.ext; simp [Refine.string_toList_mk])'
+
+#: next greater element (Verina advanced_57): each result is the program's own match on findIdx? and find?, the
+#: discriminants rewritten by simp (cases/generalize cannot: the match is not type correct when abstracted)
+NEXT_GREATER_TACTIC = 'unfold {post}; unfold {pre} at h_precond\n  obtain ⟨_, _, hall⟩ := h_precond\n  simp only [List.all_eq_true, decide_eq_true_eq] at hall\n  refine ⟨by simp, ?_, ?_⟩\n  · simp only [List.all_eq_true, List.mem_range]; intro i hi\n    have hv : {a}[i] ∈ {b} := hall _ (List.getElem_mem hi)\n    simp only [List.getElem!_eq_getElem?_getD, List.getElem?_map, List.getElem?_eq_getElem hi, Option.map_some,\n      Option.getD_some, gt_iff_lt]\n    generalize hval : {a}[i] = val at hv ⊢\n    cases hj : {b}.findIdx? (fun x => x == val) with\n    | none =>\n      exfalso; rw [List.findIdx?_eq_none_iff] at hj; have := hj val hv; simp at this\n    | some idx =>\n      (try dsimp only)\n      rcases Option.eq_none_or_eq_some (List.find? (fun x => decide (val < {b}[idx + x + 1]?.getD 0)) (List.range ({b}.length - idx - 1))) with hn | ⟨off, hn⟩ <;> simp [hn]\n  · simp only [List.all_eq_true, List.mem_map, decide_eq_true_eq]\n    rintro _ ⟨val, hval, rfl⟩\n    split\n    · simp\n    · rename_i idx _\n      split\n      · simp\n      · rename_i off hoff\n        right\n        have hm := List.mem_of_find?_eq_some hoff\n        rw [List.mem_range] at hm\n        rw [getElem!_pos _ _ (by omega)]; exact List.getElem_mem _'
+
 def _balanced(text: str, start: int) -> int:
     """Index just past the parenthesis group opening at ``text[start] == "("``."""
     depth = 0
@@ -1029,7 +1040,18 @@ class Derivation:
         if obligation.kind != "exit" and re.search(r"∀ ([\w']+), \(\1 < \w+\) →", obligation.statement):
             tactics.append("(try beta_reduce); (try casesm* _ ∧ _); (repeat' (first | apply And.intro | intro)) <;> first "
                            "| omega | (rcases Nat.lt_succ_iff_lt_or_eq.mp ‹_ < _ + 1› with h | h <;> "
-                           "[exact ‹∀ _, _ < _ → _› _ h ‹_›; (subst h; contradiction)])")
+                           "[solve_by_elim; (subst h; contradiction)])")
+        # brute-force longest run (STREAK_TACTIC) and run-length-encoding exit (RLE_EXIT_TACTIC)
+        if ".flatMap (fun s => (List.range" in obligation.statement and ".filter (fun L =>" in obligation.statement                 and "foldl max 0" in obligation.statement and "start = 0 ∨" in body and lists:
+            tactics.append(STREAK_TACTIC.replace("{post}", post).replace("{l}", lists[0]))
+        rle = re.search(r"\((h\d+i) : .*String\.mk \((\w+)\.toList\.take (\w+)\)\).*IsChain", obligation.binders)
+        acc = re.search(r"\((\w+)\.reverse\) h_precond", obligation.statement)
+        if obligation.kind == "exit" and rle and acc:
+            tactics.append(RLE_EXIT_TACTIC.replace("{post}", post).replace("{hi}", rle.group(1)).replace("{s}", rle.group(2))
+                           .replace("{i}", rle.group(3)).replace("{acc}", acc.group(1)))
+        if ".findIdx? (fun x => x == val)" in obligation.statement and ".map (fun val =>" in obligation.statement                 and len(lists) >= 2:
+            tactics.append(NEXT_GREATER_TACTIC.replace("{post}", post).replace("{pre}", pre).replace("{a}", lists[0])
+                           .replace("{b}", lists[1]))
         # a value known by a hypothesis to occur more than half the time (a `bind` or a `cases` on it): every other value
         # occurs at most half the time (Verina advanced_11 when the result is named, not found by ``find?``)
         if "filter" in stmt + self.task.prelude and "/ 2" in stmt + self.task.prelude:
