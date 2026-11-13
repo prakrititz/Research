@@ -337,7 +337,9 @@ class Loop(Law):
                 "invariant": self.invariant, "guard": self.guard, "variant": self.variant, "result": self.result}
 
 
-_CLASSICAL = re.compile(r"(?<![\w.])Classical\.")
+#: ``Classical.*``, and ``h.choose`` / ``Exists.choose`` on a proof of an existential (Verina advanced_11, gpt-5.4-mini,
+#: 2026-11-13: ``term h10.choose`` was accepted and could never compile)
+_CLASSICAL = re.compile(r"(?<![\w.])Classical\.|\.choose\b|(?<![\w.])Exists\.choose\b")
 
 
 def _runs(text: str, what: str):

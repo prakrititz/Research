@@ -832,7 +832,12 @@ class Derivation:
             tactics.append(f"unfold {post}; (try unfold {pre} at *); {NORMALIZE}(try simp only [{', '.join(libeq)}] at *); split <;> "
                            "rename_i h <;> simp only [List.any_eq_true, List.mem_range, decide_eq_true_eq] at h ⊢ <;> first "
                            "| (obtain ⟨x, _, hx⟩ := h; exact ⟨x, hx⟩) "
-                           f"| (rintro ⟨x, hx, hn⟩; apply h; refine ⟨x, ?_, hx, hn⟩; first | {bound})")
+                           f"| (rintro ⟨x, hx, hn⟩; apply h; refine ⟨x, ?_, hx, hn⟩; first | {bound}) "
+                           # the condition split between the search and a case's hypothesis (``n > 0`` known from a
+                           # ``cases`` step, the search testing only ``pow 2 x = n``: gpt-5.4-mini, advanced_23)
+                           "| (obtain ⟨x, _, hx⟩ := h; exact ⟨x, by first | exact hx | (exact ⟨hx, by omega⟩) | simp_all⟩) "
+                           f"| (rintro ⟨x, hx⟩; apply h; (try obtain ⟨hx, _⟩ := hx); exact ⟨x, by first | {bound}, "
+                           "by first | exact hx | simp_all⟩)")
         # induction along a recursive function of the task (he_038: ``encodeGroups`` applied three times is the identity)
         for f in self._recursive_defs():
             for var, typ in _binder_types(obligation.binders):
