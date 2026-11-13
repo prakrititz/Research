@@ -97,7 +97,8 @@ def serve(folder):
                     reply = lean.run(text, env=env, timeout=float(os.environ.get("PROBE_TIMEOUT", "180")))
                     lines = [f"{'OK' if reply.ok and not reply.goals else 'FAIL'} {time.time() - started:.1f}s"
                              + (" TIMEOUT" if reply.timed_out else "")]
-                    lines += ["ERROR: " + e[:3000] for e in reply.errors[:6]]
+                    lines += [f"ERROR [line {reply.error_lines[k] if k < len(reply.error_lines) else '?'}]: " + e[:3000]
+                              for k, e in enumerate(reply.errors[:6])]
                     lines += ["INFO: " + i[:3000] for i in reply.infos[:20]]
                     lines += ["GOAL:\n" + g[:3000] for g in reply.goals[:4]]
                 except Exception as error:
@@ -124,8 +125,9 @@ def run(files, task_id):
         for path in files:
             answer = lean.run(open(path, encoding="utf8").read(), env=env, timeout=300)
             print(f"== {os.path.basename(path)}: {'OK' if answer.ok else 'ERRORS'}")
-            for error in answer.errors[:4]:
-                print(error[:1800])
+            for k, error in enumerate(answer.errors[:6]):
+                line = answer.error_lines[k] if k < len(answer.error_lines) else "?"
+                print(f"[line {line}] " + error[:1800])
             for info in answer.infos:
                 print(info[:1500])
             for goal in answer.goals[:3]:

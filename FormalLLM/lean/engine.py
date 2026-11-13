@@ -92,6 +92,49 @@ LIBRARY_APPLY_GRIND = "".join(
     for n in __import__("FormalLLM.lean.lemmas", fromlist=["NAMES"]).NAMES)
 
 
+def _balanced(text: str, start: int) -> int:
+    """Index just past the parenthesis group opening at ``text[start] == "("``."""
+    depth = 0
+    for k in range(start, len(text)):
+        depth += {"(": 1, ")": -1}.get(text[k], 0)
+        if depth == 0:
+            return k + 1
+    return len(text)
+
+
+def _exit_guard(binders: str) -> Optional[Tuple[str, str, str]]:
+    """A loop exit's negated guard of the form ``(hNg : ¬ ((A) ∧ (¬ (B))))``: ``(name, A, B)``, else None."""
+    m = re.search(r"\((h\d+g) : ¬ \(", binders)
+    if not m:
+        return None
+    inner_start = m.end() - 1
+    inner = binders[inner_start + 1:_balanced(binders, inner_start) - 1].strip()
+    if not inner.startswith("("):
+        return None
+    a_end = _balanced(inner, 0)
+    rest = inner[a_end:].strip()
+    if not rest.startswith("∧ (¬ (") or not rest.endswith("))"):
+        return None
+    return m.group(1), inner[1:a_end - 1], rest[len("∧ (¬ ("):-2]
+
+
+def _nat_subtractions(text: str) -> List[Tuple[str, str]]:
+    """Every ``(L) - (R)`` with both sides parenthesised, innermost first: ``[(L, R), ...]``."""
+    out = []
+    for m in re.finditer(r"\) - \(", text):
+        k, depth = m.start(), 0                       # the group closing at ``text[k]``
+        while k >= 0:
+            depth += {")": 1, "(": -1}.get(text[k], 0)
+            if depth == 0:
+                break
+            k -= 1
+        right_start = m.end() - 1
+        right_end = _balanced(text, right_start)
+        if k >= 0:
+            out.append((text[k + 1:m.start()], text[right_start + 1:right_end - 1]))
+    return sorted(set(out), key=lambda p: len(p[0]) + len(p[1]))
+
+
 def _binder_types(binders: str) -> List[Tuple[str, str]]:
     """``(a b : List Int) (s : String)`` -> ``[("a", "List Int"), ("b", "List Int"), ("s", "String")]``."""
     out, depth, start = [], 0, None
@@ -747,6 +790,256 @@ class Derivation:
                            "apply Refine.le_foldl_max; exact List.mem_map_of_mem hx) "
                            "| (simp only [of_decide_eq_true hfs]; rw [List.head?_filter]; assumption) "
                            + pair + "| (simp; done) | grind")
+        # ``(l.find? p).getD d`` as the witness of a ``bind`` whose property is ``x ∈ l ∧ p x``, under a hypothesis that some
+        # element satisfies ``p``: found, it is in the list and satisfies ``p``; not found contradicts the hypothesis (Verina
+        # advanced_11: the majority element named before it is returned)
+        if "find?" in stmt and "getD" in stmt:
+            tactics.append("(try beta_reduce); (try intros); unfold Option.getD; split <;> "
+                           "(try simp only [List.find?_eq_none] at *) <;> "
+                           "(try (have hfs := List.find?_some ‹List.find? _ _ = some _›; "
+                           "have hfm := List.mem_of_find?_eq_some ‹List.find? _ _ = some _›)) <;> "
+                           "(try simp only [decide_eq_true_eq] at *) <;> first | exact ⟨hfm, hfs⟩ | exact hfs | exact hfm "
+                           "| (exfalso; obtain ⟨_, hx, hp⟩ := ‹∃ _ ∈ _, _›; exact absurd hp (by simpa using ‹∀ _ ∈ _, _› _ hx)) "
+                           "| grind")
+        # the longest list with a property, ``(L.map List.length).foldl max 0`` cast to Int: the empty list is in ``L`` (by
+        # induction along the postcondition's own ``let rec`` generator, e.g. all subsequences), so the maximum is attained
+        # and bounds every length (``maxlen_spec``) (Verina advanced_24: longest increasing subsequence)
+        if "foldl max 0" in stmt and "List.length" in stmt:
+            recs = [f"{post}.{r}" for r in re.findall(r"let rec (\w+)", definition[1].split("\ndef ", 1)[0])] \
+                if len(definition) > 1 else []
+            rec_simp = ", ".join(recs)
+            member = "".join(f"| (simp only [List.mem_filter]; refine ⟨?_, by simp [{rec_simp}]⟩; induction {v} <;> "
+                             f"simp_all [{rec_simp}]) " for v, typ in _binder_types(obligation.binders)
+                             if typ.startswith("List") and recs)
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); (try dsimp only); "
+                           "(try simp only [Nat.cast_inj, Nat.cast_le]); refine Refine.maxlen_spec _ ?_; "
+                           f"first | (simp; done) {member}")
+        # a search that stops at the first ``r`` where a property holds (the invariant: no ``r' < r`` has it; the guard:
+        # ``r < bound ∧ ¬ P r``): on exit ``P r`` holds, at the bound by the precondition (``take`` of the whole list); a
+        # positive ``r`` is minimal by the invariant, ``r = 0`` leaves a target range empty (Verina advanced_52)
+        if obligation.kind == "exit":
+            guard = _exit_guard(obligation.binders)
+            result = re.search(rf"{re.escape(post)} .*\((\w+)\) h_precond\s*$", obligation.statement)
+            if guard and result:
+                g, a, b = guard
+                r = result.group(1)
+                nats = "".join(f"| (cases {v} with | zero => rfl | succ {v} => exfalso; simp only [List.take_zero, "
+                               f"List.all_eq_true, List.elem_nil] at hB; exact absurd (hB 1 (by simp)) (by simp)) "
+                               for v, typ in _binder_types(obligation.binders) if typ in ("Nat", "ℕ") and v != r)
+                tactics.append(f"unfold {post}; (try unfold {pre} at h_precond); (try dsimp only at *); "
+                               f"have hB : {b} := by\n"
+                               f"    by_cases hA : {a}\n"
+                               f"    · exact Classical.byContradiction (fun hc => {g} ⟨hA, hc⟩)\n"
+                               "    · first | (rw [List.take_of_length_le (by simp; omega)]; simp only [List.all_eq_true, "
+                               "List.elem_eq_mem, decide_eq_true_eq, List.mem_reverse] at h_precond ⊢; first | exact h_precond "
+                               "| grind) | grind\n"
+                               f"  (try casesm* _ ∧ _); refine ⟨hB, ?_⟩; split\n"
+                               "  · first | (apply ‹∀ _, _ < _ → _›; omega) | grind\n"
+                               f"  · rw [show {r} = 0 by omega] at hB; first | rfl | (simp_all; done) {nats}")
+        libeq_all = [h.name for h in self.helpers if h.name.startswith("auto_libeq_")]
+        libeq_simp = "".join(f"{n}, " for n in libeq_all)
+        pre_text = self.task.prelude.split(f"def {pre}", 1)
+        pre_text = pre_text[1].split("\ndef ", 1)[0] if len(pre_text) > 1 else ""
+        lists = [v for v, typ in _binder_types(obligation.binders) if typ.startswith("List")]
+        # the one element occurring once, found by ``find?``, when the precondition says the list of counts has exactly
+        # one 1 and every count is 1 or 2: it is unique (``count_one_unique``), so every other element occurs twice, and
+        # it exists (``count_one_exists``) (Verina advanced_1: the single number)
+        if "find?" in stmt and "getD" in stmt and ".count 1" in pre_text:
+            tactics.append(
+                f"unfold {post}; unfold {pre} at h_precond; (try dsimp only at *); "
+                f"(try simp only [{libeq_simp}Refine.filter_eq_length_count] at *)\n"
+                "  obtain ⟨hall, hone⟩ := h_precond\n"
+                "  simp only [List.all_eq_true, List.mem_map, decide_eq_true_eq, forall_exists_index, and_imp, "
+                "forall_apply_eq_imp_iff₂] at hall\n"
+                "  unfold Option.getD; split\n"
+                "  · rename_i r hf\n"
+                "    have hfs := List.find?_some hf\n"
+                "    have hfm := List.mem_of_find?_eq_some hf\n"
+                "    simp only [decide_eq_true_eq] at hfs\n"
+                "    (repeat' apply And.intro) <;> first | exact List.length_pos_of_mem hfm | exact hfs | (intro x hx; "
+                "by_cases hxr : x = r; exact Or.inl hxr; right; rcases hall x hx with h1 | h2; "
+                "exact absurd (Refine.count_one_unique _ hone _ _ h1 hfs) hxr; exact h2)\n"
+                "  · rename_i hf; exfalso; rw [List.find?_eq_none] at hf\n"
+                "    obtain ⟨x, hx, hc⟩ := Refine.count_one_exists _ hone\n"
+                "    exact absurd hc (by simpa using hf x hx)")
+        # the element minimising a key among those with a property, ``match l.filter p with | [] => none | b :: t =>
+        # some ((b :: t).foldl argmin b)``: none, nothing has the property (no duplicates: ``nodup_iff_count_le_one``);
+        # some, the fold's facts (``foldl_argmin_facts``) for the members of the filter (Verina advanced_12: the first
+        # duplicate, by the index of its second occurrence)
+        argmin = re.search(r"fun (\w+) (\w+) => if \((.+?) \2\) < \((.+?) \1\) then \2 else \1", obligation.statement)
+        if argmin and argmin.group(3) == argmin.group(4) and "match" in obligation.statement and lists:
+            key, l = argmin.group(3), lists[0]
+            tactics.append(
+                "split\n"
+                f"  · rename_i hF; unfold {post}; rw [List.filter_eq_nil_iff] at hF; rw [List.nodup_iff_count_le_one]\n"
+                f"    intro a; by_cases ha : a ∈ {l}\n"
+                "    · have := hF a ha; simp at this; omega\n"
+                "    · simp [List.count_eq_zero_of_not_mem ha]\n"
+                f"  · rename_i b t hF; unfold {post}\n"
+                f"    obtain ⟨h1, h2⟩ := Refine.foldl_argmin_facts ({key}) (b :: t) b\n"
+                f"    have hsub : ∀ z, z ∈ b :: t ↔ z ∈ {l} ∧ {l}.count z > 1 := by intro z; rw [← hF]; simp\n"
+                "    refine ⟨((hsub _).mp (by simp only [List.mem_cons] at h1 ⊢; tauto)).2, ?_⟩\n"
+                "    simp only [List.all_eq_true, decide_eq_true_eq]; intro y hy\n"
+                f"    by_cases hc : {l}.count y = 1\n"
+                "    · exact Or.inl hc\n"
+                f"    · right; apply h2; have : {l}.count y > 1 := by have := List.count_pos_iff.mpr hy; omega\n"
+                "      exact List.mem_cons_of_mem _ ((hsub y).mpr ⟨hy, this⟩)")
+        # a list split by a predicate and its negation, ``l.filter p ++ l.filter q`` (Verina advanced_56: move the zeroes
+        # to the end): the kept order is a sublist, the tail after ``dropWhile p`` is the ``q`` part, counts and lengths add
+        if "++" in obligation.statement and obligation.statement.count(".filter") >= 2 and lists:
+            tactics.append(
+                f"unfold {post}; (try simp only [{', '.join(libeq_all) or 'List.length_append'}] at *)\n"
+                "  (repeat' apply And.intro) <;> first\n"
+                "    | exact List.sublist_append_left _ _\n"
+                "    | (rw [List.dropWhile_append_of_pos]; (simp only [List.all_eq_true, decide_eq_true_eq]; intro x hx; "
+                "have := (List.dropWhile_sublist _).subset hx; simpa using (List.mem_filter.mp this).2); "
+                "(intro a ha; simpa using (List.mem_filter.mp ha).2))\n"
+                "    | (rw [List.count_append]; (conv_rhs => rw [List.count_eq_zero.mpr (by simp), List.count_filter (by simp)]); "
+                "simp)\n"
+                "    | (simp [List.count_append, List.count_filter]; done)\n"
+                "    | (simp only [List.length_append]; grind [List.length_eq_length_filter_add])")
+        # the first ``k`` of the distinct elements sorted by a key, descending (Verina advanced_76: the k most frequent):
+        # distinct (``nodup_eraseDups'``), members of the input, every left-out element's key at most every kept one's
+        # (``take_desc_cover``), ordered by the key (``pairwise_mergeSort_key_ge_nat``, indices for ``zipIdx``)
+        sortkey = re.search(r"(\w+)\.eraseDups\.mergeSort \(fun (\w+) (\w+) => decide \(\((.+?) \3\) ≤ \((.+?) \2\)\)\)",
+                            obligation.statement)
+        if sortkey and sortkey.group(4) == sortkey.group(5) and ".take" in obligation.statement:
+            l, key = sortkey.group(1), sortkey.group(4)
+            takek = re.search(r"\.take (\w+)", obligation.statement)
+            takek = takek.group(1) if takek else "_"
+            srt = f"{l}.eraseDups.mergeSort (fun x y => decide (({key} y) ≤ ({key} x)))"
+            tactics.append(
+                f"unfold {post}; (try unfold {pre} at h_precond)\n"
+                f"  have hS := Refine.pairwise_mergeSort_key_ge_nat (fun z => {key} z) {l}.eraseDups\n"
+                f"  have hnd : {l}.eraseDups.Nodup := Refine.nodup_eraseDups' {l}\n"
+                f"  have hmem : ∀ x, x ∈ {srt} ↔ x ∈ {l} := fun x => by rw [Refine.mem_mergeSort']; exact List.mem_eraseDups\n"
+                "  (repeat' apply And.intro) <;> first\n"
+                "    | (simp only [List.length_take, List.length_mergeSort]; omega)\n"
+                "    | (simp only [List.all_eq_true, decide_eq_true_eq]; intro x hx; exact (hmem x).mp (List.mem_of_mem_take hx))\n"
+                "    | exact ((List.mergeSort_perm _ _).nodup_iff.mpr hnd).sublist (List.take_sublist _ _)\n"
+                "    | (simp only [List.all_eq_true, decide_eq_true_eq]; intro x hx y hy\n"
+                "       exact Refine.take_desc_cover _ _ hS _ x y hx ((hmem y).mpr hy))\n"
+                "    | (rw [Refine.pairwise_zipIdx_iff]; intro i j hij hj; dsimp only; intro _\n"
+                f"       have hP := hS.sublist (List.take_sublist {takek} _)\n"
+                "       rw [List.pairwise_iff_getElem] at hP\n"
+                "       have := hP i j (by omega) hj hij\n"
+                "       rw [getElem!_pos _ i (by omega), getElem!_pos _ j hj]; exact this)")
+        # ... the same search returning ``if A then r else -1`` (the guard ``A ∧ ¬ P r``): inside the bound ``P r`` holds and
+        # no earlier start has it (the invariant), at the bound none has (Verina advanced_8: the gas-station start)
+        if obligation.kind == "exit":
+            guard = _exit_guard(obligation.binders)
+            if guard and f"(if {guard[1]} then" in obligation.statement:
+                g, a, b = guard
+                prior = ("(simp only [List.all_eq_true, List.mem_range, Int.toNat_natCast]; intro k hk; "
+                         "have := ‹∀ _, _ < _ → _› k (by omega); simpa using this)")
+                tactics.append(
+                    f"unfold {post}; (try unfold {pre} at h_precond); (try dsimp only); (try casesm* _ ∧ _)\n"
+                    f"  by_cases hA : {a}\n"
+                    f"  · have hB := Classical.byContradiction (fun hc => {g} ⟨hA, hc⟩)\n"
+                    "    simp only [hA, if_true]\n"
+                    "    (repeat' (first | apply And.intro | intro)) <;> first | omega | (simpa using hB) | "
+                    f"{prior} | grind\n"
+                    "  · simp only [hA, if_false]\n"
+                    f"    (repeat' (first | apply And.intro | intro)) <;> first | omega | {prior} | grind")
+        # "some pair of members is related" computed as ``l.any (fun x => l.any (fun y => R x y))``, against a spec "pairwise
+        # unrelated → false, some pair related → true": a related pair contradicts ``Pairwise`` when ``R`` is symmetric
+        # and irreflexive, both by unfolding ``R`` to arithmetic (Verina advanced_13: intersecting chords)
+        pairany = re.search(r"\.any \(fun (\w+) => \w+\.any \(fun (\w+) => ([\w.]+) \1 \2\)\)", obligation.statement)
+        if pairany and "Pairwise" in (definition[1] if len(definition) > 1 else ""):
+            rel = pairany.group(3)
+            unf = f"simp only [{rel}, Bool.not_eq_true', Bool.or_eq_false_iff, Bool.and_eq_false_iff, decide_eq_false_iff_not, " \
+                  "Bool.or_eq_true, Bool.and_eq_true, decide_eq_true_eq]"
+            tactics.append(
+                f"unfold {post}; (try dsimp only)\n"
+                "  refine ⟨?_, id⟩\n"
+                "  intro hP hR\n"
+                "  simp only [List.any_eq_true] at hR\n"
+                "  obtain ⟨x, hx, y, hy, hxy⟩ := hR\n"
+                f"  have hsym : Std.Symm (fun x y => (!{rel} x y) = true) := ⟨fun a b h => by {unf} at *; omega⟩\n"
+                "  by_cases he : x = y\n"
+                f"  · subst he; {unf} at hxy; omega\n"
+                "  · have := hP.forall hx hy he; simp [hxy] at this")
+        # a sum kept by the postcondition's own ``let rec f (i : Nat) (acc : Int)`` (``if i >= n then acc else f (i + 1)
+        # (acc + w i)``) of terms ``max 0 _``: it is never negative, by induction on ``n - i`` (Verina advanced_62: trapped
+        # rain water)
+        body = definition[1].split("\ndef ", 1)[0] if len(definition) > 1 else ""
+        for rec, bound in re.findall(r"let rec (\w+) \(i : Nat\) \(acc : Int\) : Int :=\s*if i >= (\S+) then acc", body):
+            if f"{post}.{rec}" in obligation.statement and "max 0" in obligation.statement:
+                f = f"{post}.{rec}"
+                args = re.search(rf"{re.escape(f)} (\w+) ", obligation.statement)
+                pre_args = f"{args.group(1)} " if args and args.group(1) not in ("i", "acc") and "(" not in args.group(1) else ""
+                tactics.append(
+                    f"unfold {post}\n"
+                    f"  have key : ∀ (W : Nat → Int), (∀ i, W i ≥ 0) → ∀ n i (acc : Int), {bound} - i = n → acc ≥ 0 →\n"
+                    f"      {f} {pre_args}W i acc ≥ 0 := by\n"
+                    "    intro W hW n; induction n with\n"
+                    f"    | zero => intro i acc h hacc; unfold {f}; rw [if_pos (by omega)]; exact hacc\n"
+                    "    | succ n ih =>\n"
+                    f"      intro i acc h hacc; unfold {f}; split\n"
+                    "      · exact hacc\n"
+                    "      · exact ih (i + 1) _ (by omega) (by have := hW i; omega)\n"
+                    "  (repeat' apply And.intro) <;> (try split) <;> first | omega | rfl | (simp_all; done) "
+                    "| exact key _ (fun i => le_max_left _ _) _ 0 0 rfl (le_refl _)")
+        # a number written back as its digits, ``if n = 0 then [0] else Nat.digits 10 n``, the inputs read by the task's
+        # digit fold (= ``Nat.ofDigits 10``, ``_library_equations``): the digits read back to ``n``, are below 10, the last
+        # is not 0; at 0, an input whose value is 0 and whose last digit is not 0 cannot exist (Verina advanced_5)
+        if "Nat.digits 10" in obligation.statement and libeq_all:
+            zero = "".join(f"| (rcases ‹_ ∨ {v} = [0]› with h | h; (exfalso; exact h (Refine.ofDigits_eq_zero_all 10 {v} "
+                           f"(by norm_num) (by omega) _ (Refine.getLast_bang_mem {v} (List.ne_nil_of_length_pos ‹{v}.length > 0›)))); "
+                           "exact h) " for v in lists)
+            tactics.append(
+                f"unfold {post}; unfold {pre} at h_precond; (try simp only [{', '.join(libeq_all)}] at *); "
+                "(try casesm* _ ∧ _)\n"
+                "  split\n"
+                "  · rename_i hs\n"
+                "    (repeat' (first | apply And.intro | apply Or.inr)) <;> first | rfl | (simp [Nat.ofDigits]; omega) "
+                f"| (simp; done) {zero}\n"
+                "  · rename_i hs\n"
+                "    (repeat' apply And.intro) <;> first | exact Nat.ofDigits_digits 10 _ "
+                "| (intro d hd; exact Nat.digits_lt_base (by norm_num) hd) "
+                "| exact Or.inl (Refine.digits_getLast_bang_ne_zero 10 _ (by norm_num) hs)")
+        # a polynomial with Nat subtractions in a loop invariant (``7 + 24 i³ - 12 i² - 14 i``): each subtraction never
+        # truncates (proved for every k, inner ones first, by cases on k and nlinarith), instantiated at the loop
+        # variable and its successor; then ``zify`` with those facts turns the step into an Int identity for nlinarith
+        # (Verina basic_43: the sum of fourth powers of odd numbers)
+        subs = _nat_subtractions(obligation.binders + " " + obligation.statement) if obligation.kind != "exit" else []
+        nat_vars = [v for v, typ in _binder_types(obligation.binders) if typ in ("Nat", "ℕ")]
+        loop_vars = [v for v in nat_vars if any(re.search(rf"\b{v}\b", l + r) for l, r in subs)]
+        if subs and "^" in obligation.statement and len(loop_vars) == 1 and len(subs) <= 4:
+            v = loop_vars[0]
+            lines, facts = [], []
+            for k, (l, r) in enumerate(subs):
+                lk, rk = (re.sub(rf"\b{v}\b", "k", x) for x in (l, r))
+                prev = "".join(f"have p{j} := nsub{j} k; " for j in range(k))
+                zprev = ", ".join(f"p{j}" for j in range(k))
+                zprev = f" [{zprev}]" if zprev else ""
+                hints = ("sq_nonneg ((k : Int)), sq_nonneg ((k : Int) + 1), mul_nonneg (Int.natCast_nonneg k) "
+                         "(sq_nonneg ((k : Int)))")
+                lines.append(f"  have nsub{k} : ∀ k : Nat, {rk} ≤ {lk} := fun k => by first | omega "
+                             f"| ({prev}rcases k with _ | k <;> [simp; (first | nlinarith [sq_nonneg k, pow_pos (Nat.succ_pos k) 3] "
+                             f"| (zify{zprev}; push_cast; nlinarith [{hints}]) | (zify{zprev} at *; push_cast at *; "
+                             f"nlinarith [{hints}]))])")
+                facts += [f"b{k}", f"c{k}"]
+                lines.append(f"  have b{k} := nsub{k} {v}; have c{k} := nsub{k} ({v} + 1)")
+            tactics.append("(try beta_reduce); (try simp only [] at *); (try casesm* _ ∧ _)\n" + "\n".join(lines) + "\n"
+                           f"  (repeat' apply And.intro) <;> first | omega | (zify [{', '.join(facts)}] at *; push_cast at *; "
+                           "nlinarith)")
+        # a search step: the invariant "no ``r' < r`` has the property" extends to ``r + 1`` by the guard ``¬ P r``
+        # (Verina advanced_52, advanced_8: the loop's step)
+        if obligation.kind != "exit" and re.search(r"∀ ([\w']+), \(\1 < \w+\) →", obligation.statement):
+            tactics.append("(try beta_reduce); (try casesm* _ ∧ _); (repeat' (first | apply And.intro | intro)) <;> first "
+                           "| omega | (rcases Nat.lt_succ_iff_lt_or_eq.mp ‹_ < _ + 1› with h | h <;> "
+                           "[exact ‹∀ _, _ < _ → _› _ h ‹_›; (subst h; contradiction)])")
+        # a value known by a hypothesis to occur more than half the time (a `bind` or a `cases` on it): every other value
+        # occurs at most half the time (Verina advanced_11 when the result is named, not found by ``find?``)
+        if "filter" in stmt + self.task.prelude and "/ 2" in stmt + self.task.prelude:
+            tactics.append(f"unfold {post}; (try simp only [{pre}] at h_precond); (try dsimp only); (try intros); "
+                           "(repeat' (first | apply And.intro | intro)) <;> (try simp only [decide_eq_true_eq, "
+                           "List.all_eq_true, not_lt, Bool.decide_or, Bool.or_eq_true] at *) <;> (try casesm* _ ∧ _) <;> "
+                           "first | (exfalso; contradiction) | assumption | omega "
+                           "| (right; exact ⟨‹_›, fun _ _ => Refine.filter_le_half_or_eq _ _ _ ‹_›⟩) "
+                           "| (exact ⟨‹_›, fun _ _ => Refine.filter_le_half_or_eq _ _ _ ‹_›⟩) "
+                           "| (exact fun _ _ => Refine.filter_le_half_or_eq _ _ _ ‹_›)")
         # the precondition unfolded by name (``unfold post pre at *`` stops at the first name it cannot unfold), members of
         # arrays and lists as indices, the task's plain helpers unfolded, then grind (Verina basic_24: the precondition
         # has an even element, so a scan that stops at the first non-odd one stops inside the array)
@@ -897,6 +1190,19 @@ class Derivation:
                 cands.append((f"∀ ({x} : {types[0]}) ({l} : {types[1]}), {f} {x} {l} = {l}.filter (fun y => decide (y = {x}))",
                               f"by\n  intro {x} {l}; unfold {f}; induction {l} with\n  | nil => simp [{f}.aux]\n"
                               f"  | cons y ys ih => simp only [{f}.aux, List.filter_cons]; split <;> simp_all"))
+            # ``f (v : T) : List T → Nat`` counting ``v`` (Verina advanced_56: ``countVal``)
+            if len(params) == 1 and ret.replace(" ", "") == f"List{types[0]}→Nat".replace(" ", "") and name in recursive:
+                v = params[0][0]
+                cands.append((f"∀ ({v} : {types[0]}) (l : List {types[0]}), {f} {v} l = l.count {v}",
+                              f"by\n  intro {v} l; induction l with\n  | nil => simp [{f}]\n"
+                              f"  | cons y ys ih => simp only [{f}, ih, List.count_cons]; split <;> simp_all"))
+            # ``f (xs ys : List T) : Bool`` deciding "xs is a subsequence of ys" (Verina advanced_56: ``isSubsequence``)
+            if len(params) == 2 and types[0] == types[1] and types[0].startswith("List") and ret == "Bool" \
+                    and name in recursive:
+                xs, ys = params[0][0], params[1][0]
+                cands.append((f"∀ ({xs} {ys} : {types[0]}), {f} {xs} {ys} = true ↔ {xs}.Sublist {ys}",
+                              f"by\n  intro {xs} {ys}; induction {xs}, {ys} using {f}.induct <;> simp_all [{f}]\n"
+                              "  all_goals grind [List.cons_sublist_cons, List.sublist_cons_iff]"))
             for k, (statement, proof) in enumerate(cands):
                 if self._admit(HelperLemma(f"auto_libeq_{name}_{k}", statement, proof)) is None:
                     found = True

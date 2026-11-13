@@ -1820,6 +1820,125 @@ theorem filter_head_eq_find {α : Type} [Inhabited α] (p : α → Bool) (l : Li
   induction l with
   | nil => rfl
   | cons x t ih => by_cases h : p x <;> simp [List.filter_cons, h, ih]
+
+-- counting: a filter by equality is a count; the element occurring once is unique and exists when the counts
+-- list has exactly one 1 (Verina advanced_1: the single number)
+theorem filter_eq_length_count {α : Type} [DecidableEq α] (l : List α) (x : α) :
+    (l.filter (fun y => decide (y = x))).length = l.count x := by
+  first | (rw [List.count_eq_length_filter]; congr 1; done) | (rw [List.count_eq_length_filter]; congr 1; apply List.filter_congr; intro y _; simp)
+
+theorem count_one_unique {α : Type} [DecidableEq α] (l : List α)
+    (h : (l.map (fun x => l.count x)).count 1 = 1) (a b : α)
+    (hca : l.count a = 1) (hcb : l.count b = 1) : a = b := by
+  by_contra hne
+  have key : ∀ m : List α, (m.map (fun x => l.count x)).count 1 ≥ m.count a + m.count b := by
+    intro m
+    induction m with
+    | nil => simp
+    | cons y ys ih =>
+      by_cases hya : y = a
+      · subst hya; simp only [List.map_cons, List.count_cons, hca, beq_self_eq_true, if_true]
+        have : (y == b) = false := by simp [hne]
+        (try simp only [this, Bool.false_eq_true, ↓reduceIte, if_false]); omega
+      · by_cases hyb : y = b
+        · subst hyb; simp only [List.map_cons, List.count_cons, hcb, beq_self_eq_true, if_true]
+          have : (y == a) = false := by simp [hya]
+          (try simp only [this, Bool.false_eq_true, ↓reduceIte, if_false]); omega
+        · simp only [List.map_cons, List.count_cons]
+          have e1 : (y == a) = false := by simp [hya]
+          have e2 : (y == b) = false := by simp [hyb]
+          (try simp only [e1, e2, Bool.false_eq_true, ↓reduceIte, if_false]); (try split) <;> omega
+  have := key l
+  omega
+
+theorem count_one_exists {α : Type} [DecidableEq α] (l : List α)
+    (h : (l.map (fun x => l.count x)).count 1 = 1) : ∃ x ∈ l, l.count x = 1 := by
+  have h1 : 1 ∈ l.map (fun x => l.count x) := List.count_pos_iff.mp (by omega)
+  simpa using h1
+-- the element minimising a key, kept by a fold: it is in the list and its key is at most every key (Verina advanced_12)
+theorem foldl_argmin_facts {α : Type} (key : α → Nat) (l : List α) : ∀ b : α,
+    l.foldl (fun best y => if key y < key best then y else best) b ∈ b :: l ∧
+    ∀ y ∈ b :: l, key (l.foldl (fun best y => if key y < key best then y else best) b) ≤ key y := by
+  induction l with
+  | nil => intro b; simp
+  | cons a t ih =>
+    intro b
+    simp only [List.foldl_cons]
+    split
+    · obtain ⟨h1, h2⟩ := ih a
+      refine ⟨by simp only [List.mem_cons] at h1 ⊢; tauto, ?_⟩
+      intro y hy
+      simp only [List.mem_cons] at hy
+      rcases hy with rfl | rfl | hy
+      · have := h2 a (by simp); omega
+      · exact h2 _ (by simp)
+      · exact h2 y (by simp [hy])
+    · obtain ⟨h1, h2⟩ := ih b
+      refine ⟨by simp only [List.mem_cons] at h1 ⊢; tauto, ?_⟩
+      intro y hy
+      simp only [List.mem_cons] at hy
+      rcases hy with rfl | rfl | hy
+      · exact h2 _ (by simp)
+      · have := h2 b (by simp); omega
+      · exact h2 y (by simp [hy])
+-- sorted by a key, descending, then the first k: every element left out has a key at most every kept one
+-- (Verina advanced_76: the k most frequent)
+theorem pairwise_mergeSort_key_ge_nat {α : Type} (key : α → Nat) (l : List α) :
+    List.Pairwise (fun a b => key b ≤ key a) (l.mergeSort (fun a b => decide (key b ≤ key a))) := by
+  have := List.pairwise_mergeSort (le := fun a b : α => decide (key b ≤ key a)) (fun a b c h1 h2 => by simp at *; omega) (fun a b => by simp; omega) l
+  simpa using this
+
+theorem take_desc_cover {α : Type} (S : List α) (key : α → Nat) (hS : S.Pairwise (fun a b => key b ≤ key a)) (k : Nat)
+    (x y : α) (hx : x ∈ S.take k) (hy : y ∈ S) : y ∈ S.take k ∨ key y ≤ key x := by
+  by_cases h : y ∈ S.take k
+  · exact Or.inl h
+  · right
+    have hy' : y ∈ S.drop k := by
+      rw [← List.take_append_drop k S] at hy
+      rcases List.mem_append.mp hy with h1 | h1
+      · exact absurd h1 h
+      · exact h1
+    rw [← List.take_append_drop k S] at hS
+    exact (List.pairwise_append.mp hS).2.2 x hx y hy'
+-- `eraseDups` leaves no duplicates (advanced_76)
+theorem nodup_eraseDups' {α : Type} [BEq α] [LawfulBEq α] : (l : List α) → l.eraseDups.Nodup
+  | [] => by first | exact List.nodup_nil | (simp [List.eraseDups, List.eraseDupsBy]; done) | rfl
+  | a :: as => by
+    rw [List.eraseDups_cons, List.nodup_cons]
+    refine ⟨?_, nodup_eraseDups' _⟩
+    rw [List.mem_eraseDups]; simp
+termination_by l => l.length
+decreasing_by
+  all_goals (have := List.length_filter_le (fun b => !b == a) as; simp only [List.length_cons]; omega)
+
+
+-- digit lists: `getLast!` of a non-empty list, the last digit of a positive number, all digits of a zero value
+-- (Verina advanced_5: add two numbers)
+theorem getLast_bang_eq {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.getLast! = l.getLast h := by
+  cases l with
+  | nil => exact absurd rfl h
+  | cons a t => simp [List.getLast!]
+
+theorem digits_getLast_bang_ne_zero (b n : Nat) (hb : 1 < b) (h : n ≠ 0) : (Nat.digits b n).getLast! ≠ 0 := by
+  rw [getLast_bang_eq _ (Nat.digits_ne_nil_iff_ne_zero.mpr h)]
+  exact Nat.getLast_digit_ne_zero b h
+
+theorem ofDigits_eq_zero_all (b : Nat) (L : List Nat) (hb : 0 < b) (h : Nat.ofDigits b L = 0) : ∀ d ∈ L, d = 0 := by
+  induction L with
+  | nil => simp
+  | cons d t ih =>
+    rw [Nat.ofDigits_cons] at h
+    have h1 : d = 0 := by omega
+    have h2 : Nat.ofDigits b t = 0 := by
+      rcases Nat.eq_zero_or_pos (Nat.ofDigits b t) with h3 | h3
+      · exact h3
+      · exfalso; have := Nat.mul_pos hb h3; omega
+    intro x hx; rcases List.mem_cons.mp hx with rfl | hx
+    · exact h1
+    · exact ih h2 x hx
+
+theorem getLast_bang_mem {α : Type} [Inhabited α] (l : List α) (h : l ≠ []) : l.getLast! ∈ l := by
+  rw [getLast_bang_eq _ h]; exact List.getLast_mem h
 end Refine
 '''
 
