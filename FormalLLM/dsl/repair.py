@@ -268,23 +268,56 @@ def _closing_typo(text: str) -> Optional[str]:
     return text.replace("}", ")")
 
 
+#: Lean's application written in L_spec: a method with one atomic argument after a space (`o.getD 0`, `o.getD nums[0]`,
+#: gpt-5.4-mini on Verina, 2026-11-13), at the end of the text or before a closing bracket or comma
+_METHOD_ARG = re.compile(r"""(\.[A-Za-z_]\w*\??)[ \t]+(-?\d+(?:\.\d+)?|\(-\d+\)|"[^"]*"|'[^']*'|[A-Za-z_]\w*(?:\[[^\[\]]*\])?)(?=\s*(?:$|[),\]]))""")
+#: a function name, a space, then `(`: `decide (x)` for `decide(x)`; L_spec keywords that take a parenthesis are kept
+_NAME_SPACE_PAREN = re.compile(r"(?<![\w.])([A-Za-z_]\w*)[ \t]+\(")
+_KEYWORDS = {"in", "not", "and", "or", "if", "then", "else", "exists", "forall", "lambda", "return", "as", "is", "for"}
+
+
+def _juxtaposed(text: str) -> Optional[str]:
+    """Lean's `f x` / `x.m a` in L_spec text, rewritten as a call; ``None`` if there is none."""
+    out = _METHOD_ARG.sub(lambda m: f"{m.group(1)}({m.group(2)})", text)
+    out = _NAME_SPACE_PAREN.sub(lambda m: m.group(0) if m.group(1) in _KEYWORDS else f"{m.group(1)}(", out)
+    return out if out != text else None
+
+
+_TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_juxtaposed, "Lean's `f x` read as the call `f(x)`"))
+
+
+def _fix_text(value: str) -> Tuple[str, List[str]]:
+    why = []
+    for fix, label in _TEXT_FIXES:
+        new = fix(value)
+        if new is not None:
+            value, why = new, why + [label]
+    return value, why
+
+
 def text_repairs(written: dict) -> Optional[Tuple[dict, str]]:
     """A step whose L_spec text does not parse, with an unambiguous typo corrected (the step is then translated and
     checked as usual); ``None`` if there is none."""
-    fixed, changed = dict(written), []
+    fixed, changed, labels = dict(written), [], []
     for field in EXPR_FIELDS:
         value = written.get(field)
-        if isinstance(value, str) and _closing_typo(value) is not None:
-            fixed[field] = _closing_typo(value)
-            changed.append(field)
+        if isinstance(value, str):
+            new, why = _fix_text(value)
+            if why:
+                fixed[field] = new
+                changed.append(field)
+                labels += [w for w in why if w not in labels]
     if isinstance(written.get("state"), list):
         state = []
         for entry in written["state"]:
-            if isinstance(entry, list) and len(entry) == 3 and isinstance(entry[2], str) and _closing_typo(entry[2]):
-                entry = [entry[0], entry[1], _closing_typo(entry[2])]
-                changed.append(f"initial value of {entry[0]}")
+            if isinstance(entry, list) and len(entry) == 3 and isinstance(entry[2], str):
+                new, why = _fix_text(entry[2])
+                if why:
+                    entry = [entry[0], entry[1], new]
+                    changed.append(f"initial value of {entry[0]}")
+                    labels += [w for w in why if w not in labels]
             state.append(entry)
         fixed["state"] = state
     if not changed:
         return None
-    return fixed, "`}` read as `)` in " + ", ".join(changed)
+    return fixed, "; ".join(labels) + " in " + ", ".join(changed)

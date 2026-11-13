@@ -354,3 +354,14 @@ def test_repair_needs_a_rejection():
 ])
 def test_method_spellings(spec, lean):
     assert lean_syntax.parse(steps.to_lean(spec, "x", ["l", "x"])) == lean_syntax.parse(lean)
+
+
+def test_text_repairs_juxtaposed_call():
+    """Lean's `x.m a` and `f (x)` read as calls (gpt-5.4-mini on Verina); keywords before `(` are kept."""
+    from FormalLLM.dsl import repair
+    fixed, why = repair.text_repairs({"law": "term", "expr": "l.find?(lambda x: x > 0).getD 0"})
+    assert fixed["expr"] == "l.find?(lambda x: x > 0).getD(0)" and "f(x)" in why
+    assert repair.text_repairs({"law": "term", "expr": "o.getD nums[0]"})[0]["expr"] == "o.getD(nums[0])"
+    assert repair.text_repairs({"law": "term", "expr": "decide (x)"})[0]["expr"] == "decide(x)"
+    for kept in ("a and (b or c)", "not (x in l)", "exists (m: nat): m < n"):
+        assert repair.text_repairs({"law": "term", "expr": kept}) is None
