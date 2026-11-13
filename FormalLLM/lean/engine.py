@@ -47,6 +47,14 @@ from FormalLLM.lean.lemmas import EVAL_SET, LEMMAS, SIMP_SET
 from FormalLLM.lean.session import LeanSession
 from FormalLLM.lean.task import LeanTask
 
+#: rewrites to the forms the shape tactics are written for, tried first inside those tactics only (never in the shared simp
+#: sets, so a proof that works on the written form is never disturbed): ``max(l)`` written as ``l.max?.get!``, the first of a
+#: filter as ``(l.filter p)[0]!``, a search as a fold with ``||`` (gpt-5.4-mini on Verina, 2026-11-13)
+NORMALIZE = ("(try simp only [Refine.max_get_eq_foldl_int, Refine.max_get_eq_foldl_nat, Refine.min_get_eq_foldl_int, "
+             "Refine.min_get_eq_foldl_nat, Refine.filter_getElem_zero_eq_find, Refine.filter_head_eq_find, "
+             "Refine.foldl_or_eq_any, Refine.foldl_and_eq_all, Refine.foldl_decide_or_eq_any, Bool.false_or, "
+             "Bool.true_and] at *); ")
+
 #: the library ``lib_chain`` chains over, as ``solve_by_elim`` arguments: the lemmas up to the task-family facts added from
 #: 28 Oct (``filter_mergeSort_key`` on). With those (many hypotheses each) the search no longer fails fast but runs out of
 #: heartbeats (he_009, he_010, he_022 regressed); ``lib_apply`` and the portfolio still use the whole library
@@ -620,6 +628,16 @@ class Derivation:
         start = (f"(try unfold {post} {pre} at *); (try simp only [{post}] at *); "
                  "(try simp only [Refine.string_toList_mk, Refine.string_length_mk] at *); ")
         tactics = []
+        # the same value written another way (gpt-5.4-mini, Verina 2026-11-13): ``max(l)`` is ``l.max?.get!``, the first of a
+        # filter is ``(l.filter p)[0]!``, a search is a fold with ``||``; rewritten to the forms the tactics below are written
+        # for (``foldl max (headD 0)``, ``find? … |>.getD``, ``any``), and the gates read the statement as rewritten
+        stmt = obligation.statement
+        if ".max?.get!" in stmt or ".min?.get!" in stmt:
+            stmt += " foldl max"
+        if ".filter" in stmt and ("[0]!" in stmt or ".head!" in stmt):
+            stmt += " find? getD"
+        if "foldl" in stmt and ("∨" in stmt or "||" in stmt) and "List.range" in stmt:
+            stmt += " .any"
         definition = self.task.prelude.split(f"def {post}", 1)
         if "∃" in obligation.statement or (len(definition) > 1 and "∃" in definition[1].split("\ndef ", 1)[0]):
             # (a result chosen by ``if``, a postcondition ``A ∨ ∃ i, ...``: he_135's loop exit)
@@ -659,17 +677,17 @@ class Derivation:
         # ``L.foldl max d`` is a member of L and bounds it once L is not empty (``maxlist_*``); L is not empty by its length,
         # by a witness (the empty subarray, the empty subsequence, a one-element list after splitting an input list), or
         # after a split on the input's ``match`` (Verina advanced_2, 3, 4, 28, 29, 43, 45, 46, 75)
-        if "foldl max" in obligation.statement:
+        if "foldl max" in stmt:
             tactics.append(self._max_tactic(obligation, plain))
         # a bounded search for a witness, ``(range (n + 1)).any p`` against the postcondition's ``∃ m, p m``: equivalent once
         # every witness is at most n (``any_range_iff``), a power ``b ^ m`` is at least m and a digit past the number's
         # length is 0 (Verina advanced_14, advanced_20)
-        if "List.range" in obligation.statement and ".any" in obligation.statement:
+        if "List.range" in stmt and ".any" in stmt:
             bound = ("intro m hm; simp only [beq_iff_eq, decide_eq_true_eq, Bool.and_eq_true] at hm; first "
                      "| (rw [hm]; apply Refine.le_pow_self'; norm_num; done) | (rw [← hm]; apply Refine.le_pow_self'; norm_num; done) "
                      "| (by_contra hc; rw [Refine.div_pow_eq_zero_of_lt] at hm <;> first | (simp at hm; done) | omega | (norm_num; done)) "
                      "| omega")
-            tactics.append(f"unfold {post}; (try unfold {pre} at *); "
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); {NORMALIZE}"
                            "(try simp only [Bool.or_eq_true, Bool.and_eq_true, beq_iff_eq, decide_eq_true_eq]); "
                            f"rw [Refine.any_range_iff]; all_goals first | ({bound}) | exact Iff.rfl | (simp; done) | "
                            "(simp [eq_comm]; done)")
@@ -705,8 +723,12 @@ class Derivation:
         # leaves every other value at most half, ``filter_le_half_or_eq``; advanced_54: a
         # list of n distinct values up to n misses exactly one of 0..n, ``range_not_subset``, ``missing_unique``; advanced_55:
         # the most frequent element, the largest count is attained, ``not_all_ne_max_dec``)
-        if "find?" in obligation.statement and "getD" in obligation.statement:
-            tactics.append(f"unfold {post}; (try simp only [{pre}] at h_precond); (try dsimp only); (try intros); "
+        if "find?" in stmt and "getD" in stmt:
+            # two different values cannot both occur more than half the time (advanced_35 written as ``filter(p)[0]``):
+            # the found value's count and the other one's, over each list the obligation binds
+            pair = "".join(f"| (have hc1 := of_decide_eq_true hfs; have hc2 := Refine.count_pair_le {v} _ _ ‹_ ≠ _›; omega) "
+                           for v, typ in _binder_types(obligation.binders) if typ.startswith("List"))
+            tactics.append(f"unfold {post}; {NORMALIZE}(try simp only [{pre}] at h_precond); (try dsimp only); (try intros); "
                            "unfold Option.getD; split <;> (try simp only [List.find?_eq_none] at *) <;> "
                            "(try (have hfs := List.find?_some ‹List.find? _ _ = some _›; "
                            "have hfm := List.mem_of_find?_eq_some ‹List.find? _ _ = some _›)) <;> "
@@ -719,7 +741,8 @@ class Derivation:
                            "| (exfalso; exact Refine.not_all_ne_max_dec _ _ ‹_› ‹_›) "
                            "| (simp only [List.all_eq_true, decide_eq_true_eq]; intro x hx; rw [of_decide_eq_true hfs]; "
                            "apply Refine.le_foldl_max; exact List.mem_map_of_mem hx) "
-                           "| (simp only [of_decide_eq_true hfs]; rw [List.head?_filter]; assumption) | (simp; done) | grind")
+                           "| (simp only [of_decide_eq_true hfs]; rw [List.head?_filter]; assumption) "
+                           + pair + "| (simp; done) | grind")
         # the precondition unfolded by name (``unfold post pre at *`` stops at the first name it cannot unfold), members of
         # arrays and lists as indices, the task's plain helpers unfolded, then grind (Verina basic_24: the precondition
         # has an even element, so a scan that stops at the first non-odd one stops inside the array)
@@ -800,9 +823,9 @@ class Derivation:
         # function is rewritten to ``^`` (``_library_equations``): a witness is below ``n`` since ``x < b ^ x``
         # (Verina advanced_23: a power of two)
         libeq = [h.name for h in self.helpers if h.name.startswith("auto_libeq_")]
-        if libeq and ".any" in obligation.statement and "List.range" in obligation.statement:
+        if libeq and ".any" in stmt and "List.range" in stmt:
             bound = " | ".join(f"(have := Refine.int_lt_pow {b} x (by norm_num); omega)" for b in (2, 3, 4, 10))
-            tactics.append(f"unfold {post}; (try unfold {pre} at *); (try simp only [{', '.join(libeq)}] at *); split <;> "
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); {NORMALIZE}(try simp only [{', '.join(libeq)}] at *); split <;> "
                            "rename_i h <;> simp only [List.any_eq_true, List.mem_range, decide_eq_true_eq] at h ⊢ <;> first "
                            "| (obtain ⟨x, _, hx⟩ := h; exact ⟨x, hx⟩) "
                            f"| (rintro ⟨x, hx, hn⟩; apply h; refine ⟨x, ?_, hx, hn⟩; first | {bound})")
@@ -829,7 +852,7 @@ class Derivation:
         member = f"first | (simp; done) | ({simp} <;> wit_search)"
         apply = (f"first | (refine Refine.maxlist_int _ ?_; {nonempty}) | (refine Refine.maxlist_nat _ ?_; {nonempty}) "
                  f"| (refine Refine.maxlist_int_any _ ?_; {nonempty}) | (refine Refine.maxlen_spec _ ?_; {member})")
-        return (f"unfold {post}; (try unfold {pre} at *); (try dsimp only at *); (try intros); (try split) <;> "
+        return (f"unfold {post}; (try unfold {pre} at *); {NORMALIZE}(try dsimp only at *); (try intros); (try split) <;> "
                 f"(try (exfalso; simp_all; done)) <;> first | ({apply}) | ((repeat' apply And.intro) <;> (try intros) <;> "
                 f"first | (exfalso; contradiction) | ({apply}) | (left; exact ⟨‹_›, rfl⟩) | (right; refine ⟨‹_›, ?_⟩; {apply}))")
 

@@ -24,13 +24,18 @@ sys.path.insert(0, os.path.join(ROOT, "benchmarks"))
 PROBE = os.path.join(ROOT, "benchmarks", "results", "lspec", "probe")
 
 
-def dump(task_ids):
+def dump(task_ids, trees_file=""):
     import json
     from FormalLLM.lean.dataset import resolve
     from FormalLLM.lean.engine import Derivation
     from FormalLLM.lean.lspec_agent import GoldModel, LSpecAgent
     from FormalLLM.lean.session import FULL_IMPORTS, LeanSession
     trees = json.load(open(os.path.join(ROOT, "exports", "all_derivations.json"), encoding="utf8"))
+    if trees_file:                                   # replace the hand-written trees of the tasks listed there
+        for row in map(json.loads, open(trees_file, encoding="utf8")):
+            for dataset in trees.values():
+                if row.get("id") in dataset and row.get("tree"):
+                    dataset[row["id"]] = row["tree"]
     os.makedirs(PROBE, exist_ok=True)
     original = Derivation._check
 
@@ -132,9 +137,11 @@ def main():
     ap.add_argument("mode", help="dump | serve | a .lean file (one-shot run, the original use)")
     ap.add_argument("args", nargs="*")
     ap.add_argument("--task", default="", help="one-shot run: also load this task's definitions")
+    ap.add_argument("--trees", default="", help="dump: take the trees from this results .jsonl (e.g. a model's steps "
+                                                "written as a gold tree) instead of the hand-written derivations")
     args = ap.parse_args()
     if args.mode == "dump":
-        dump(args.args)
+        dump(args.args, args.trees)
     elif args.mode == "serve":
         serve(args.args[0])
     else:

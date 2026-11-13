@@ -1749,6 +1749,71 @@ theorem int_lt_pow (b : Int) (x : Nat) (hb : 2 ≤ b) : (x : Int) < b ^ x := by
   obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le (by omega : (0 : Int) ≤ b)
   have : x < n ^ x := Nat.lt_pow_self (by omega)
   exact_mod_cast this
+-- L_spec's `max(l)` / `min(l)` is Lean's `l.max?.get!`; the library is stated for `l.foldl max (l.headD 0)`, and the two
+-- are equal for every list, `[]` included (gpt-5.4-mini, Verina advanced_2, 3, 29, 34, 2026-11-13)
+theorem foldl_max_start {α : Type} [LinearOrder α] (s : List α) (a b : α) :
+    s.foldl max (max a b) = max a (s.foldl max b) := by
+  induction s generalizing b with
+  | nil => rfl
+  | cons y s ih => simp only [List.foldl_cons]; rw [max_assoc, ih]
+theorem foldl_min_start {α : Type} [LinearOrder α] (s : List α) (a b : α) :
+    s.foldl min (min a b) = min a (s.foldl min b) := by
+  induction s generalizing b with
+  | nil => rfl
+  | cons y s ih => simp only [List.foldl_cons]; rw [min_assoc, ih]
+theorem max_elim_eq_foldl {α : Type} [LinearOrder α] (t : List α) (x : α) :
+    t.max?.elim x (max x) = t.foldl max x := by
+  induction t generalizing x with
+  | nil => rfl
+  | cons y s ih => simp only [List.max?_cons, Option.elim_some, List.foldl_cons]; rw [ih, foldl_max_start]
+theorem min_elim_eq_foldl {α : Type} [LinearOrder α] (t : List α) (x : α) :
+    t.min?.elim x (min x) = t.foldl min x := by
+  induction t generalizing x with
+  | nil => rfl
+  | cons y s ih => simp only [List.min?_cons, Option.elim_some, List.foldl_cons]; rw [ih, foldl_min_start]
+theorem max_get_eq_foldl_nat (l : List Nat) : l.max?.get! = l.foldl max (l.headD 0) := by
+  cases l with
+  | nil => rfl
+  | cons x t => simp [List.max?_cons, max_elim_eq_foldl]
+theorem max_get_eq_foldl_int (l : List Int) : l.max?.get! = l.foldl max (l.headD 0) := by
+  cases l with
+  | nil => rfl
+  | cons x t => simp [List.max?_cons, max_elim_eq_foldl]
+theorem min_get_eq_foldl_nat (l : List Nat) : l.min?.get! = l.foldl min (l.headD 0) := by
+  cases l with
+  | nil => rfl
+  | cons x t => simp [List.min?_cons, min_elim_eq_foldl]
+theorem min_get_eq_foldl_int (l : List Int) : l.min?.get! = l.foldl min (l.headD 0) := by
+  cases l with
+  | nil => rfl
+  | cons x t => simp [List.min?_cons, min_elim_eq_foldl]
+-- a search written as a fold is `any` / `all` (gpt-5.4-mini, Verina advanced_23: `foldl (acc || p x) false`)
+theorem foldl_or_eq_any {α : Type} (p : α → Bool) (l : List α) (b : Bool) :
+    l.foldl (fun acc x => acc || p x) b = (b || l.any p) := by
+  induction l generalizing b with
+  | nil => simp
+  | cons x t ih => simp [List.foldl_cons, ih, Bool.or_assoc]
+theorem foldl_and_eq_all {α : Type} (p : α → Bool) (l : List α) (b : Bool) :
+    l.foldl (fun acc x => acc && p x) b = (b && l.all p) := by
+  induction l generalizing b with
+  | nil => simp
+  | cons x t ih => simp [List.foldl_cons, ih, Bool.and_assoc]
+theorem foldl_decide_or_eq_any {α : Type} (P : α → Prop) [DecidablePred P] (l : List α) (b : Bool) :
+    l.foldl (fun acc x => decide (acc = true ∨ P x)) b = (b || l.any (fun x => decide (P x))) := by
+  have e : (fun (acc : Bool) (x : α) => decide (acc = true ∨ P x)) = (fun acc x => acc || decide (P x)) := by
+    funext acc x; cases acc <;> simp
+  rw [e, foldl_or_eq_any]
+-- the first element passing a filter is `find?` (gpt-5.4-mini, Verina advanced_35: `nums.filter(p)[0]`)
+theorem filter_getElem_zero_eq_find {α : Type} [Inhabited α] (p : α → Bool) (l : List α) :
+    (l.filter p)[0]! = (l.find? p).getD default := by
+  induction l with
+  | nil => rfl
+  | cons x t ih => by_cases h : p x <;> simp [List.filter_cons, h, ih]
+theorem filter_head_eq_find {α : Type} [Inhabited α] (p : α → Bool) (l : List α) :
+    (l.filter p).head! = (l.find? p).getD default := by
+  induction l with
+  | nil => rfl
+  | cons x t ih => by_cases h : p x <;> simp [List.filter_cons, h, ih]
 end Refine
 '''
 

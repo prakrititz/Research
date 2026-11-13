@@ -111,7 +111,7 @@ TYPE_HINTS = [
     (r"GetElem\?? str ", "A `str` is not indexed directly: index its characters, `list(s)[i]`."),
     (r"Unknown identifier `(\w+)\.", "`{0}` is not defined at this step: only the goal's inputs, its assumptions and "
                                      "the variables this step introduces can be used."),
-    (r"Decidable \(∃|Decidable \(exists",
+    (r"Decidable \([^\n]*(?:∃|exists)",
      "An `exists` over all numbers cannot be computed, and the program must run. Search a bounded range instead, "
      "e.g. `range(n + 1).any(lambda m: ...)`, or use a loop."),
     (r"Function expected at\s+(\w+)\b", "`{0}` is a value here, not a function: a variable of the goal named `{0}` "
