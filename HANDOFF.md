@@ -1,7 +1,8 @@
 # Handoff — 2026-11-08 (moving to a new machine)
 
-> **Update 2026-11-11:** [`HANDOFF_VERINA.md`](HANDOFF_VERINA.md) has the current run status and the Verina fix plan.
-> It includes a `wit_search` name clash that breaks Verina. Read it next.
+> **Update 2026-11-13:** [`HANDOFF_VERINA.md`](HANDOFF_VERINA.md) has the current run status and the Verina fix plan.
+> The `wit_search` name clash is fixed. Verina strict gold is at 155/177 and HumanEval at 150/159. There is an open
+> decision for the owner in HANDOFF_VERINA §8. Read it next.
 
 Everything needed to continue on a fresh machine, with no memory of earlier sessions. Read this first, then
 [`Reading Material/29_LSpec_Workflow.md`](Reading%20Material/29_LSpec_Workflow.md) (how the L_spec workflow works) and

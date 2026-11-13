@@ -1,10 +1,17 @@
-# Handoff — 2026-11-12: fix Verina before any paid run
+# Handoff — 2026-11-13: fix Verina before any paid run
 
 Read [`HANDOFF.md`](HANDOFF.md) first for the setup, the layout and how HumanEval was fixed (§4–§5.3). This file covers
-where the benchmark runs stand and what to do for Verina. **Everything is stopped.** No run is active.
+where the benchmark runs stand and what to do for Verina. **Everything is stopped.** No run is active and no Lean
+process is running. No money has been spent since the $7.31 in §2.
 
-**Status 2026-11-12:** §3 is fixed and strict gold on Verina is at **155/177** (it started at 126). §7 has the
-progress, §8 the remaining failures, and §9 the probe workflow used to find each fix.
+**Status 2026-11-13:**
+- Strict gold on Verina: **155/177 (88%)**, up from 126 after the §3 fix. Last commit with a gain: `1af4385`.
+- HumanEval strict gold: still **150/159**. A HumanEval sample was re-checked after every change and always passed.
+- Target before any paid run: the HumanEval level, about 94%, which is **~166/177**. That leaves **11 to go**.
+- **Open decision for the owner (§8):** the 22 remaining failures each need a fact true of one task only. Either accept
+  155 as Verina's ceiling (the recommendation), or keep adding task-specific lemmas, labelled as such.
+
+§7 has the progress, §8 the remaining failures and the decision, and §9 the probe workflow used to find each fix.
 
 ## 1. Rules from the owner (binding)
 
@@ -142,7 +149,7 @@ advanced_15, 16, 17, 18, 19, 21, 22, 25, 26 and 27.
 | `benchmarks/results/lspec/verina_hand_lemmas.txt` | the 188 Verina hand lemmas by task |
 | `benchmarks/results/lspec/run_humaneval_openai-gpt-5.4-mini_ex2cross_split.jsonl` | split: he_000 CERTIFIED; its file check is still pending |
 
-## 7. Verina strict gold progress (2026-11-11 to 11-12)
+## 7. Verina strict gold progress (2026-11-11 to 11-13)
 
 Every run is strict gold (`--model gold --attempts 1 --retractions 0`). A task counts only when the fresh-process file
 check says SOLVED. Each fix run covers **only the tasks still failing**; HumanEval is checked after every change on a
@@ -160,7 +167,8 @@ sample of tasks whose proofs use the changed area.
 | v2fix7 | 1 | 1 | 154 | maximum of a brute-force list of pairs (`foldl_max_pairs`, `foldl_max_filter_pairs`) with `zipIdx` quantifiers as indices (`pairwise_zipIdx_iff`, `zipIdx_all_iff`, `zipIdx_any_iff`) |
 | v2fix8 | 3 | 1 | 155 | the task's recursive helpers recognised as library functions by signature (`Derivation._library_equations`: `pow` = `^`, a digit fold = `Nat.ofDigits`, a `let rec` filter = `List.filter`), then a bounded search for a power (`int_lt_pow`). advanced_1 and 5 get their equation but still need their task-specific rest |
 
-HumanEval samples after each change (`run_humaneval_gold_recheck1112{,b,c,d,e,f,g}_joint.jsonl`): all solved every time.
+HumanEval samples after each change (`run_humaneval_gold_recheck1112{,b,c,d,e,f,g}_joint.jsonl`): all solved every
+time. The last two were 3/3 (he_009, 021, 120, after v2fix7) and 5/5 (he_038, 046, 055, 063, 079, after v2fix8).
 
 All new tactics are in `Derivation._shape_tactics` ([`engine.py`](FormalLLM/lean/engine.py)), each gated on the shape of
 the obligation (a word in the statement, the binder types, the obligation kind) and never on a task name. All new
@@ -177,15 +185,38 @@ None of these is a prover bug; each needs a proof the library does not have yet.
 | sorted by a key, then `take` | advanced_76 (top-k frequent), basic_104 (map update) | `find?` on a list with unique keys through mergeSort and filter; Pairwise of a sort by key on `zipIdx` |
 | `let rec`/recursive task helpers | advanced_1 (`filterlist`), 10 (`removePrimeFactor`, padicValNat), 24 (subsequences), 56 (`isSubsequence`), 62 (`ml`/`mr` in the spec) | the helper = a library function, by induction (`fl_eq` style) |
 | loop exit with a task-specific fact | advanced_8 (gas station), 52 (min operations), 58 (ugly number), 67 (run-length decode), basic_89 (idxOf dedup), 102 (array two-sum with lex conditions) | per task. advanced_52 is proved by hand in the probe (take of reverse, `k = 0` when the result is 0) but not as a general tactic |
-| arithmetic / digits | advanced_5 (add two numbers), basic_43 (Nat subtraction polynomial) | advanced_5 is proved by hand in the probe (task `listToNat` = `Nat.ofDigits 10`, then `Nat.digits_ofDigits`, `Nat.ofDigits_digits`, `Nat.getLast_digit_ne_zero`), not yet general |
+| arithmetic / digits | advanced_5 (add two numbers), basic_43 (Nat subtraction polynomial) | advanced_5 is proved by hand in the probe (task `listToNat` = `Nat.ofDigits 10`, then `Nat.digits_ofDigits`, `Nat.ofDigits_digits`, `Nat.getLast_digit_ne_zero`), not yet general. basic_43's loop step is proved by hand (below); the generic `omega`/`nlinarith` variant fails |
 | `find?`/second occurrence | advanced_12 (first duplicate), 57 (next greater), 13 (chords), basic_27 (first repeated char) | `idxOf`/`findIdx?` facts. advanced_57's spec repeats the program per element, but its `match` on `find?` depends on the scrutinee, so `split`/`generalize`/`cases` all fail; needs a rewrite of the match first |
 
-**Next steps:**
-1. The two hand proofs above (advanced_5, 52) show the facts. Turn them into general lemmas only if a second task uses
-   the same shape, and otherwise add them as `--lemmas` hand lemmas to the gold tree.
-2. The brute-force `foldl max` family (4 tasks) is the largest group, so it is the best next general lemma.
-3. The owner will not run any paid model until Verina is at the HumanEval level (about 94%, so about 166/177). At
-   155/177 the prover ceiling on Verina is 88%.
+**Hand proofs found in the probe (not in the engine):**
+- **basic_43** (loop step): saved in
+  [`benchmarks/results/lspec/probe_hand/verina_basic_43__loop_step.lean`](benchmarks/results/lspec/probe_hand/verina_basic_43__loop_step.lean).
+  It first proves that the Nat subtractions don't truncate (`12k² ≤ 7 + 24k³` and `14k ≤ 7 + 24k³ − 12k²`, for `k = i`
+  and `k = i + 1`), then uses `zify` with those facts and `nlinarith`. Both facts are specific to this polynomial.
+- **advanced_52** (loop exit): `take` of a `reverse`, and `k = 0` when the result is 0. The proof file was lost with the
+  scratchpad; the facts are listed in the table above.
+- **advanced_5**: the digit route in the table above. The equation `listToNat = Nat.ofDigits 10` is now found
+  automatically (v2fix8); the rest is not.
+
+**Assessment (2026-11-13).** Every general shape found so far is in the engine. Each of the 22 remaining tasks needs a
+fact true of that task only: a specific polynomial never goes below zero, a streak shifted one place left is longer,
+a two-step `match` reduces, a recursive helper equals a library function. Getting to ~166 would mean writing about 11
+such proofs by hand into the library. That would raise the gold count, but it fits proofs to the test tasks. It
+would not help the model run much either, because the model would only succeed if it chose the exact steps each lemma
+was written for.
+
+**Decision for the owner (open):**
+1. **Accept 155/177 as Verina's ceiling** (recommended). Document the 22 failures with their reasons, as for the
+   9 HumanEval ceiling failures (§2).
+2. **Keep going with task-specific lemmas.** Label each one in `lemmas.py` as task-specific (not general), and report
+   the count with and without them. This would take several more sessions.
+
+**If option 2 is chosen**, the most tractable tasks next are:
+- advanced_76 and basic_104 (sort by a key, then `take` or `find?`);
+- the loop exits advanced_58 and 67;
+- advanced_30 (shift the witness one place left).
+
+The memory rule stands either way: no paid run is proposed until the owner says Verina is fixed.
 
 ## 9. Probe workflow (how each fix was found)
 
