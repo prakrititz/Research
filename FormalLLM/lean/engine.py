@@ -103,6 +103,14 @@ RLE_EXIT_TACTIC = 'unfold {post}\n  obtain ⟨hi, hdec, hpos, hchain⟩ := {hi}\
 #: discriminants rewritten by simp (cases/generalize cannot: the match is not type correct when abstracted)
 NEXT_GREATER_TACTIC = 'unfold {post}; unfold {pre} at h_precond\n  obtain ⟨_, _, hall⟩ := h_precond\n  simp only [List.all_eq_true, decide_eq_true_eq] at hall\n  refine ⟨by simp, ?_, ?_⟩\n  · simp only [List.all_eq_true, List.mem_range]; intro i hi\n    have hv : {a}[i] ∈ {b} := hall _ (List.getElem_mem hi)\n    simp only [List.getElem!_eq_getElem?_getD, List.getElem?_map, List.getElem?_eq_getElem hi, Option.map_some,\n      Option.getD_some, gt_iff_lt]\n    generalize hval : {a}[i] = val at hv ⊢\n    cases hj : {b}.findIdx? (fun x => x == val) with\n    | none =>\n      exfalso; rw [List.findIdx?_eq_none_iff] at hj; have := hj val hv; simp at this\n    | some idx =>\n      (try dsimp only)\n      rcases Option.eq_none_or_eq_some (List.find? (fun x => decide (val < {b}[idx + x + 1]?.getD 0)) (List.range ({b}.length - idx - 1))) with hn | ⟨off, hn⟩ <;> simp [hn]\n  · simp only [List.all_eq_true, List.mem_map, decide_eq_true_eq]\n    rintro _ ⟨val, hval, rfl⟩\n    split\n    · simp\n    · rename_i idx _\n      split\n      · simp\n      · rename_i off hoff\n        right\n        have hm := List.mem_of_find?_eq_some hoff\n        rw [List.mem_range] at hm\n        rw [getElem!_pos _ _ (by omega)]; exact List.getElem_mem _'
 
+#: TASK-SPECIFIC (Verina advanced_58, the n-th ugly number): the task's own divideOut/isUgly evaluated on powers
+#: of two, which are all ugly and below 2 ^ (n - 1); the only tactic here that names a task's helper functions
+UGLY_EXIT_TACTIC = 'have divideOut_one : ∀ (p : Nat), divideOut 1 p = 1 := by\n    intro p\n    unfold divideOut; split\n    · rename_i h; exfalso; have := h.2.2; have := h.1; rw [Nat.one_mod_eq_zero_iff] at *; omega\n    · rfl\n  have divideOut_pow2 : ∀ (k : Nat), divideOut (2 ^ k) 2 = 1 := by\n    intro k\n    induction k with\n    | zero => exact divideOut_one 2\n    | succ k ih =>\n      unfold divideOut\n      rw [dif_pos ⟨by norm_num, by positivity, by rw [Nat.pow_succ]; simp⟩]\n      have e : 2 ^ (k + 1) / 2 = 2 ^ k := by rw [Nat.pow_succ, Nat.mul_div_cancel _ (by norm_num)]\n      simp only [e]; exact ih\n  have isUgly_pow2 : ∀ (k : Nat), isUgly (2 ^ k) = true := by\n    intro k\n    unfold isUgly\n    rw [if_neg (by positivity)]\n    simp only [divideOut_pow2, divideOut_one]; rfl\n  have ugly_count_ge : ∀ (m : Nat), m ≤ ((List.range (2 ^ m)).filter (fun i => isUgly i)).length := by\n    intro m\n    have hsub : ((List.range m).map (fun k => 2 ^ k)) ⊆ (List.range (2 ^ m)).filter (fun i => isUgly i) := by\n      intro x hx\n      obtain ⟨k, hk, rfl⟩ := List.mem_map.mp hx\n      rw [List.mem_range] at hk\n      rw [List.mem_filter, List.mem_range]\n      exact ⟨Nat.pow_lt_pow_right (by norm_num) hk, isUgly_pow2 k⟩\n    have hnd : ((List.range m).map (fun k => 2 ^ k)).Nodup :=\n      (List.nodup_range).map (fun a b h => Nat.pow_right_injective (le_refl 2) h)\n    have := (List.subperm_of_subset hnd hsub).length_le\n    simpa using this\n  unfold {post}; unfold {pre} at h_precond\n  obtain ⟨hx, hc, hlt⟩ := h1i\n  by_cases hg : x < 2 ^ (n - 1)\n  · have h2 : isUgly x = true ∧ c + 1 = n := by\n      by_contra hne; exact h1g ⟨hg, hne⟩\n    exact ⟨h2.1, by omega⟩\n  · have hxe : x = 2 ^ (n - 1) := by omega\n    have hge := ugly_count_ge (n - 1)\n    rw [← hxe] at hge\n    exact ⟨hxe ▸ isUgly_pow2 (n - 1), by omega⟩'
+
+#: TASK-SPECIFIC (Verina advanced_67, run-length encoding): the loop step, with the task's ``decodeRLE`` facts proved
+#: in place (append, single pair, reversed cons)
+RLE_STEP_TACTIC = "have str_mk_append : ∀ (a b : List Char), String.mk (a ++ b) = String.mk a ++ String.mk b := by\n    intro a b\n    apply String.ext\n    rw [String.toList_append]\n    simp only [Refine.string_toList_mk]\n  have dec_append : ∀ (xs ys : List (Char × Nat)), decodeRLE (xs ++ ys) = decodeRLE xs ++ decodeRLE ys := by\n    intro xs ys\n    induction xs with\n    | nil => simp [decodeRLE]\n    | cons p t ih =>\n      obtain ⟨c, n⟩ := p\n      simp only [List.cons_append, decodeRLE, ih]\n      rw [String.append_assoc]\n  have dec_single : ∀ (c : Char) (n : Nat), decodeRLE [(c, n)] = String.mk (List.replicate n c) := by\n    intro c n\n    simp [decodeRLE]\n  have dec_rev_cons : ∀ (c : Char) (n : Nat) (rest : List (Char × Nat)), decodeRLE ((c, n) :: rest).reverse = decodeRLE rest.reverse ++ String.mk (List.replicate n c) := by\n    intro c n rest\n    rw [List.reverse_cons, dec_append, dec_single]\n  have rle_step2 : ∀ (cs : List Char) (i : Nat) (acc : List (Char × Nat)), i < cs.length → (i ≤ cs.length ∧ decodeRLE acc.reverse = String.mk (cs.take i) ∧ (∀ p ∈ acc, 0 < p.2) ∧ List.IsChain (fun a b => a.1 ≠ b.1) acc) → (i + 1 ≤ cs.length ∧ decodeRLE (if (acc.head?.map Prod.fst) = some cs[i]! then (cs[i]!, (acc.headD (cs[i]!, 0)).2 + 1) :: acc.tail else (cs[i]!, 1) :: acc).reverse = String.mk (cs.take (i + 1)) ∧ (∀ p ∈ (if (acc.head?.map Prod.fst) = some cs[i]! then (cs[i]!, (acc.headD (cs[i]!, 0)).2 + 1) :: acc.tail else (cs[i]!, 1) :: acc), 0 < p.2) ∧ List.IsChain (fun a b => a.1 ≠ b.1) (if (acc.head?.map Prod.fst) = some cs[i]! then (cs[i]!, (acc.headD (cs[i]!, 0)).2 + 1) :: acc.tail else (cs[i]!, 1) :: acc)) := by\n    intro cs i acc hi hinv\n    obtain ⟨_, hdec, hpos, hch⟩ := hinv\n    have htake : String.mk (cs.take (i + 1)) = String.mk (cs.take i) ++ String.mk [cs[i]!] := by\n      rw [Refine.take_succ_bang cs i hi, str_mk_append]\n    refine ⟨by omega, ?_⟩\n    rw [htake, ← hdec]\n    generalize cs[i]! = c\n    cases acc with\n    | nil =>\n      simp [decodeRLE]\n    | cons p rest =>\n      obtain ⟨c', n⟩ := p\n      split_ifs with h\n      · have hc : c' = c := by simpa using h\n        subst hc\n        simp only [List.headD_cons, List.tail_cons]\n        refine ⟨?_, ?_, ?_⟩\n        · rw [dec_rev_cons, dec_rev_cons, List.replicate_succ', str_mk_append, String.append_assoc]\n        · intro q hq\n          rcases List.mem_cons.mp hq with rfl | hq'\n          · simp\n          · exact hpos q (List.mem_cons_of_mem _ hq')\n        · cases rest with\n          | nil => simp\n          | cons r rs =>\n            rw [List.isChain_cons_cons] at hch ⊢\n            exact hch\n      · have hc : c' ≠ c := fun e => h (by simp [e])\n        refine ⟨?_, ?_, ?_⟩\n        · rw [dec_rev_cons, dec_rev_cons]; simp [List.replicate]\n        · intro q hq\n          rcases List.mem_cons.mp hq with rfl | hq'\n          · simp\n          · exact hpos q hq'\n        · rw [List.isChain_cons_cons]\n          exact ⟨fun e => hc e.symm, hch⟩\n  (try dsimp only); exact ⟨rle_step2 _ _ _ ‹_› ‹_›, by omega⟩"
+
 def _balanced(text: str, start: int) -> int:
     """Index just past the parenthesis group opening at ``text[start] == "("``."""
     depth = 0
@@ -1052,6 +1060,48 @@ class Derivation:
         if ".findIdx? (fun x => x == val)" in obligation.statement and ".map (fun val =>" in obligation.statement                 and len(lists) >= 2:
             tactics.append(NEXT_GREATER_TACTIC.replace("{post}", post).replace("{pre}", pre).replace("{a}", lists[0])
                            .replace("{b}", lists[1]))
+        # the maximum over indices, ``((List.range n).map f).foldl max 0``, against "∃ i < n, result = f i ∧ ∀ j < n,
+        # f i ≥ f j": the maximum is attained (``argmax_spec``) (Verina advanced_38)
+        am = re.search(r"\(\(List\.range ([^()]+?)\)\.map \(", obligation.statement)
+        if am and "∃" in body:
+            f_start = am.end() - 1
+            f_end = _balanced(obligation.statement, f_start)
+            if obligation.statement[f_end:].startswith(").foldl max 0"):
+                n, f = am.group(1), obligation.statement[f_start:f_end]
+                tactics.append(f"unfold {post}; (try unfold {pre} at h_precond)\n"
+                               f"  obtain ⟨i, hi, he, hall⟩ := Refine.argmax_spec ({n}) {f} "
+                               "(by first | exact h_precond | omega | (simp_all; omega))\n"
+                               "  exact ⟨i, hi, he.symm, fun j hj => le_of_le_of_eq (hall j hj) he.symm⟩")
+        # the shortest, then smallest, string of a list chosen by a ``toLex (length, s)`` argmin fold (``minlex_spec``)
+        # (Verina advanced_71)
+        if "toLex (" in obligation.statement and "match" in obligation.statement:
+            tactics.append(f"unfold {post}; (try intros); (try dsimp only); exact Refine.minlex_spec _")
+        if obligation.kind == "exit" and "def divideOut" in self.task.prelude and "def isUgly" in self.task.prelude                 and "2 ^ (n - 1)" in obligation.binders:
+            tactics.append(UGLY_EXIT_TACTIC.replace("{post}", post).replace("{pre}", pre))
+        # deduplication keeping first occurrences, the invariant "same members as the prefix, no duplicates, ordered by first
+        # occurrence" (Verina basic_89): the step is ``dedup_step_int``; on exit the prefix is the whole list
+        dd = re.search(r"\((h\d+i) : .*∀ x, \(?x ∈ (\w+)\)? ↔ \(?x ∈ (\w+)\.take (\w+)\)?.*Nodup.*Pairwise", obligation.binders)
+        if dd:
+            hinv, acc_v, s_v, i_v = dd.groups()
+            if obligation.kind == "exit":
+                tactics.append(
+                    f"obtain ⟨hi, hmem, hnd, hpw⟩ := {hinv}\n"
+                    f"  have hi' : {i_v} = {s_v}.length := by omega\n"
+                    "  subst hi'\n"
+                    f"  have ht : {s_v}.take {s_v}.length = {s_v} := List.take_of_length_le (le_refl _)\n"
+                    "  rw [ht] at hmem\n"
+                    f"  unfold {post}\n"
+                    "  refine ⟨?_, ?_, ?_, ?_⟩\n"
+                    "  · rw [List.all_eq_true]; intro a ha; simpa using (hmem a).mp ha\n"
+                    "  · rw [List.all_eq_true]; intro a ha; simpa using (hmem a).mpr ha\n"
+                    "  · rw [List.all_eq_true]; intro a ha; simpa using List.count_eq_one_of_mem hnd ha\n"
+                    "  · refine hpw.imp ?_\n"
+                    "    intro a b hab _\n"
+                    "    exact hab")
+            else:
+                tactics.append("(try dsimp only); exact ⟨Refine.dedup_step_int _ _ _ ‹_› ‹_›, by omega⟩")
+        if obligation.kind != "exit" and "def decodeRLE" in self.task.prelude and "IsChain" in obligation.binders:
+            tactics.append(RLE_STEP_TACTIC)
         # a value known by a hypothesis to occur more than half the time (a `bind` or a `cases` on it): every other value
         # occurs at most half the time (Verina advanced_11 when the result is named, not found by ``find?``)
         if "filter" in stmt + self.task.prelude and "/ 2" in stmt + self.task.prelude:

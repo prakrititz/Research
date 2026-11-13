@@ -1952,6 +1952,139 @@ theorem foldl_max_filter_flat (n m : Nat) (P : Nat → Nat → Bool) (R : Nat)
   · obtain ⟨s, hs, hx⟩ := List.mem_flatMap.mp h1
     obtain ⟨hx1, hx2⟩ := List.mem_filter.mp hx
     exact Or.inr ⟨s, List.mem_range.mp hs, List.mem_range.mp hx1, hx2⟩
+
+-- the maximum of ``(range n).map f`` (``foldl max 0``) for n > 0 is attained at some i and bounds every f j (Verina
+-- advanced_38: the best interval to remove)
+theorem argmax_spec : ∀ (n : Nat) (f : Nat → Nat), 0 < n → ∃ i, i < n ∧ f i = ((List.range n).map f).foldl max 0 ∧ ∀ j, j < n → f j ≤ ((List.range n).map f).foldl max 0 := by
+  intro n f hn
+  have hne : (List.range n).map f ≠ [] := List.ne_nil_of_mem (a := f 0) (List.mem_map.mpr ⟨0, List.mem_range.mpr hn, rfl⟩)
+  obtain ⟨h1, h2⟩ := maxlist_nat _ hne
+  rw [List.contains_iff_mem, List.mem_map] at h1
+  obtain ⟨i, hi, hfi⟩ := h1
+  refine ⟨i, List.mem_range.mp hi, hfi, ?_⟩
+  intro j hj
+  have := List.all_eq_true.mp h2 (f j) (List.mem_map.mpr ⟨j, List.mem_range.mpr hj, rfl⟩)
+  simpa using this
+-- the element minimising a key under any linear order, kept by a fold (Verina advanced_71: shortest, then lexicographically
+-- smallest)
+theorem fold_minkey : ∀ {α β : Type} [LinearOrder β] (f : α → β) (L : List α) (b : α), (L.foldl (fun best y => if f y < f best then y else best) b = b ∨ L.foldl (fun best y => if f y < f best then y else best) b ∈ L) ∧ f (L.foldl (fun best y => if f y < f best then y else best) b) ≤ f b ∧ ∀ y ∈ L, f (L.foldl (fun best y => if f y < f best then y else best) b) ≤ f y := by
+  intro α β _ f L
+  induction L with
+  | nil => intro b; simp
+  | cons a t ih =>
+    intro b
+    simp only [List.foldl_cons]
+    by_cases hlt : f a < f b
+    · rw [if_pos hlt]
+      obtain ⟨h1, h2, h3⟩ := ih a
+      refine ⟨?_, le_trans h2 (le_of_lt hlt), ?_⟩
+      · rcases h1 with h | h
+        · right; rw [h]; exact List.mem_cons_self
+        · right; exact List.mem_cons_of_mem a h
+      · intro x hx
+        rcases List.mem_cons.mp hx with rfl | hx'
+        · exact h2
+        · exact h3 x hx'
+    · rw [if_neg hlt]
+      obtain ⟨h1, h2, h3⟩ := ih b
+      refine ⟨?_, h2, ?_⟩
+      · rcases h1 with h | h
+        · left; exact h
+        · right; exact List.mem_cons_of_mem a h
+      · intro x hx
+        rcases List.mem_cons.mp hx with rfl | hx'
+        · exact le_trans h2 (not_lt.mp hlt)
+        · exact h3 x hx'
+
+-- the shortest-then-smallest string of a list by ``toLex (length, s)``, "" for none (advanced_71)
+theorem minlex_spec : ∀ (targets : List String), (let res := (match targets with | [] => "" | b :: t => (b :: t).foldl (fun best y => if toLex (y.length, y) < toLex (best.length, best) then y else best) b); (res = "" ∧ targets = []) ∨ (res ∈ targets ∧ ∀ r ∈ targets, r.length > res.length ∨ (r.length = res.length ∧ res ≤ r))) := by
+  intro targets
+  cases targets with
+  | nil => dsimp only; left; exact ⟨rfl, rfl⟩
+  | cons b t =>
+    dsimp only
+    right
+    obtain ⟨h1, h2, h3⟩ := fold_minkey (fun s : String => toLex (s.length, s)) (b :: t) b
+    generalize (b :: t).foldl (fun best y => if toLex (y.length, y) < toLex (best.length, best) then y else best) b = r at h1 h2 h3
+    refine ⟨?_, ?_⟩
+    · rcases h1 with h | h
+      · rw [h]; exact List.mem_cons_self
+      · exact h
+    · intro y hy
+      have := h3 y hy
+      rw [Prod.Lex.le_iff] at this
+      simp only [ofLex_toLex] at this
+      rcases this with h | ⟨h, h'⟩
+      · left; exact h
+      · right; exact ⟨h.symm, h'⟩
+
+
+-- first occurrences: ``idxOf`` against indices and prefixes; deduplication keeping first occurrences, one step
+-- (Verina basic_89: set to sequence)
+theorem idxOf_le_of_getElem_int : ∀ (s : List Int) (k : Nat) (a : Int), s[k]? = some a → s.idxOf a ≤ k := by
+  intro s k a h
+  induction s generalizing k with
+  | nil => simp at h
+  | cons x t ih =>
+    rcases k with _ | k
+    · simp at h; subst h; simp
+    · simp at h
+      by_cases hxa : x = a
+      · subst hxa; simp
+      · have := ih k h
+        simp [List.idxOf_cons, hxa]; omega
+theorem idxOf_take_lt_int : ∀ (s : List Int) (i : Nat) (a : Int), a ∈ s.take i → s.idxOf a < i := by
+  intro s i a h
+  obtain ⟨k, hk, hka⟩ := List.getElem_of_mem h
+  have hk' : k < i := by simp at hk; omega
+  have hks : k < s.length := by simp at hk; omega
+  have : s[k]? = some a := by
+    rw [List.getElem?_eq_getElem hks]; simp at hka; simp [hka]
+  have := idxOf_le_of_getElem_int s k a this
+  omega
+theorem idxOf_ge_of_not_mem_take_int : ∀ (s : List Int) (i : Nat) (x : Int), s[i]? = some x → x ∉ s.take i → i ≤ s.idxOf x := by
+  intro s i x hx h
+  have hmem : x ∈ s := List.mem_iff_getElem?.mpr ⟨i, hx⟩
+  by_contra hlt
+  have hlt' : s.idxOf x < i := by omega
+  have h1 : s.idxOf x < s.length := List.idxOf_lt_length_of_mem hmem
+  apply h
+  have := List.getElem_idxOf h1
+  rw [← this]
+  exact List.mem_iff_getElem.mpr ⟨s.idxOf x, by simp; omega, by simp⟩
+theorem dedup_step_int : ∀ (s : List Int) (i : Nat) (acc : List Int), (i ≤ s.length ∧ (∀ x, x ∈ acc ↔ x ∈ s.take i) ∧ acc.Nodup ∧ List.Pairwise (fun a b => s.idxOf a < s.idxOf b) acc) → i < s.length → (i + 1 ≤ s.length ∧ (∀ x, x ∈ (if acc.contains s[i]! then acc else acc ++ [s[i]!]) ↔ x ∈ s.take (i + 1)) ∧ ((if acc.contains s[i]! then acc else acc ++ [s[i]!])).Nodup ∧ List.Pairwise (fun a b => s.idxOf a < s.idxOf b) (if acc.contains s[i]! then acc else acc ++ [s[i]!])) := by
+  intro s i acc hinv hg
+  obtain ⟨_, hmem, hnd, hpw⟩ := hinv
+  have htake : s.take (i + 1) = s.take i ++ [s[i]!] := take_succ_bang s i hg
+  have hsi : s[i]? = some s[i]! := by rw [getElem!_pos s i hg]; exact List.getElem?_eq_getElem hg
+  by_cases hc : acc.contains s[i]! = true
+  · rw [if_pos hc]
+    have hin : s[i]! ∈ acc := List.contains_iff_mem.mp hc
+    have hin' := (hmem _).mp hin
+    refine ⟨by omega, fun x => ?_, hnd, hpw⟩
+    rw [hmem x, htake]
+    constructor
+    · intro h; exact List.mem_append.mpr (Or.inl h)
+    · intro h
+      rcases List.mem_append.mp h with h | h
+      · exact h
+      · rw [List.mem_singleton] at h; rw [h]; exact hin'
+  · rw [if_neg hc]
+    have hnin : s[i]! ∉ acc := fun h => hc (List.contains_iff_mem.mpr h)
+    refine ⟨by omega, fun x => ?_, ?_, ?_⟩
+    · rw [List.mem_append, hmem x, htake, List.mem_append]
+    · refine List.nodup_append.mpr ⟨hnd, List.nodup_singleton _, ?_⟩
+      intro a ha b hb
+      rw [List.mem_singleton] at hb; subst hb
+      intro hab; exact hnin (hab ▸ ha)
+    · rw [List.pairwise_append]
+      refine ⟨hpw, List.pairwise_singleton _ _, ?_⟩
+      intro a ha b hb
+      rw [List.mem_singleton] at hb; subst hb
+      have h1 := idxOf_take_lt_int s i a ((hmem a).mp ha)
+      have hnt : s[i]! ∉ s.take i := fun h => hnin ((hmem _).mpr h)
+      have h2 := idxOf_ge_of_not_mem_take_int s i _ hsi hnt
+      omega
 end Refine
 '''
 
