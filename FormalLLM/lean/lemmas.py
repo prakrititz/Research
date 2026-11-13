@@ -1787,6 +1787,12 @@ theorem min_get_eq_foldl_int (l : List Int) : l.min?.get! = l.foldl min (l.headD
   cases l with
   | nil => rfl
   | cons x t => simp [List.min?_cons, min_elim_eq_foldl]
+-- for a list of naturals the maximum also folds from 0, the form a brute-force spec states (Verina advanced_29)
+theorem max_get_eq_foldl_zero_nat (l : List Nat) : l.max?.get! = l.foldl max 0 := by
+  rw [max_get_eq_foldl_nat]
+  cases l with
+  | nil => rfl
+  | cons x t => simp [List.foldl_cons]
 -- a search written as a fold is `any` / `all` (gpt-5.4-mini, Verina advanced_23: `foldl (acc || p x) false`)
 theorem foldl_or_eq_any {α : Type} (p : α → Bool) (l : List α) (b : Bool) :
     l.foldl (fun acc x => acc || p x) b = (b || l.any p) := by

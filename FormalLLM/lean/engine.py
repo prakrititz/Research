@@ -53,7 +53,9 @@ from FormalLLM.lean.task import LeanTask
 NORMALIZE = ("(try simp only [Refine.max_get_eq_foldl_int, Refine.max_get_eq_foldl_nat, Refine.min_get_eq_foldl_int, "
              "Refine.min_get_eq_foldl_nat, Refine.filter_getElem_zero_eq_find, Refine.filter_head_eq_find, "
              "Refine.foldl_or_eq_any, Refine.foldl_and_eq_all, Refine.foldl_decide_or_eq_any, Bool.false_or, "
-             "Bool.true_and] at *); ")
+             "Bool.true_and, Nat.add_sub_cancel_left] at *); ")
+#: the same, with the maximum of a list of naturals folded from 0 (``foldl max 0``, the form brute-force specs state)
+NORMALIZE_ZERO = NORMALIZE.replace("Refine.max_get_eq_foldl_nat", "Refine.max_get_eq_foldl_zero_nat")
 
 #: the library ``lib_chain`` chains over, as ``solve_by_elim`` arguments: the lemmas up to the task-family facts added from
 #: 28 Oct (``filter_mergeSort_key`` on). With those (many hypotheses each) the search no longer fails fast but runs out of
@@ -679,6 +681,8 @@ class Derivation:
         # after a split on the input's ``match`` (Verina advanced_2, 3, 4, 28, 29, 43, 45, 46, 75)
         if "foldl max" in stmt:
             tactics.append(self._max_tactic(obligation, plain))
+            if ".max?.get!" in obligation.statement:
+                tactics.append(self._max_tactic(obligation, plain, NORMALIZE_ZERO))
         # a bounded search for a witness, ``(range (n + 1)).any p`` against the postcondition's ``∃ m, p m``: equivalent once
         # every witness is at most n (``any_range_iff``), a power ``b ^ m`` is at least m and a digit past the number's
         # length is 0 (Verina advanced_14, advanced_20)
@@ -809,8 +813,8 @@ class Derivation:
         # ``foldl max 0``) and the spec quantifies over ``zipIdx``: indices for ``zipIdx``, the maximum named ``R`` with
         # its facts (an upper bound of every ``f i j``, and 0 or attained: ``foldl_max_pairs``), then each part
         # (Verina advanced_42: best stock profit)
-        if "foldl max 0" in obligation.statement and "flatMap" in obligation.statement:
-            tactics.append(f"unfold {post}; (try simp only [{pre}] at *); (try simp only [Refine.pairwise_zipIdx_iff, "
+        if ("foldl max 0" in obligation.statement or ".max?.get!" in obligation.statement) and "flatMap" in obligation.statement:
+            tactics.append(f"unfold {post}; (try simp only [{pre}] at *); {NORMALIZE_ZERO}(try simp only [Refine.pairwise_zipIdx_iff, "
                            "Refine.zipIdx_all_iff, Refine.zipIdx_any_iff, decide_eq_true_eq]); "
                            "generalize hR : List.foldl max 0 _ = R; (first "
                            "| (have hf := Refine.foldl_max_pairs _ _ _ _ hR; beta_reduce at hf) "
@@ -839,7 +843,7 @@ class Derivation:
                                            f"first | (simp_all [{f}]; done) | grind [{f}]")
         return tactics
 
-    def _max_tactic(self, obligation: Obligation, plain: List[str]) -> str:
+    def _max_tactic(self, obligation: Obligation, plain: List[str], normalize: str = NORMALIZE) -> str:
         post, pre = self.task.post_name, self.task.pre_name
         simp = f"simp [{', '.join(plain)}]" if plain else "simp"
         lists = [v for v, typ in _binder_types(obligation.binders) if typ.startswith("List")]
@@ -852,7 +856,7 @@ class Derivation:
         member = f"first | (simp; done) | ({simp} <;> wit_search)"
         apply = (f"first | (refine Refine.maxlist_int _ ?_; {nonempty}) | (refine Refine.maxlist_nat _ ?_; {nonempty}) "
                  f"| (refine Refine.maxlist_int_any _ ?_; {nonempty}) | (refine Refine.maxlen_spec _ ?_; {member})")
-        return (f"unfold {post}; (try unfold {pre} at *); {NORMALIZE}(try dsimp only at *); (try intros); (try split) <;> "
+        return (f"unfold {post}; (try unfold {pre} at *); {normalize}(try dsimp only at *); (try intros); (try split) <;> "
                 f"(try (exfalso; simp_all; done)) <;> first | ({apply}) | ((repeat' apply And.intro) <;> (try intros) <;> "
                 f"first | (exfalso; contradiction) | ({apply}) | (left; exact ⟨‹_›, rfl⟩) | (right; refine ⟨‹_›, ?_⟩; {apply}))")
 
