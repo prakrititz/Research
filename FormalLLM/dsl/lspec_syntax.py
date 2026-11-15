@@ -604,7 +604,9 @@ class _Parser:
         if self.peek() == "termination_by":
             self.next()
             termination = self.expr()
-        self.expect(";")
+        if self.peek() != ";":
+            raise Unsupported(f"`let {name} = value; body` needs `;` after the value (not `in`)")
+        self.next()
         return Let(name, typ, value, self.expr(), params, rec, None, termination)
 
     def match(self) -> Node:

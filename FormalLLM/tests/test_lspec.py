@@ -402,3 +402,13 @@ def test_text_repairs_as_nat():
     from FormalLLM.dsl import repair
     assert repair._fix_text("m as nat")[0] == "to_nat(m)"
     assert repair._fix_text("(n - p) as nat")[0] == "to_nat((n - p))"
+
+
+def test_text_repairs_let_in():
+    from FormalLLM.dsl import repair
+    from FormalLLM.dsl.lspec_syntax import parse
+    fixed, why = repair._fix_text("let p = acc.foldl(lambda a, q: a * q.1, 1) in p * rem == n and i <= len(l)")
+    assert why and fixed.startswith("let p = acc.foldl(lambda a, q: a * q.1, 1) ; p * rem")
+    parse(fixed, ("acc", "rem", "n", "i", "l"))
+    assert repair._fix_text("let b = x in l; b")[1] == []          # membership in the value
+    assert repair._fix_text("all(x in l for x in m)")[1] == []

@@ -361,7 +361,44 @@ def _as_nat(text: str) -> Optional[str]:
     return out if out != text else None
 
 
-_TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_single_eq, "Lean's `=` read as `==`"),
+#: `let x = v in body` (ML/Haskell; gpt-oss-120b, Verina advanced_10, 2026-11-16, four times) for `let x = v; body`:
+#: the first `in` after the value at bracket depth 0, unless a `;` comes first
+_LET = re.compile(r"\blet\b")
+_IN = re.compile(r"\bin\b")
+
+
+def _let_in(text: str) -> Optional[str]:
+    out, k = list(text), 0
+    for m in _LET.finditer(text):
+        if m.start() < k:
+            continue
+        eq = text.find("=", m.end())
+        if eq < 0:
+            break
+        depth, j = 0, eq + 1
+        while j < len(text):
+            c = text[j]
+            if c in "([{":
+                depth += 1
+            elif c in ")]}":
+                depth -= 1
+                if depth < 0:
+                    break
+            elif depth == 0 and c == ";":
+                break
+            elif depth == 0 and c == "i" and _IN.match(text, j) and (j == 0 or not (text[j - 1].isalnum()
+                                                                                     or text[j - 1] == "_")):
+                if ";" not in text[j:]:             # `let b = x in l; b` is membership
+                    out[j:j + 2] = [";", ""]
+                break
+            j += 1
+        k = j
+    new = "".join(out)
+    return new if new != text else None
+
+
+_TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_let_in, "`let x = v in body` read as `let x = v; body`"),
+               (_single_eq, "Lean's `=` read as `==`"),
                (_as_nat, "`x as nat` read as `to_nat(x)`"),
                (_lambda_params, "Lean's `fun a b` read as `lambda a, b`"),
                (_method_space, "`x.m (y)` read as `x.m(y)`"),
