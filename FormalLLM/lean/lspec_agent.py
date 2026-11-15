@@ -75,25 +75,34 @@ def _local_helpers(d: Derivation, engine: dict, error: str):
     read as that helper (``lengthOfLIS_postcond.subsequences``): gpt-oss-120b, Verina advanced_24, 2026-11-15."""
     import json as _json
     import re as _re
-    m = _re.search(r"[Uu]nknown (?:identifier|constant) [`'«]?([A-Za-z_][\w']*)", error)
     post = d.task.post_name
-    if not m:
-        return []
-    name = m.group(1)
     body = d.task.prelude.split(f"def {post}", 1)
-    if len(body) < 2 or not _re.search(rf"let rec {_re.escape(name)}\b", body[1].split("\ndef ", 1)[0]):
+    helpers = _re.findall(r"let rec (\w+)", body[1].split("\ndef ", 1)[0]) if len(body) > 1 else []
+    m = (_re.search(r"[Uu]nknown (?:identifier|constant) [`'«]?([A-Za-z_][\w']*)", error)
+         or _re.search(r"Function expected at\s+([A-Za-z_][\w']*)", error))
+    if m and m.group(1) in helpers:
+        names = [m.group(1)]
+    elif "Function expected" in error or "nknown identifier" in error:
+        text = _json.dumps(engine)              # the error does not name it: every helper used by its bare name
+        names = [h for h in helpers if _re.search(rf"(?<![\w.']){_re.escape(h)}(?![\w'])", text)]
+    else:
+        names = []
+    if not names:
         return []
 
     def fix(value):
         if isinstance(value, str):
-            return _re.sub(rf"(?<![\w.']){_re.escape(name)}(?![\w'])", f"{post}.{name}", value)
+            for name in names:
+                value = _re.sub(rf"(?<![\w.']){_re.escape(name)}(?![\w'])", f"{post}.{name}", value)
+            return value
         if isinstance(value, list):
             return [fix(v) for v in value]
         if isinstance(value, dict):
             return {k: fix(v) for k, v in value.items()}
         return value
     candidate = fix(_json.loads(_json.dumps(engine)))
-    return [(candidate, f"`{name}` read as the postcondition's helper `{post}.{name}`")] if candidate != engine else []
+    shown = ", ".join(f"`{n}` as `{post}.{n}`" for n in names)
+    return [(candidate, f"the postcondition's helpers read by name: {shown}")] if candidate != engine else []
 
 
 def repaired(d: Derivation, goal, engine: dict, failure, rounds: int = 3):

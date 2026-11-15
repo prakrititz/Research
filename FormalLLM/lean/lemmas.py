@@ -2105,6 +2105,93 @@ theorem foldl_ite_gt_eq_max {α : Type} [LinearOrder α] (l : List α) (s : α) 
 theorem foldl_ite_ge_eq_max {α : Type} [LinearOrder α] (l : List α) (s : α) :
     l.foldl (fun acc x => if x ≥ acc then x else acc) s = l.foldl max s := by
   congr 1; funext acc x; rw [ite_ge_eq_max, max_comm]
+
+-- first and second occurrences (idxOf, then idxOf in the rest): the second occurrence of a repeated value is a
+-- position where the value already occurred, and the first such position bounds it (gpt-oss-120b, Verina advanced_12)
+theorem idxOf_le_of_getElem?' {α : Type} [BEq α] [LawfulBEq α] (s : List α) (k : Nat) (a : α) (h : s[k]? = some a) :
+    s.idxOf a ≤ k := by
+  induction s generalizing k with
+  | nil => simp at h
+  | cons x t ih =>
+    rcases k with _ | k
+    · simp at h; subst h; simp
+    · simp at h
+      by_cases hxa : x = a
+      · subst hxa; simp
+      · have := ih k h
+        simp [List.idxOf_cons, hxa]; omega
+
+theorem idxOf_lt_of_mem_take {α : Type} [BEq α] [LawfulBEq α] (s : List α) (i : Nat) (a : α) (h : a ∈ s.take i) :
+    s.idxOf a < i := by
+  obtain ⟨k, hk, hka⟩ := List.getElem_of_mem h
+  have hk' : k < i := by simp at hk; omega
+  have hks : k < s.length := by simp at hk; omega
+  have : s[k]? = some a := by rw [List.getElem?_eq_getElem hks]; simp at hka; simp [hka]
+  have := idxOf_le_of_getElem?' s k a this
+  omega
+
+theorem not_mem_take_idxOf {α : Type} [BEq α] [LawfulBEq α] (s : List α) (a : α) : a ∉ s.take (s.idxOf a) := by
+  intro h; have := idxOf_lt_of_mem_take s _ a h; omega
+
+-- the index of the second occurrence of l[j], when l[j] already occurs before j, is at most j
+theorem secondOcc_le {α : Type} [BEq α] [LawfulBEq α] (l : List α) (j : Nat) (hj : j < l.length) (hm : l[j] ∈ l.take j) :
+    l.idxOf l[j] + 1 + (l.drop (l.idxOf l[j] + 1)).idxOf l[j] ≤ j := by
+  have h1 : l.idxOf l[j] < j := idxOf_lt_of_mem_take l j _ hm
+  have h2 : (l.drop (l.idxOf l[j] + 1))[j - (l.idxOf l[j] + 1)]? = some l[j] := by
+    rw [List.getElem?_drop]; rw [show l.idxOf l[j] + 1 + (j - (l.idxOf l[j] + 1)) = j by omega]
+    exact List.getElem?_eq_getElem hj
+  have := idxOf_le_of_getElem?' _ _ _ h2
+  omega
+
+-- a value occurring twice: its second occurrence is an index of the list holding it, after its first occurrence
+theorem secondOcc_spec {α : Type} [BEq α] [LawfulBEq α] (l : List α) (v : α) (hc : l.count v ≥ 2) :
+    l.idxOf v + 1 + (l.drop (l.idxOf v + 1)).idxOf v < l.length ∧
+    l[l.idxOf v + 1 + (l.drop (l.idxOf v + 1)).idxOf v]? = some v ∧
+    v ∈ l.take (l.idxOf v + 1 + (l.drop (l.idxOf v + 1)).idxOf v) := by
+  have hv : v ∈ l := List.count_pos_iff.mp (by omega)
+  have hk : l.idxOf v < l.length := List.idxOf_lt_length_of_mem hv
+  have hlk : l[l.idxOf v] = v := List.getElem_idxOf hk
+  have hsplit := List.take_append_drop (l.idxOf v + 1) l
+  have htake : (l.take (l.idxOf v + 1)).count v = 1 := by
+    rw [List.take_succ, List.count_append]
+    have : v ∉ l.take (l.idxOf v) := not_mem_take_idxOf l v
+    rw [List.count_eq_zero.mpr this, List.getElem?_eq_getElem hk]; simp [hlk]
+  have hdrop : (l.drop (l.idxOf v + 1)).count v ≥ 1 := by
+    have := congrArg (List.count v) hsplit; rw [List.count_append] at this; omega
+  have hmem : v ∈ l.drop (l.idxOf v + 1) := List.count_pos_iff.mp (by omega)
+  have hm : (l.drop (l.idxOf v + 1)).idxOf v < (l.drop (l.idxOf v + 1)).length := List.idxOf_lt_length_of_mem hmem
+  have hget : (l.drop (l.idxOf v + 1))[(l.drop (l.idxOf v + 1)).idxOf v] = v := List.getElem_idxOf hm
+  simp only [List.length_drop] at hm
+  refine ⟨by omega, ?_, ?_⟩
+  · have e : l[l.idxOf v + 1 + (l.drop (l.idxOf v + 1)).idxOf v]? = (l.drop (l.idxOf v + 1))[(l.drop (l.idxOf v + 1)).idxOf v]? := by
+      rw [List.getElem?_drop]
+    rw [e, List.getElem?_eq_getElem (by simp; omega), hget]
+  · rw [List.mem_take_iff_getElem]; exact ⟨l.idxOf v, by simp; omega, hlk⟩
+
+-- no element occurs in the part before it: no duplicates (gpt-oss-120b, Verina advanced_12, the "none" case)
+theorem nodup_of_not_mem_take {α : Type} [BEq α] [LawfulBEq α] [Inhabited α] (l : List α)
+    (h : ¬ ∃ i, i < l.length ∧ l[i]! ∈ l.take i) : l.Nodup := by
+  rw [List.Nodup, List.pairwise_iff_getElem]
+  intro a b ha hb hab heq
+  apply h; refine ⟨b, hb, ?_⟩
+  rw [getElem!_pos l b hb, ← heq]
+  exact List.mem_take_iff_getElem.mpr ⟨a, by simp; omega, rfl⟩
+
+-- the longest list when the lengths are cast to Int inside the map (gpt-oss-120b, Verina advanced_24)
+theorem foldl_max_cast_int (l : List Nat) (s : Nat) :
+    (l.map (fun (x : Nat) => ((x : Nat) : Int))).foldl max ((s : Nat) : Int) = ((l.foldl max s : Nat) : Int) := by
+  induction l generalizing s with
+  | nil => simp
+  | cons a t ih => simp only [List.map_cons, List.foldl_cons]; rw [← Nat.cast_max, ih]
+
+theorem maxlen_spec_int {α : Type} (L : List (List α)) (hn : [] ∈ L) :
+    L.any (fun a => decide ((a.length : Int) = (L.map (fun (l : List α) => ((l.length : Nat) : Int))).foldl max 0)) = true ∧
+    L.all (fun a => decide ((a.length : Int) ≤ (L.map (fun (l : List α) => ((l.length : Nat) : Int))).foldl max 0)) = true := by
+  have e : (L.map (fun (l : List α) => ((l.length : Nat) : Int))) = ((L.map List.length).map (fun (x : Nat) => ((x : Nat) : Int))) := by
+    simp [List.map_map]
+  rw [e, show (0 : Int) = ((0 : Nat) : Int) from rfl, foldl_max_cast_int]
+  simp only [Nat.cast_inj, Nat.cast_le]
+  exact maxlen_spec L hn
 end Refine
 '''
 

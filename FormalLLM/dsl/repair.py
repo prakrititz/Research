@@ -283,12 +283,34 @@ def _juxtaposed(text: str) -> Optional[str]:
     return out if out != text else None
 
 
-#: Lean's `fun a b =>` parameters in an L_spec lambda: `lambda acc x:` for `lambda acc, x:` (gpt-oss-120b, Verina 2026-11-15)
-_LAMBDA_SPACED = re.compile(r"\blambda((?:[ \t]+[A-Za-z_]\w*){2,})[ \t]*:")
+#: Lean's `fun a b =>` parameters in an L_spec lambda: `lambda acc x:` / `lambda acc x =>` for `lambda acc, x:`
+#: (gpt-oss-120b, Verina 2026-11-15)
+_LAMBDA_SPACED = re.compile(r"\blambda((?:[ \t]+[A-Za-z_]\w*){2,})[ \t]*(?::|=>)|\blambda([ \t]+[A-Za-z_]\w*)[ \t]*=>")
 
 
 def _lambda_params(text: str) -> Optional[str]:
-    out = _LAMBDA_SPACED.sub(lambda m: "lambda " + ", ".join(m.group(1).split()) + ":", text)
+    out = _LAMBDA_SPACED.sub(lambda m: "lambda " + ", ".join((m.group(1) or m.group(2)).split()) + ":", text)
+    return out if out != text else None
+
+
+#: a method, a space, then its parenthesised argument: `nums.find? (lambda x: ...)` for `nums.find?(...)`
+_METHOD_SPACE_PAREN = re.compile(r"(\.[A-Za-z_]\w*\??)[ \t]+\(")
+
+
+def _method_space(text: str) -> Optional[str]:
+    out = _METHOD_SPACE_PAREN.sub(lambda m: m.group(1) + "(", text)
+    return out if out != text else None
+
+
+#: Lean's quantifier with a comma, `forall j < i, p` / `exists e, p` / `forall (x) in l, p`, for L_spec's `forall j < i: p`
+_QUANT_COMMA = re.compile(r"\b(forall|exists)[ \t]+(\(?[A-Za-z_]\w*\)?(?:[ \t]*(?:<|<=|in|:)[ \t]*(?:\[[^\]]*\]|[^:,()\[\]])+?)?)[ \t]*,")
+
+
+def _quantifier_comma(text: str) -> Optional[str]:
+    def one(m):
+        binder = m.group(2).replace("(", "").replace(")", "").strip()
+        return f"{m.group(1)} ({binder}):" if re.fullmatch(r"\w+[ 	]*:[ 	]*.+", binder) else f"{m.group(1)} {binder}:"
+    out = _QUANT_COMMA.sub(one, text)
     return out if out != text else None
 
 
@@ -319,6 +341,8 @@ def _call_then_arg(text: str) -> Optional[str]:
 
 
 _TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_lambda_params, "Lean's `fun a b` read as `lambda a, b`"),
+               (_method_space, "`x.m (y)` read as `x.m(y)`"),
+               (_quantifier_comma, "Lean's `forall x, p` read as `forall x: p`"),
                (_call_then_arg, "an argument after a call read as its last argument"),
                (_juxtaposed, "Lean's `f x` read as the call `f(x)`"))
 

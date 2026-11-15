@@ -372,3 +372,11 @@ def test_text_repairs_lambda_params_and_trailing_arg():
     fixed, why = repair.text_repairs({"law": "term", "expr": "incs.foldl(lambda a b: if b > a then b else a) 0"})
     assert fixed["expr"] == "incs.foldl(lambda a, b: if b > a then b else a, 0)"
     assert repair.text_repairs({"law": "term", "expr": "xs.foldl(lambda a, x: a + x, 0)"}) is None
+
+
+def test_text_repairs_lean_quantifiers_and_method_space():
+    from FormalLLM.dsl import repair
+    assert repair._fix_text("forall j < i, f(j)")[0] == "forall j < i: f(j)"
+    assert repair._fix_text("forall x: int, x > 0")[0] == "forall (x: int): x > 0"
+    assert repair._fix_text("(nums.find? (lambda x: x > 0)).getD 0")[0] == "(nums.find?(lambda x: x > 0)).getD(0)"
+    assert repair._fix_text("l.foldl(lambda acc x => acc + x) 0")[0] == "l.foldl(lambda acc, x: acc + x, 0)"

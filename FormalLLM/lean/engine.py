@@ -836,15 +836,16 @@ class Derivation:
         # the longest list with a property, ``(L.map List.length).foldl max 0`` cast to Int: the empty list is in ``L`` (by
         # induction along the postcondition's own ``let rec`` generator, e.g. all subsequences), so the maximum is attained
         # and bounds every length (``maxlen_spec``) (Verina advanced_24: longest increasing subsequence)
-        if "foldl max 0" in stmt and "List.length" in stmt:
+        if "foldl max 0" in stmt and "length" in stmt:
             recs = [f"{post}.{r}" for r in re.findall(r"let rec (\w+)", definition[1].split("\ndef ", 1)[0])] \
                 if len(definition) > 1 else []
             rec_simp = ", ".join(recs)
             member = "".join(f"| (simp only [List.mem_filter]; refine ⟨?_, by simp [{rec_simp}]⟩; induction {v} <;> "
                              f"simp_all [{rec_simp}]) " for v, typ in _binder_types(obligation.binders)
                              if typ.startswith("List") and recs)
-            tactics.append(f"unfold {post}; (try unfold {pre} at *); (try dsimp only); "
-                           "(try simp only [Nat.cast_inj, Nat.cast_le]); refine Refine.maxlen_spec _ ?_; "
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); (try dsimp only); {NORMALIZE}"
+                           "(try simp only [Nat.cast_inj, Nat.cast_le]); "
+                           "(first | refine Refine.maxlen_spec _ ?_ | refine Refine.maxlen_spec_int _ ?_); "
                            f"first | (simp; done) {member}")
         # a search that stops at the first ``r`` where a property holds (the invariant: no ``r' < r`` has it; the guard:
         # ``r < bound ∧ ¬ P r``): on exit ``P r`` holds, at the bound by the precondition (``take`` of the whole list); a
@@ -1132,6 +1133,63 @@ class Derivation:
                 tactics.append("(try dsimp only); exact ⟨Refine.dedup_step_int _ _ _ ‹_› ‹_›, by omega⟩")
         if obligation.kind != "exit" and "def decodeRLE" in self.task.prelude and "IsChain" in obligation.binders:
             tactics.append(RLE_STEP_TACTIC)
+        # ... the same with the relation written inline (``l.any (fun x => l.any (fun y => <arithmetic>))``): the
+        # postcondition's own helper unfolded, symmetry and irreflexivity by arithmetic (gpt-oss-120b, Verina advanced_13)
+        if (re.search(r"\.any \(fun (\w+) => \w+\.any \(fun (\w+) =>", obligation.statement)
+                and "Pairwise" in (definition[1] if len(definition) > 1 else "")):
+            recs_ = [f"{post}.{r}" for r in re.findall(r"let rec (\w+)", body)]
+            unf = f"(try simp only [{', '.join(recs_)}]); " if recs_ else ""
+            close = "first | omega | (simp_all; done) | (simp_all; omega)"
+            tactics.append(
+                f"unfold {post}; {unf}(try dsimp only)\n"
+                "  refine ⟨?_, ?_⟩\n"
+                "  · intro hP hR\n"
+                "    simp only [List.any_eq_true, decide_eq_true_eq] at hR\n"
+                "    obtain ⟨x, hx, y, hy, hxy⟩ := hR\n"
+                "    by_cases he : x = y\n"
+                f"    · subst he; {close}\n"
+                f"    · have := @List.Pairwise.forall _ _ _ ⟨fun a b h => by {close}⟩ hP x hx y hy he; {close}\n"
+                "  · intro h; simp only [List.any_eq_true, decide_eq_true_eq, Bool.or_eq_true, Bool.and_eq_true] at h ⊢; "
+                "first | exact h | (obtain ⟨x, hx, y, hy, hxy⟩ := h; refine ⟨x, ?_, y, ?_, ?_⟩ <;> simp_all <;> omega) | grind")
+        # the first position whose element already occurred (a hypothesis "i < n, l[i] ∈ l[:i], no j < i has that"), the
+        # result ``some l[i]``, against a spec by the second occurrence (a task helper ``idxOf v + 1 + (drop ...).idxOf v``):
+        # ``secondOcc_le``, ``secondOcc_spec`` (gpt-oss-120b, Verina advanced_12)
+        second = re.search(r"(?m)^def (\w+) \((\w+) : List \w+\) \((\w+) : \w+\) : Nat :=\s*let (\w+) := \2\.idxOf \3\s*\4 \+ 1 \+ "
+                           r"\(\2\.drop \(\4 \+ 1\)\)\.idxOf \3", self.task.prelude)
+        first = re.search(r"\((h\d+) : \(*(\w+) < (\w+)\.length\)? ∧ .*∀ (\w+), \(?\4 < \2\)? →", obligation.binders)
+        if second and first and re.search(rf"some \(?{re.escape(first.group(3))}\[{first.group(2)}\]!", obligation.statement):
+            helper, (hname, iv, lv) = second.group(1), first.group(1, 2, 3)
+            seg = f"{lv}.idxOf y + 1 + ({lv}.drop ({lv}.idxOf y + 1)).idxOf y"
+            tactics.append(
+                f"unfold {post}; (try dsimp only)\n"
+                f"  obtain ⟨hi, hm, hmin⟩ := {hname}\n"
+                f"  rw [getElem!_pos {lv} {iv} hi] at hm ⊢\n"
+                f"  have hle := Refine.secondOcc_le {lv} {iv} hi hm\n"
+                "  refine ⟨?_, ?_⟩\n"
+                f"  · have h1 : ({lv}.take {iv}).count {lv}[{iv}] ≥ 1 := List.count_pos_iff.mpr hm\n"
+                f"    have h2 : ({lv}.drop {iv}).count {lv}[{iv}] ≥ 1 := List.count_pos_iff.mpr "
+                "(List.mem_iff_getElem.mpr ⟨0, by simp; omega, by simp⟩)\n"
+                f"    have := congrArg (List.count {lv}[{iv}]) (List.take_append_drop {iv} {lv}); "
+                "rw [List.count_append] at this; omega\n"
+                "  · simp only [List.all_eq_true, decide_eq_true_eq]; intro y hy\n"
+                f"    by_cases hc : {lv}.count y = 1\n"
+                "    · exact Or.inl hc\n"
+                "    · right\n"
+                f"      have hc2 : {lv}.count y ≥ 2 := by have := List.count_pos_iff.mpr hy; omega\n"
+                f"      obtain ⟨hS, hSget, hSmem⟩ := Refine.secondOcc_spec {lv} y hc2\n"
+                f"      unfold {helper}; (try dsimp only)\n"
+                f"      have hge : {iv} ≤ {seg} := by\n"
+                "        by_contra hlt\n"
+                f"        apply hmin ({seg}) (by omega)\n"
+                f"        rw [getElem!_pos {lv} _ hS]\n"
+                "        rw [List.getElem?_eq_getElem hS] at hSget\n"
+                "        simp only [Option.some.injEq] at hSget\n"
+                "        rw [hSget]; exact hSmem\n"
+                "      omega")
+        # ``none`` when no position's element occurs before it: no duplicates (``nodup_of_not_mem_take``) (gpt-oss-120b,
+        # Verina advanced_12)
+        if re.search(r"none", obligation.statement) and "¬" in obligation.binders and ".take" in obligation.binders:
+            tactics.append(f"unfold {post}; (try dsimp only); exact Refine.nodup_of_not_mem_take _ ‹_›")
         # a value known by a hypothesis to occur more than half the time (a `bind` or a `cases` on it): every other value
         # occurs at most half the time (Verina advanced_11 when the result is named, not found by ``find?``)
         if "filter" in stmt + self.task.prelude and "/ 2" in stmt + self.task.prelude:
