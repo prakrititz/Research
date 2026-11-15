@@ -859,6 +859,35 @@ class Derivation:
                            "  (try (right; refine ⟨‹_›, ?_⟩))\n"
                            "  refine Refine.maxlen_spec _ ?_\n"
                            "  first | (simp; done) | (simp <;> wit_search)")
+        # postconditions `(l = [] ∧ result = 0) ∨ (l ≠ [] ∧ <the longest of the subarrays drop/take>)` (gpt-oss-120b, Verina
+        # advanced_29, 2026-11-16): the brute-force maximum with no case on `l = []`, split here; and `len(l)` once every
+        # element passes the filter (the whole list is the longest)
+        post_body = definition[1].split("\ndef ", 1)[0] if len(definition) > 1 else ""
+        for lv, ltyp in _binder_types(obligation.binders):
+            if not (ltyp.startswith("List") and f"{lv} = []" in post_body and "∨" in post_body):
+                continue
+            if "foldl max 0" in stmt and "length" in stmt:
+                tactics.append(f"unfold {post}; (try unfold {pre} at *); (try dsimp only)\n"
+                               "  (try simp only [Refine.foldl_ite_gt_eq_max, Refine.max_get_eq_foldl_zero_nat, "
+                               "Refine.filter_all_count_map_length] at *)\n"
+                               f"  rcases eq_or_ne {lv} [] with hn | hn\n"
+                               "  · left; subst hn; exact ⟨rfl, by first | rfl | decide | simp⟩\n"
+                               "  · right; refine ⟨hn, ?_⟩\n"
+                               "    refine Refine.maxlen_spec _ ?_\n"
+                               "    first | (simp; done) | (simp <;> wit_search)")
+            if f"({lv}.length) h_precond" in obligation.statement and ".drop" in post_body and ".take" in post_body:
+                tactics.append(f"unfold {post}; (try unfold {pre} at *); (try dsimp only)\n"
+                               "  right\n"
+                               "  refine ⟨fun h => ‹¬ _› (by simp [h]), ?_, ?_⟩\n"
+                               "  · simp only [List.any_eq_true, List.mem_filter, List.mem_map, List.mem_flatMap, "
+                               "List.mem_range, List.all_eq_true, decide_eq_true_eq]\n"
+                               f"    refine ⟨{lv}.map (fun x => {lv}.count x), ⟨⟨{lv}, ⟨0, by omega, {lv}.length, by omega, "
+                               "by simp⟩, rfl⟩, ?_⟩, by simp⟩\n"
+                               "    simp only [List.mem_map]; rintro _ ⟨x, hx, rfl⟩; simp_all\n"
+                               "  · simp only [List.all_eq_true, List.mem_filter, List.mem_map, List.mem_flatMap, "
+                               "List.mem_range, decide_eq_true_eq]\n"
+                               "    first | grind | (intro a ha; obtain ⟨⟨b, ⟨s, hs, l, hl, rfl⟩, rfl⟩, -⟩ := ha; "
+                               "(try simp) <;> omega)")
         # a search that stops at the first ``r`` where a property holds (the invariant: no ``r' < r`` has it; the guard:
         # ``r < bound ∧ ¬ P r``): on exit ``P r`` holds, at the bound by the precondition (``take`` of the whole list); a
         # positive ``r`` is minimal by the invariant, ``r = 0`` leaves a target range empty (Verina advanced_52)
@@ -1239,6 +1268,24 @@ class Derivation:
                            "  · simp only [h, decide_false, Bool.false_eq_true, if_false]; rintro ⟨x, hx, -⟩\n"
                            f"    have hodd : {m} % 2 ≠ 0 := by omega\n"
                            f"    exact h (Refine.pow2_mul_odd_int k x {m} hodd (hx.trans hk.symm))")
+            # the same with the exponent a state variable (invariant ``2^i * m = n ∧ m > 0``, no ``∃``; advanced_23,
+            # 2026-11-16)
+            arg = re.search(rf"{re.escape(post)} (\w+)", obligation.statement)
+            if arg:
+                tactics.append(f"unfold {post}\n"
+                               f"  have hp : ∀ e, {pw} 2 e = (2 : Int) ^ e := by\n"
+                               "    intro e; induction e with\n"
+                               "    | zero => rfl\n"
+                               f"    | succ e ih => simp only [{pw}, ih, pow_succ]; ring\n"
+                               "  simp only [hp] at *\n"
+                               "  casesm* _ ∧ _\n"
+                               f"  obtain ⟨k, hk⟩ : ∃ k : Nat, (2 : Int) ^ k * {m} = {arg.group(1)} := ⟨_, by assumption⟩\n"
+                               "  have h2pos : (0 : Int) < 2 ^ k := by positivity\n"
+                               f"  by_cases h : {m} = 1\n"
+                               "  · subst h; simp only [decide_true, if_true]; exact ⟨k, by simpa using hk, by omega⟩\n"
+                               "  · simp only [h, decide_false, Bool.false_eq_true, if_false]; rintro ⟨x, hx, -⟩\n"
+                               f"    have hodd : {m} % 2 ≠ 0 := by omega\n"
+                               f"    exact h (Refine.pow2_mul_odd_int k x {m} hodd (hx.trans hk.symm))")
         # a loop over a list's indices that stopped at its end (``i ≤ l.length``, ``¬ i < l.length``): the loop variable is
         # the length, the invariant's cases are split, and a fact for every index below it is a fact for every member
         # (``forall_mem_iff_idx``); counting facts as above (gpt-oss-120b, Verina advanced_11: the invariant "no value seen

@@ -286,3 +286,16 @@ Re-run of the 8 failures (7 from the first gpt-oss run, plus GPT-5.4 mini's adva
 The rest is the model's: advanced_10's invariants never give `rem = 1` at exit (gold cannot prove 10 either); 11 and
 12's other invariants are false (counter-examples now shown); 23's first loop invariant is false for n <= 0.
 Every new tactic was checked in Lean on the model's own obligation (probe files) before it went in.
+
+Second re-run (2026-11-16, with the fixes above): advanced_11 **certified** (1 call). advanced_10, 12, 23, 24, 29 failed
+again, each for something on our side as well as the model's:
+
+| task | what was ours | fix |
+|---|---|---|
+| 10 | `let prod = ... in body` (ML style) read `in` as membership: "unexpected end", four times | `repair._let_in` (inner lets first, so nested `let ... in` keep their scopes); the parser now says a `let` needs `;` |
+| 12 | `dup == some x` (Lean application) refused; `exists j k: p` refused; the comma repair turned valid `exists j, k: p` into `exists j: k: p` | `repair._some_arg`, `repair._spaced_binders`; `_QUANT_COMMA` leaves name lists alone |
+| 23 | true halving-loop exit with the exponent a state variable (`2^i * c == n`, no `exists`) unproved | second halving exit tactic (`obtain ⟨k, hk⟩ : ∃ k, 2^k * m = n := ⟨_, by assumption⟩`) |
+| 24 | untyped `let rec inc(l) := match l with | [] => ...`: Lean's "pattern contains metavariables", no hint, same reply three times | the parser takes `let rec inc(l: list[int]): bool = ...` (before only `inc((l: list[int]))`); a hint for that Lean error |
+| 29 | true brute-force term (the spec's own enumeration, `if x > acc` max) at the root, no case on `nums = []`, unproved; true `len(nums)` when every count is `<= k`, unproved (eight attempts) | tactics for postconditions `(l = [] ∧ r = 0) ∨ (l ≠ [] ∧ ...)`: split on `l = []` then `maxlen_spec`; and the whole list as the longest subarray |
+
+Every saved reply was re-read with the old and the new text repairs: 5 more now parse, none stopped parsing.
