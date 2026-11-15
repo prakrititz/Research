@@ -365,3 +365,10 @@ def test_text_repairs_juxtaposed_call():
     assert repair.text_repairs({"law": "term", "expr": "decide (x)"})[0]["expr"] == "decide(x)"
     for kept in ("a and (b or c)", "not (x in l)", "exists (m: nat): m < n"):
         assert repair.text_repairs({"law": "term", "expr": kept}) is None
+
+
+def test_text_repairs_lambda_params_and_trailing_arg():
+    from FormalLLM.dsl import repair
+    fixed, why = repair.text_repairs({"law": "term", "expr": "incs.foldl(lambda a b: if b > a then b else a) 0"})
+    assert fixed["expr"] == "incs.foldl(lambda a, b: if b > a then b else a, 0)"
+    assert repair.text_repairs({"law": "term", "expr": "xs.foldl(lambda a, x: a + x, 0)"}) is None

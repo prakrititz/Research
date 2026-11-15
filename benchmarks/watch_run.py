@@ -1,8 +1,10 @@
-"""Watchdog for one paid run: python watch_run.py <log> <results.jsonl> <script name>.
-Prints one line per finished task; kills the run when too many tasks fail; exits when the run's process is gone."""
+"""Watchdog for one paid run: python watch_run.py <log> <results.jsonl> <script name> [free].
+Prints one line per finished task; kills the run when too many tasks fail; exits when the run's process is gone.
+``free`` (a self-hosted model, no money at stake): only repeated errors stop the run, not a high failure rate."""
 import json, os, subprocess, sys, time
 
 LOG, OUT, SCRIPT = sys.argv[1], sys.argv[2], sys.argv[3]
+FREE = len(sys.argv) > 4 and sys.argv[4] == "free"
 FAIL = {"EXHAUSTED", "ERROR", "UNVERIFIED"}
 
 
@@ -46,9 +48,9 @@ while True:
     outcomes = [r["outcome"] for r in rs[start_rows:]]
     n, fails = len(outcomes), sum(o in FAIL for o in outcomes)
     reason = None
-    if n >= 10 and fails / n > 0.7:
+    if not FREE and n >= 10 and fails / n > 0.7:
         reason = f"{fails}/{n} tasks failed (>70%)"
-    elif n >= 6 and all(o in FAIL for o in outcomes[-6:]):
+    elif not FREE and n >= 6 and all(o in FAIL for o in outcomes[-6:]):
         reason = "6 failures in a row"
     elif n >= 3 and all(o == "ERROR" for o in outcomes[-3:]):
         reason = "3 errors in a row"

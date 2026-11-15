@@ -283,7 +283,44 @@ def _juxtaposed(text: str) -> Optional[str]:
     return out if out != text else None
 
 
-_TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_juxtaposed, "Lean's `f x` read as the call `f(x)`"))
+#: Lean's `fun a b =>` parameters in an L_spec lambda: `lambda acc x:` for `lambda acc, x:` (gpt-oss-120b, Verina 2026-11-15)
+_LAMBDA_SPACED = re.compile(r"\blambda((?:[ \t]+[A-Za-z_]\w*){2,})[ \t]*:")
+
+
+def _lambda_params(text: str) -> Optional[str]:
+    out = _LAMBDA_SPACED.sub(lambda m: "lambda " + ", ".join(m.group(1).split()) + ":", text)
+    return out if out != text else None
+
+
+#: a call followed by one more atomic argument, `xs.foldl(f) 0` for `xs.foldl(f, 0)` (gpt-oss-120b, Verina 2026-11-15)
+_CALL_THEN_ATOM = re.compile(r"[ \t]+(-?\d+(?:\.\d+)?|\(-\d+\)|\[\]|[A-Za-z_]\w*)(?=\s*(?:$|[),\];]))")
+
+
+def _call_then_arg(text: str) -> Optional[str]:
+    out, k = [], 0
+    for m in re.finditer(r"\.[A-Za-z_]\w*\??\(", text):
+        if m.start() < k:
+            continue
+        depth, j = 0, m.end() - 1
+        while j < len(text):
+            depth += {"(": 1, ")": -1}.get(text[j], 0)
+            if depth == 0:
+                break
+            j += 1
+        if j >= len(text):
+            return None
+        atom = _CALL_THEN_ATOM.match(text, j + 1)
+        if atom and atom.group(1) not in _KEYWORDS:
+            out.append(text[k:j] + ", " + atom.group(1) + ")")
+            k = atom.end()
+    if not out:
+        return None
+    return "".join(out) + text[k:]
+
+
+_TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_lambda_params, "Lean's `fun a b` read as `lambda a, b`"),
+               (_call_then_arg, "an argument after a call read as its last argument"),
+               (_juxtaposed, "Lean's `f x` read as the call `f(x)`"))
 
 
 def _fix_text(value: str) -> Tuple[str, List[str]]:

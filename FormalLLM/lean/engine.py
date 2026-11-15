@@ -50,7 +50,8 @@ from FormalLLM.lean.task import LeanTask
 #: rewrites to the forms the shape tactics are written for, tried first inside those tactics only (never in the shared simp
 #: sets, so a proof that works on the written form is never disturbed): ``max(l)`` written as ``l.max?.get!``, the first of a
 #: filter as ``(l.filter p)[0]!``, a search as a fold with ``||`` (gpt-5.4-mini on Verina, 2026-11-13)
-NORMALIZE = ("(try simp only [Refine.max_get_eq_foldl_int, Refine.max_get_eq_foldl_nat, Refine.min_get_eq_foldl_int, "
+NORMALIZE = ("(try simp only [Refine.ite_filter_getElem_eq_find, Refine.ite_filter_ne_nil_eq_find] at *); "
+             "(try simp only [Refine.foldl_ite_gt_eq_max, Refine.foldl_ite_ge_eq_max, Refine.max_get_eq_foldl_int, Refine.max_get_eq_foldl_nat, Refine.min_get_eq_foldl_int, "
              "Refine.min_get_eq_foldl_nat, Refine.filter_getElem_zero_eq_find, Refine.filter_head_eq_find, "
              "Refine.foldl_or_eq_any, Refine.foldl_and_eq_all, Refine.foldl_decide_or_eq_any, Bool.false_or, "
              "Bool.true_and, Nat.add_sub_cancel_left] at *); ")
@@ -698,7 +699,9 @@ class Derivation:
         stmt = obligation.statement
         if ".max?.get!" in stmt or ".min?.get!" in stmt:
             stmt += " foldl max"
-        if ".filter" in stmt and ("[0]!" in stmt or ".head!" in stmt):
+        if re.search(r"foldl \(fun (\w+) (\w+) => if \2 (?:>|≥) \1 then \2 else \1\) 0", stmt):
+            stmt += " foldl max 0"
+        if ".filter" in stmt and ("[0]!" in stmt or ".head!" in stmt or "[0]" in stmt):
             stmt += " find? getD"
         if "foldl" in stmt and ("∨" in stmt or "||" in stmt) and "List.range" in stmt:
             stmt += " .any"
@@ -820,6 +823,16 @@ class Derivation:
                            "(try simp only [decide_eq_true_eq] at *) <;> first | exact ⟨hfm, hfs⟩ | exact hfs | exact hfm "
                            "| (exfalso; obtain ⟨_, hx, hp⟩ := ‹∃ _ ∈ _, _›; exact absurd hp (by simpa using ‹∀ _ ∈ _, _› _ hx)) "
                            "| grind")
+            # ... the witness's existence from the precondition "exactly one count is 1" (``count_one_exists``), the
+            # task's filter helper read as a count (gpt-oss-120b, Verina advanced_1: ``bind`` "occurs once", then find?)
+            leq = "".join(f"{h.name}, " for h in self.helpers if h.name.startswith("auto_libeq_"))
+            tactics.append(f"(try beta_reduce); (try unfold {pre} at h_precond); (try dsimp only at *); "
+                           f"(try simp only [{leq}Refine.filter_eq_length_count] at *); (try casesm* _ ∧ _); (try intros); "
+                           "unfold Option.getD; split <;> (try simp only [List.find?_eq_none] at *) <;> "
+                           "(try (have hfs := List.find?_some ‹List.find? _ _ = some _›; "
+                           "have hfm := List.mem_of_find?_eq_some ‹List.find? _ _ = some _›)) <;> "
+                           "(try simp only [decide_eq_true_eq] at *) <;> first | exact ⟨hfm, hfs⟩ | exact hfs | exact hfm "
+                           "| (exfalso; obtain ⟨x, hx, hc⟩ := Refine.count_one_exists _ ‹_›; simp_all)")
         # the longest list with a property, ``(L.map List.length).foldl max 0`` cast to Int: the empty list is in ``L`` (by
         # induction along the postcondition's own ``let rec`` generator, e.g. all subsequences), so the maximum is attained
         # and bounds every length (``maxlen_spec``) (Verina advanced_24: longest increasing subsequence)
@@ -863,6 +876,23 @@ class Derivation:
         # the one element occurring once, found by ``find?``, when the precondition says the list of counts has exactly
         # one 1 and every count is 1 or 2: it is unique (``count_one_unique``), so every other element occurs twice, and
         # it exists (``count_one_exists``) (Verina advanced_1: the single number)
+        # ... the result named by a hypothesis "it occurs once" (a ``bind`` or ``cases``, not ``find?``): the same facts
+        # (gpt-oss-120b, Verina advanced_1)
+        named = re.search(rf"{re.escape(post)} (?:\w+ )+\(?(\w+)\)? h_precond\s*$", obligation.statement)
+        if ".count 1" in pre_text and named and "find?" not in stmt:
+            r = named.group(1)
+            l = lists[0] if lists else "_"
+            tactics.append(
+                f"unfold {post}; unfold {pre} at h_precond; (try dsimp only at *); "
+                f"(try simp only [{libeq_simp}Refine.filter_eq_length_count] at *)\n"
+                "  obtain ⟨hall, hone⟩ := h_precond\n"
+                "  simp only [List.all_eq_true, List.mem_map, decide_eq_true_eq, forall_exists_index, and_imp, "
+                "forall_apply_eq_imp_iff₂] at hall\n"
+                "  (try casesm* _ ∧ _)\n"
+                f"  (repeat' apply And.intro) <;> first | assumption "
+                f"| exact List.length_pos_of_mem (List.count_pos_iff.mp (show 0 < {l}.count {r} by omega)) "
+                f"| (intro x hx; by_cases hxr : x = {r}; exact Or.inl hxr; right; rcases hall x hx with h1 | h2; "
+                "exact absurd (Refine.count_one_unique _ hone _ _ h1 ‹_›) hxr; exact h2)")
         if "find?" in stmt and "getD" in stmt and ".count 1" in pre_text:
             tactics.append(
                 f"unfold {post}; unfold {pre} at h_precond; (try dsimp only at *); "

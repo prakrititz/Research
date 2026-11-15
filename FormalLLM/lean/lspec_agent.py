@@ -70,13 +70,39 @@ def _elaboration_error(d: Derivation, goal, engine: dict):
     return None
 
 
+def _local_helpers(d: Derivation, engine: dict, error: str):
+    """An unknown name that is a ``let rec`` helper of the postcondition (``subsequences`` inside ``lengthOfLIS_postcond``)
+    read as that helper (``lengthOfLIS_postcond.subsequences``): gpt-oss-120b, Verina advanced_24, 2026-11-15."""
+    import json as _json
+    import re as _re
+    m = _re.search(r"[Uu]nknown (?:identifier|constant) [`'«]?([A-Za-z_][\w']*)", error)
+    post = d.task.post_name
+    if not m:
+        return []
+    name = m.group(1)
+    body = d.task.prelude.split(f"def {post}", 1)
+    if len(body) < 2 or not _re.search(rf"let rec {_re.escape(name)}\b", body[1].split("\ndef ", 1)[0]):
+        return []
+
+    def fix(value):
+        if isinstance(value, str):
+            return _re.sub(rf"(?<![\w.']){_re.escape(name)}(?![\w'])", f"{post}.{name}", value)
+        if isinstance(value, list):
+            return [fix(v) for v in value]
+        if isinstance(value, dict):
+            return {k: fix(v) for k, v in value.items()}
+        return value
+    candidate = fix(_json.loads(_json.dumps(engine)))
+    return [(candidate, f"`{name}` read as the postcondition's helper `{post}.{name}`")] if candidate != engine else []
+
+
 def repaired(d: Derivation, goal, engine: dict, failure, rounds: int = 3):
     """``engine`` with the conversions Lean's errors call for (``repair.py``), when they make it type-check: (the
     repaired step, the reasons); None otherwise. A candidate that changes the error is kept for the next round."""
     current, notes = engine, []
     for _ in range(rounds):
         progress = None
-        for candidate, why in repair.repairs(current, failure[1]):
+        for candidate, why in _local_helpers(d, current, failure[1]) + repair.repairs(current, failure[1]):
             try:
                 after = elaboration_error(d, goal, candidate)
             except (IllFormed, KeyError, TypeError, ValueError):

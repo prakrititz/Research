@@ -2085,6 +2085,26 @@ theorem dedup_step_int : ∀ (s : List Int) (i : Nat) (acc : List Int), (i ≤ s
       have hnt : s[i]! ∉ s.take i := fun h => hnin ((hmem _).mpr h)
       have h2 := idxOf_ge_of_not_mem_take_int s i _ hsi hnt
       omega
+
+-- "first of the filter, if any, else d" written with an ``if`` on the filter's length is ``find?`` with a default
+-- (gpt-oss-120b, Verina advanced_11)
+theorem ite_filter_getElem_eq_find {α : Type} [Inhabited α] (l : List α) (p : α → Bool) (d : α) :
+    (if (l.filter p).length > 0 then (l.filter p)[0]! else d) = (l.find? p).getD d := by
+  induction l with
+  | nil => simp
+  | cons a t ih => by_cases h : p a = true <;> simp_all [List.filter_cons, List.find?_cons]
+theorem ite_filter_ne_nil_eq_find {α : Type} [Inhabited α] (l : List α) (p : α → Bool) (d : α) :
+    (if l.filter p ≠ [] then (l.filter p)[0]! else d) = (l.find? p).getD d := by
+  rw [← ite_filter_getElem_eq_find]; congr 1; simp [List.length_pos_iff]
+
+-- the maximum written as a fold with an ``if`` (``if x > acc then x else acc``) is ``foldl max`` (gpt-oss-120b, Verina
+-- advanced_24, 2026-11-15)
+theorem foldl_ite_gt_eq_max {α : Type} [LinearOrder α] (l : List α) (s : α) :
+    l.foldl (fun acc x => if x > acc then x else acc) s = l.foldl max s := by
+  congr 1; funext acc x; rw [ite_gt_eq_max, max_comm]
+theorem foldl_ite_ge_eq_max {α : Type} [LinearOrder α] (l : List α) (s : α) :
+    l.foldl (fun acc x => if x ≥ acc then x else acc) s = l.foldl max s := by
+  congr 1; funext acc x; rw [ite_ge_eq_max, max_comm]
 end Refine
 '''
 
