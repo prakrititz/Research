@@ -423,7 +423,46 @@ def _spaced_binders(text: str) -> Optional[str]:
     return out if out != text else None
 
 
-_TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_let_in, "`let x = v in body` read as `let x = v; body`"),
+#: `forall x in <bound with calls>, body` (Lean's comma; the regex above takes no bracket in the bound): the first `,` at
+#: depth 0 after the bound, unless a `:` comes first (gpt-oss-120b, Verina advanced_24, 2026-11-16)
+_BOUNDED_HEAD = re.compile(r"\b(?:forall|exists)[ \t]+[A-Za-z_]\w*[ \t]*(?:\bin\b|<=|<)")
+
+
+def _bounded_comma(text: str) -> Optional[str]:
+    out = list(text)
+    for m in _BOUNDED_HEAD.finditer(text):
+        depth, j = 0, m.end()
+        while j < len(text):
+            c = text[j]
+            if c in "([{":
+                depth += 1
+            elif c in ")]}":
+                depth -= 1
+                if depth < 0:
+                    break
+            elif depth == 0 and c == ":":
+                break
+            elif depth == 0 and c == ",":
+                if not re.match(r"[ \t]*[A-Za-z_]\w*(?:[ \t]*,[ \t]*[A-Za-z_]\w*)*[ \t]*:(?!=)", text[j + 1:]):
+                    out[j] = ":"
+                break
+            j += 1
+    new = "".join(out)
+    return new if new != text else None
+
+
+#: `let x = v; in body`, both separators (gpt-oss-120b, Verina advanced_24)
+_SEMI_IN = re.compile(r";[ \t]*\bin\b")
+
+
+def _semicolon_in(text: str) -> Optional[str]:
+    out = _SEMI_IN.sub(";", text)
+    return out if out != text else None
+
+
+_TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_semicolon_in, "`; in` read as `;`"),
+               (_let_in, "`let x = v in body` read as `let x = v; body`"),
+               (_bounded_comma, "Lean's `forall x in l, p` read as `forall x in l: p`"),
                (_some_arg, "Lean's `some x` read as `some(x)`"),
                (_spaced_binders, "Lean's `exists j k: p` read as `exists j, k: p`"),
                (_single_eq, "Lean's `=` read as `==`"),

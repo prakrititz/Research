@@ -441,3 +441,10 @@ def test_bounded_binder_keeps_tuple_pattern():
     from FormalLLM.dsl import steps
     assert steps.to_lean("forall (p, e) in acc: p > 0", "invariant", ("acc",)) == "∀ (p, e) ∈ acc, p > 0"
     assert steps.to_lean("forall (x: nat) in l: x > 0", "invariant", ("l",)) == "∀ x ∈ l, x > 0"
+
+
+def test_text_repairs_bounded_comma_and_semicolon_in():
+    from FormalLLM.dsl import repair
+    assert repair._fix_text("forall x in f(a, b), x > 0")[0] == "forall x in f(a, b): x > 0"
+    assert repair._fix_text("forall x in l: f(x, y)")[1] == []
+    assert repair._fix_text("let a = 1; in a + 1")[0] == "let a = 1; a + 1"
