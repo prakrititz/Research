@@ -544,7 +544,8 @@ def show(node: Node) -> str:
         elif node.bound:
             # Lean's binder predicate takes plain names (`∀ x ∈ l`): a type written with it (`forall (x: T) in l`) is
             # left to inference from the bound (gpt-oss-120b, Verina advanced_10, 2026-11-15)
-            head = _binders([(name, None) for name, _ in node.vars])
+            # (a pattern `(p, e)` keeps its slot: there the "type" is the pattern)
+            head = _binders([(name, t if name.startswith(("<", "{", "[")) else None) for name, t in node.vars])
         else:
             head = _binders(node.vars)
         if node.bound:

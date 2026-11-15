@@ -435,3 +435,9 @@ def test_let_in_nested_and_typed_let_rec_params():
                          "expr", ("l",))
     assert lean.startswith("let rec inc (l : List Int) : Bool :=")
     assert "let rec" in feedback.hints("This pattern contains metavariables: []", feedback.TYPE_HINTS)
+
+
+def test_bounded_binder_keeps_tuple_pattern():
+    from FormalLLM.dsl import steps
+    assert steps.to_lean("forall (p, e) in acc: p > 0", "invariant", ("acc",)) == "∀ (p, e) ∈ acc, p > 0"
+    assert steps.to_lean("forall (x: nat) in l: x > 0", "invariant", ("l",)) == "∀ x ∈ l, x > 0"
