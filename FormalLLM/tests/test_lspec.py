@@ -380,3 +380,25 @@ def test_text_repairs_lean_quantifiers_and_method_space():
     assert repair._fix_text("forall x: int, x > 0")[0] == "forall (x: int): x > 0"
     assert repair._fix_text("(nums.find? (lambda x: x > 0)).getD 0")[0] == "(nums.find?(lambda x: x > 0)).getD(0)"
     assert repair._fix_text("l.foldl(lambda acc x => acc + x) 0")[0] == "l.foldl(lambda acc, x: acc + x, 0)"
+
+
+def test_text_repairs_single_equals():
+    from FormalLLM.dsl import repair
+    assert repair._fix_text("cnt > 0 ==> cnt = len(l)")[0] == "cnt > 0 ==> cnt == len(l)"
+    assert repair._fix_text("(ps = [] ==> r == 1)")[0] == "(ps == [] ==> r == 1)"
+    for kept in ("let p: nat = 3; p == 3", "a <= b and b >= c and a != c and (p <==> q)", "x == 1"):
+        assert repair._single_eq(kept) is None
+
+
+def test_typed_quantifiers_in_lean_spelling():
+    from FormalLLM.dsl import steps
+    scope = [("xs", "List Nat"), ("res", "List (Nat × Nat)")]
+    assert steps.to_lean("forall (p: nat), p in xs ==> p > 0", "statement", scope) == "∀ (p : Nat), (p ∈ xs) → (p > 0)"
+    assert steps.to_lean("forall (pair: tuple[nat,nat]) in res: pair.1 > 0", "statement", scope) == "∀ pair ∈ res, pair.1 > 0"
+    assert steps.to_lean("forall (i: nat), (j: nat): i + j >= 0", "statement", scope) == "∀ (i : Nat) (j : Nat), (i + j) ≥ 0"
+
+
+def test_text_repairs_as_nat():
+    from FormalLLM.dsl import repair
+    assert repair._fix_text("m as nat")[0] == "to_nat(m)"
+    assert repair._fix_text("(n - p) as nat")[0] == "to_nat((n - p))"

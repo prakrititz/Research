@@ -840,13 +840,25 @@ class Derivation:
             recs = [f"{post}.{r}" for r in re.findall(r"let rec (\w+)", definition[1].split("\ndef ", 1)[0])] \
                 if len(definition) > 1 else []
             rec_simp = ", ".join(recs)
-            member = "".join(f"| (simp only [List.mem_filter]; refine ⟨?_, by simp [{rec_simp}]⟩; induction {v} <;> "
-                             f"simp_all [{rec_simp}]) " for v, typ in _binder_types(obligation.binders)
+            # the induction is over a fresh list: hypotheses about the input (a `cases` on its length, gpt-oss-120b
+            # Verina advanced_24) would otherwise weaken the induction hypothesis
+            member = "".join(f"| (simp only [List.mem_filter]; refine ⟨?_, by simp [{rec_simp}]⟩; "
+                             f"generalize hgen : {v} = l; clear hgen; induction l <;> simp_all [{rec_simp}]) "
+                             for v, typ in _binder_types(obligation.binders)
                              if typ.startswith("List") and recs)
             tactics.append(f"unfold {post}; (try unfold {pre} at *); (try dsimp only); {NORMALIZE}"
                            "(try simp only [Nat.cast_inj, Nat.cast_le]); "
                            "(first | refine Refine.maxlen_spec _ ?_ | refine Refine.maxlen_spec_int _ ?_); "
                            f"first | (simp; done) {member}")
+        # the same with the maximum written `max(l)` (``max?.get!``, folded from 0 for naturals) in the second case of a
+        # postcondition `(empty and result = 0) or (not empty and ...)`, the specification mapping each list to the counts
+        # of its elements first (``filter_all_count_map_length``) (gpt-oss-120b, Verina advanced_29)
+        if "max?.get!" in obligation.statement and "length" in stmt:
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); (try dsimp only)\n"
+                           "  (try simp only [Refine.max_get_eq_foldl_zero_nat, Refine.filter_all_count_map_length] at *)\n"
+                           "  (try (right; refine ⟨‹_›, ?_⟩))\n"
+                           "  refine Refine.maxlen_spec _ ?_\n"
+                           "  first | (simp; done) | (simp <;> wit_search)")
         # a search that stops at the first ``r`` where a property holds (the invariant: no ``r' < r`` has it; the guard:
         # ``r < bound ∧ ¬ P r``): on exit ``P r`` holds, at the bound by the precondition (``take`` of the whole list); a
         # positive ``r`` is minimal by the invariant, ``r = 0`` leaves a target range empty (Verina advanced_52)
@@ -1200,6 +1212,51 @@ class Derivation:
                            "| (right; exact ⟨‹_›, fun _ _ => Refine.filter_le_half_or_eq _ _ _ ‹_›⟩) "
                            "| (exact ⟨‹_›, fun _ _ => Refine.filter_le_half_or_eq _ _ _ ‹_›⟩) "
                            "| (exact fun _ _ => Refine.filter_le_half_or_eq _ _ _ ‹_›)")
+        # an invariant "there is a k with ..." at the start: the witness 0 or 1, the task's functions evaluated
+        # (gpt-oss-120b, Verina advanced_23: `exists k: pow(2, k) * m == n` with m = n holds for k = 0)
+        if obligation.kind == "init" and "∃ (" in obligation.statement:
+            defs = ", ".join(self._task_defs())
+            with_defs = f" [{defs}]" if defs else ""
+            tactics.append("(try beta_reduce); (try dsimp only); first " + "".join(
+                f"| (refine ⟨{w}, ?_⟩; simp_all{with_defs}; done) | (refine ⟨{w}, ?_⟩; simp_all{with_defs} <;> omega) "
+                for w in (0, 1)))
+        # a loop halving an even number m (``m = n / 2^k``, the guard "m > 1 and m even"): on exit m is odd or 1, and
+        # ``2^k * m`` is a power of two only when m = 1 (``pow2_mul_odd_int``); the task's own power function (``pow b e``,
+        # recursive on e) is ``b ^ e`` (gpt-oss-120b, Verina advanced_23)
+        power = re.search(r"def (\w+) \(\w+ : Int\) \(\w+ : Nat\) : Int :=", self.task.prelude)
+        halved = re.search(r"\(\((\w+) % 2\) = 0\)", obligation.binders)
+        if obligation.kind == "exit" and power and halved and f"{power.group(1)} 2" in obligation.binders:
+            pw, m = power.group(1), halved.group(1)
+            tactics.append(f"unfold {post}\n"
+                           f"  have hp : ∀ e, {pw} 2 e = (2 : Int) ^ e := by\n"
+                           "    intro e; induction e with\n"
+                           "    | zero => rfl\n"
+                           f"    | succ e ih => simp only [{pw}, ih, pow_succ]; ring\n"
+                           "  simp only [hp] at *\n"
+                           "  obtain ⟨k, hk, hm⟩ := ‹∃ _, _›\n"
+                           f"  by_cases h : {m} = 1\n"
+                           "  · subst h; simp only [decide_true, if_true]; exact ⟨k, by simpa using hk, by omega⟩\n"
+                           "  · simp only [h, decide_false, Bool.false_eq_true, if_false]; rintro ⟨x, hx, -⟩\n"
+                           f"    have hodd : {m} % 2 ≠ 0 := by omega\n"
+                           f"    exact h (Refine.pow2_mul_odd_int k x {m} hodd (hx.trans hk.symm))")
+        # a loop over a list's indices that stopped at its end (``i ≤ l.length``, ``¬ i < l.length``): the loop variable is
+        # the length, the invariant's cases are split, and a fact for every index below it is a fact for every member
+        # (``forall_mem_iff_idx``); counting facts as above (gpt-oss-120b, Verina advanced_11: the invariant "no value seen
+        # is a majority, or the candidate is one")
+        ended = re.search(r"\(\w+ : ¬ \((\w+) < ([\w.]+)\.length\)\)", obligation.binders)
+        if obligation.kind == "exit" and ended and "]!" in obligation.binders and "∨" in obligation.binders:
+            iv, lv = ended.groups()
+            tactics.append(f"unfold {post}; (try simp only [{pre}] at h_precond); (try dsimp only)\n"
+                           f"  have hlen : {iv} = {lv}.length := by omega\n"
+                           "  subst hlen\n"
+                           "  casesm* _ ∧ _, _ ∨ _ <;> (repeat' (first | apply And.intro | intro)) <;> "
+                           "(try simp only [List.all_eq_true, decide_eq_true_eq, Bool.decide_or, Bool.or_eq_true] at *) "
+                           "<;> first | (exfalso; contradiction) | assumption | omega "
+                           "| exact (Refine.forall_mem_iff_idx _ _).mpr ‹_› "
+                           "| (left; exact (Refine.forall_mem_iff_idx _ _).mpr ‹_›) "
+                           "| (right; exact ⟨‹_›, fun _ _ => Refine.filter_le_half_or_eq _ _ _ ‹_›⟩) "
+                           "| (exact ⟨‹_›, fun _ _ => Refine.filter_le_half_or_eq _ _ _ ‹_›⟩) "
+                           "| (exact fun _ _ => Refine.filter_le_half_or_eq _ _ _ ‹_›) | grind")
         # the precondition unfolded by name (``unfold post pre at *`` stops at the first name it cannot unfold), members of
         # arrays and lists as indices, the task's plain helpers unfolded, then grind (Verina basic_24: the precondition
         # has an even element, so a scan that stops at the first non-odd one stops inside the array)
@@ -1598,14 +1655,21 @@ class Derivation:
     def _run_the_loop(self, node: Node, law: Law, bad: List[Verdict]) -> None:
         """For a step of a loop that was refused, replace a missing or weak counter-example by a run of the loop (``dynamic.py``)."""
         from FormalLLM.lean import dynamic
-        from FormalLLM.lean.laws import Loop, Term
+        from FormalLLM.lean.laws import Cases, Loop, Term
         finding = None
         try:
             with self.phase("dynamic"):
                 if isinstance(law, Term):
-                    parent = self._parent_of(node.goal.id)
-                    if parent is not None and isinstance(parent.law, Loop) and parent.children[0].goal.id == node.goal.id:
-                        finding = dynamic.loop_finding(self, parent.goal, parent.law, law.expr)
+                    # the step may be one branch of `cases` steps under the loop's body: run it while the state is in
+                    # that branch (gpt-oss-120b, Verina advanced_12)
+                    child, parent = node, self._parent_of(node.goal.id)
+                    while parent is not None and isinstance(parent.law, Cases):
+                        child, parent = parent, self._parent_of(parent.goal.id)
+                    if parent is not None and isinstance(parent.law, Loop) and parent.children[0].goal.id == child.goal.id:
+                        body = child.goal
+                        conds = [p for _, p in node.goal.hyps[len(body.hyps):]]
+                        if node.goal.ctx == body.ctx:      # no `bind` in between: the branch is about the state alone
+                            finding = dynamic.loop_finding(self, parent.goal, parent.law, law.expr, conds)
                 elif isinstance(law, Loop) and any(v.obligation.kind == "init" for v in bad):
                     finding = dynamic.loop_finding(self, node.goal, law, None)
         except Exception:                               # a harness that does not elaborate must never hide the real verdict

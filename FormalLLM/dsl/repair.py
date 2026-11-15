@@ -340,7 +340,30 @@ def _call_then_arg(text: str) -> Optional[str]:
     return "".join(out) + text[k:]
 
 
-_TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_lambda_params, "Lean's `fun a b` read as `lambda a, b`"),
+#: a lone `=` (not `==`, `<=`, `>=`, `!=`, `:=`, `=>`, `==>`, `<==>`) outside a `let x = v;` binding: Lean's equality
+#: for L_spec's `==` (gpt-oss-120b, Verina advanced_11, 2026-11-15: `cnt = len(...)` in an invariant)
+_LONE_EQ = re.compile(r"(?<![=<>!:])=(?![=>])")
+_LET_EQ = re.compile(r"\blet[ \t]+[A-Za-z_]\w*(?:[ \t]*:[ \t]*[^=;]+?)?[ \t]*=(?![=>])")
+
+
+def _single_eq(text: str) -> Optional[str]:
+    lets = [m.end() - 1 for m in _LET_EQ.finditer(text)]
+    out = _LONE_EQ.sub(lambda m: m.group(0) if m.start() in lets else "==", text)
+    return out if out != text else None
+
+
+#: a cast written `x as nat` (gpt-oss-120b, Verina advanced_23: a variant `m as nat`) for `to_nat(x)`
+_AS_NAT = re.compile(r"(\((?:[^()]|\([^()]*\))*\)|[A-Za-z_]\w*(?:\.\w+)*)[ \t]+as[ \t]+nat\b")
+
+
+def _as_nat(text: str) -> Optional[str]:
+    out = _AS_NAT.sub(lambda m: f"to_nat({m.group(1)})", text)
+    return out if out != text else None
+
+
+_TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_single_eq, "Lean's `=` read as `==`"),
+               (_as_nat, "`x as nat` read as `to_nat(x)`"),
+               (_lambda_params, "Lean's `fun a b` read as `lambda a, b`"),
                (_method_space, "`x.m (y)` read as `x.m(y)`"),
                (_quantifier_comma, "Lean's `forall x, p` read as `forall x: p`"),
                (_call_then_arg, "an argument after a call read as its last argument"),

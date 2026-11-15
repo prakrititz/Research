@@ -2192,6 +2192,34 @@ theorem maxlen_spec_int {α : Type} (L : List (List α)) (hn : [] ∈ L) :
   rw [e, show (0 : Int) = ((0 : Nat) : Int) from rfl, foldl_max_cast_int]
   simp only [Nat.cast_inj, Nat.cast_le]
   exact maxlen_spec L hn
+-- a power of two times an odd number is a power of two only when the odd number is 1, over Int (the exit of a loop
+-- halving an even number: gpt-oss-120b, Verina advanced_23)
+theorem pow2_mul_odd_int (k : Nat) : ∀ (x : Nat) (m : Int), m % 2 ≠ 0 → (2 : Int) ^ x = 2 ^ k * m → m = 1 := by
+  induction k with
+  | zero =>
+    intro x m hm h
+    cases x with
+    | zero => simp at h; omega
+    | succ x => rw [pow_succ] at h; simp at h; omega
+  | succ k ih =>
+    intro x m hm h
+    cases x with
+    | zero =>
+      have e : (2 : Int) ^ (k + 1) * m = 2 * (2 ^ k * m) := by ring
+      rw [e] at h; simp at h; omega
+    | succ x =>
+      rw [pow_succ, pow_succ] at h
+      exact ih x m hm (by linarith [h])
+-- the lists whose elements each occur at most k times, by length, are those whose list of counts is at most k
+-- (a specification that maps each list to its counts first: gpt-oss-120b, Verina advanced_29)
+theorem filter_all_count_map_length {α : Type} [BEq α] (L : List (List α)) (k : Nat) :
+    (L.filter (fun arr => arr.all (fun x => decide (arr.count x ≤ k)))).map List.length =
+    ((L.map (fun arr => arr.map (fun x => arr.count x))).filter (fun arr => arr.all (fun x => decide (x ≤ k)))).map List.length := by
+  induction L with
+  | nil => simp
+  | cons a t ih =>
+    simp only [List.map_cons, List.filter_cons, List.all_map, Function.comp_def]
+    split <;> simp_all
 end Refine
 '''
 

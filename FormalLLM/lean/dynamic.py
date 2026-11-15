@@ -142,6 +142,16 @@ def _read_parts(trace: List[str], law: Loop):
     return out, failing
 
 
+def _step_def(goal: Goal, law: Loop, step: str, conds=()) -> str:
+    """``dyn_step``: the next state, or ``none`` when the state is not in the branch (``conds``, the conditions of the
+    ``cases`` steps between the loop and this step) whose step this is."""
+    ctx = " ".join(f"({n} : {t})" for n, t in goal.ctx)
+    head = f"def dyn_step {ctx} {_state_binders(law)} : Option ({law.state_type}) :="
+    if not conds:
+        return f"{head} some ({step})"
+    return f"{head} if decide ({' ∧ '.join(f'({c})' for c in conds)}) then some ({step}) else none"
+
+
 def _state_binders(law: Loop) -> str:
     return " ".join(f"({n} : {t})" for n, t in law.state)
 
@@ -164,7 +174,7 @@ def _args(law: Loop, var: str) -> str:
     return " ".join(_nested(var, k, len(law.state)) for k in range(len(law.state)))
 
 
-def source(goal: Goal, law: Loop, step: Optional[str], with_post: bool) -> str:
+def source(goal: Goal, law: Loop, step: Optional[str], with_post: bool, conds=()) -> str:
     """The harness: definitions, runner, and the ``plausible`` theorem. ``step`` is the candidate body (``None``: only check ``init``)."""
     ctx = " ".join(f"({n} : {t})" for n, t in goal.ctx)
     names = " ".join(n for n, _ in goal.ctx)
@@ -183,7 +193,7 @@ def source(goal: Goal, law: Loop, step: Optional[str], with_post: bool) -> str:
         f"def dyn_var {ctx} {state} : Nat := {law.variant}",
     ]
     if step is not None:
-        lines.append(f"def dyn_step {ctx} {state} : {st} := {step}")
+        lines.append(_step_def(goal, law, step, conds))
         lines += [
             f"def dyn_ok {ctx} {hyps} : Bool :=",
             f"  let rec go : Nat → {st} → Bool",
@@ -191,8 +201,9 @@ def source(goal: Goal, law: Loop, step: Optional[str], with_post: bool) -> str:
             f"    | fuel + 1, s =>",
             f"      if !(dyn_inv {names} {s_args}) then false",
             f"      else if dyn_guard {names} {s_args} then",
-            f"        let r := dyn_step {names} {s_args}",
-            f"        dyn_inv {names} {r_args} && decide (dyn_var {names} {r_args} < dyn_var {names} {s_args}) && go fuel r",
+            f"        (match dyn_step {names} {s_args} with",
+            f"         | none => true",
+            f"         | some r => dyn_inv {names} {r_args} && decide (dyn_var {names} {r_args} < dyn_var {names} {s_args}) && go fuel r)",
             f"      else {exit_check}",
             f"  go {FUEL} {init}",
         ]
@@ -222,10 +233,12 @@ def trace_source(goal: Goal, law: Loop, step: str, inputs: str) -> Optional[str]
         f"      let head := \"state (\" ++ ({fmt_s}) ++ \")  invariant \" ++ toString (dyn_inv {names} {s_args}) ++ \"  guard \" ++ toString (dyn_guard {names} {s_args})",
         f"      if !(dyn_inv {names} {s_args}) then [head ++ \"   <- the invariant is false here\" ++ {_falses(goal, law, s_args)}]",
         f"      else if dyn_guard {names} {s_args} then",
-        f"        let r := dyn_step {names} {s_args}",
-        f"        let next := \"  your step gives (\" ++ ({fmt_r}) ++ \")  invariant \" ++ toString (dyn_inv {names} {r_args}) ++ \"  variant \" ++ toString (dyn_var {names} {s_args}) ++ \" -> \" ++ toString (dyn_var {names} {r_args})",
-        f"        if dyn_inv {names} {r_args} && decide (dyn_var {names} {r_args} < dyn_var {names} {s_args}) then head :: next :: go fuel r",
-        f"        else [head, next ++ (if !(dyn_inv {names} {r_args}) then \"   <- the invariant is false after your step\" ++ {_falses(goal, law, r_args)} else \"   <- the variant does not decrease\")]",
+        f"        (match dyn_step {names} {s_args} with",
+        f"         | none => [head, \"  (the state is in another branch of your step: not run)\"]",
+        f"         | some r =>",
+        f"          let next := \"  your step gives (\" ++ ({fmt_r}) ++ \")  invariant \" ++ toString (dyn_inv {names} {r_args}) ++ \"  variant \" ++ toString (dyn_var {names} {s_args}) ++ \" -> \" ++ toString (dyn_var {names} {r_args})",
+        f"          if dyn_inv {names} {r_args} && decide (dyn_var {names} {r_args} < dyn_var {names} {s_args}) then head :: next :: go fuel r",
+        f"          else [head, next ++ (if !(dyn_inv {names} {r_args}) then \"   <- the invariant is false after your step\" ++ {_falses(goal, law, r_args)} else \"   <- the variant does not decrease\")])",
         f"      else [head, \"  the loop exits\"]",
         f"  go {FUEL} {init}",
         f"#eval (dyn_trace {' '.join('(' + v + ')' for v in values)}).foldl (fun acc line => acc ++ line ++ \"\\n\") \"\"",
@@ -243,22 +256,44 @@ def parse_inputs(text: str, names: List[str]) -> Optional[List[str]]:
     return [found[n] for n in names]
 
 
-def loop_finding(derivation, goal: Goal, law: Loop, step: Optional[str]) -> Optional[Finding]:
-    """Run the loop with the candidate body on inputs drawn by ``plausible``; ``None`` if no fault was shown."""
+def decidable_part(derivation, goal: Goal, law: Loop) -> Optional[Loop]:
+    """The loop with only the conjuncts of its invariant that can be computed (``decide``); ``None`` if there is none or
+    all are. A conjunct that is false on a state a real run reaches is a fault of the invariant even when another
+    conjunct cannot be computed (gpt-oss-120b, Verina advanced_12: ``forall y: count(y) > 1 ==> ...`` over all ints)."""
+    from dataclasses import replace
+    ctx = " ".join(f"({n} : {t})" for n, t in goal.ctx)
+    parts = conjuncts(law.invariant)
+    kept = [p for p in parts
+            if not derivation._run(f"def dyn_decidable {ctx} {_state_binders(law)} : Bool := decide ({p})\n").errors]
+    if not kept or len(kept) == len(parts):
+        return None
+    return replace(law, invariant=" ∧ ".join(f"({p})" for p in kept))
+
+
+def loop_finding(derivation, goal: Goal, law: Loop, step: Optional[str], conds=()) -> Optional[Finding]:
+    """Run the loop with the candidate body on inputs drawn by ``plausible``; ``None`` if no fault was shown. ``conds``:
+    the step is one branch of ``cases`` steps under the loop, run while the state is in that branch."""
+    weakened = False
     for with_post in (True, False):                # the postcondition may not be decidable: then test the invariant and variant only
-        reply = derivation._run(source(goal, law, step, with_post))
+        reply = derivation._run(source(goal, law, step, with_post, conds))
         if reply.errors and not reply.counterexample:
             if with_post and step is not None:
                 continue
-            return None
+            if not weakened:                       # an invariant that cannot be computed: run with the parts that can
+                weaker = decidable_part(derivation, goal, law)
+                if weaker is not None:
+                    weakened, law = True, weaker
+                    reply = derivation._run(source(goal, law, step, False, conds))
+            if not reply.counterexample:
+                return None
         if reply.counterexample:
             finding = Finding(inputs=reply.counterexample, kind="step" if step is not None else "init")
             code = (trace_source(goal, law, step, reply.counterexample) if step is not None
                     else init_source(goal, law, reply.counterexample))
             if code:
-                shown = derivation._run(_definitions(goal, law, step) + code)
+                shown = derivation._run(_definitions(goal, law, step, conds=conds) + code)
                 if not shown.infos:              # a part that does not elaborate alone: the trace without the parts
-                    shown = derivation._run(_definitions(goal, law, step, parts=False) + code)
+                    shown = derivation._run(_definitions(goal, law, step, parts=False, conds=conds) + code)
                 if shown.infos:
                     lines = [line for line in shown.infos[0].replace("\\n", "\n").strip('"').splitlines() if line.strip()]
                     finding.trace, finding.failing = _read_parts(lines, law)
@@ -285,7 +320,7 @@ def init_source(goal: Goal, law: Loop, inputs: str) -> Optional[str]:
     ]) + "\n"
 
 
-def _definitions(goal: Goal, law: Loop, step: Optional[str], parts: bool = True) -> str:
+def _definitions(goal: Goal, law: Loop, step: Optional[str], parts: bool = True, conds=()) -> str:
     ctx = " ".join(f"({n} : {t})" for n, t in goal.ctx)
     state = _state_binders(law)
     return "\n".join([
@@ -293,4 +328,4 @@ def _definitions(goal: Goal, law: Loop, step: Optional[str], parts: bool = True)
         f"def dyn_guard {ctx} {state} : Bool := decide ({law.guard})",
         f"def dyn_var {ctx} {state} : Nat := {law.variant}",
         _false_parts(goal, law) if parts else f"def dyn_false {ctx} {state} : List Nat := []",
-        *([f"def dyn_step {ctx} {state} : {law.state_type} := {step}"] if step is not None else []), ""])
+        *([_step_def(goal, law, step, conds)] if step is not None else []), ""])

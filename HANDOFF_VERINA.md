@@ -262,3 +262,27 @@ already carry hand-written proofs for them (`lemmas` in `exports/all_derivations
 
 **Regression checks:** `run_humaneval_gold_recheck1114_joint.jsonl` (12 HumanEval tasks whose shapes hit the new gates)
 and `run_verina_gold_recheck1114_joint.jsonl` (8 previously solved Verina tasks): 12/12 and 8/8.
+
+## 11. gpt-oss-120b on Verina, L_spec joint (2026-11-15/16)
+
+Same arm as GPT-5.4 mini (owner: one arm, L_spec joint). Results file
+`run_verina_openai-gpt-oss-120b_ex2cross_v2_joint.jsonl`. Remote model, free (`~/.formalllm/remote_auth`). Order: the
+earlier failures first, then the 146 tasks no model has tried (the 23 GPT-5.4 mini solved are never re-run).
+
+Re-run of the 8 failures (7 from the first gpt-oss run, plus GPT-5.4 mini's advanced_29): advanced_1 and advanced_13
+**certified**; advanced_10, 11, 12, 23, 24, 29 failed. All 6 failures were then examined. Fixes on our side:
+
+| task | what was ours | fix |
+|---|---|---|
+| 10, 11 | `ps = []`, `cnt = len(...)` (Lean's `=`) refused as unreadable | `repair._single_eq`: a lone `=` outside `let` is `==` |
+| 10 | `forall (p: nat), body` (Lean comma) refused; `forall (x: T) in l:` gave Lean that does not parse | `lspec_syntax.binders(quantifier=True)`; `lean_syntax` drops the type of a bounded binder |
+| 23 | `m as nat` refused | `repair._as_nat` |
+| 11 | true loop exit unproved (`∀ k < i, P l[k]!` with `i = len`, then majority) | exit tactic: `i = len`, split cases, `forall_mem_iff_idx`, `filter_le_half_or_eq` |
+| 12, 23 | false steps reported as "may still be true": the counter-example run only covered a term directly under the loop, and an invariant with an undecidable part (`forall y: ...` over Int) stopped it | `dynamic.loop_finding(conds=...)` runs a step that is one branch of `cases` while the state is in that branch; `decidable_part` runs with the conjuncts that can be computed |
+| 23 | true init `exists k: pow(2,k) * n == n` unproved; true exit of a halving loop unproved | init witness 0/1 tactic; `Refine.pow2_mul_odd_int` + halving-loop exit tactic |
+| 24 | the `[] ∈ subsequences nums` induction was weakened by `cases` hypotheses on `nums` | induct over a fresh list (`generalize`) |
+| 29 | `max(...)` over the spec's subarrays unproved: the spec maps each subarray to its counts first | `Refine.filter_all_count_map_length` + a `max?.get!` max-length tactic |
+
+The rest is the model's: advanced_10's invariants never give `rem = 1` at exit (gold cannot prove 10 either); 11 and
+12's other invariants are false (counter-examples now shown); 23's first loop invariant is false for n <= 0.
+Every new tactic was checked in Lean on the model's own obligation (probe files) before it went in.

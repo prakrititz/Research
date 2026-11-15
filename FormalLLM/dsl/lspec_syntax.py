@@ -492,7 +492,7 @@ class _Parser:
             return Index(obj, _from_end(obj, idx), "?")
         return Index(obj, _from_end(obj, idx), "!")
 
-    def binders(self):
+    def binders(self, quantifier: bool = False):
         out = []
         while True:
             tok = self.peek()
@@ -540,11 +540,13 @@ class _Parser:
                 raise Unsupported(f"binder {tok!r}")
             if self.peek() != ",":
                 return out
+            if quantifier and out[-1][1] is not None and self.peek(1) != "(":
+                return out                                   # Lean's `forall (p: nat), body`: the comma ends the binders
             self.next()
 
     def binder(self) -> Node:
         kind = {"lambda": "fun", "forall": "∀", "exists": "∃"}[self.next()]
-        names = self.binders()
+        names = self.binders(quantifier=kind != "fun")
         bound = None
         tok = self.peek()
         if kind != "fun" and (tok in BOUNDS_INV or tok == "not" and self.peek(1) == "in"):
@@ -553,6 +555,9 @@ class _Parser:
                 self.next()
                 spelled = "not in"
             bound = (BOUNDS_INV[spelled], self.binops(51))
+        if (kind != "fun" and self.peek() == "," and names and all(t is not None for _, t in names)):
+            self.next()                                     # Lean's `forall (p: nat), body` (gpt-oss-120b, Verina)
+            return Binder(kind, names, bound, self.expr())
         self.expect(":")
         body = self.expr()
         if (kind != "fun" and self.peek() == "," and bound is None and len(names) == 1 and names[0][1] is None
