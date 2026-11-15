@@ -423,3 +423,15 @@ def test_text_repairs_some_and_spaced_binders():
     # the comma repair leaves L_spec's own name list alone
     assert repair._fix_text("exists j, k: j < k")[1] == []
     assert repair._fix_text("forall x, x > 0")[0] == "forall x: x > 0"
+
+
+def test_let_in_nested_and_typed_let_rec_params():
+    from FormalLLM.dsl import repair, steps, feedback
+    fixed = repair._fix_text("let rec subs(xs) := match xs with | [] => [[]] | x :: t => let r = subs(t) in r ++ r "
+                             "in subs(l)")[0]
+    assert fixed == "let rec subs(xs) := match xs with | [] => [[]] | x :: t => let r = subs(t) ; r ++ r ; subs(l)"
+    assert repair._fix_text("let a = 1 in let b = 2 in a + b")[0] == "let a = 1 ; let b = 2 ; a + b"
+    lean = steps.to_lean("let rec inc(l: list[int]): bool = match l with | [] => True | x :: t => inc(t); inc(l)",
+                         "expr", ("l",))
+    assert lean.startswith("let rec inc (l : List Int) : Bool :=")
+    assert "let rec" in feedback.hints("This pattern contains metavariables: []", feedback.TYPE_HINTS)

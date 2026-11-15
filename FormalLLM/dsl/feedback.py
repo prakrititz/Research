@@ -118,6 +118,10 @@ TYPE_HINTS = [
     (r"argument ∃[^\n]*has type prop but is expected to have type bool",
      "The result is a `bool` the program computes, and an `exists` over all numbers cannot be computed. Search a "
      "bounded range instead, e.g. `range(n + 1).any(lambda m: ...)`, or use a loop."),
+    # an untyped `let rec` parameter matched against `[]` (gpt-oss-120b, Verina advanced_24, 2026-11-16, three times)
+    (r"pattern contains metavariables",
+     "A parameter's type could not be inferred: give each `let rec` parameter and its result a type, "
+     "e.g. `let rec inc(l: list[int]): bool = match l with ...`."),
     (r"Function expected at\s+(\w+)\b", "`{0}` is a value here, not a function: a variable of the goal named `{0}` "
                                          "hides the library name (write the library function as in Lean, e.g. "
                                          "`String.mk(...)`), or the call has too many arguments."),

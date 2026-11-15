@@ -492,7 +492,8 @@ class _Parser:
             return Index(obj, _from_end(obj, idx), "?")
         return Index(obj, _from_end(obj, idx), "!")
 
-    def binders(self, quantifier: bool = False):
+    def binders(self, quantifier: bool = False, typed_names: bool = False):
+        """``typed_names``: a function's parameters, where Python's `f(l: list[int])` gives `l` its type"""
         out = []
         while True:
             tok = self.peek()
@@ -535,7 +536,11 @@ class _Parser:
                 out.append(("[]", inst))
             elif tok and (tok[0].isalpha() or tok[0] in "_`"):
                 name = self.next()
-                out.append((name.strip("`"), None))
+                typ = None
+                if typed_names and self.peek() == ":":
+                    self.next()
+                    typ = self.expr()
+                out.append((name.strip("`"), typ))
             else:
                 raise Unsupported(f"binder {tok!r}")
             if self.peek() != ",":
@@ -592,7 +597,7 @@ class _Parser:
         params = []
         if self.peek() == "(" and self.adjacent():
             self.next()
-            params = self.binders()
+            params = self.binders(typed_names=True)
             self.expect(")")
         typ = None
         if self.peek() == ":":

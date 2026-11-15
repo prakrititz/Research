@@ -369,13 +369,13 @@ _IN = re.compile(r"\bin\b")
 
 
 def _let_in(text: str) -> Optional[str]:
-    out, k = list(text), 0
-    for m in _LET.finditer(text):
-        if m.start() < k:
-            continue
+    """Inner lets first, so `let f = (let r = v in r) in body` and `let rec f(x) := match ... => let r = v in e in body`
+    give each `let` its own `in`: the first one at depth 0 after its value not already taken by a let inside it."""
+    taken = set()
+    for m in reversed(list(_LET.finditer(text))):
         eq = text.find("=", m.end())
         if eq < 0:
-            break
+            continue
         depth, j = 0, eq + 1
         while j < len(text):
             c = text[j]
@@ -387,15 +387,18 @@ def _let_in(text: str) -> Optional[str]:
                     break
             elif depth == 0 and c == ";":
                 break
-            elif depth == 0 and c == "i" and _IN.match(text, j) and (j == 0 or not (text[j - 1].isalnum()
-                                                                                     or text[j - 1] == "_")):
+            elif (depth == 0 and c == "i" and j not in taken and _IN.match(text, j)
+                  and (j == 0 or not (text[j - 1].isalnum() or text[j - 1] == "_"))):
                 if ";" not in text[j:]:             # `let b = x in l; b` is membership
-                    out[j:j + 2] = [";", ""]
+                    taken.add(j)
                 break
             j += 1
-        k = j
-    new = "".join(out)
-    return new if new != text else None
+    if not taken:
+        return None
+    out = list(text)
+    for j in taken:
+        out[j:j + 2] = [";", ""]
+    return "".join(out)
 
 
 #: Lean's constructor application `some x` for `some(x)` (gpt-oss-120b, Verina advanced_12, 2026-11-16)
