@@ -412,3 +412,14 @@ def test_text_repairs_let_in():
     parse(fixed, ("acc", "rem", "n", "i", "l"))
     assert repair._fix_text("let b = x in l; b")[1] == []          # membership in the value
     assert repair._fix_text("all(x in l for x in m)")[1] == []
+
+
+def test_text_repairs_some_and_spaced_binders():
+    from FormalLLM.dsl import repair
+    assert repair._fix_text("dup == some x")[0] == "dup == some(x)"
+    assert repair._fix_text("some(x)")[1] == [] and repair._fix_text("something x")[1] == []
+    assert repair._fix_text("exists j k: j < k")[0] == "exists j, k: j < k"
+    assert repair._fix_text("forall x in l: x > 0")[1] == []
+    # the comma repair leaves L_spec's own name list alone
+    assert repair._fix_text("exists j, k: j < k")[1] == []
+    assert repair._fix_text("forall x, x > 0")[0] == "forall x: x > 0"

@@ -303,7 +303,8 @@ def _method_space(text: str) -> Optional[str]:
 
 
 #: Lean's quantifier with a comma, `forall j < i, p` / `exists e, p` / `forall (x) in l, p`, for L_spec's `forall j < i: p`
-_QUANT_COMMA = re.compile(r"\b(forall|exists)[ \t]+(\(?[A-Za-z_]\w*\)?(?:[ \t]*(?:<|<=|in|:)[ \t]*(?:\[[^\]]*\]|[^:,()\[\]])+?)?)[ \t]*,")
+#: (not the L_spec name list `exists j, k: p`)
+_QUANT_COMMA = re.compile(r"\b(forall|exists)[ \t]+(\(?[A-Za-z_]\w*\)?(?:[ \t]*(?:<|<=|in|:)[ \t]*(?:\[[^\]]*\]|[^:,()\[\]])+?)?)[ \t]*,(?![ \t]*[A-Za-z_]\w*(?:[ \t]*,[ \t]*[A-Za-z_]\w*)*[ \t]*:(?!=))")
 
 
 def _quantifier_comma(text: str) -> Optional[str]:
@@ -397,7 +398,31 @@ def _let_in(text: str) -> Optional[str]:
     return new if new != text else None
 
 
+#: Lean's constructor application `some x` for `some(x)` (gpt-oss-120b, Verina advanced_12, 2026-11-16)
+_SOME_ARG = re.compile(r"\bsome[ \t]+(-?\d+|[A-Za-z_]\w*(?:\.\w+)*|\((?:[^()]|\([^()]*\))*\))(?![\w(\[])")
+
+
+def _some_arg(text: str) -> Optional[str]:
+    out = _SOME_ARG.sub(lambda m: f"some({m.group(1)})", text)
+    return out if out != text else None
+
+
+#: Lean's spaced binder names `exists j k: p` for `exists j, k: p` (gpt-oss-120b, Verina advanced_12)
+_SPACED_BINDERS = re.compile(r"\b(forall|exists)((?:[ \t]+[A-Za-z_]\w*){2,})[ \t]*:")
+_BINDER_WORDS = {"in", "and", "or", "not", "if", "else", "for", "lambda", "let"}
+
+
+def _spaced_binders(text: str) -> Optional[str]:
+    def one(m):
+        names = m.group(2).split()
+        return m.group(0) if _BINDER_WORDS & set(names) else f"{m.group(1)} {', '.join(names)}:"
+    out = _SPACED_BINDERS.sub(one, text)
+    return out if out != text else None
+
+
 _TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_let_in, "`let x = v in body` read as `let x = v; body`"),
+               (_some_arg, "Lean's `some x` read as `some(x)`"),
+               (_spaced_binders, "Lean's `exists j k: p` read as `exists j, k: p`"),
                (_single_eq, "Lean's `=` read as `==`"),
                (_as_nat, "`x as nat` read as `to_nat(x)`"),
                (_lambda_params, "Lean's `fun a b` read as `lambda a, b`"),
