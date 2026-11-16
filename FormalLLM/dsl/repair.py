@@ -534,7 +534,24 @@ def _semicolon_in(text: str) -> Optional[str]:
     return out if out != text else None
 
 
-_TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_semicolon_in, "`; in` read as `;`"),
+#: brackets left open at the end of the text, closed there (gpt-oss-120b, Verina advanced_24, 2026-11-16: a term starting
+#: `(` and never closed, twice); only when every closing bracket matches an opening one
+def _missing_close(text: str) -> Optional[str]:
+    stack, pairs = [], {")": "(", "]": "[", "}": "{"}
+    for c in text:
+        if c in "([{":
+            stack.append(c)
+        elif c in pairs:
+            if not stack or stack[-1] != pairs[c]:
+                return None
+            stack.pop()
+    if not stack or "{" in text or set(stack) != {"("}:   # only `)` left out, nothing a brace could explain
+        return None
+    return text.rstrip() + ")" * len(stack)
+
+
+_TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_missing_close, "a bracket left open closed at the end"),
+               (_semicolon_in, "`; in` read as `;`"),
                (_let_in, "`let x = v in body` read as `let x = v; body`"),
                (_bounded_comma, "Lean's `forall x in l, p` read as `forall x in l: p`"),
                (_local_application, "Lean's `f x` (a `let rec` function) read as `f(x)`"),

@@ -474,3 +474,10 @@ def test_curried_let_rec_and_lambda_comma():
     import pytest
     with pytest.raises(Exception, match="numbered from 1"):
         steps.to_lean("pair.0", "expr", ("pair",))
+
+
+def test_text_repairs_missing_close():
+    from FormalLLM.dsl import repair
+    assert repair._fix_text("(l.map(lambda x: x + 1).foldl(lambda a, b: a + b, 0)")[0] == \
+        "(l.map(lambda x: x + 1).foldl(lambda a, b: a + b, 0))"
+    assert repair._missing_close("f(a))") is None
