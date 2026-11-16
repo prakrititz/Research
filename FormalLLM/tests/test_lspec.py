@@ -439,7 +439,6 @@ def test_let_in_nested_and_typed_let_rec_params():
 
 def test_bounded_binder_keeps_tuple_pattern():
     from FormalLLM.dsl import steps
-    assert steps.to_lean("forall (p, e) in acc: p > 0", "invariant", ("acc",)) == "∀ (p, e) ∈ acc, p > 0"
     assert steps.to_lean("forall (x: nat) in l: x > 0", "invariant", ("l",)) == "∀ x ∈ l, x > 0"
 
 
@@ -481,3 +480,11 @@ def test_text_repairs_missing_close():
     assert repair._fix_text("(l.map(lambda x: x + 1).foldl(lambda a, b: a + b, 0)")[0] == \
         "(l.map(lambda x: x + 1).foldl(lambda a, b: a + b, 0))"
     assert repair._missing_close("f(a))") is None
+
+
+def test_bounded_binder_patterns_are_lean():
+    from FormalLLM.dsl import steps
+    # Lean takes `∀ x ∈ l` with a plain name only (checked in Lean): a one-name pattern is the name, a tuple is matched
+    assert steps.to_lean("forall (pair) in acc: pair.1 > 0", "invariant", ("acc",)) == "∀ pair ∈ acc, pair.1 > 0"
+    assert steps.to_lean("forall (p, e) in acc: p > 0", "invariant", ("acc",)) == \
+        "∀ _x0 ∈ acc, match _x0 with | (p, e) => p > 0"

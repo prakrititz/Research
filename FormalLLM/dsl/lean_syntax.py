@@ -542,10 +542,27 @@ def show(node: Node) -> str:
         if node.pattern is not None:
             head = show(node.pattern)
         elif node.bound:
-            # Lean's binder predicate takes plain names (`∀ x ∈ l`): a type written with it (`forall (x: T) in l`) is
-            # left to inference from the bound (gpt-oss-120b, Verina advanced_10, 2026-11-15)
-            # (a pattern `(p, e)` keeps its slot: there the "type" is the pattern)
-            head = _binders([(name, t if name.startswith(("<", "{", "[")) else None) for name, t in node.vars])
+            # Lean's binder predicate takes plain names only (`∀ x ∈ l`; checked in Lean 2026-11-16: `∀ (p, e) ∈ l`,
+            # `∃ (p, e) ∈ l` and `∀ (x) ∈ l` do not parse): a type written with it (`forall (x: T) in l`) is left to
+            # inference from the bound; `(x)` is `x`; a tuple pattern is matched in the body,
+            # `∀ x ∈ l, match x with | (p, e) => body` (gpt-oss-120b, Verina advanced_10)
+            names, matches = [], []
+            for name, t in node.vars:
+                if name == "<pat>" and isinstance(t, Tuple_) and len(t.items) == 1 and isinstance(t.items[0], Name):
+                    names.append((t.items[0].id, None))
+                elif name.startswith("<"):
+                    fresh = f"_x{len(matches)}"
+                    names.append((fresh, None))
+                    matches.append((fresh, t))
+                else:
+                    names.append((name, None))
+            head = _binders(names)
+            if matches:
+                body = show(node.body)
+                for fresh, pat in reversed(matches):
+                    body = f"match {fresh} with | {show(pat)} => {body}"
+                sep = " =>" if node.kind == "fun" else ","
+                return f"{node.kind} {head} {node.bound[0]} {_arg(node.bound[1])}{sep} {body}"
         else:
             head = _binders(node.vars)
         if node.bound:

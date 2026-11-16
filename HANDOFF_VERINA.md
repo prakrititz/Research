@@ -306,3 +306,13 @@ type slot; fixed, and every saved reply now translates without an internal error
 repaired; advanced_23's iff-invariant halving exit and bounded search `range(n + 1).any(pow(2, x) == n)` (true, both
 unproved) now have tactics, checked in Lean. Remaining model-side: advanced_12's exits lack `count(x) > 1`;
 advanced_10's inner exit needs facts about the task's own `removePrimeFactor` (prover limit, like gold).
+
+Fourth pass (2026-11-16): advanced_23 **certified** (bounded-search tactic). Two fixes that concern every task: (1) a
+bounded binder over a list with a pattern, `forall (p, e) in acc:` / `forall (pair) in acc:`, was printed
+`∀ (p, e) ∈ acc` / `∀ (pair) ∈ acc`, which Lean does not parse (checked); now `∀ _x0 ∈ acc, match _x0 with | (p, e) =>
+...` and `∀ pair ∈ acc`. (2) A postcondition's `let rec` helper written by its bare name (`subsequences`) in a step became
+a Lean auto-bound implicit, so the step type-checked and could not be proved; `lspec_agent._bare_helpers` now qualifies
+them before elaboration (names the step binds itself are left alone). Repairs added: tuple argument kept in `x.m (a, b)`,
+curried `let rec f (x: T) (y: U)` and its Lean-style calls, `lambda a b, body`, a missing final `)`, `.0` explained.
+Open for advanced_24: the root `max(...)` with Int lengths (`max?.get!` over `↑l.length`) and a bind/term pair differing
+only in where the cast sits need Int lemmas (not done).

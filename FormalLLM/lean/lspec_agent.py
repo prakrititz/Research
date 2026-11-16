@@ -70,7 +70,27 @@ def _elaboration_error(d: Derivation, goal, engine: dict):
     return None
 
 
-def _local_helpers(d: Derivation, engine: dict, error: str):
+def _bare_helpers(d: Derivation, engine: dict, scope) -> tuple:
+    """Every bare ``let rec`` helper of the postcondition in ``engine`` read as that helper, before Lean sees it: an unknown
+    lower-case name in an obligation is otherwise an auto-bound variable, so the step type-checks and cannot be proved
+    (gpt-oss-120b, Verina advanced_24, 2026-11-16: a bind's value ``subsequences(nums)...``). (engine, note)."""
+    import json as _json
+    import re as _re
+    post = d.task.post_name
+    body = d.task.prelude.split(f"def {post}", 1)
+    helpers = _re.findall(r"let rec (\w+)", body[1].split("\ndef ", 1)[0]) if len(body) > 1 else []
+    text = _json.dumps(engine)
+    names = [h for h in helpers if h not in scope and _re.search(rf"(?<![\w.']){_re.escape(h)}(?![\w'])", text)
+             # a name the step binds itself (its own `let rec subsequences`, a `fun` parameter) is that binding
+             and not _re.search(rf"\blet\s+(?:rec\s+)?{_re.escape(h)}\b|\bfun\b[^=]*?(?<![\w.']){_re.escape(h)}\b[^=]*?=>",
+                                text)]
+    if not names:
+        return engine, ""
+    candidate = _local_helpers(d, engine, "unknown identifier", names)
+    return (candidate[0][0], candidate[0][1]) if candidate else (engine, "")
+
+
+def _local_helpers(d: Derivation, engine: dict, error: str, given=None):
     """An unknown name that is a ``let rec`` helper of the postcondition (``subsequences`` inside ``lengthOfLIS_postcond``)
     read as that helper (``lengthOfLIS_postcond.subsequences``): gpt-oss-120b, Verina advanced_24, 2026-11-15."""
     import json as _json
@@ -80,7 +100,9 @@ def _local_helpers(d: Derivation, engine: dict, error: str):
     helpers = _re.findall(r"let rec (\w+)", body[1].split("\ndef ", 1)[0]) if len(body) > 1 else []
     m = (_re.search(r"[Uu]nknown (?:identifier|constant) [`'«]?([A-Za-z_][\w']*)", error)
          or _re.search(r"Function expected at\s+([A-Za-z_][\w']*)", error))
-    if m and m.group(1) in helpers:
+    if given:
+        names = list(given)
+    elif m and m.group(1) in helpers:
         names = [m.group(1)]
     elif "Function expected" in error or "nknown identifier" in error:
         text = _json.dumps(engine)              # the error does not name it: every helper used by its bare name
@@ -161,6 +183,10 @@ def judge(d: Derivation, goal, written: dict, level: str = "prove", loop_body: b
             note = typo[1]
         except (steps.StepError, IllFormed, KeyError, TypeError, ValueError):
             return Judgement(feedback.UNREADABLE, feedback.unreadable(error))
+    engine, helpers_note = _bare_helpers(d, engine, scope)
+    if helpers_note:
+        law = law_from_json(engine)
+        note = "; ".join(([note] if note else []) + [helpers_note])
     if level == "translate":
         return Judgement(feedback.ACCEPTED, note=note, engine=engine)
     failure = elaboration_error(d, goal, engine)
