@@ -567,10 +567,11 @@ class _Parser:
             return Binder(kind, names, bound, self.expr())
         self.expect(":")
         body = self.expr()
-        if (kind != "fun" and self.peek() == "," and bound is None and len(names) == 1 and names[0][1] is None
-                and not names[0][0].startswith(("<", "[", "{"))):        # Lean's `forall j: nat, body`
+        if (kind != "fun" and self.peek() == "," and bound is None and all(t is None for _, t in names)
+                and not any(n.startswith(("<", "[", "{")) for n, _ in names)):
+            # Lean's `forall j: nat, body`, and `forall a b: nat, body` (gpt-oss-120b, Verina advanced_42, 2026-11-16)
             self.next()
-            names, body = [(names[0][0], body)], self.expr()
+            names, body = [(n, body) for n, _ in names], self.expr()
         return Binder(kind, names, bound, body)
 
     def assign(self):

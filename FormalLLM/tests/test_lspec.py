@@ -488,3 +488,9 @@ def test_bounded_binder_patterns_are_lean():
     assert steps.to_lean("forall (pair) in acc: pair.1 > 0", "invariant", ("acc",)) == "∀ pair ∈ acc, pair.1 > 0"
     assert steps.to_lean("forall (p, e) in acc: p > 0", "invariant", ("acc",)) == \
         "∀ _x0 ∈ acc, match _x0 with | (p, e) => p > 0"
+
+
+def test_typed_names_with_lean_comma():
+    from FormalLLM.dsl import steps, repair
+    fixed = repair._fix_text("forall a b: nat, a < b ==> p[a] <= p[b]")[0]
+    assert steps.to_lean(fixed, "invariant", ("p",)) == "∀ (a : Nat) (b : Nat), (a < b) → (p[a]! ≤ p[b]!)"
