@@ -318,6 +318,8 @@ def _method_space(text: str) -> Optional[str]:
         if j >= len(text):
             continue
         inner = text[m.end() - 1:j + 1]
+        if re.match(r"\(\s*lambda\b", inner):             # `x.foldl (lambda a, b: ...)`: the comma is the lambda's
+            comma = False
         out.append(text[k:m.start()] + m.group(1) + ("(" + inner + ")" if comma else inner))
         k = j + 1
     new = "".join(out) + text[k:]
@@ -358,6 +360,21 @@ def _call_then_arg(text: str) -> Optional[str]:
         if atom and atom.group(1) not in _KEYWORDS:
             out.append(text[k:j] + ", " + atom.group(1) + ")")
             k = atom.end()
+            continue
+        # a parenthesised argument after the call, `xs.foldl(f) (xs[0])` (gpt-oss-120b, Verina advanced_44, 2026-11-16),
+        # when it ends the expression or a call argument
+        paren = re.match(r"[ \t]+\(", text[j + 1:])
+        if paren:
+            p = j + 1 + paren.end() - 1
+            depth, q = 0, p
+            while q < len(text):
+                depth += {"(": 1, ")": -1}.get(text[q], 0)
+                if depth == 0:
+                    break
+                q += 1
+            if q < len(text) and re.match(r"\s*(?:$|[),\];])", text[q + 1:]):
+                out.append(text[k:j] + ", " + text[p + 1:q].strip() + ")")
+                k = q + 1
     if not out:
         return None
     return "".join(out) + text[k:]
@@ -534,23 +551,40 @@ def _semicolon_in(text: str) -> Optional[str]:
     return out if out != text else None
 
 
+#: `len` as a variable name (`lambda len: xs.take(len)`, copied from a specification): the built-in is always called,
+#: `len(...)`, so a bare `len` is the variable, written `` `len` `` (gpt-oss-120b, Verina advanced_44, 2026-11-16)
+_LEN_BOUND = re.compile(r"\blambda\b[^:]*?(?<![\w`])len(?![\w`])[^:]*:")
+_LEN_BARE = re.compile(r"(?<![\w`.])len(?![\w`])(?!\s*\()")
+
+
+def _len_variable(text: str) -> Optional[str]:
+    if not _LEN_BOUND.search(text):
+        return None
+    out = _LEN_BARE.sub("`len`", text)
+    return out if out != text else None
+
+
 #: brackets left open at the end of the text, closed there (gpt-oss-120b, Verina advanced_24, 2026-11-16: a term starting
 #: `(` and never closed, twice); only when every closing bracket matches an opening one
 def _missing_close(text: str) -> Optional[str]:
+    """Only the opening `(` of the whole text left unclosed (closing it elsewhere would change the meaning: gpt-oss-120b,
+    Verina advanced_44, a `)` missing in the middle had been closed at the end)."""
     stack, pairs = [], {")": "(", "]": "[", "}": "{"}
-    for c in text:
+    start = len(text) - len(text.lstrip())
+    for k, c in enumerate(text):
         if c in "([{":
-            stack.append(c)
+            stack.append((c, k))
         elif c in pairs:
-            if not stack or stack[-1] != pairs[c]:
+            if not stack or stack[-1][0] != pairs[c]:
                 return None
             stack.pop()
-    if not stack or "{" in text or set(stack) != {"("}:   # only `)` left out, nothing a brace could explain
+    if "{" in text or [k for _, k in stack] != [start] or text[start] != "(":
         return None
-    return text.rstrip() + ")" * len(stack)
+    return text.rstrip() + ")"
 
 
 _TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_missing_close, "a bracket left open closed at the end"),
+               (_len_variable, "a variable named `len` read as `` `len` ``"),
                (_semicolon_in, "`; in` read as `;`"),
                (_let_in, "`let x = v in body` read as `let x = v; body`"),
                (_bounded_comma, "Lean's `forall x in l, p` read as `forall x in l: p`"),

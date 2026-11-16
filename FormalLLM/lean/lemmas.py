@@ -2249,6 +2249,16 @@ theorem max_or_zero_spec (L : List Int) :
 -- all subsequences built by a fold `acc ++ acc.map (x :: ·)` from `[[]]` keep the empty one; and a list holding 0 contains
 -- its `foldl max 0`, which bounds every member (gpt-oss-120b, Verina advanced_4, 2026-11-16: longest increasing
 -- subsequence, "result is a length of one and bounds all")
+-- the maximum folded from a seed in the list is in the list and bounds it (gpt-oss-120b, Verina advanced_44, 2026-11-16:
+-- `S.foldl(max, S[0])` / `max(S)` in the case "S is not empty")
+theorem foldl_max_seed_spec {α : Type} [LinearOrder α] (L : List α) (s : α) (hs : s ∈ L) :
+    L.foldl max s ∈ L ∧ L.all (fun x => decide (x ≤ L.foldl max s)) = true := by
+  obtain ⟨h1, -, h3⟩ := foldl_max_facts L s
+  refine ⟨?_, ?_⟩
+  · rcases h1 with h1 | h1
+    · rw [h1]; exact hs
+    · exact h1
+  · simp only [List.all_eq_true, decide_eq_true_eq]; exact h3
 theorem nil_mem_foldl_append_map {α : Type} (l : List α) : ∀ (acc : List (List α)), [] ∈ acc →
     [] ∈ l.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc := by
   induction l with

@@ -494,3 +494,11 @@ def test_typed_names_with_lean_comma():
     from FormalLLM.dsl import steps, repair
     fixed = repair._fix_text("forall a b: nat, a < b ==> p[a] <= p[b]")[0]
     assert steps.to_lean(fixed, "invariant", ("p",)) == "∀ (a : Nat) (b : Nat), (a < b) → (p[a]! ≤ p[b]!)"
+
+
+def test_len_variable_and_paren_argument():
+    from FormalLLM.dsl import repair
+    assert repair._fix_text("xs.map(lambda len: len + 1)")[0] == "xs.map(lambda `len`: `len` + 1)"
+    assert repair._fix_text("len(xs) + 1")[1] == []
+    assert repair._fix_text("xs.foldl (lambda acc, x: acc + x) (xs[0])")[0] == "xs.foldl(lambda acc, x: acc + x, xs[0])"
+    assert repair._missing_close("len((a.filter(f) == 0") is None

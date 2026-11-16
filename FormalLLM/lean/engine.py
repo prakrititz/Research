@@ -902,6 +902,15 @@ class Derivation:
                            "(try rw [← Array.foldl_toList]); exact Refine.nil_mem_foldl_append_map _ _ (by simp)) "
                            "| (refine ⟨[], ⟨?_, by simp⟩, by simp⟩; (try rw [← Array.foldl_toList]); "
                            "exact Refine.nil_mem_foldl_append_map _ _ (by simp))")
+        # the same in the case "the list is not empty" (a hypothesis ``¬ (L.length = 0)``), the maximum written
+        # ``L.foldl max L[0]!`` or ``max(L)`` (``max?.get!``): a member bounding all (``foldl_max_seed_spec``)
+        if (obligation.kind == "term" and "¬" in obligation.binders and "→ result ∈" in post_text and ".all" in post_text
+                and (".foldl" in obligation.statement or ".max?.get!" in obligation.statement)):
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); (try dsimp only at *)\n"
+                           "  (try simp only [Refine.foldl_ite_gt_eq_max, Refine.max_get_eq_foldl_int] at *)\n"
+                           "  refine ⟨fun h => absurd h ‹_›, fun hpos => Refine.foldl_max_seed_spec _ _ ?_⟩\n"
+                           "  first | (obtain ⟨a, t, ht⟩ := List.exists_cons_of_length_pos hpos; rw [ht]; simp) "
+                           "| (apply List.getElem!_mem; omega) | simp_all")
         # "0 when the list is empty, else its maximum" folded from its first element, against a postcondition "empty -> 0,
         # else a member bounding all" (``max_or_zero_spec``; gpt-oss-120b, Verina advanced_44, 2026-11-16)
         if obligation.kind == "term" and re.search(r"if (\w+)\.length = 0 then 0 else \1\.foldl", obligation.statement):
