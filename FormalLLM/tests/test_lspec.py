@@ -455,3 +455,10 @@ def test_method_space_keeps_tuple_argument():
     assert repair._fix_text("o.getD (0, 0).2")[0] == "o.getD((0, 0)).2"
     assert repair._fix_text("if a then o.getD 0 else 0")[0] == "if a then o.getD(0) else 0"
     assert steps.to_lean("let rec f (x: nat): nat = x; f(1)", "expr", ()).startswith("let rec f (x : Nat) : Nat :=")
+
+
+def test_let_rec_local_application_and_typed_eq():
+    from FormalLLM.dsl import repair
+    fixed = repair._fix_text("let rec f (xs : list[int]) : nat = match xs with | [] => 0 | x :: t => 1 + f t; f l")[0]
+    assert fixed == "let rec f(xs : list[int]) : nat = match xs with | [] => 0 | x :: t => 1 + f(t); f(l)"
+    assert repair._fix_text("let rec g(x) = x; g y and z")[0] == "let rec g(x) = x; g(y) and z"

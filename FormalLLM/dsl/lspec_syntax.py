@@ -610,7 +610,9 @@ class _Parser:
             self.next()
             termination = self.expr()
         if self.peek() != ";":
-            raise Unsupported(f"`let {name} = value; body` needs `;` after the value (not `in`)")
+            if self.peek() == "in":
+                raise Unsupported(f"`let {name} = value; body` needs `;` after the value (not `in`)")
+            raise Unsupported(f"in `let {name} = ...`, expected ';' after the value, found {self.peek()!r}")
         self.next()
         return Let(name, typ, value, self.expr(), params, rec, None, termination)
 

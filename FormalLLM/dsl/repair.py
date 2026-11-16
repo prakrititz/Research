@@ -366,7 +366,20 @@ def _call_then_arg(text: str) -> Optional[str]:
 #: a lone `=` (not `==`, `<=`, `>=`, `!=`, `:=`, `=>`, `==>`, `<==>`) outside a `let x = v;` binding: Lean's equality
 #: for L_spec's `==` (gpt-oss-120b, Verina advanced_11, 2026-11-15: `cnt = len(...)` in an invariant)
 _LONE_EQ = re.compile(r"(?<![=<>!:])=(?![=>])")
-_LET_EQ = re.compile(r"\blet[ \t]+[A-Za-z_]\w*(?:[ \t]*:[ \t]*[^=;]+?)?[ \t]*=(?![=>])")
+#: (`let rec f(x: T) (y: U): R =` too: gpt-oss-120b, Verina advanced_24, 2026-11-16)
+_LET_EQ = re.compile(r"\blet[ \t]+(?:rec[ \t]+)?[A-Za-z_]\w*'*(?:[ \t]*\([^()=;]*\))*(?:[ \t]*:[ \t]*[^=;]+?)?[ \t]*=(?![=>])")
+
+
+#: Lean's application `f x` of a function the same text declares (`let rec f(...)`): `f(x)`; only for those names, whose
+#: arguments can be nothing else (gpt-oss-120b, Verina advanced_24: `subsequences xs'`, `isStrictlyIncreasing l`)
+def _local_application(text: str) -> Optional[str]:
+    names = re.findall(r"\blet[ \t]+rec[ \t]+([A-Za-z_]\w*)", text)
+    if not names:
+        return None
+    pattern = re.compile(r"\b(" + "|".join(map(re.escape, names)) + r")[ \t]+(-?\d+|[A-Za-z_]\w*'*(?:\.\w+)*)(?![\w'(])")
+    out = pattern.sub(lambda m: m.group(0) if m.group(2) in _KEYWORDS or m.group(2) in ("with", "else", "then")
+                      else f"{m.group(1)}({m.group(2)})", text)
+    return out if out != text else None
 
 
 def _single_eq(text: str) -> Optional[str]:
@@ -485,6 +498,7 @@ def _semicolon_in(text: str) -> Optional[str]:
 _TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_semicolon_in, "`; in` read as `;`"),
                (_let_in, "`let x = v in body` read as `let x = v; body`"),
                (_bounded_comma, "Lean's `forall x in l, p` read as `forall x in l: p`"),
+               (_local_application, "Lean's `f x` (a `let rec` function) read as `f(x)`"),
                (_some_arg, "Lean's `some x` read as `some(x)`"),
                (_spaced_binders, "Lean's `exists j k: p` read as `exists j, k: p`"),
                (_single_eq, "Lean's `=` read as `==`"),
