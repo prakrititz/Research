@@ -21,6 +21,7 @@ import re
 import time
 from collections import defaultdict
 from contextlib import contextmanager
+import dataclasses
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
@@ -550,6 +551,15 @@ class Derivation:
         self.counts: Dict[str, int] = defaultdict(int)
         self._phase = "cascade"
         self._libeq_tried = False
+        # wall-clock seconds one step may spend on its obligations (None: no limit). The extra phases after the cascade
+        # (special tactics, portfolio groups, the hammer) can each run for minutes per obligation; past the budget they are
+        # skipped and the obligation is reported unproved (gpt-oss-120b, Verina advanced_42, 2026-11-16: one loop step
+        # kept the prover busy for 4.5 hours)
+        self.step_budget: Optional[float] = None
+        self._step_deadline: Optional[float] = None
+
+    def _out_of_time(self) -> bool:
+        return self._step_deadline is not None and time.time() > self._step_deadline
 
     @contextmanager
     def phase(self, name: str):
@@ -1641,7 +1651,8 @@ class Derivation:
         proof site by ``apply`` instead of re-running the cascade that exploded."""
         make_cascade([h.name for h in self.helpers], self._task_defs(), self.task.pre_name)
         groups = PORTFOLIO_CACHE.get((tuple(h.name for h in self.helpers), ", ".join(self._task_defs()), self.task.pre_name), [])
-        return any(self._prove_as_helper(obligation, f"{name}_g{k}", group) for k, group in enumerate(groups))
+        return any(not self._out_of_time() and self._prove_as_helper(obligation, f"{name}_g{k}", group)
+                   for k, group in enumerate(groups))
 
     def _check(self, obligation: Obligation, name: str) -> Verdict:
         verdict = self._check_once(obligation, name)
@@ -1661,13 +1672,15 @@ class Derivation:
         specials = [t for t in (self._witness_tactic(obligation), self._cases_tactic(obligation)) if t]
         specials += self._shape_tactics(obligation)
         with self.phase("specials"):
-            if any(self._prove_as_helper(obligation, f"{name}_s{k}", t) for k, t in enumerate(specials)):
+            if any(not self._out_of_time() and self._prove_as_helper(obligation, f"{name}_s{k}", t)
+                   for k, t in enumerate(specials)):
                 return Verdict(obligation, "PROVED", seconds=verdict.seconds)
         with self.phase("portfolio_groups"):
-            if ("resource limit" in verdict.message or "proof failed" in verdict.message) and self._portfolio_prove(obligation, name):
+            if (not self._out_of_time() and ("resource limit" in verdict.message or "proof failed" in verdict.message)
+                    and self._portfolio_prove(obligation, name)):
                 return Verdict(obligation, "PROVED", seconds=verdict.seconds)
         with self.phase("hammer"):
-            if HAMMER and any(self._prove_as_helper(obligation, f"{name}_h{k}", t)
+            if HAMMER and any(not self._out_of_time() and self._prove_as_helper(obligation, f"{name}_h{k}", t)
                               for k, t in enumerate(self._hammer_tactics(obligation))):
                 return Verdict(obligation, "PROVED", seconds=verdict.seconds)
         return verdict
@@ -1831,7 +1844,14 @@ class Derivation:
             if refused is not None:
                 status = {"TIMEOUT": "timeout", "ILL_FORMED": "ill_formed"}.get(refused.status, "lemma_unproved")
                 return Step(False, status, f"the helper lemma {helper.name} was not accepted", [refused])
-        verdicts = [self._check(ob, f"obl{goal_id}_{k}") for k, ob in enumerate(expansion.obligations)]
+        outer = self._step_deadline is None and self.step_budget is not None
+        if outer:
+            self._step_deadline = time.time() + self.step_budget
+        try:
+            verdicts = [self._check(ob, f"obl{goal_id}_{k}") for k, ob in enumerate(expansion.obligations)]
+        finally:
+            if outer:
+                self._step_deadline = None
         bad = [v for v in verdicts if not v.proved]
         if bad and all(v.obligation.kind == "exit" and v.status == "UNPROVED" for v in bad):
             # a loop whose invariant does not bound the guard's variable: retry with the bound added (``Loop.bounded``)
@@ -1914,7 +1934,18 @@ class Derivation:
         call = goal.call()
         function = f"{task.name} {call}"
         statement = task.root_post.replace(HOLE, f"({function})")
-        # the cascade is defined once as a tactic, so that each proof site in the file reads ``by refine_auto``
+        # the cascade is defined once as a tactic, so that each proof site in the file reads ``by refine_auto``.
+        # A term that declares its own ``let rec`` (gpt-oss-120b, Verina advanced_24, 2026-11-16) has, inside the derived
+        # ``def`` being elaborated, those functions as metavariables, and ``apply auto_N`` refuses a goal holding them
+        # ("Expected type must not contain metavariables"); ``exact auto_N x y ...`` with the obligation's own variables
+        # unifies them (checked in a fresh process): tried at each proof site before ``refine_auto`` (written at the site,
+        # not in the macro, whose hygiene would rename the variables; a site where the names do not fit falls through)
+        exacts = [f"(exact {h.name} {m.group(1).strip()})" for h in self.helpers
+                  for m in [re.match(r"by\s*\n\s*intro ([^\n]+)\n", h.proof)] if m]
+        site = f"by first | {' | '.join(exacts)} | refine_auto" if exacts and "let rec" in rendered.term else None
+        if site:
+            rendered = dataclasses.replace(rendered, term=rendered.term.replace("by refine_auto", site),
+                                           aux=[a.replace("by refine_auto", site) for a in rendered.aux])
         macro = f'macro "refine_auto" : tactic => `(tactic| ({self.tactic}))\n'
         return "\n".join([
             *([self.lemmas] if library else []), task.prelude, self._helper_text(), "", macro, *rendered.aux, "",

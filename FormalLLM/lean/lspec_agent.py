@@ -21,6 +21,7 @@ The loop is the Lean agent's (``agent.py``), with the model's side in L_spec:
 
 ``judge`` is the check of one step, shared with the per-step harness (``benchmarks/lspec_applier.py``)."""
 import json
+import os
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
@@ -44,6 +45,11 @@ def bind_refusal(max_binds: int) -> str:
 
 
 # --- one step --------------------------------------------------------------------------------------------------------
+
+#: wall-clock seconds the prover may spend on one model step's obligations before reporting the rest unproved
+#: (``Derivation.step_budget``; FORMALLLM_STEP_BUDGET overrides, 0 for none)
+STEP_BUDGET = float(os.environ.get("FORMALLLM_STEP_BUDGET", "1200")) or None
+
 
 def scope_of(goal) -> list:
     return [n for n, _ in goal.ctx] + [n for n, _ in goal.hyps]
@@ -282,6 +288,8 @@ class LSpecAgent:
 
     def solve(self, task, lean, derivation: Optional[Derivation] = None) -> AgentResult:
         d = derivation or Derivation(task, lean)
+        if not hasattr(self.provider, "at_goal") and d.step_budget is None:
+            d.step_budget = STEP_BUDGET                    # a model's step: bounded prover time (a scripted/gold one: none)
         result = AgentResult(EXHAUSTED, d)
         failures: Dict[int, List[str]] = {}
         attempts: Dict[int, int] = {}
