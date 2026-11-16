@@ -595,7 +595,7 @@ class _Parser:
         if name.startswith("`"):
             name = name[1:-1]
         params = []
-        if self.peek() == "(" and self.adjacent():
+        if self.peek() == "(" and (self.adjacent() or rec):      # `let rec cnt (x: nat)`: Lean's spacing
             self.next()
             params = self.binders(typed_names=True)
             self.expect(")")

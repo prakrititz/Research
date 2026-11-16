@@ -448,3 +448,10 @@ def test_text_repairs_bounded_comma_and_semicolon_in():
     assert repair._fix_text("forall x in f(a, b), x > 0")[0] == "forall x in f(a, b): x > 0"
     assert repair._fix_text("forall x in l: f(x, y)")[1] == []
     assert repair._fix_text("let a = 1; in a + 1")[0] == "let a = 1; a + 1"
+
+
+def test_method_space_keeps_tuple_argument():
+    from FormalLLM.dsl import repair, steps
+    assert repair._fix_text("o.getD (0, 0).2")[0] == "o.getD((0, 0)).2"
+    assert repair._fix_text("if a then o.getD 0 else 0")[0] == "if a then o.getD(0) else 0"
+    assert steps.to_lean("let rec f (x: nat): nat = x; f(1)", "expr", ()).startswith("let rec f (x : Nat) : Nat :=")

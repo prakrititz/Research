@@ -270,7 +270,7 @@ def _closing_typo(text: str) -> Optional[str]:
 
 #: Lean's application written in L_spec: a method with one atomic argument after a space (`o.getD 0`, `o.getD nums[0]`,
 #: gpt-5.4-mini on Verina, 2026-11-13), at the end of the text or before a closing bracket or comma
-_METHOD_ARG = re.compile(r"""(\.[A-Za-z_]\w*\??)[ \t]+(-?\d+(?:\.\d+)?|\(-\d+\)|"[^"]*"|'[^']*'|[A-Za-z_]\w*(?:\[[^\[\]]*\])?)(?=\s*(?:$|[),\]]))""")
+_METHOD_ARG = re.compile(r"""(\.[A-Za-z_]\w*\??)[ \t]+(-?\d+(?:\.\d+)?|\(-\d+\)|"[^"]*"|'[^']*'|[A-Za-z_]\w*(?:\[[^\[\]]*\])?)(?=\s*(?:$|[),\]]|(?:then|else|and|or)\b))""")
 #: a function name, a space, then `(`: `decide (x)` for `decide(x)`; L_spec keywords that take a parenthesis are kept
 _NAME_SPACE_PAREN = re.compile(r"(?<![\w.])([A-Za-z_]\w*)[ \t]+\(")
 _KEYWORDS = {"in", "not", "and", "or", "if", "then", "else", "exists", "forall", "lambda", "return", "as", "is", "for"}
@@ -298,8 +298,30 @@ _METHOD_SPACE_PAREN = re.compile(r"(\.[A-Za-z_]\w*\??)[ \t]+\(")
 
 
 def _method_space(text: str) -> Optional[str]:
-    out = _METHOD_SPACE_PAREN.sub(lambda m: m.group(1) + "(", text)
-    return out if out != text else None
+    """In Lean `x.m (a, b)` passes one pair: a top-level comma inside keeps the tuple, `x.m((a, b))` (gpt-oss-120b, Verina
+    advanced_10, 2026-11-16: `.getD (0, 0).2` had become `.getD(0, 0).2`, two arguments)."""
+    out, k = [], 0
+    for m in _METHOD_SPACE_PAREN.finditer(text):
+        if m.start() < k:
+            continue
+        depth, j, comma = 0, m.end() - 1, False
+        while j < len(text):
+            if text[j] in "([{":
+                depth += 1
+            elif text[j] in ")]}":
+                depth -= 1
+                if depth == 0:
+                    break
+            elif text[j] == "," and depth == 1:
+                comma = True
+            j += 1
+        if j >= len(text):
+            continue
+        inner = text[m.end() - 1:j + 1]
+        out.append(text[k:m.start()] + m.group(1) + ("(" + inner + ")" if comma else inner))
+        k = j + 1
+    new = "".join(out) + text[k:]
+    return new if new != text else None
 
 
 #: Lean's quantifier with a comma, `forall j < i, p` / `exists e, p` / `forall (x) in l, p`, for L_spec's `forall j < i: p`
