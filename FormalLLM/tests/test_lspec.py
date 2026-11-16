@@ -462,3 +462,15 @@ def test_let_rec_local_application_and_typed_eq():
     fixed = repair._fix_text("let rec f (xs : list[int]) : nat = match xs with | [] => 0 | x :: t => 1 + f t; f l")[0]
     assert fixed == "let rec f(xs : list[int]) : nat = match xs with | [] => 0 | x :: t => 1 + f(t); f(l)"
     assert repair._fix_text("let rec g(x) = x; g y and z")[0] == "let rec g(x) = x; g(y) and z"
+
+
+def test_curried_let_rec_and_lambda_comma():
+    from FormalLLM.dsl import repair, steps
+    text = "let rec cnt (m : nat) (e : nat) := if m % p == 0 then cnt (m / p) (e + 1) else (m, e); cnt n 0"
+    fixed = repair._fix_text(text)[0]
+    assert fixed.endswith("cnt(m / p, e + 1) else (m, e); cnt(n, 0)")
+    assert steps.to_lean(fixed, "expr", ("p", "n")).startswith("let rec cnt (m : Nat) (e : Nat) :=")
+    assert repair._fix_text("lambda prod p, prod * p")[0] == "lambda prod, p: prod * p"
+    import pytest
+    with pytest.raises(Exception, match="numbered from 1"):
+        steps.to_lean("pair.0", "expr", ("pair",))

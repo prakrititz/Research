@@ -285,7 +285,7 @@ def _juxtaposed(text: str) -> Optional[str]:
 
 #: Lean's `fun a b =>` parameters in an L_spec lambda: `lambda acc x:` / `lambda acc x =>` for `lambda acc, x:`
 #: (gpt-oss-120b, Verina 2026-11-15)
-_LAMBDA_SPACED = re.compile(r"\blambda((?:[ \t]+[A-Za-z_]\w*){2,})[ \t]*(?::|=>)|\blambda([ \t]+[A-Za-z_]\w*)[ \t]*=>")
+_LAMBDA_SPACED = re.compile(r"\blambda((?:[ \t]+[A-Za-z_]\w*){2,})[ \t]*(?::|=>|,)|\blambda([ \t]+[A-Za-z_]\w*)[ \t]*=>")
 
 
 def _lambda_params(text: str) -> Optional[str]:
@@ -376,10 +376,49 @@ def _local_application(text: str) -> Optional[str]:
     names = re.findall(r"\blet[ \t]+rec[ \t]+([A-Za-z_]\w*)", text)
     if not names:
         return None
-    pattern = re.compile(r"\b(" + "|".join(map(re.escape, names)) + r")[ \t]+(-?\d+|[A-Za-z_]\w*'*(?:\.\w+)*)(?![\w'(])")
-    out = pattern.sub(lambda m: m.group(0) if m.group(2) in _KEYWORDS or m.group(2) in ("with", "else", "then")
-                      else f"{m.group(1)}({m.group(2)})", text)
-    return out if out != text else None
+    # every argument: an atom (name, number) or a bracketed group, separated by spaces, so `cnt m 0`, `cnt (m / p) (e + 1)`
+    # and `cnt(m / p) (e + 1)` all become `cnt(m, 0)` / `cnt(m / p, e + 1)` (gpt-oss-120b, Verina advanced_10)
+    head = re.compile(r"(?<![\w.])(" + "|".join(map(re.escape, names)) + r")\b")
+    atom = re.compile(r"-?\d+|[A-Za-z_]\w*'*(?:\.\w+)*")
+    stop = _KEYWORDS | {"with", "else", "then", "rec"}
+
+    def group(j: int) -> int:
+        depth = 0
+        for k in range(j, len(text)):
+            depth += text[k] in "([{"
+            depth -= text[k] in ")]}"
+            if depth == 0:
+                return k + 1
+        return -1
+
+    out, k = [], 0
+    for m in head.finditer(text):
+        if m.start() < k or re.match(r"[ \t]*(?:\(|[A-Za-z_]\w*)?[^()]*?\)?[ \t]*(?::=|=(?!=)|:[^=])", text[m.end():]) \
+                and re.search(r"\blet[ \t]+rec[ \t]+$", text[:m.start()]):
+            continue                                       # the declaration itself
+        args, j = [], m.end()
+        while True:
+            sp = re.match(r"[ \t]*", text[j:]).end()
+            p = j + sp
+            if p < len(text) and text[p] == "(" and (sp or not args):
+                end = group(p)
+                if end < 0:
+                    break
+                args.append(text[p + 1:end - 1].strip())
+                j = end
+                continue
+            a = atom.match(text, p) if sp else None
+            if a and a.group(0) not in stop:
+                args.append(a.group(0))
+                j = a.end()
+                continue
+            break
+        if not args or (len(args) == 1 and text[m.end()] == "("):
+            continue                                       # already `f(x)`
+        out.append(text[k:m.start()] + f"{m.group(1)}({', '.join(args)})")
+        k = j
+    new = "".join(out) + text[k:]
+    return new if new != text else None
 
 
 def _single_eq(text: str) -> Optional[str]:

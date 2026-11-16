@@ -402,6 +402,8 @@ class _Parser:
             elif tok == "." and self.adjacent():
                 self.next()
                 field = self.next()
+                if field == "0" or field.startswith("0."):          # Python's `pair[0]` habit (gpt-oss-120b, advanced_10)
+                    raise Unsupported("tuple components are numbered from 1: `pair.1`, `pair.2` (there is no `.0`)")
                 if field.startswith("`"):
                     field = field[1:-1]
                 else:
@@ -599,6 +601,10 @@ class _Parser:
             self.next()
             params = self.binders(typed_names=True)
             self.expect(")")
+            while self.peek() == "(" and self.peek(2) == ":":   # Lean's curried `let rec f (x: T) (y: U)`
+                self.next()
+                params += self.binders(typed_names=True)
+                self.expect(")")
         typ = None
         if self.peek() == ":":
             self.next()
