@@ -2220,6 +2220,32 @@ theorem filter_all_count_map_length {α : Type} [BEq α] (L : List (List α)) (k
   | cons a t ih =>
     simp only [List.map_cons, List.filter_cons, List.all_map, Function.comp_def]
     split <;> simp_all
+-- the largest `f x` folded over the list itself, `foldl (fun acc l => if len l > acc then len l else acc)`, is the maximum
+-- of the mapped list (gpt-oss-120b, Verina advanced_24, 2026-11-16)
+theorem foldl_ite_gt_map {α β : Type} [LinearOrder β] (f : α → β) (L : List α) : ∀ (s : β),
+    L.foldl (fun acc x => if f x > acc then f x else acc) s = (L.map f).foldl max s := by
+  induction L with
+  | nil => intro s; rfl
+  | cons a t ih => intro s; simp only [List.foldl_cons, List.map_cons]; rw [ih, ite_gt_eq_max, max_comm]
+-- "0 when the list is empty, else its maximum" (the maximum folded from the first element) is 0 for an empty list, and a
+-- member that bounds every member otherwise (gpt-oss-120b, Verina advanced_44, 2026-11-16)
+theorem max_or_zero_spec (L : List Int) :
+    (L.length = 0 → (if L.length = 0 then (0 : Int) else L.foldl max L[0]!) = 0) ∧
+    (L.length > 0 → (if L.length = 0 then (0 : Int) else L.foldl max L[0]!) ∈ L ∧
+      L.all (fun s => decide (s ≤ (if L.length = 0 then (0 : Int) else L.foldl max L[0]!))) = true) := by
+  refine ⟨fun h => by simp [h], fun h => ?_⟩
+  rw [if_neg (by omega)]
+  cases L with
+  | nil => simp at h
+  | cons a t =>
+    have e : (a :: t)[0]! = a := by simp
+    rw [e]
+    obtain ⟨h1, -, h3⟩ := foldl_max_facts (a :: t) a
+    refine ⟨?_, ?_⟩
+    · rcases h1 with h1 | h1
+      · rw [h1]; simp
+      · exact h1
+    · simp only [List.all_eq_true, decide_eq_true_eq]; exact h3
 end Refine
 '''
 

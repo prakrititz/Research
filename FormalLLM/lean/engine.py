@@ -51,7 +51,7 @@ from FormalLLM.lean.task import LeanTask
 #: sets, so a proof that works on the written form is never disturbed): ``max(l)`` written as ``l.max?.get!``, the first of a
 #: filter as ``(l.filter p)[0]!``, a search as a fold with ``||`` (gpt-5.4-mini on Verina, 2026-11-13)
 NORMALIZE = ("(try simp only [Refine.ite_filter_getElem_eq_find, Refine.ite_filter_ne_nil_eq_find] at *); "
-             "(try simp only [Refine.foldl_ite_gt_eq_max, Refine.foldl_ite_ge_eq_max, Refine.max_get_eq_foldl_int, Refine.max_get_eq_foldl_nat, Refine.min_get_eq_foldl_int, "
+             "(try simp only [Refine.foldl_ite_gt_map, Refine.foldl_ite_gt_eq_max, Refine.foldl_ite_ge_eq_max, Refine.max_get_eq_foldl_int,Refine.max_get_eq_foldl_nat, Refine.min_get_eq_foldl_int, "
              "Refine.min_get_eq_foldl_nat, Refine.filter_getElem_zero_eq_find, Refine.filter_head_eq_find, "
              "Refine.foldl_or_eq_any, Refine.foldl_and_eq_all, Refine.foldl_decide_or_eq_any, Bool.false_or, "
              "Bool.true_and, Nat.add_sub_cancel_left] at *); ")
@@ -717,6 +717,10 @@ class Derivation:
             stmt += " foldl max"
         if re.search(r"foldl \(fun (\w+) (\w+) => if \2 (?:>|≥) \1 then \2 else \1\) 0", stmt):
             stmt += " foldl max 0"
+        # (the largest `f l` over the list itself, ``if ↑l.length > acc then ↑l.length else acc``: ``foldl_ite_gt_map``,
+        # gpt-oss-120b, Verina advanced_24, 2026-11-16)
+        elif re.search(r"foldl \(fun (\w+) (\w+) => if (.+?) > \1 then \3 else \1\) 0", stmt):
+            stmt += " foldl max 0"
         if ".filter" in stmt and ("[0]!" in stmt or ".head!" in stmt or "[0]" in stmt):
             stmt += " find? getD"
         if "foldl" in stmt and ("∨" in stmt or "||" in stmt) and "List.range" in stmt:
@@ -875,6 +879,11 @@ class Derivation:
                            "  (try (right; refine ⟨‹_›, ?_⟩))\n"
                            "  refine Refine.maxlen_spec _ ?_\n"
                            "  first | (simp; done) | (simp <;> wit_search)")
+        # "0 when the list is empty, else its maximum" folded from its first element, against a postcondition "empty -> 0,
+        # else a member bounding all" (``max_or_zero_spec``; gpt-oss-120b, Verina advanced_44, 2026-11-16)
+        if obligation.kind == "term" and re.search(r"if (\w+)\.length = 0 then 0 else \1\.foldl", obligation.statement):
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); (try dsimp only); "
+                           "(try simp only [Refine.foldl_ite_gt_eq_max]); exact Refine.max_or_zero_spec _")
         # postconditions `(l = [] ∧ result = 0) ∨ (l ≠ [] ∧ <the longest of the subarrays drop/take>)` (gpt-oss-120b, Verina
         # advanced_29, 2026-11-16): the brute-force maximum with no case on `l = []`, split here; and `len(l)` once every
         # element passes the filter (the whole list is the longest)
