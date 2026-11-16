@@ -2246,6 +2246,30 @@ theorem max_or_zero_spec (L : List Int) :
       · rw [h1]; simp
       · exact h1
     · simp only [List.all_eq_true, decide_eq_true_eq]; exact h3
+-- all subsequences built by a fold `acc ++ acc.map (x :: ·)` from `[[]]` keep the empty one; and a list holding 0 contains
+-- its `foldl max 0`, which bounds every member (gpt-oss-120b, Verina advanced_4, 2026-11-16: longest increasing
+-- subsequence, "result is a length of one and bounds all")
+theorem nil_mem_foldl_append_map {α : Type} (l : List α) : ∀ (acc : List (List α)), [] ∈ acc →
+    [] ∈ l.foldl (fun acc x => acc ++ acc.map (fun sub => x :: sub)) acc := by
+  induction l with
+  | nil => intro acc h; exact h
+  | cons x t ih => intro acc h; exact ih _ (List.mem_append_left _ h)
+theorem foldl_max_zero_contains_all_int (L : List Int) (h0 : (0 : Int) ∈ L) :
+    L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true := by
+  obtain ⟨h1, -, h3⟩ := foldl_max_facts L 0
+  refine ⟨?_, ?_⟩
+  · rcases h1 with h1 | h1
+    · rw [h1]; simpa using h0
+    · simpa using h1
+  · simp only [List.all_eq_true, decide_eq_true_eq]; exact h3
+theorem foldl_max_zero_contains_all_nat (L : List Nat) (h0 : (0 : Nat) ∈ L) :
+    L.contains (L.foldl max 0) = true ∧ L.all (fun x => decide (x ≤ L.foldl max 0)) = true := by
+  obtain ⟨h1, -, h3⟩ := foldl_max_facts L 0
+  refine ⟨?_, ?_⟩
+  · rcases h1 with h1 | h1
+    · rw [h1]; simpa using h0
+    · simpa using h1
+  · simp only [List.all_eq_true, decide_eq_true_eq]; exact h3
 end Refine
 '''
 

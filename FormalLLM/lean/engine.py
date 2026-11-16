@@ -879,6 +879,19 @@ class Derivation:
                            "  (try (right; refine ⟨‹_›, ?_⟩))\n"
                            "  refine Refine.maxlen_spec _ ?_\n"
                            "  first | (simp; done) | (simp <;> wit_search)")
+        # the largest of a list holding 0 (``foldl max 0``), against a postcondition "the list contains the result and the
+        # result bounds all" (``foldl_max_zero_contains_all_*``); 0 is the length of the empty subsequence, kept by the fold
+        # that builds them (``nil_mem_foldl_append_map``) (gpt-oss-120b, Verina advanced_4, 2026-11-16)
+        post_text = definition[1].split("\ndef ", 1)[0] if len(definition) > 1 else ""
+        if obligation.kind == "term" and "foldl max 0" in stmt and ".contains result" in post_text:
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); (try dsimp only)\n"
+                           "  (try simp only [Refine.foldl_ite_gt_eq_max])\n"
+                           "  first | apply Refine.foldl_max_zero_contains_all_int | apply Refine.foldl_max_zero_contains_all_nat\n"
+                           "  simp only [List.mem_map, List.mem_filter]\n"
+                           "  first | (simp; done) | (refine ⟨[], ⟨⟨[], ?_, rfl⟩, by simp⟩, by simp⟩; "
+                           "(try rw [← Array.foldl_toList]); exact Refine.nil_mem_foldl_append_map _ _ (by simp)) "
+                           "| (refine ⟨[], ⟨?_, by simp⟩, by simp⟩; (try rw [← Array.foldl_toList]); "
+                           "exact Refine.nil_mem_foldl_append_map _ _ (by simp))")
         # "0 when the list is empty, else its maximum" folded from its first element, against a postcondition "empty -> 0,
         # else a member bounding all" (``max_or_zero_spec``; gpt-oss-120b, Verina advanced_44, 2026-11-16)
         if obligation.kind == "term" and re.search(r"if (\w+)\.length = 0 then 0 else \1\.foldl", obligation.statement):
