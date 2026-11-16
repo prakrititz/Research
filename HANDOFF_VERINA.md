@@ -299,3 +299,10 @@ again, each for something on our side as well as the model's:
 | 29 | true brute-force term (the spec's own enumeration, `if x > acc` max) at the root, no case on `nums = []`, unproved; true `len(nums)` when every count is `<= k`, unproved (eight attempts) | tactics for postconditions `(l = [] ∧ r = 0) ∨ (l ≠ [] ∧ ...)`: split on `l = []` then `maxlen_spec`; and the whole list as the longest subarray |
 
 Every saved reply was re-read with the old and the new text repairs: 5 more now parse, none stopped parsing.
+
+Third re-run (2026-11-16): advanced_29 **certified** (17 calls; the two advanced_29 tactics above). Fixes from the rest:
+`forall (p, e) in acc:` crashed the printer (a regression of the bounded-binder change: the tuple pattern sits in the
+type slot; fixed, and every saved reply now translates without an internal error); `forall x in f(l), p` and `; in`
+repaired; advanced_23's iff-invariant halving exit and bounded search `range(n + 1).any(pow(2, x) == n)` (true, both
+unproved) now have tactics, checked in Lean. Remaining model-side: advanced_12's exits lack `count(x) > 1`;
+advanced_10's inner exit needs facts about the task's own `removePrimeFactor` (prover limit, like gold).

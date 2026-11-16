@@ -171,6 +171,22 @@ def _binder_types(binders: str) -> List[Tuple[str, str]]:
     return out
 
 
+def _hypotheses(binders: str) -> List[Tuple[str, str]]:
+    """Every top-level binder ``(name : type)``, hypotheses included: ``[("h1i", "(... ↔ ...)"), ...]``."""
+    out, depth, start = [], 0, None
+    for k, ch in enumerate(binders):
+        if ch == "(":
+            if depth == 0:
+                start = k + 1
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+            if depth == 0 and start is not None and " : " in binders[start:k]:
+                name, typ = binders[start:k].split(" : ", 1)
+                out.append((name.strip(), typ.strip()))
+    return out
+
+
 def make_cascade(extra_simp=(), task_defs=(), pre="True"):
     """The tactic that proves an obligation, and its *diagnosis* form (a part no tactic closes becomes ``sorry``, so that
     Lean reports its goal state). It reduces ``fun`` redexes and projections, splits conjunctions, then tries each tactic in
@@ -1286,6 +1302,55 @@ class Derivation:
                                "  · simp only [h, decide_false, Bool.false_eq_true, if_false]; rintro ⟨x, hx, -⟩\n"
                                f"    have hodd : {m} % 2 ≠ 0 := by omega\n"
                                f"    exact h (Refine.pow2_mul_odd_int k x {m} hodd (hx.trans hk.symm))")
+        # the same task, two more shapes (gpt-oss-120b, Verina advanced_23, 2026-11-16): a halving loop whose invariant is
+        # "m is a power of two iff n is" (on exit m = 1, or m is odd or at most 1, so not a power of two unless 1); and the
+        # bounded search ``(range (n + 1)).any (pow 2 x = n)``, a witness being below ``n`` (``x < 2 ^ x``)
+        if power:
+            pw = power.group(1)
+            hp = (f"  have hp : ∀ e, {pw} 2 e = (2 : Int) ^ e := by\n"
+                  "    intro e; induction e with\n"
+                  "    | zero => rfl\n"
+                  f"    | succ e ih => simp only [{pw}, ih, pow_succ]; ring\n"
+                  "  simp only [hp] at *\n")
+            beq = re.search(rf"{re.escape(post)} \w+ \((\w+) == 1\)", obligation.statement)
+            iffs = [name for name, typ in _hypotheses(obligation.binders) if "↔" in typ]
+            if obligation.kind == "exit" and beq and iffs and f"{pw} 2" in obligation.binders:
+                m, hiff = beq.group(1), iffs[0]
+                tactics.append(f"unfold {post}\n" + hp +
+                               f"  by_cases h : {m} = 1\n"
+                               "  · subst h; rw [if_pos (by simp)]\n"
+                               f"    exact {hiff}.mp ⟨0, by simp, by norm_num⟩\n"
+                               "  · rw [if_neg (by simp [h])]\n"
+                               "    intro hex\n"
+                               f"    obtain ⟨x, hx, hm⟩ := {hiff}.mpr hex\n"
+                               "    cases x with\n"
+                               "    | zero => simp at hx; omega\n"
+                               "    | succ x =>\n"
+                               "      have : (0 : Int) < 2 ^ x := by positivity\n"
+                               "      rw [pow_succ] at hx; omega")
+            arg = re.search(rf"{re.escape(post)} (\w+) ", obligation.statement)
+            if (obligation.kind == "term" and arg and ".any" in obligation.statement and "List.range" in obligation.statement
+                    and f"{pw} 2" in obligation.statement):
+                n = arg.group(1)
+                tactics.append(f"unfold {post}\n" + hp +
+                               "  have hlt : ∀ x : Nat, x < 2 ^ x := fun x => by first | exact Nat.lt_two_pow_self "
+                               "| exact Nat.lt_two_pow x | exact Nat.lt_pow_self (by norm_num)\n"
+                               f"  by_cases hn : {n} ≤ 0\n"
+                               "  · rw [if_neg (by simp [hn])]\n"
+                               "    rintro ⟨x, -, hpos⟩; omega\n"
+                               f"  · by_cases hex : ∃ x : Nat, (2 : Int) ^ x = {n} ∧ {n} > 0\n"
+                               "    · rw [if_pos]\n"
+                               "      · exact hex\n"
+                               "      · simp [hn, List.any_eq_true]\n"
+                               "        obtain ⟨x, hx, -⟩ := hex\n"
+                               "        refine ⟨x, ?_, hx⟩\n"
+                               "        have h1 := hlt x\n"
+                               "        have hc : ((2 ^ x : Nat) : Int) = (2 : Int) ^ x := by push_cast; rfl\n"
+                               "        omega\n"
+                               "    · rw [if_neg]\n"
+                               "      · exact hex\n"
+                               "      · simp [hn, List.any_eq_true]\n"
+                               "        intro x _ hx; exact hex ⟨x, hx, by omega⟩")
         # a loop over a list's indices that stopped at its end (``i ≤ l.length``, ``¬ i < l.length``): the loop variable is
         # the length, the invariant's cases are split, and a fact for every index below it is a fact for every member
         # (``forall_mem_iff_idx``); counting facts as above (gpt-oss-120b, Verina advanced_11: the invariant "no value seen
