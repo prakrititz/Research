@@ -118,6 +118,10 @@ TYPE_HINTS = [
     (r"argument ∃[^\n]*has type prop but is expected to have type bool",
      "The result is a `bool` the program computes, and an `exists` over all numbers cannot be computed. Search a "
      "bounded range instead, e.g. `range(n + 1).any(lambda m: ...)`, or use a loop."),
+    # a `let rec` dividing its argument (gpt-oss-120b, Verina advanced_10, 2026-11-16: `cnt(m / p)`)
+    (r"fail to show termination|failed to prove termination",
+     "Lean could not show that the `let rec` stops (its argument does not shrink structurally, e.g. `m / p`). "
+     "Compute it with a `loop` step instead (state, guard, variant), which proves termination from the variant."),
     # an untyped `let rec` parameter matched against `[]` (gpt-oss-120b, Verina advanced_24, 2026-11-16, three times)
     (r"pattern contains metavariables",
      "A parameter's type could not be inferred: give each `let rec` parameter and its result a type, "
