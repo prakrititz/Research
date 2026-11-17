@@ -33,6 +33,14 @@ CHAIN = {"=", "≠", "<", ">", "≤", "≥"}
 
 _ATOMS = (Name, Num, Char, Str, ListLit, Tuple_, Anon, Abs, App, Dot, Index, Ascribe)
 
+# Python escapes Lean's literals lack (`\0`, `\a`, `\b`, `\f`, `\v`): written as `\xHH`, which Lean reads.
+# (verina_advanced_67, 2026-11-17: a loop seeded `cur` with '\0' and Lean said "invalid escape sequence".)
+_PY_ONLY_ESCAPES = {"0": "\\x00", "a": "\\x07", "b": "\\x08", "f": "\\x0c", "v": "\\x0b"}
+
+
+def _lean_escapes(text: str) -> str:
+    return re.sub(r"\\(.)", lambda m: _PY_ONLY_ESCAPES.get(m.group(1), m.group(0)), text)
+
 
 def _name(lean: str) -> str:
     if lean in _SCOPE:                                     # a variable where the text is read: no escape needed
@@ -345,9 +353,9 @@ class _Parser:
         if tok[0].isdigit():
             return Num(tok)
         if tok[0] == "'":
-            return Char(tok[1:-1])
+            return Char(_lean_escapes(tok[1:-1]))
         if tok[0] == '"':
-            return Str(tok[1:-1])
+            return Str(_lean_escapes(tok[1:-1]))
         if tok[0] == "`":
             return _dotted(tok[1:-1])
         if tok[0].isalpha() or tok[0] == "_":

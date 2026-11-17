@@ -502,3 +502,10 @@ def test_len_variable_and_paren_argument():
     assert repair._fix_text("len(xs) + 1")[1] == []
     assert repair._fix_text("xs.foldl (lambda acc, x: acc + x) (xs[0])")[0] == "xs.foldl(lambda acc, x: acc + x, xs[0])"
     assert repair._missing_close("len((a.filter(f) == 0") is None
+
+
+def test_python_only_escapes_become_lean_hex_escapes():
+    # verina_advanced_67: '\0' is Python, not Lean ("invalid escape sequence")
+    assert lean_syntax.show(lspec_syntax.parse("'\0'")) == "'\x00'"
+    assert lean_syntax.show(lspec_syntax.parse("'\n'")) == "'\n'"
+    assert lean_syntax.show(lspec_syntax.parse('"a\0b\t"')) == '"a\x00b\t"'
