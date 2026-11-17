@@ -2280,6 +2280,21 @@ theorem foldl_max_zero_contains_all_nat (L : List Nat) (h0 : (0 : Nat) ∈ L) :
     · rw [h1]; simpa using h0
     · simpa using h1
   · simp only [List.all_eq_true, decide_eq_true_eq]; exact h3
+-- pigeonhole: 0..i all in l makes l longer than i (the variant `len(l) - i` of the loop "count up while i is in l";
+-- gpt-oss-120b, Verina advanced_73 smallest missing number, 2026-11-17)
+theorem lt_length_of_forall_lt_mem (l : List Nat) (i : Nat) (h : ∀ k, k < i → k ∈ l) (hi : i ∈ l) :
+    i < l.length := by
+  have hsub : Finset.range (i + 1) ⊆ l.toFinset := by
+    intro k hk
+    rw [Finset.mem_range] at hk
+    rw [List.mem_toFinset]
+    rcases Nat.lt_succ_iff_lt_or_eq.mp hk with h' | h'
+    · exact h k h'
+    · exact h' ▸ hi
+  have h1 := Finset.card_le_card hsub
+  rw [Finset.card_range] at h1
+  have h2 := List.toFinset_card_le l
+  omega
 end Refine
 '''
 
