@@ -42,6 +42,58 @@ def _lean_escapes(text: str) -> str:
     return re.sub(r"\\(.)", lambda m: _PY_ONLY_ESCAPES.get(m.group(1), m.group(0)), text)
 
 
+def _of_tuples(node) -> bool:
+    """A list whose elements are written as pairs: `l.map(lambda x: (a, b))`, `[(a, b), ...]`, `zip(l, m)` (only pairs:
+    `toLex` of a triple is lexicographic in its first component only)."""
+    if isinstance(node, ListLit):
+        return bool(node.items) and all(isinstance(i, Tuple_) and len(i.items) == 2 for i in node.items)
+    if isinstance(node, App) and isinstance(node.fn, Dot) and node.fn.field == "map" and len(node.args) == 1:
+        f = node.args[0]
+        return isinstance(f, Binder) and f.kind == "fun" and isinstance(f.body, Tuple_) and len(f.body.items) == 2
+    if isinstance(node, App) and isinstance(node.fn, Dot) and node.fn.field == "zip":
+        return True
+    return isinstance(node, App) and isinstance(node.fn, Name) and node.fn.id in ("zip", "List.zip")
+
+
+def _mentions(node, name: str) -> bool:
+    if isinstance(node, Name):
+        return node.id == name
+    if isinstance(node, Node):
+        return any(_mentions(v, name) for v in vars(node).values())
+    if isinstance(node, (list, tuple)):
+        return any(_mentions(v, name) for v in node)
+    return False
+
+
+def _bound_first(names, body):
+    """`exists j: i < j and j < n and p` -> `exists j: j < n and (i < j and p)`: the same statement, but Lean decides
+    `∃ j, j < n ∧ q j` (Nat.decidableExistsLT) and not the bound in another place (verina_advanced_78, two sum: the
+    loop guard `not (exists j: i < j and j < len(nums) and ...)` was "failed to synthesize Decidable")."""
+    if len(names) != 1 or names[0][1] not in (None, Name("Nat")) or not (isinstance(body, BinOp) and body.op == "∧"):
+        return body
+    var, parts, rest = names[0][0], [], body
+    while isinstance(rest, BinOp) and rest.op == "∧":
+        parts.append(rest.left)
+        rest = rest.right
+    parts.append(rest)
+    for k, part in enumerate(parts[1:], 1):
+        if any(isinstance(p, BinOp) and p.op == "=" and _mentions(p, var) for p in parts[:k]):
+            return body                     # `exists c: b == some(c) and c < i ...` names c by an equation: kept
+        if (isinstance(part, BinOp) and part.op in ("<", "≤") and part.left == Name(var)
+                and not _mentions(part.right, var)):
+            others = parts[:k] + parts[k + 1:]
+            tail = others[-1]
+            for p in reversed(others[:-1]):
+                tail = BinOp("∧", p, tail)
+            return BinOp("∧", part, tail)
+    return body
+
+
+#: `sorted` of tuples: Python's (lexicographic) order
+_LEX_LE = Binder("fun", [("a", None), ("b", None)], None,
+                 BinOp("≤", App(Name("toLex"), [Name("a")]), App(Name("toLex"), [Name("b")])))
+
+
 def _name(lean: str) -> str:
     if lean in _SCOPE:                                     # a variable where the text is read: no escape needed
         return lean
@@ -439,6 +491,10 @@ class _Parser:
             if len(args) > 2:
                 raise Unsupported("`range` with a step: write `range(n).map(lambda k: a + k * step)`")
             return App(Name("List.range'"), [args[0], BinOp("-", args[1], args[0])])
+        if isinstance(fn, _SpecName) and fn.id == "sorted" and len(args) == 1 and _of_tuples(args[0]):
+            # Python sorts tuples lexicographically; Lean's `≤` on a product (Mathlib) is componentwise, so a plain
+            # `mergeSort` keeps incomparable pairs in input order (verina_advanced_76: sorted([(-count(x), x) ...]))
+            return App(Dot(args[0], "mergeSort"), [_LEX_LE])
         if isinstance(fn, _SpecName) and fn.id in ops.METHOD_FUNCS_INV and args:     # `len(l)` is `l.length`
             dot = Dot(args[0], ops.METHOD_FUNCS_INV[fn.id])
             return App(dot, args[1:]) if len(args) > 1 else dot
@@ -580,6 +636,8 @@ class _Parser:
             # Lean's `forall j: nat, body`, and `forall a b: nat, body` (gpt-oss-120b, Verina advanced_42, 2026-11-16)
             self.next()
             names, body = [(n, body) for n, _ in names], self.expr()
+        if kind == "∃" and bound is None:
+            body = _bound_first(names, body)
         return Binder(kind, names, bound, body)
 
     def assign(self):

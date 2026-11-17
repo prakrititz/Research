@@ -509,3 +509,22 @@ def test_python_only_escapes_become_lean_hex_escapes():
     assert lean_syntax.show(lspec_syntax.parse("'\0'")) == "'\x00'"
     assert lean_syntax.show(lspec_syntax.parse("'\n'")) == "'\n'"
     assert lean_syntax.show(lspec_syntax.parse('"a\0b\t"')) == '"a\x00b\t"'
+
+
+def test_sorted_pairs_are_lexicographic_like_python():
+    # verina_advanced_76: Mathlib's `≤` on a product is componentwise, so plain mergeSort did not sort the pairs
+    lex = "(fun a b => (toLex a) ≤ (toLex b))"
+    assert lean_syntax.show(lspec_syntax.parse("sorted(l.map(lambda x: (-x, x)))")) == \
+        f"(l.map (fun x => (-x, x))).mergeSort {lex}"
+    assert lean_syntax.show(lspec_syntax.parse("sorted(zip(a, b))")) == f"(zip a b).mergeSort {lex}"
+    assert lean_syntax.show(lspec_syntax.parse("sorted(l)")) == "l.mergeSort"
+    assert lean_syntax.show(lspec_syntax.parse("sorted(l.map(lambda x: (x, x, x)))")) == \
+        "(l.map (fun x => (x, x, x))).mergeSort"
+
+
+def test_exists_puts_its_nat_bound_first_so_lean_decides_it():
+    # verina_advanced_78: `∃ j, i < j ∧ j < n ∧ p` has no Decidable instance; `∃ j, j < n ∧ ...` has
+    assert lean_syntax.show(lspec_syntax.parse("exists j: i < j and j < len(l) and l[j] == 0")) == \
+        "∃ j, (j < l.length) ∧ ((i < j) ∧ (l[j]! = 0))"
+    assert lean_syntax.show(lspec_syntax.parse("exists j: j < n and i < j")) == "∃ j, (j < n) ∧ (i < j)"
+    assert lean_syntax.show(lspec_syntax.parse("exists x: int, a < x and x < b")) == "∃ (x : Int), (a < x) ∧ (x < b)"
