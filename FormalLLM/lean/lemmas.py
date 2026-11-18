@@ -2306,6 +2306,45 @@ theorem lt_length_of_forall_lt_mem (l : List Nat) (i : Nat) (h : ∀ k, k < i �
   rw [Finset.card_range] at h1
   have h2 := List.toFinset_card_le l
   omega
+
+-- n distinct numbers, each at most n, leave out exactly one of 0..n (the "missing number"; Verina advanced_54)
+theorem nodup_bounded_missing (l : List Nat) (h1 : ∀ x ∈ l, x ≤ l.length) (h2 : l.Nodup) :
+    ∃ m, m ≤ l.length ∧ m ∉ l ∧ ∀ x, x ≤ l.length → x ≠ m → x ∈ l := by
+  classical
+  have hsub : l.toFinset ⊆ Finset.range (l.length + 1) := by
+    intro x hx
+    simp only [List.mem_toFinset] at hx
+    simp only [Finset.mem_range]
+    have := h1 x hx
+    omega
+  have hcard : l.toFinset.card = l.length := List.toFinset_card_of_nodup h2
+  have hdiff : (Finset.range (l.length + 1) \ l.toFinset).card = 1 := by
+    rw [Finset.card_sdiff_of_subset hsub, hcard, Finset.card_range]
+    omega
+  obtain ⟨m, hm⟩ := Finset.card_eq_one.mp hdiff
+  have hmem : m ∈ Finset.range (l.length + 1) \ l.toFinset := by rw [hm]; simp
+  simp only [Finset.mem_sdiff, Finset.mem_range, List.mem_toFinset] at hmem
+  refine ⟨m, by omega, hmem.2, fun x hx hne => ?_⟩
+  by_contra hxl
+  have hx' : x ∈ Finset.range (l.length + 1) \ l.toFinset := by
+    simp only [Finset.mem_sdiff, Finset.mem_range, List.mem_toFinset]
+    exact ⟨by omega, hxl⟩
+  rw [hm, Finset.mem_singleton] at hx'
+  exact hne hx'
+
+-- the first element of a filter, when some element passes it: a member that passes
+theorem headD_filter_spec {α : Type} (l : List α) (p : α → Bool) (d : α) (h : ∃ x ∈ l, p x) :
+    (l.filter p).headD d ∈ l ∧ p ((l.filter p).headD d) := by
+  obtain ⟨x, hx, hp⟩ := h
+  have hne : l.filter p ≠ [] := by
+    intro h0
+    have := List.mem_filter.mpr ⟨hx, hp⟩
+    rw [h0] at this
+    simp at this
+  obtain ⟨a, t, ht⟩ := List.exists_cons_of_ne_nil hne
+  have ha : a ∈ l.filter p := by rw [ht]; simp
+  rw [ht, List.headD_cons]
+  exact List.mem_filter.mp ha
 end Refine
 '''
 

@@ -930,6 +930,21 @@ class Derivation:
                            "  obtain ⟨a_pw, b_pw, hab_pw, hb_pw, hR_pw⟩ := Refine.not_pairwise_idx (by assumption)\n"
                            "  (try simp only [Array.length_toList, not_not, Array.getElem!_toList] at hb_pw hR_pw)\n"
                            "  grind")
+        # "the first of 0..len(l) not in l", with a duplicate-free l: n distinct numbers in 0..n miss exactly one
+        # (``nodup_bounded_missing``), and the filter's head is a missing one (``headD_filter_spec``; gpt-oss-120b,
+        # Verina advanced_54, 2026-11-19)
+        if pre_def and "List.Nodup" in pre_def.group(0):
+            for m in re.finditer(r"\(List\.range \((\w+)\.length \+ 1\)\)\.filter \(fun (\w+) => ¬\s*\(?\2 ∈ \1\)?\)\)"
+                                 r"\.headD (\w+)", obligation.statement):
+                lv, xv, dv = m.groups()
+                tactics.append(f"(try unfold {post} at *); (try unfold {pre} at *); (try casesm* _ ∧ _)\n"
+                               f"  obtain ⟨m_mi, hm1_mi, hm2_mi, hm3_mi⟩ := Refine.nodup_bounded_missing {lv} (by simp_all) "
+                               "(by assumption)\n"
+                               f"  obtain ⟨hr1_mi, hr2_mi⟩ := Refine.headD_filter_spec (List.range ({lv}.length + 1)) "
+                               f"(fun {xv} => ¬ ({xv} ∈ {lv})) {dv} ⟨m_mi, by simp; omega, by simpa using hm2_mi⟩\n"
+                               "  simp only [List.mem_range, decide_eq_true_eq] at hr1_mi hr2_mi\n"
+                               "  (try dsimp only); (try and_intros) <;> grind")
+                break
         # pigeonhole: hypotheses "every k < i is in l" and "i is in l" give i < l.length (``lt_length_of_forall_lt_mem``),
         # which the variant `len(l) - i` of "count up while i is in l" needs (gpt-oss-120b, Verina advanced_73, 2026-11-17)
         # The fact may be a hypothesis of its own or a conjunct of the invariant (`i ≤ len(l) and forall k < i: k in l`,
