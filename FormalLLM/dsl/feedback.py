@@ -126,6 +126,9 @@ TYPE_HINTS = [
     (r"pattern contains metavariables",
      "A parameter's type could not be inferred: give each `let rec` parameter and its result a type, "
      "e.g. `let rec inc(l: list[int]): bool = match l with ...`."),
+    # numbers quoted like the JSON around them, `len(acc) == "0"` (gpt-oss-120b, Verina advanced_67, 2026-11-18, 3 times)
+    (r"\"(-?\d+)\" has type str but is expected to have type (nat|int|rat)",
+     "`\"{0}\"` is a string: write the number without quotes, `{0}`."),
     (r"Function expected at\s+(\w+)\b", "`{0}` is a value here, not a function: a variable of the goal named `{0}` "
                                          "hides the library name (write the library function as in Lean, e.g. "
                                          "`String.mk(...)`), or the call has too many arguments."),

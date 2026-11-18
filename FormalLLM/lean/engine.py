@@ -921,6 +921,15 @@ class Derivation:
                            "String.length_toList, List.take_of_length_le"
                            + "".join(", " + h for h in helpers)
                            + "] <;> first | assumption | (intros; simp_all) | aesop")
+        # a precondition "not pairwise" (`¬ List.Pairwise R l`: some pair fails `R`, two-sum's "a pair sums to target")
+        # gives the pair's indices a < b < len (``not_pairwise_idx``): with "no pair starts before i" they bound a search
+        # loop's i, which its variant `len - i` needs (gpt-oss-120b, Verina basic_102, 2026-11-19)
+        pre_def = re.search(rf"^def {re.escape(pre)}\b.*?(?=^\S|\Z)", self.task.prelude, re.M | re.S) if pre else None
+        if pre_def and "¬ List.Pairwise" in pre_def.group(0) and pre in obligation.binders:
+            tactics.append(f"(try unfold {pre} at *); (try casesm* _ ∧ _)\n"
+                           "  obtain ⟨a_pw, b_pw, hab_pw, hb_pw, hR_pw⟩ := Refine.not_pairwise_idx (by assumption)\n"
+                           "  (try simp only [Array.length_toList, not_not, Array.getElem!_toList] at hb_pw hR_pw)\n"
+                           "  grind")
         # pigeonhole: hypotheses "every k < i is in l" and "i is in l" give i < l.length (``lt_length_of_forall_lt_mem``),
         # which the variant `len(l) - i` of "count up while i is in l" needs (gpt-oss-120b, Verina advanced_73, 2026-11-17)
         # The fact may be a hypothesis of its own or a conjunct of the invariant (`i ≤ len(l) and forall k < i: k in l`,

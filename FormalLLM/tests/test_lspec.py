@@ -270,6 +270,7 @@ def test_lean_binders_and_symbols(spec, lean):
     ("Unsupported: trailing '='", feedback.SYNTAX_HINTS, "`==`"),
     ("failed to synthesize instance of type class GetElem? str nat ?m.5", feedback.TYPE_HINTS, "list(s)[i]"),
     ("Unknown identifier `result.length`", feedback.TYPE_HINTS, "`result` is not defined"),
+    ('Type mismatch "0" has type str but is expected to have type nat', feedback.TYPE_HINTS, "without quotes, `0`"),
 ])
 def test_more_hints(message, table, expected):
     assert expected in feedback.hints(message, table)

@@ -517,6 +517,14 @@ theorem ts_pairwise_none (l : List Int) (target : Int)
   rw [getElem!_pos l i hi, getElem!_pos l j hj] at this
   exact this
 
+-- the converse direction, for any relation: a list that is not pairwise has a failing pair of indices a < b
+theorem not_pairwise_idx {α : Type} [Inhabited α] {R : α → α → Prop} {l : List α} (h : ¬ l.Pairwise R) :
+    ∃ a b, a < b ∧ b < l.length ∧ ¬ R l[a]! l[b]! := by
+  rw [List.pairwise_iff_getElem] at h
+  push_neg at h
+  obtain ⟨a, b, ha, hb, hab, hR⟩ := h
+  exact ⟨a, b, hab, hb, by rwa [getElem!_pos l a ha, getElem!_pos l b hb]⟩
+
 
 -- general facts added 2026-10-27 from the prover-ceiling scoreboard (indexing a mapped range or an append, sorted
 -- and duplicate-free lists): the human helper lemmas of he_009, he_005, he_034 and others are instances of these
