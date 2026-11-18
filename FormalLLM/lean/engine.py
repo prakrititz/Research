@@ -945,6 +945,20 @@ class Derivation:
                                "  simp only [List.mem_range, decide_eq_true_eq] at hr1_mi hr2_mi\n"
                                "  (try dsimp only); (try and_intros) <;> grind")
                 break
+        # the first of the brute-force pairs, `(range(n).flat_map(lambda i: range(i+1, n).filter(...).map(lambda j: (i,
+        # j)))).head?`: `none` when no pair passes, else the lexicographically least pair (``pairs_head?_none/_some``),
+        # in the index form the two-sum lemmas turn into the postcondition's (gpt-oss-120b, Verina advanced_79, 2026-11-19)
+        if (obligation.kind == "term" and ").head?" in obligation.statement
+                and re.search(r"\.flatMap \(fun (\w+) => \(\(List\.range' \(\1 \+ 1\)", obligation.statement)):
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); split\n"
+                           "  · rename_i heq_pr\n"
+                           "    have hn_pr := Refine.pairs_head?_none heq_pr\n"
+                           "    simp only [decide_eq_false_iff_not] at hn_pr\n"
+                           "    first | exact Refine.ts_pairwise_none _ _ hn_pr | grind\n"
+                           "  · rename_i a_pr b_pr heq_pr\n"
+                           "    obtain ⟨h1_pr, h2_pr, h3_pr, h4_pr, h5_pr⟩ := Refine.pairs_head?_some heq_pr\n"
+                           "    simp only [decide_eq_true_eq, decide_eq_false_iff_not] at h3_pr h4_pr h5_pr\n"
+                           "    first | exact ⟨h1_pr, h2_pr, h3_pr, Refine.ts_lex_all _ _ _ _ h2_pr h4_pr h5_pr⟩ | grind")
         # pigeonhole: hypotheses "every k < i is in l" and "i is in l" give i < l.length (``lt_length_of_forall_lt_mem``),
         # which the variant `len(l) - i` of "count up while i is in l" needs (gpt-oss-120b, Verina advanced_73, 2026-11-17)
         # The fact may be a hypothesis of its own or a conjunct of the invariant (`i ≤ len(l) and forall k < i: k in l`,

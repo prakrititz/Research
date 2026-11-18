@@ -2345,6 +2345,75 @@ theorem headD_filter_spec {α : Type} (l : List α) (p : α → Bool) (d : α) (
   have ha : a ∈ l.filter p := by rw [ht]; simp
   rw [ht, List.headD_cons]
   exact List.mem_filter.mp ha
+
+-- the pairs i < j < n with p i j in the brute-force order (i, then j): its first is the lexicographically least
+-- ("the first pair summing to target"; gpt-oss-120b, Verina advanced_79, 2026-11-19)
+theorem pairs_mem (n : Nat) (p : Nat → Nat → Bool) (x : Nat × Nat) :
+    x ∈ (List.range n).flatMap (fun i => ((List.range' (i + 1) (n - (i + 1))).filter (p i)).map (fun j => (i, j))) ↔
+    x.1 < x.2 ∧ x.2 < n ∧ p x.1 x.2 = true := by
+  obtain ⟨a, b⟩ := x
+  simp only [List.mem_flatMap, List.mem_range, List.mem_map, List.mem_filter, List.mem_range'_1]
+  constructor
+  · rintro ⟨i, hi, j, ⟨hj, hp⟩, he⟩
+    simp only [Prod.mk.injEq] at he
+    obtain ⟨rfl, rfl⟩ := he
+    exact ⟨by omega, by omega, hp⟩
+  · rintro ⟨h1, h2, hp⟩
+    exact ⟨a, by omega, b, ⟨by omega, hp⟩, rfl⟩
+
+theorem pairs_sorted (n : Nat) (p : Nat → Nat → Bool) :
+    ((List.range n).flatMap (fun i => ((List.range' (i + 1) (n - (i + 1))).filter (p i)).map (fun j => (i, j)))).Pairwise
+      (fun x y => x.1 < y.1 ∨ (x.1 = y.1 ∧ x.2 < y.2)) := by
+  rw [List.pairwise_flatMap]
+  constructor
+  · intro i _
+    rw [List.pairwise_map]
+    apply List.Pairwise.filter
+    exact (List.pairwise_lt_range' (s := i + 1) (n := n - (i + 1))).imp (fun h => Or.inr ⟨rfl, h⟩)
+  · apply List.pairwise_lt_range.imp
+    intro a b hab x hx y hy
+    simp only [List.mem_map, List.mem_filter] at hx hy
+    obtain ⟨j, _, rfl⟩ := hx
+    obtain ⟨k, _, rfl⟩ := hy
+    exact Or.inl hab
+
+theorem pairs_head?_none {n : Nat} {p : Nat → Nat → Bool}
+    (h : ((List.range n).flatMap (fun i => ((List.range' (i + 1) (n - (i + 1))).filter (p i)).map (fun j => (i, j)))).head? = none) :
+    ∀ i j, i < j → j < n → p i j = false := by
+  intro i j hij hj
+  by_contra hp
+  have hm := (pairs_mem n p (i, j)).mpr ⟨hij, hj, by simpa using hp⟩
+  rw [List.head?_eq_none_iff] at h
+  rw [h] at hm
+  simp at hm
+
+theorem pairs_head?_some {n : Nat} {p : Nat → Nat → Bool} {a b : Nat}
+    (h : ((List.range n).flatMap (fun i => ((List.range' (i + 1) (n - (i + 1))).filter (p i)).map (fun j => (i, j)))).head? = some (a, b)) :
+    a < b ∧ b < n ∧ p a b = true ∧ (∀ i j, i < a → i < j → j < n → p i j = false) ∧
+      ∀ j, a < j → j < b → p a j = false := by
+  have hsort := pairs_sorted n p
+  obtain ⟨rest, hP⟩ : ∃ rest, (List.range n).flatMap (fun i => ((List.range' (i + 1) (n - (i + 1))).filter (p i)).map (fun j => (i, j))) = (a, b) :: rest := by
+    revert h
+    cases (List.range n).flatMap (fun i => ((List.range' (i + 1) (n - (i + 1))).filter (p i)).map (fun j => (i, j))) with
+    | nil => intro h; simp at h
+    | cons x rest => intro h; simp at h; exact ⟨rest, by rw [h]⟩
+  have hmem := pairs_mem n p
+  rw [hP] at hmem hsort
+  obtain ⟨h1, h2, h3⟩ := (hmem (a, b)).mp (by simp)
+  rw [List.pairwise_cons] at hsort
+  refine ⟨h1, h2, h3, ?_, ?_⟩
+  · intro i j hi hij hj
+    by_contra hp
+    have hm := (hmem (i, j)).mpr ⟨hij, hj, by simpa using hp⟩
+    rcases List.mem_cons.mp hm with he | he
+    · simp only [Prod.mk.injEq] at he; omega
+    · have := hsort.1 _ he; simp only at this; omega
+  · intro j hj1 hj2
+    by_contra hp
+    have hm := (hmem (a, j)).mpr ⟨hj1, by omega, by simpa using hp⟩
+    rcases List.mem_cons.mp hm with he | he
+    · simp only [Prod.mk.injEq] at he; omega
+    · have := hsort.1 _ he; simp only at this; omega
 end Refine
 '''
 
