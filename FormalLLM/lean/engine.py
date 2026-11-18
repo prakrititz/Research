@@ -913,13 +913,25 @@ class Derivation:
                            "| (apply List.getElem!_mem; omega) | simp_all")
         # pigeonhole: hypotheses "every k < i is in l" and "i is in l" give i < l.length (``lt_length_of_forall_lt_mem``),
         # which the variant `len(l) - i` of "count up while i is in l" needs (gpt-oss-120b, Verina advanced_73, 2026-11-17)
-        for hk, kv, iv, lv in re.findall(r"\((\w+) : \(?∀ \((\w+) : (?:Nat|ℕ)\), \(?\2 < (\w+)\)? → \(?\2 ∈ (\w+)\)?\)?\)",
-                                         obligation.binders):
-            for hg in re.findall(rf"\((\w+) : \(?{re.escape(iv)} ∈ {re.escape(lv)}\)?\)", obligation.binders):
-                tactics.append(f"have hlt_pg := Refine.lt_length_of_forall_lt_mem _ _ {hk} {hg}; (try dsimp only); "
-                               "first | omega | (refine ⟨fun k hk => ?_, by omega⟩; "
-                               "rcases Nat.lt_succ_iff_lt_or_eq.mp hk with h | h <;> "
-                               f"first | exact {hk} k h | exact h ▸ {hg}) | grind")
+        # The fact may be a hypothesis of its own or a conjunct of the invariant (`i ≤ len(l) and forall k < i: k in l`,
+        # gpt-oss-120b, Verina advanced_73, 2026-11-18), written `∀ (k : Nat), (k < i) → ...` or `∀ k < i, ...`.
+        hyps = _hypotheses(obligation.binders)
+        seen_pg = set()
+        for hk, htyp in hyps:
+            for m in re.finditer(r"∀ (?:\((\w+) : (?:Nat|ℕ)\), \(?\1 < (\w+)\)? →|(\w+) < (\w+),) \(?(?:\1|\3) ∈ (\w+)\)?",
+                                 htyp):
+                iv, lv = m.group(2) or m.group(4), m.group(5)
+                for hg, gtyp in hyps:
+                    if gtyp.strip().strip("()").strip() != f"{iv} ∈ {lv}" or (hk, hg) in seen_pg:
+                        continue
+                    seen_pg.add((hk, hg))
+                    tactics.append(f"have hall_pg : ∀ k, k < {iv} → k ∈ {lv} := by first | exact {hk} | exact {hk}.1 "
+                                   f"| exact {hk}.2 | exact {hk}.2.1 | exact {hk}.2.2 | exact {hk}.1.2 | exact {hk}.2.2.1 "
+                                   f"| exact {hk}.2.2.2 | (intro k hk; simp_all)\n"
+                                   f"  have hlt_pg := Refine.lt_length_of_forall_lt_mem _ _ hall_pg {hg}; (try dsimp only)\n"
+                                   "  (try and_intros) <;> first | omega | (intro k hk; "
+                                   "rcases Nat.lt_succ_iff_lt_or_eq.mp hk with h | h <;> "
+                                   f"first | exact hall_pg k h | exact h ▸ {hg}) | grind")
         # "0 when the list is empty, else its maximum" folded from its first element, against a postcondition "empty -> 0,
         # else a member bounding all" (``max_or_zero_spec``; gpt-oss-120b, Verina advanced_44, 2026-11-16)
         if obligation.kind == "term" and re.search(r"if (\w+)\.length = 0 then 0 else \1\.foldl", obligation.statement):
