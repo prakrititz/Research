@@ -911,6 +911,16 @@ class Derivation:
                            "  refine ⟨fun h => absurd h ‹_›, fun hpos => Refine.foldl_max_seed_spec _ _ ?_⟩\n"
                            "  first | (obtain ⟨a, t, ht⟩ := List.exists_cons_of_length_pos hpos; rw [ht]; simp) "
                            "| (apply List.getElem!_mem; omega) | simp_all")
+        # a slice of a string, `s[:i]` read as ``String.mk (s.toList.take i)`` (``lspec_syntax._str_slice``): as
+        # ``String.ofList`` the simp set knows it (`take 0` is "", `take` past the end is `s`); the task's functions
+        # unfolded on literal arguments (``decodeRLE [] = ""``; gpt-oss-120b, Verina advanced_67, 2026-11-18)
+        both = obligation.binders + " " + obligation.statement
+        if re.search(r"String\.mk \(+\w+\.toList\.(?:take|drop)", both):
+            helpers = [n for n in re.findall(r"^def (\w+)", self.task.prelude, re.M) if n not in (post, pre)]
+            tactics.append(f"(try unfold {post} {pre} at *); simp_all [Refine.string_mk_eq_ofList, String.ofList_toList, "
+                           "String.length_toList, List.take_of_length_le"
+                           + "".join(", " + h for h in helpers)
+                           + "] <;> first | assumption | (intros; simp_all) | aesop")
         # pigeonhole: hypotheses "every k < i is in l" and "i is in l" give i < l.length (``lt_length_of_forall_lt_mem``),
         # which the variant `len(l) - i` of "count up while i is in l" needs (gpt-oss-120b, Verina advanced_73, 2026-11-17)
         # The fact may be a hypothesis of its own or a conjunct of the invariant (`i ≤ len(l) and forall k < i: k in l`,

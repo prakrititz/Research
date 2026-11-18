@@ -16,6 +16,9 @@
 {"python": "l[:2]", "lspec": "l[:2]", "lean": "l.take 2", "env": {"l": [1, 2, 3]}, "python_value": "[1, 2]", "lean_value": "[1, 2]", "expected": "same", "why": "", "ok": true}
 {"python": "l[1:]", "lspec": "l[1:]", "lean": "l.drop 1", "env": {"l": [1, 2, 3]}, "python_value": "[2, 3]", "lean_value": "[2, 3]", "expected": "same", "why": "", "ok": true}
 {"python": "s[1:3]", "lspec": "String.mk(list(s)[1:3])", "lean": "String.mk ((s.toList.drop 1).take (3 - 1))", "env": {"s": "abcd"}, "python_value": "\"bc\"", "lean_value": "\"bc\"", "expected": "same", "why": "", "ok": true}
+{"python": "s[1:3]", "lspec": "s[1:3]", "lean": "String.mk ((s.toList.drop 1).take (3 - 1))", "env": {"s": "abcd"}, "python_value": "\"bc\"", "lean_value": "\"bc\"", "expected": "same", "why": "", "ok": true}
+{"python": "s[2:]", "lspec": "s[2:]", "lean": "String.mk (s.toList.drop 2)", "env": {"s": "abcd"}, "python_value": "\"cd\"", "lean_value": "\"cd\"", "expected": "same", "why": "", "ok": true}
+{"python": "s[::-1]", "lspec": "s[::-1]", "lean": "String.mk s.toList.reverse", "env": {"s": "abcd"}, "python_value": "\"dcba\"", "lean_value": "\"dcba\"", "expected": "same", "why": "", "ok": true}
 {"python": "0 <= i < len(l)", "lspec": "0 <= i < len(l)", "lean": "(0 ≤ i) ∧ (i < l.length)", "env": {"i": 1, "l": [5, 6]}, "python_value": "true", "lean_value": "true", "expected": "same", "why": "", "ok": true}
 {"python": "0 <= i < len(l)", "lspec": "0 <= i < len(l)", "lean": "(0 ≤ i) ∧ (i < l.length)", "env": {"i": 2, "l": [5, 6]}, "python_value": "false", "lean_value": "false", "expected": "same", "why": "", "ok": true}
 {"python": "\", \".join(ws)", "lspec": "\", \".join(ws)", "lean": "\", \".intercalate ws", "env": {"ws": ["a", "b"]}, "python_value": "\"a, b\"", "lean_value": "\"a, b\"", "expected": "same", "why": "", "ok": true}

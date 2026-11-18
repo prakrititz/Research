@@ -41,6 +41,9 @@ CASES = [
     ("l[:2]", None, {"l": ([1, 2, 3], L_INT)}, "same"),
     ("l[1:]", None, {"l": ([1, 2, 3], L_INT)}, "same"),
     ("s[1:3]", "String.mk(list(s)[1:3])", {"s": ("abcd", S)}, "same"),     # a str slice is sliced as a list
+    ("s[1:3]", None, {"s": ("abcd", S)}, "same"),                           # or written directly: a str (``_str_slice``)
+    ("s[2:]", None, {"s": ("abcd", S)}, "same"),
+    ("s[::-1]", None, {"s": ("abcd", S)}, "same"),
     ("0 <= i < len(l)", None, {"i": (1, N), "l": ([5, 6], L_INT)}, "same"),
     ("0 <= i < len(l)", None, {"i": (2, N), "l": ([5, 6], L_INT)}, "same"),
     ('", ".join(ws)', None, {"ws": (["a", "b"], L_STR)}, "same"),
@@ -118,7 +121,7 @@ def main():
             except Exception as error:
                 py = f"error: {type(error).__name__}"
             try:
-                lean_text = steps.to_lean(spec, "case")
+                lean_text = steps.to_lean(spec, "case", (), [k for k, (_, t) in env.items() if t == S])
             except steps.StepError as error:
                 rows.append({"python": python, "lspec": spec, "ok": False, "error": str(error)})
                 print(f"FAIL  {spec:32s} does not translate: {error}")

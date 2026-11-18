@@ -74,8 +74,8 @@ MEANING = [
     "`/` on `nat` and `int` is integer division (`7 / 2 == 3`, `x / 0 == 0`); on `rat` it is exact.",
     "`l[i]` is the element at `i`, or the type's default (`0`, `False`, `\"\"`) when `i >= len(l)`; "
     "`l[i]?` is `some(x)` or `none`.",
-    "Slices (`l[a:b]`) are for lists; a `str` slice is a different type: slice its characters and rebuild it, "
-    "`String.mk(list(s)[a:b])`.",
+    "Slices (`l[a:b]`) are lists; a slice of a `str` variable (`s[a:b]`, `s[::-1]`) is a `str`, as in Python. "
+    "To slice another string expression, slice its characters and rebuild it: `String.mk(list(e)[a:b])`.",
     "`//` and `%` with a negative divisor differ from Python: `7 // -2 == -3`, `7 % -2 == 1` (the remainder is never "
     "negative); `x // 0 == 0`.",
         "`==` is equality as a proposition; `===` is the Boolean test (Lean's `==`). "

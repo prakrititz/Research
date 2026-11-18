@@ -528,3 +528,28 @@ def test_exists_puts_its_nat_bound_first_so_lean_decides_it():
         "∃ j, (j < l.length) ∧ ((i < j) ∧ (l[j]! = 0))"
     assert lean_syntax.show(lspec_syntax.parse("exists j: j < n and i < j")) == "∃ j, (j < n) ∧ (i < j)"
     assert lean_syntax.show(lspec_syntax.parse("exists x: int, a < x and x < b")) == "∃ (x : Int), (a < x) ∧ (x < b)"
+
+
+def test_a_string_slice_is_a_string_like_python():
+    # verina_advanced_67: Lean's `String.take` is a `String.Slice`; `s[:i]` of a `str` is the string of its characters
+    scope = ["s", "i", "l", "acc"]
+    assert steps.to_lean("s[:i]", "x", scope, ["s"]) == "String.mk (s.toList.take i)"
+    assert steps.to_lean("s[i:]", "x", scope, ["s"]) == "String.mk (s.toList.drop i)"
+    assert steps.to_lean("s[::-1]", "x", scope, ["s"]) == "String.mk s.toList.reverse"
+    assert steps.to_lean("l[:i]", "x", scope, ["s"]) == "l.take i"                 # a list is sliced as before
+    assert steps.to_lean("s[:i]", "x", scope) == "s.take i"                        # type unknown: as before
+    lean = steps.to_lean("decodeRLE(acc) == s[:i]", "x", scope, ["s"])
+    assert steps.to_lean(steps.to_lspec(lean, "x", scope), "x", scope, ["s"]) == lean
+    # a loop's state of type `str` is a string where it is in scope; one of another type shadows a string input
+    loop = steps.to_engine({"law": "loop", "state": [["t", "str", '""'], ["s", "list[nat]", "[]"]],
+                            "invariant": "t[:0] == \"\" and s[:1] == []", "guard": "False", "variant": "0",
+                            "result": "t"}, ["s"], ["s"])
+    assert "String.mk (t.toList.take 0)" in loop["invariant"] and "String.mk (s" not in loop["invariant"]
+
+
+def test_implicit_and_instance_binders_after_a_typed_one():
+    # verina_advanced_71's lemma: the comma after `{α: Type}` does not end the binders (regression from 7395be9)
+    text = "forall {α: Type}, {β: Type}, [LinearOrder(β)], (f: α ==> β), (b: α): f(b) <= f(b)"
+    lean = lean_syntax.show(lspec_syntax.parse(text))
+    assert lean.startswith("∀ {α : Type} {β : Type} [LinearOrder β] (f : α → β) (b : α),"), lean
+    assert lean_syntax.show(lspec_syntax.parse("forall (p: nat), p >= 0")) == "∀ (p : Nat), p ≥ 0"

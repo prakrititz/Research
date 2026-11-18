@@ -62,14 +62,15 @@ def _text(value):
     return value
 
 
-def to_lean(text: str, field: str, scope=()) -> str:
-    """L_spec text -> Lean text; ``scope``: the variables in scope (a name among them is that variable)."""
+def to_lean(text: str, field: str, scope=(), strings=()) -> str:
+    """L_spec text -> Lean text; ``scope``: the variables in scope (a name among them is that variable); ``strings``:
+    those of type ``String`` (a slice of one is a string)."""
     text = _text(text)
     if not isinstance(text, str) or not text.strip():
         raise StepError(field, 'empty: an expression is needed (the empty string is `""`, written "\\"\\"" in JSON; '
                                'the empty list is "[]")')
     try:
-        return lean_syntax.show(lspec_syntax.parse(text, scope))
+        return lean_syntax.show(lspec_syntax.parse(text, scope, strings))
     except Exception as error:                            # the parser's message, attributed to the field
         raise StepError(field, f"{type(error).__name__}: {error}" + _syntax_hint(text, str(error))) from None
 
@@ -105,20 +106,25 @@ def _name(value, field: str) -> str:
 
 # --- a step --------------------------------------------------------------------------------------------------------
 
-def to_engine(step: dict, scope=()) -> dict:
+def to_engine(step: dict, scope=(), strings=()) -> dict:
     """The model's L_spec step -> the engine's step (Lean text). ``scope``: the goal's variables (and assumption names);
-    a loop's state and a bind's variable are added where they are in scope. Unknown keys are ignored."""
+    a loop's state and a bind's variable are added where they are in scope. ``strings``: the goal's variables of type
+    ``String`` (with the state's and the bind's of type `str` where they are in scope). Unknown keys are ignored."""
     if not isinstance(step, dict):
         raise StepError("step", "expected a JSON object")
     law = step.get("law")
     out = {"law": law}
     if law == "bind" and "prop" not in step and "value" in step and isinstance(step.get("var"), str):
         step = {**step, "prop": f"{step['var']} == ({_text(step['value'])})", "_value": True}          # bind to a known value
-    inner = set(scope)
+    inner, inner_strings = set(scope), set(strings)
     if law == "loop" and isinstance(step.get("state"), list):
         inner |= {item[0] for item in step["state"] if isinstance(item, (list, tuple)) and item and isinstance(item[0], str)}
+        for item in step["state"]:
+            if isinstance(item, (list, tuple)) and len(item) > 1 and isinstance(item[0], str):
+                (inner_strings.add if _is_str_type(item[1]) else inner_strings.discard)(item[0])
     if law == "bind" and isinstance(step.get("var"), str):
         inner.add(step["var"])
+        (inner_strings.add if _is_str_type(step.get("type")) else inner_strings.discard)(step["var"])
     for field, kind in fields_for(law):
         if field not in step:
             raise StepError(field, f"missing: a `{law}` step has the fields "
@@ -135,11 +141,11 @@ def to_engine(step: dict, scope=()) -> dict:
                     raise StepError(f"state[{k}]", "expected [name, type, initial value]")
                 name, typ, init = item
                 out["state"].append([_name(name, f"state[{k}].name"), to_lean(typ, f"state[{k}].type", scope)])
-                out["init"].append(to_lean(init, f"state[{k}].initial value", scope))
+                out["init"].append(to_lean(init, f"state[{k}].initial value", scope, strings))
         elif field == "type":
             out[field] = to_lean(value, field, scope)
         else:
-            out[field] = to_lean(value, field, inner)
+            out[field] = to_lean(value, field, inner, inner_strings)
     _shadow(out, scope, step)
     lemmas = step.get("lemmas") or []
     if lemmas:
@@ -148,9 +154,19 @@ def to_engine(step: dict, scope=()) -> dict:
             if not isinstance(lemma, dict) or not {"name", "statement", "proof"} <= set(lemma):
                 raise StepError(f"lemmas[{k}]", "a lemma needs name, statement and proof")
             out["lemmas"].append({"name": _name(lemma["name"], f"lemmas[{k}].name"),
-                                  "statement": to_lean(lemma["statement"], f"lemmas[{k}].statement", scope),
+                                  "statement": to_lean(lemma["statement"], f"lemmas[{k}].statement", scope, strings),
                                   "proof": lemma["proof"]})
     return out
+
+
+def _is_str_type(typ) -> bool:
+    """An L_spec (or Lean) type text that is the string type."""
+    return isinstance(typ, str) and typ.strip() in ("str", "String", "string")
+
+
+def string_vars(ctx) -> list:
+    """The names of ``ctx`` (``[(name, Lean type)]``, a goal's inputs) whose type is ``String``."""
+    return [n for n, t in ctx if _is_str_type(t)]
 
 
 def _shadow(out: dict, scope, step: dict) -> None:

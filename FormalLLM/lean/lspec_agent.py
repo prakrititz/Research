@@ -165,7 +165,7 @@ class Judgement:
 
 def _read(written: dict, goal, scope):
     """The step in Lean and its law, expanded at ``goal`` (raises when it cannot be read)."""
-    engine = steps.to_engine(written, scope)
+    engine = steps.to_engine(written, scope, steps.string_vars(goal.ctx))
     law = law_from_json(engine)
     law.expand(goal, lambda: 10 ** 6)
     return engine, law

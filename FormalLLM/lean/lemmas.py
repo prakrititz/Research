@@ -54,6 +54,9 @@ theorem string_length_mk (l : List Char) : (String.mk l).length = l.length := St
 
 theorem string_toList_mk (l : List Char) : (String.mk l).toList = l := String.toList_ofList
 
+-- `String.mk` (deprecated) is `String.ofList`, for which the simp set has its rules (`ofList_nil`, `ofList_toList`)
+theorem string_mk_eq_ofList (l : List Char) : String.mk l = String.ofList l := rfl
+
 theorem take_succ_bang {α : Type} [Inhabited α] (l : List α) (i : Nat) (h : i < l.length) :
     l.take (i + 1) = l.take i ++ [l[i]!] := by
   rw [List.take_succ_eq_append_getElem h, getElem!_pos l i h]

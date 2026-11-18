@@ -531,11 +531,11 @@ class _Parser:
                 step = self.expr()
                 self.expect("]")
                 if isinstance(step, UnOp) and step.op == "-" and isinstance(step.arg, Num) and step.arg.text == "1":
-                    return Dot(obj, "reverse")
+                    return _str_slice(obj, lambda o: Dot(o, "reverse"))
                 raise Unsupported("a slice with a step other than `[::-1]`")
             k = self.expr()
             self.expect("]")
-            return App(Dot(obj, "take"), [_from_end(obj, k)])
+            return _str_slice(obj, lambda o: App(Dot(o, "take"), [_from_end(obj, k)]))
         if self.peek() == "[":                                                        # `l[[i]]`
             self.next()
             idx = self.expr()
@@ -547,11 +547,11 @@ class _Parser:
             self.next()
             if self.peek() == "]":
                 self.next()
-                return App(Dot(obj, "drop"), [_from_end(obj, idx)])
+                return _str_slice(obj, lambda o: App(Dot(o, "drop"), [_from_end(obj, idx)]))
             end = self.expr()
             self.expect("]")
             start, end = _from_end(obj, idx), _from_end(obj, end)
-            return App(Dot(App(Dot(obj, "drop"), [start]), "take"), [BinOp("-", end, start)])
+            return _str_slice(obj, lambda o: App(Dot(App(Dot(o, "drop"), [start]), "take"), [BinOp("-", end, start)]))
         self.expect("]")
         if self.peek() == "?" and self.adjacent():
             self.next()
@@ -611,8 +611,9 @@ class _Parser:
                 raise Unsupported(f"binder {tok!r}")
             if self.peek() != ",":
                 return out
-            if quantifier and out[-1][1] is not None and self.peek(1) != "(":
+            if quantifier and out[-1][1] is not None and self.peek(1) not in ("(", "{", "[", "⟨"):
                 return out                                   # Lean's `forall (p: nat), body`: the comma ends the binders
+                                                             # (not before another binder: `{α: Type}, [Ord(α)], ...`)
             self.next()
 
     def binder(self) -> Node:
@@ -713,6 +714,15 @@ class _Parser:
         return Match(scrutinees, arms)
 
 
+def _str_slice(obj: Node, cut) -> Node:
+    """A slice of ``obj``: ``cut(obj)``, or for a string (a variable typed ``str``, or a literal) the slice of its
+    characters made a string again, as in Python: ``String.mk (s.toList.take k)`` (Lean's ``String.take`` is a
+    ``String.Slice``, another type; gpt-oss-120b, Verina advanced_67, 2026-11-18)."""
+    if (isinstance(obj, Name) and obj.id in _STRINGS) or isinstance(obj, Str):
+        return App(Name("String.mk"), [cut(Dot(obj, "toList"))])
+    return cut(obj)
+
+
 def _from_end(obj: Node, k: Node) -> Node:
     """Python's negative index or slice bound: `l[-k]` is `l[len(l) - k]`."""
     if isinstance(k, UnOp) and k.op == "-":
@@ -771,6 +781,8 @@ def show_name(node: Node) -> str:
 #: names that are variables where the text is read (a goal's inputs, a loop's state): such a name is that variable,
 #: never the L_spec name it happens to spell (an input called `string` is not `string(...)`)
 _SCOPE: frozenset = frozenset()
+#: the variables of type ``String`` where the text is read: their slices are strings (``_str_slice``)
+_STRINGS: frozenset = frozenset()
 
 
 def show_in(node: Node, scope=()) -> str:
@@ -784,9 +796,11 @@ def show_in(node: Node, scope=()) -> str:
         _SCOPE = saved
 
 
-def parse(text: str, scope=()) -> Node:
-    global _SCOPE
+def parse(text: str, scope=(), strings=()) -> Node:
+    """``strings``: the variables of ``scope`` whose type is ``String``."""
+    global _SCOPE, _STRINGS
     saved, _SCOPE = _SCOPE, frozenset(scope)
+    saved_strings, _STRINGS = _STRINGS, frozenset(strings)
     try:
         p = _Parser(text)
         node = p.expr()
@@ -794,4 +808,4 @@ def parse(text: str, scope=()) -> Node:
             raise Unsupported(f"trailing {p.peek()!r}")
         return _resolve(node)
     finally:
-        _SCOPE = saved
+        _SCOPE, _STRINGS = saved, saved_strings
