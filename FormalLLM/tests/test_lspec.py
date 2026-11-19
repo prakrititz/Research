@@ -448,6 +448,8 @@ def test_text_repairs_bounded_comma_and_semicolon_in():
     assert repair._fix_text("forall x in f(a, b), x > 0")[0] == "forall x in f(a, b): x > 0"
     assert repair._fix_text("forall x in l: f(x, y)")[1] == []
     assert repair._fix_text("let a = 1; in a + 1")[0] == "let a = 1; a + 1"
+    assert repair._fix_text("forall j < len(acc) - 1 ==> acc[j] != 0")[0] == "forall j < len(acc) - 1: acc[j] != 0"
+    assert repair._fix_text("forall j: j < n ==> p(j)")[1] == []
 
 
 def test_method_space_keeps_tuple_argument():

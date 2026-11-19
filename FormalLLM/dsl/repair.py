@@ -537,6 +537,14 @@ def _bounded_comma(text: str) -> Optional[str]:
                 if not re.match(r"[ \t]*[A-Za-z_]\w*(?:[ \t]*,[ \t]*[A-Za-z_]\w*)*[ \t]*:(?!=)", text[j + 1:]):
                     out[j] = ":"
                 break
+            elif depth == 0 and text.startswith("==>", j):
+                # `forall j < n ==> p`: the binder has no `:`, so it cannot be read another way (gpt-oss-120b, Verina
+                # advanced_67, 2026-11-18 and 2026-11-19, in 4 invariants)
+                out[j], out[j + 1], out[j + 2] = ":", "", ""
+                k = j
+                while k > m.end() and text[k - 1] in " \t":
+                    out[k - 1], k = "", k - 1
+                break
             j += 1
     new = "".join(out)
     return new if new != text else None
@@ -587,7 +595,7 @@ _TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_missing_close, "a bracket l
                (_len_variable, "a variable named `len` read as `` `len` ``"),
                (_semicolon_in, "`; in` read as `;`"),
                (_let_in, "`let x = v in body` read as `let x = v; body`"),
-               (_bounded_comma, "Lean's `forall x in l, p` read as `forall x in l: p`"),
+               (_bounded_comma, "`forall x in l, p` (or `==> p`) read as `forall x in l: p`"),
                (_local_application, "Lean's `f x` (a `let rec` function) read as `f(x)`"),
                (_some_arg, "Lean's `some x` read as `some(x)`"),
                (_spaced_binders, "Lean's `exists j k: p` read as `exists j, k: p`"),
