@@ -82,7 +82,8 @@ MEANING = [
     "A Boolean `b` used as a condition is written `b == True`.",
     "`forall`/`exists`/`lambda` bodies extend to the end of the expression: parenthesise them inside larger ones.",
 ] + LIBRARY_FACTS + [
-    "Calls are `f(x, y)` or `x.m(y)`, never Lean's `f x y`; a type is given as `x as int`, never `(x : int)`.",
+    "Calls are `f(x, y)` or `x.m(y)`, never Lean's `f x y`; a type is given as `(x as int)` (bracketed), never "
+    "`(x : int)`.",
 ]
 
 

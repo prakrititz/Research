@@ -453,6 +453,30 @@ def _as_nat(text: str) -> Optional[str]:
     return out if out != text else None
 
 
+#: a cast `x as int` outside brackets (the parser reads `as` only in `(x as int)`; gpt-oss-120b, Verina basic_37,
+#: 2026-11-19: `if res == -1 then i as int else res`, 4 times): the cast of the atom before it, bracketed
+_AS_TYPE = re.compile(r"(\((?:[^()]|\([^()]*\))*\)|[A-Za-z_]\w*(?:\.\w+|\[[^\[\]]*\])*)[ \t]+as[ \t]+(int|rat|real|float)\b")
+
+
+def _as_type(text: str) -> Optional[str]:
+    def one(m):
+        before, after = text[:m.start()].rstrip(), text[m.end():].lstrip()
+        if before.endswith("(") and after.startswith(")"):
+            return m.group(0)                             # already `(x as int)`
+        return f"({m.group(1)} as {m.group(2)})"
+    out = _AS_TYPE.sub(one, text)
+    return out if out != text else None
+
+
+#: Lean's `l[i]!` (gpt-oss-120b, Verina basic_19, 2026-11-19): in L_spec `l[i]` is already Lean's `l[i]!`
+_BANG_INDEX = re.compile(r"\]!(?!=)")
+
+
+def _bang_index(text: str) -> Optional[str]:
+    out = _BANG_INDEX.sub("]", text)
+    return out if out != text else None
+
+
 #: `let x = v in body` (ML/Haskell; gpt-oss-120b, Verina advanced_10, 2026-11-16, four times) for `let x = v; body`:
 #: the first `in` after the value at bracket depth 0, unless a `;` comes first
 _LET = re.compile(r"\blet\b")
@@ -601,6 +625,8 @@ _TEXT_FIXES = ((_closing_typo, "`}` read as `)`"), (_missing_close, "a bracket l
                (_spaced_binders, "Lean's `exists j k: p` read as `exists j, k: p`"),
                (_single_eq, "Lean's `=` read as `==`"),
                (_as_nat, "`x as nat` read as `to_nat(x)`"),
+               (_as_type, "`x as int` read as `(x as int)`"),
+               (_bang_index, "Lean's `l[i]!` read as `l[i]`"),
                (_lambda_params, "Lean's `fun a b` read as `lambda a, b`"),
                (_method_space, "`x.m (y)` read as `x.m(y)`"),
                (_quantifier_comma, "Lean's `forall x, p` read as `forall x: p`"),
