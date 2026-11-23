@@ -1601,19 +1601,22 @@ class Derivation:
             # times out instantiating the invariant's quantifiers at both)
             binders = _binder_types(obligation.binders)
             # (only a variable the statement compares with the length: a failing ``by omega`` is logged, not caught by try)
-            at_end = "".join(f"(try (obtain rfl : {v} = {l}.length := by omega)); " for v, tv in binders if tv in ("Nat", "ℕ")
-                             for l, tl in binders if tl.startswith("List")
-                             if re.search(rf"¬ ?\({v} < {l}\.length\)", obligation.binders + obligation.statement))
+            ends = [(v, l) for v, tv in binders if tv in ("Nat", "ℕ") for l, tl in binders if tl.startswith("List")
+                    if re.search(rf"¬ ?\({v} < {l}\.length\)", obligation.binders + obligation.statement)]
+            at_end = "".join(f"(try (obtain rfl : {v} = {l}.length := by omega)); " for v, l in ends)
+            gone = {v for v, _ in ends}
             # ... and a value the invariant describes by "v > 0 → a witness" split at 0, the witness taken (the result is 0
             # exactly when no pair gains: grind alone instantiates the bound at the wrong indices)
             zero = [f"(rcases Nat.eq_zero_or_pos {v} with h_z | h_z) <;> (try subst h_z) <;> "
                     f"(try (have h_e := ‹{v} > 0 → _› h_z; casesm* Exists _, _ ∧ _)) <;> "
-                    for v, tv in binders if tv in ("Nat", "ℕ") and re.search(rf"\(?{v} > 0\)? →", obligation.binders)][:1]
-            for split in [""] + zero:
-                tactics.append(f"unfold {post}; (try unfold {pre} at *); simp only [Refine.pairwise_zipIdx_iff, "
-                               "Refine.zipIdx_all_iff, Refine.zipIdx_any_iff, decide_eq_true_eq, Bool.or_eq_true, "
-                               f"Bool.and_eq_true, ge_iff_le]; (try casesm* _ ∧ _); {at_end}{split}(repeat' apply And.intro) <;> "
-                               "(try apply Iff.intro) <;> (try intros) <;> grind")
+                    for v, tv in binders if tv in ("Nat", "ℕ") and v not in gone
+                    and re.search(rf"\(?{v} > 0\)? →", obligation.binders)][:1]
+            # (tried first, the split one leading: behind the generic tactics the step's budget ran out before them,
+            # gpt-5.4-mini advanced_42 2026-11-23, 7 tactics in 637 s; the split one closes it in 43 s)
+            tactics[0:0] = [f"unfold {post}; (try unfold {pre} at *); simp only [Refine.pairwise_zipIdx_iff, "
+                            "Refine.zipIdx_all_iff, Refine.zipIdx_any_iff, decide_eq_true_eq, Bool.or_eq_true, "
+                            f"Bool.and_eq_true, ge_iff_le]; (try casesm* _ ∧ _); {at_end}{split}(repeat' apply And.intro) <;> "
+                            "(try apply Iff.intro) <;> (try intros) <;> grind" for split in zero + [""]]
         # a value missing from a strictly increasing list of naturals: the first index i with ``l[i] ≠ i`` is not in the list
         # (``sorted_nat_not_mem``; Verina advanced_73: the smallest missing number)
         pre_def = self.task.prelude.split(f"def {pre}", 1)
@@ -1623,6 +1626,19 @@ class Derivation:
                                    "| (apply Refine.sorted_nat_not_mem <;> first | assumption | omega | (simp_all; done) | grind) "
                                    "| (apply Refine.idx_prefix_mem <;> first | assumption | omega) "
                                    "| (intros; simp_all; done)")
+        # ... and a list sorted by ``≤``, membership possibly written ``List.elem`` (``sorted_le_not_mem``; Verina basic_33)
+        if ("∉" in stmt + post_def or "List.elem" in post_def) and len(pre_def) > 1 \
+                and "Pairwise (· ≤ ·)" in pre_def[1].split("\ndef ", 1)[0]:
+            tactics.append(start + "(try casesm* _ ∧ _); (try simp only [List.elem_eq_mem, decide_eq_true_eq] at *); "
+                                   "(repeat' apply And.intro) <;> first | assumption "
+                                   "| (apply Refine.sorted_le_not_mem <;> first | assumption | omega | (simp_all; done) | grind) "
+                                   "| (intros; simp_all; done)")
+        # a loop step that extends a prefix fact ``∀ j < i, Q j`` to ``i + 1``: ``j < i`` from the invariant, ``j = i`` from the
+        # guard, before any simp rewrites the two copies of ``Q`` apart (Verina advanced_52: ``i + 1`` after a search loop)
+        if re.search(r"∀ \w+ < \w+,", obligation.statement) and "+ 1)" in obligation.statement:
+            tactics.append("(try beta_reduce); (try casesm* _ ∧ _); (repeat' apply And.intro) <;> (try omega) <;> "
+                           "(try (intro j_x hj_x; rcases Nat.lt_succ_iff_lt_or_eq.mp hj_x with hj_x | rfl)) <;> "
+                           "first | assumption | omega | solve_by_elim | (simp_all; done)")
         # induction along a recursive function of the task (he_038: ``encodeGroups`` applied three times is the identity)
         for f in self._recursive_defs():
             for var, typ in _binder_types(obligation.binders):

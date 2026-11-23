@@ -2451,6 +2451,21 @@ theorem idx_prefix_mem (l : List Nat) (i : Nat) (h1 : ∀ k, k < i → l[k]! = k
   rw [← h]
   exact List.getElem_mem _
 
+-- a list sorted by ``≤``: a value above every element before index i, with i at the end or ``l[i]`` above it, is missing
+-- (Verina basic_33: the smallest missing number of a sorted list, the scan stopping at ``s[i] > m``)
+theorem sorted_le_not_mem (l : List Nat) (h : List.Pairwise (· ≤ ·) l) (i m : Nat) (hi : i ≤ l.length)
+    (hlt : ∀ j, j < i → l[j]! < m) (hg : ¬ (i < l.length ∧ l[i]! ≤ m)) : m ∉ l := by
+  intro hm
+  obtain ⟨k, hk, hkm⟩ := List.getElem_of_mem hm
+  by_cases hki : k < i
+  · have := hlt k hki; rw [getElem!_pos l k hk] at this; omega
+  · have hi' : i < l.length := by omega
+    have h4 : l[i] ≤ l[k] := by
+      rcases Nat.eq_or_lt_of_le (Nat.le_of_not_lt hki) with he | hlt'
+      · subst he; exact Nat.le_refl _
+      · exact List.pairwise_iff_getElem.mp h i k hi' hk hlt'
+    apply hg; refine ⟨hi', ?_⟩; rw [getElem!_pos l i hi']; omega
+
 -- a maximum folded from the list's first element, ``l[0]!`` or ``l.head!``, is the ``headD 0`` form ``maxlist_int`` states
 -- (Verina advanced_45: the largest subarray sum)
 theorem getElem_zero_bang_eq_headD_int (L : List Int) : L[0]! = L.headD 0 := by

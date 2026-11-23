@@ -111,6 +111,11 @@ TYPE_HINTS = [
     (r"GetElem\?? str ", "A `str` is not indexed directly: index its characters, `list(s)[i]`."),
     (r"Unknown identifier `(\w+)\.", "`{0}` is not defined at this step: only the goal's inputs, its assumptions and "
                                      "the variables this step introduces can be used."),
+    # (Verina advanced_51, gpt-5.4-mini 2026-11-23: nine calls spent on `x :: mergeSorted(a[1:], b)`)
+    # (a name Lean does not know reads as an auto-bound ``?m``; a goal variable has its own type: the hint further down)
+    (r"Function expected at\s+(\w+)\s+but this term has type\s+\?m",
+     "`{0}` is not defined at this step. If it is the function being specified, a step cannot call it (there is no "
+     "recursion): use a loop, or a library function (for example `sorted`, `sum`, `max`)."),
     (r"Decidable \([^\n]*(?:∃|exists)",
      "An `exists` over all numbers cannot be computed, and the program must run. Search a bounded range instead, "
      "e.g. `range(n + 1).any(lambda m: ...)`, or use a loop."),
@@ -129,7 +134,7 @@ TYPE_HINTS = [
     # numbers quoted like the JSON around them, `len(acc) == "0"` (gpt-oss-120b, Verina advanced_67, 2026-11-18, 3 times)
     (r"\"(-?\d+)\" has type str but is expected to have type (nat|int|rat)",
      "`\"{0}\"` is a string: write the number without quotes, `{0}`."),
-    (r"Function expected at\s+(\w+)\b", "`{0}` is a value here, not a function: a variable of the goal named `{0}` "
+    (r"Function expected at\s+(\w+)\b(?!\s+but this term has type\s+\?m)", "`{0}` is a value here, not a function: a variable of the goal named `{0}` "
                                          "hides the library name (write the library function as in Lean, e.g. "
                                          "`String.mk(...)`), or the call has too many arguments."),
 ]

@@ -291,6 +291,18 @@ class _Parser:
 
     def next(self) -> str:
         if self.k >= len(self.toks):
+            # the brackets left open, named: "unexpected end" alone sent gpt-5.4-mini back with the same unbalanced text
+            # (Verina advanced_45, 2026-11-23: two `)` missing, two attempts lost)
+            pairs = {"(": ")", "[": "]", "{": "}", "#[": "]", "⟨": "⟩"}
+            stack = []
+            for tok in self.toks:
+                if tok in pairs:
+                    stack.append(pairs[tok])
+                elif stack and tok == stack[-1]:
+                    stack.pop()
+            if stack:
+                raise Unsupported(f"unexpected end: {len(stack)} bracket(s) not closed (missing "
+                                  f"`{''.join(reversed(stack))}` at the end, or earlier)")
             raise Unsupported("unexpected end")
         self.k += 1
         return self.toks[self.k - 1]
