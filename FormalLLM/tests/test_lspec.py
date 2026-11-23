@@ -461,6 +461,8 @@ def test_text_repairs_bare_cast_and_bang_index():
     assert repair._fix_text("a[i] as rat / 2")[0] == "(a[i] as rat) / 2"
     assert repair._fix_text("forall i: i < n ==> a[i]! <= a[i + 1]!")[0] == "forall i: i < n ==> a[i] <= a[i + 1]"
     assert repair._fix_text("a[i] != b[i]")[1] == []
+    assert repair._fix_text("(Nat.sqrt n * Nat.sqrt n) === n")[0] == "(Nat.sqrt(n) * Nat.sqrt(n)) === n"
+    assert repair._fix_text("x.f a ==> p")[0] == "x.f(a) ==> p"
 
 
 def test_method_space_keeps_tuple_argument():

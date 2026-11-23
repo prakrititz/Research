@@ -265,9 +265,12 @@ def decidable_part(derivation, goal: Goal, law: Loop) -> Optional[Loop]:
     parts = conjuncts(law.invariant)
     kept = [p for p in parts
             if not derivation._run(f"def dyn_decidable {ctx} {_state_binders(law)} : Bool := decide ({p})\n").errors]
-    if not kept or len(kept) == len(parts):
+    if len(kept) == len(parts):
         return None
-    return replace(law, invariant=" ∧ ".join(f"({p})" for p in kept))
+    # no part can be computed (one `∃ j, ...` over all numbers): the run still checks the variant and the guard on the
+    # states real inputs reach (gpt-oss-120b, Verina basic_21, 2026-11-22: a variant `len(main) - len(sub) - i` that stays
+    # 0 at the last iteration, unreported for 12 calls)
+    return replace(law, invariant=" ∧ ".join(f"({p})" for p in kept) if kept else "True")
 
 
 def loop_finding(derivation, goal: Goal, law: Loop, step: Optional[str], conds=()) -> Optional[Finding]:

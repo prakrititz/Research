@@ -2414,6 +2414,49 @@ theorem pairs_head?_some {n : Nat} {p : Nat → Nat → Bool} {a b : Nat}
     rcases List.mem_cons.mp hm with he | he
     · simp only [Prod.mk.injEq] at he; omega
     · have := hsort.1 _ he; simp only at this; omega
+
+-- a strictly increasing list of naturals has ``k ≤ l[k]``; the first index where ``l[i] ≠ i`` is a value missing from the
+-- list (Verina advanced_73: the smallest missing number of a sorted list)
+theorem nat_lt_sorted_idx_le (l : List Nat) (h : List.Pairwise (· < ·) l) :
+    ∀ k, k < l.length → k ≤ l[k]! := by
+  intro k
+  induction k with
+  | zero => intro _; omega
+  | succ k ih =>
+    intro hk
+    have h1 := ih (by omega)
+    have h2 := List.pairwise_iff_getElem.mp h k (k + 1) (by omega) hk (by omega)
+    rw [getElem!_pos l k (by omega)] at h1
+    rw [getElem!_pos l (k + 1) hk]
+    omega
+
+theorem sorted_nat_not_mem (l : List Nat) (h : List.Pairwise (· < ·) l) (i : Nat)
+    (h1 : ∀ k, k < i → l[k]! = k) (hg : ¬ (i < l.length ∧ l[i]! = i)) : i ∉ l := by
+  intro hm
+  obtain ⟨j, hj, hji⟩ := List.getElem_of_mem hm
+  rcases Nat.lt_trichotomy j i with hlt | heq | hgt
+  · have := h1 j hlt; rw [getElem!_pos l j hj] at this; omega
+  · subst heq; exact hg ⟨hj, by rw [getElem!_pos l j hj]; exact hji⟩
+  · have hi : i < l.length := by omega
+    have h4 := List.pairwise_iff_getElem.mp h i j hi hj hgt
+    have h5 := nat_lt_sorted_idx_le l h i hi
+    rw [getElem!_pos l i hi] at h5
+    omega
+
+theorem idx_prefix_mem (l : List Nat) (i : Nat) (h1 : ∀ k, k < i → l[k]! = k) (hi : i ≤ l.length) :
+    ∀ c, c < i → c ∈ l := by
+  intro c hc
+  have h := h1 c hc
+  rw [getElem!_pos l c (by omega)] at h
+  rw [← h]
+  exact List.getElem_mem _
+
+-- a maximum folded from the list's first element, ``l[0]!`` or ``l.head!``, is the ``headD 0`` form ``maxlist_int`` states
+-- (Verina advanced_45: the largest subarray sum)
+theorem getElem_zero_bang_eq_headD_int (L : List Int) : L[0]! = L.headD 0 := by
+  cases L <;> rfl
+theorem head_bang_eq_headD_int (L : List Int) : L.head! = L.headD 0 := by
+  cases L <;> rfl
 end Refine
 '''
 

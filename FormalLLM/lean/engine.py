@@ -774,10 +774,19 @@ class Derivation:
         # ``L.foldl max d`` is a member of L and bounds it once L is not empty (``maxlist_*``); L is not empty by its length,
         # by a witness (the empty subarray, the empty subsequence, a one-element list after splitting an input list), or
         # after a split on the input's ``match`` (Verina advanced_2, 3, 4, 28, 29, 43, 45, 46, 75)
+        # (folded from the list's own first element, ``l[0]!`` or ``l.head!``, the list often a name bound by an equation:
+        # substituted, the seed rewritten to ``headD 0``; Verina advanced_45)
+        seeded = re.search(r"foldl \(fun (\w+) (\w+) => if \2 (?:>|≥) \1 then \2 else \1\) \(?[\w.]+(?:\[0\]!|\.head!)", stmt)
+        if seeded:
+            stmt += " foldl max"
         if "foldl max" in stmt:
             tactics.append(self._max_tactic(obligation, plain))
             if ".max?.get!" in obligation.statement:
                 tactics.append(self._max_tactic(obligation, plain, NORMALIZE_ZERO))
+            if seeded:
+                tactics.append(self._max_tactic(obligation, plain, "(try subst_vars); " + NORMALIZE + "(try simp only "
+                                                "[Refine.getElem_zero_bang_eq_headD_int, Refine.head_bang_eq_headD_int, "
+                                                "List.map_id'] at *); "))
         # a bounded search for a witness, ``(range (n + 1)).any p`` against the postcondition's ``∃ m, p m``: equivalent once
         # every witness is at most n (``any_range_iff``), a power ``b ^ m`` is at least m and a digit past the number's
         # length is 0 (Verina advanced_14, advanced_20)
@@ -790,6 +799,17 @@ class Derivation:
                            "(try simp only [Bool.or_eq_true, Bool.and_eq_true, beq_iff_eq, decide_eq_true_eq]); "
                            f"rw [Refine.any_range_iff]; all_goals first | ({bound}) | exact Iff.rfl | (simp; done) | "
                            "(simp [eq_comm]; done)")
+            # ... a square, ``(range (n + 1)).any (fun i => i * i = n)``: a witness is at most n since i ≤ i * i (Verina
+            # basic_48: a perfect square)
+            if "*" in stmt:
+                tactics.append(f"unfold {post}; (try unfold {pre} at *); "
+                               "simp only [List.any_eq_true, List.mem_range, decide_eq_true_eq]; constructor <;> first "
+                               "| (rintro ⟨i, _, h⟩; exact ⟨i, h⟩) "
+                               "| (rintro ⟨i, h⟩; exact ⟨i, by nlinarith [Nat.le_mul_self i], h⟩)")
+        # an integer square root against ``∃ i, i * i = n`` (Verina basic_48)
+        if "Nat.sqrt" in stmt:
+            tactics.append(f"unfold {post}; (try unfold {pre} at *); first | (rw [Nat.exists_mul_self]; simp; done) "
+                           "| (simp [Nat.exists_mul_self]; done) | (simp [Nat.exists_mul_self']; done)")
         split = "(try intros); (repeat' apply And.intro) <;> (try intros) <;> (try casesm* _ ∧ _)"
         # a polynomial identity over Nat with a subtraction (``2 * i - 1``): split the variable at 0, then the subtraction
         # normalises away and ``nlinarith`` closes the step (Verina basic_7: a sum of odd squares)
@@ -1573,6 +1593,36 @@ class Derivation:
                            "| (obtain ⟨x, _, hx⟩ := h; exact ⟨x, by first | exact hx | (exact ⟨hx, by omega⟩) | simp_all⟩) "
                            f"| (rintro ⟨x, hx⟩; apply h; (try obtain ⟨hx, _⟩ := hx); exact ⟨x, by first | {bound}, "
                            "by first | exact hx | simp_all⟩)")
+        # quantifiers over ``zipIdx`` pairs in the postcondition read as quantifiers over indices, then grind with the loop's
+        # facts (Verina advanced_42: an invariant on all pairs a < b < i at the loop's exit)
+        post_def = definition[1].split("\ndef ", 1)[0] if len(definition) > 1 else ""
+        if "zipIdx" in stmt + post_def:
+            # (the loop variable equal to the length at the exit, ``i ≤ l.length`` and ``¬ i < l.length``, substituted: grind
+            # times out instantiating the invariant's quantifiers at both)
+            binders = _binder_types(obligation.binders)
+            # (only a variable the statement compares with the length: a failing ``by omega`` is logged, not caught by try)
+            at_end = "".join(f"(try (obtain rfl : {v} = {l}.length := by omega)); " for v, tv in binders if tv in ("Nat", "ℕ")
+                             for l, tl in binders if tl.startswith("List")
+                             if re.search(rf"¬ ?\({v} < {l}\.length\)", obligation.binders + obligation.statement))
+            # ... and a value the invariant describes by "v > 0 → a witness" split at 0, the witness taken (the result is 0
+            # exactly when no pair gains: grind alone instantiates the bound at the wrong indices)
+            zero = [f"(rcases Nat.eq_zero_or_pos {v} with h_z | h_z) <;> (try subst h_z) <;> "
+                    f"(try (have h_e := ‹{v} > 0 → _› h_z; casesm* Exists _, _ ∧ _)) <;> "
+                    for v, tv in binders if tv in ("Nat", "ℕ") and re.search(rf"\(?{v} > 0\)? →", obligation.binders)][:1]
+            for split in [""] + zero:
+                tactics.append(f"unfold {post}; (try unfold {pre} at *); simp only [Refine.pairwise_zipIdx_iff, "
+                               "Refine.zipIdx_all_iff, Refine.zipIdx_any_iff, decide_eq_true_eq, Bool.or_eq_true, "
+                               f"Bool.and_eq_true, ge_iff_le]; (try casesm* _ ∧ _); {at_end}{split}(repeat' apply And.intro) <;> "
+                               "(try apply Iff.intro) <;> (try intros) <;> grind")
+        # a value missing from a strictly increasing list of naturals: the first index i with ``l[i] ≠ i`` is not in the list
+        # (``sorted_nat_not_mem``; Verina advanced_73: the smallest missing number)
+        pre_def = self.task.prelude.split(f"def {pre}", 1)
+        if "∉" in stmt + post_def and len(pre_def) > 1 \
+                and "Pairwise (· < ·)" in pre_def[1].split("\ndef ", 1)[0]:
+            tactics.append(start + "(try casesm* _ ∧ _); (repeat' apply And.intro) <;> first | assumption "
+                                   "| (apply Refine.sorted_nat_not_mem <;> first | assumption | omega | (simp_all; done) | grind) "
+                                   "| (apply Refine.idx_prefix_mem <;> first | assumption | omega) "
+                                   "| (intros; simp_all; done)")
         # induction along a recursive function of the task (he_038: ``encodeGroups`` applied three times is the identity)
         for f in self._recursive_defs():
             for var, typ in _binder_types(obligation.binders):

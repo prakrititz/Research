@@ -270,7 +270,9 @@ def _closing_typo(text: str) -> Optional[str]:
 
 #: Lean's application written in L_spec: a method with one atomic argument after a space (`o.getD 0`, `o.getD nums[0]`,
 #: gpt-5.4-mini on Verina, 2026-11-13), at the end of the text or before a closing bracket or comma
-_METHOD_ARG = re.compile(r"""(\.[A-Za-z_]\w*\??)[ \t]+(-?\d+(?:\.\d+)?|\(-\d+\)|"[^"]*"|'[^']*'|[A-Za-z_]\w*(?:\[[^\[\]]*\])?)(?=\s*(?:$|[),\]]|(?:then|else|and|or)\b))""")
+_METHOD_ARG = re.compile(r"""(\.[A-Za-z_]\w*\??)[ \t]+(-?\d+(?:\.\d+)?|\(-\d+\)|"[^"]*"|'[^']*'|[A-Za-z_]\w*(?:\[[^\[\]]*\])?)(?=\s*(?:$|[),\]]|(?:then|else|and|or)\b|(?:===|==>|==|!=|<=|>=|\+\+|[*+/%<>-])(?!>)))""")
+#: (also before a binary operator, since application binds tighter: `Nat.sqrt n * Nat.sqrt n`; gpt-oss-120b, Verina
+#: basic_48, 2026-11-19)
 #: a function name, a space, then `(`: `decide (x)` for `decide(x)`; L_spec keywords that take a parenthesis are kept
 _NAME_SPACE_PAREN = re.compile(r"(?<![\w.])([A-Za-z_]\w*)[ \t]+\(")
 _KEYWORDS = {"in", "not", "and", "or", "if", "then", "else", "exists", "forall", "lambda", "return", "as", "is", "for"}

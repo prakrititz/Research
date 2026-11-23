@@ -26,8 +26,8 @@ def row_of(task_id, trial, result, seconds, model, workflow) -> dict:
     return {"id": task_id, "trial": trial, "model": model, "workflow": workflow, "outcome": result.outcome,
             "verified": result.verified, "calls": len(result.calls), "retractions": result.retractions,
             "detail": result.detail, "seconds": round(seconds, 1),
-            "steps": [{"goal": c.goal, "outcome": c.outcome, "law": getattr(c, "law", None), "reply": c.reply[:1500],
-                       "feedback": c.feedback[:800], **({"repaired": c.note} if getattr(c, "note", "") else {})}
+            "steps": [{"goal": c.goal, "outcome": c.outcome, "law": getattr(c, "law", None), "reply": c.reply,
+                       "feedback": c.feedback[:3000], **({"repaired": c.note} if getattr(c, "note", "") else {})}
                       for c in result.calls],
             "certificate": None if cert is None else {"compiles": cert.compiles, "axioms": cert.axioms,
                                                       "tests": cert.tests, "passed": cert.passed,
@@ -158,7 +158,7 @@ def main():
     ids = [t for t in trees if not args.only or t in args.only][:args.limit]
     gold = args.model == "gold"
     provider = None if gold else make_model(args.model, args)
-    tag = (args.model.replace(":", "-") + ("_norepair" if args.no_repair else "")
+    tag = (("replay-run" if args.model.startswith("replay-run:") else args.model.replace(":", "-")) + ("_norepair" if args.no_repair else "")
            + (f"_ex{args.examples}{args.pool}" if args.examples else "") + (f"_n{args.samples}" if args.samples > 1 else "") + ("_lemmas" if args.lemmas else "") + (f"_{args.tag}" if args.tag else ""))
     out = os.path.join(ROOT, "benchmarks", "results", "lspec", f"run_{args.dataset}_{tag}_{args.workflow}.jsonl")
     os.makedirs(os.path.dirname(out), exist_ok=True)
@@ -179,6 +179,8 @@ def main():
                                    args.attempts, args.retractions, args.max_binds, not args.no_repair,
                                    examples=args.examples, pool=args.pool, samples=args.samples, lemmas=args.lemmas)
                 started = time.time()
+                if hasattr(provider, "start"):              # a replayed run: this task's saved replies
+                    provider.start(task_id)
                 try:
                     lean.recycle()
                     task = resolve(task_id).load(task_id)

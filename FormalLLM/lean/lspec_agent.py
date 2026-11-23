@@ -253,6 +253,35 @@ def loop_state(d: Derivation, goal_id: int) -> Optional[List[str]]:
     return None
 
 
+def goal_key(d: Derivation, goal) -> str:
+    """A goal's identity across withdrawals: its text as the model reads it, hypothesis names aside."""
+    import re
+    text = steps.goal_text(steps.goal_to_lspec(goal, loop_state(d, goal.id)))
+    return re.sub(r"\bh\d+\w*", "h", text)
+
+
+def _norm(text: str) -> str:
+    return "".join(text.split())
+
+
+def _same_step(step: str, earlier: List[str]) -> bool:
+    return _norm(step) in {_norm(e) for e in earlier}
+
+
+def known_condition(goal, cond: str) -> Optional[str]:
+    """The assumption that already decides ``cond`` (it or its negation), else None."""
+    try:
+        lean = steps.to_lean(cond, "cond", scope_of(goal), steps.string_vars(goal.ctx))
+    except Exception:
+        return None
+    # exactly the hypotheses a `cases` on it adds (``laws.Cases``): `(c)` and `¬ (c)`
+    forms = {_norm(f"({lean})"), _norm(f"¬ ({lean})")}
+    for name, prop in goal.hyps:
+        if _norm(prop) in forms:
+            return name
+    return None
+
+
 def binds_above(d: Derivation, goal_id: int) -> int:
     up, count, gid = parents(d), 0, goal_id
     while gid in up:
@@ -295,11 +324,21 @@ class LSpecAgent:
         attempts: Dict[int, int] = {}
         to_selector: Dict[int, bool] = {}
         chosen: Dict[int, Tuple[str, Optional[str]]] = {}
+        # A goal withdrawn with its parent's step comes back with a new id when the same step is chosen again: what was
+        # refused there, and how often, is kept by the goal's text (gpt-oss-120b, Verina basic_49, 2026-11-19: the same
+        # `cases` re-chosen 4 times, each time the same refused value 4 times on an identical goal with no history)
+        by_text: Dict[str, Tuple[int, List[str]]] = {}
+        self._withdrawn: Dict[str, List[str]] = {}         # goal text -> the steps withdrawn there
+        self._applied: Dict[int, str] = {}                 # goal id -> the step (L_spec) applied there
         while not d.complete:
             if len(result.calls) >= self.max_calls:
                 result.detail = "out of model calls"
                 break
             goal = d.open_goals()[0]
+            key = goal_key(d, goal)
+            if goal.id not in attempts and goal.id not in failures and key in by_text:
+                attempts[goal.id], past = by_text[key]
+                failures[goal.id] = list(past)
             if attempts.get(goal.id, 0) >= self.attempts_per_goal:
                 parent = parents(d).get(goal.id)
                 if parent is None or result.retractions >= self.retractions:
@@ -308,6 +347,8 @@ class LSpecAgent:
                 failures.setdefault(parent.goal.id, []).append(
                     f"The step you chose here was withdrawn: its sub-goal could not be solved after "
                     f"{attempts[goal.id]} attempts. Choose a different step.")
+                if parent.goal.id in self._applied:
+                    self._withdrawn.setdefault(goal_key(d, parent.goal), []).append(self._applied[parent.goal.id])
                 d.retract(parent.goal.id)
                 attempts[parent.goal.id] = attempts.get(parent.goal.id, 0) + 1
                 to_selector[parent.goal.id] = True
@@ -320,6 +361,7 @@ class LSpecAgent:
                 self.provider.at_goal(path_of(d, goal.id), scope_of(goal))
             state = loop_state(d, goal.id)
             shown = steps.goal_text(steps.goal_to_lspec(goal, state))
+            self._withdrawn_here = self._withdrawn.get(key, [])
             try:
                 calls = self._one_call(d, task, goal, shown, state, failures, chosen, to_selector)
             except LLMBudgetExhausted:                     # the whole run's money is spent: stop, never call again
@@ -334,6 +376,7 @@ class LSpecAgent:
             result.calls.extend(calls)
             if calls[-1].outcome not in ("applied", "selected"):
                 attempts[goal.id] = attempts.get(goal.id, 0) + 1
+                by_text[key] = (attempts[goal.id], list(failures.get(goal.id, [])))
         if d.complete:
             result.certificate = d.certify()
             result.outcome = SOLVED if result.certificate.verified else EXHAUSTED
@@ -404,11 +447,26 @@ class LSpecAgent:
             text = bind_refusal(self.max_binds)
             return (LSpecCall(goal.id, prompt, reply, "refused", text, law="bind"),
                     f"Attempt: {prompts.show_step(written)}\n{text}", BIND_DEPTH)
+        shown_step = prompts.show_step(written)
+        refusal = None
+        if _same_step(shown_step, getattr(self, "_withdrawn_here", [])):
+            refusal = ("Refused: this exact step was chosen here before and withdrawn (its sub-goal could not be "
+                       "solved). Choose a different step.")
+        elif written.get("law") == "cases" and isinstance(written.get("cond"), str):
+            known = known_condition(goal, written["cond"])
+            if known:
+                refusal = (f"Refused: `{written['cond']}` is already decided at this goal (assumption {known}): "
+                           "splitting on it again changes nothing. Use the assumption and write this case's step.")
+        if refusal:
+            return (LSpecCall(goal.id, prompt, reply, "refused", refusal, law=written.get("law")),
+                    f"Attempt: {shown_step}\n{refusal}", feedback.UNPROVED)
         verdict = judge(d, goal, written, "prove", loop_body=state is not None, use_repair=self.use_repair,
                         lemmas=self.lemmas)
         call = LSpecCall(goal.id, prompt, reply, "applied" if verdict.kind == feedback.ACCEPTED else verdict.kind,
                          verdict.message[:1500], law=written.get("law"), note=verdict.note)
-        return call, f"Attempt: {prompts.show_step(written)}\n{verdict.message}", verdict.kind
+        if verdict.kind == feedback.ACCEPTED and hasattr(self, "_applied"):
+            self._applied[goal.id] = shown_step
+        return call, f"Attempt: {shown_step}\n{verdict.message}", verdict.kind
 
 
 class GoldModel:

@@ -74,11 +74,31 @@ class Replay:
         return self.queue.pop(0) if self.queue else ""
 
 
+class RunReplay:
+    """Answers each task with the replies a model gave in an earlier ``lspec_run`` (``--model replay-run:<run.jsonl>``),
+    in their order: a change to the translator, the repairs or the prover is measured on the same answers with no model
+    calls. Exact until the first step whose verdict changes (the later replies were written for the old goals)."""
+
+    def __init__(self, path: str):
+        self.name = "replay-run"
+        self.replies = {r["id"]: [s["reply"] for s in r.get("steps", [])]
+                        for r in map(json.loads, open(path, encoding="utf8")) if r.get("id")}
+        self.queue = []
+
+    def start(self, task_id: str):
+        self.queue = list(self.replies.get(task_id, []))
+
+    def generate(self, prompt: str, max_tokens=None) -> str:
+        return self.queue.pop(0) if self.queue else ""
+
+
 def make_model(spec: str, args):
     if spec == "gold":
         return Gold()
     if spec.startswith("replay:"):
         return Replay(spec.partition(":")[2])
+    if spec.startswith("replay-run:"):
+        return RunReplay(spec.partition(":")[2])
     kind, _, config = spec.partition(":")
     from benchmarks import run_bench
     cfg = run_bench.CONFIGS[config]
