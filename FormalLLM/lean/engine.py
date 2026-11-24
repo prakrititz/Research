@@ -1964,6 +1964,10 @@ class Derivation:
                         conds = [p for _, p in node.goal.hyps[len(body.hyps):]]
                         if node.goal.ctx == body.ctx:      # no `bind` in between: the branch is about the state alone
                             finding = dynamic.loop_finding(self, parent.goal, parent.law, law.expr, conds)
+                            # every run keeps the invariant: it may still be too weak to be kept from every state
+                            # it allows (a fact the step relies on is missing)
+                            if finding is None and not any(v.counterexample for v in bad):
+                                finding = dynamic.inductive_finding(self, parent.goal, parent.law, law.expr, conds)
                 elif isinstance(law, Loop) and any(v.obligation.kind == "init" for v in bad):
                     finding = dynamic.loop_finding(self, node.goal, law, None)
         except Exception:                               # a harness that does not elaborate must never hide the real verdict
@@ -2011,7 +2015,10 @@ class Derivation:
             status ={"ILL_FORMED": "ill_formed", "TIMEOUT": "timeout"}.get(bad[0].status, "unproved")
             if any(v.status == "ILL_FORMED" for v in bad):
                 status = "ill_formed"
-            elif status == "unproved" and self.counterexamples:
+            # a step whose obligation timed out may be false too: the run is as cheap as for an unproved one
+            # (gpt-5.4-mini, Verina advanced_42, 2026-11-23: a body false on the first iteration, `minp` kept at 0, timed
+            # out and was reported as "may still be true")
+            elif status in ("unproved", "timeout") and self.counterexamples:
                 self._run_the_loop(node, law, bad)
             return Step(False, status, f"the {law.kind} step is not accepted", verdicts)
         node.law, node.verdicts = law, verdicts

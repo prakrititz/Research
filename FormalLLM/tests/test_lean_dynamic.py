@@ -107,6 +107,23 @@ def test_a_correct_loop_has_no_finding(lean_session):
     assert dynamic.loop_finding(derivation, loop.goal, loop.law, "(i + 1, s + (i + 1))") is None
 
 
+def test_an_invariant_true_on_every_run_but_too_weak_for_one_step_gets_a_state(lean_session):
+    from dataclasses import replace
+    task = library("he_060_sum_to_n")
+    derivation = Derivation(task, lean_session)
+    derivation.apply_tree(ORACLES["he_060_sum_to_n"])
+    loop = derivation.root
+    step = "(i + 1, s + (i + 1))"
+    weak = replace(loop.law, invariant="(2 ≤ i → 3 ≤ s) ∧ i ≤ n")      # true on runs; i = 1, s = 0 is allowed
+    assert dynamic.loop_finding(derivation, loop.goal, weak, step) is None
+    finding = dynamic.inductive_finding(derivation, loop.goal, weak, step)
+    assert finding is not None and finding.kind == "inductive"
+    shown = finding.text()
+    assert "missing a fact" in shown and "the invariant is false after your step" in shown
+    assert dynamic.PART + "2 ≤ i → 3 ≤ s" in shown
+    assert dynamic.inductive_finding(derivation, loop.goal, loop.law, step) is None     # the real invariant is kept
+
+
 def test_a_harness_that_does_not_elaborate_gives_no_finding_and_no_error(lean_session):
     task = library("he_060_sum_to_n")
     derivation = Derivation(task, lean_session)

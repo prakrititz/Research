@@ -24,6 +24,9 @@ from FormalLLM.lean.laws import Goal, Loop
 
 FUEL = 16
 PLAUSIBLE_CONFIG = "(config := { randomSeed := some 20261008, numInst := 200 })"     # fixed seed: replayable
+# a state drawn at random satisfies the invariant only when its values are small and related (i = 1, s = 0, n >= 2):
+# with the default sizes (numbers up to 100) 200 draws missed it, with maxSize 8 the first batch found it
+INDUCTIVE_CONFIG = "(config := { randomSeed := some 20261008, numInst := 500, maxSize := 8 })"
 OPTIONS = "set_option synthInstance.maxSize 100000 in\nset_option synthInstance.maxHeartbeats 0 in\n"
 
 
@@ -38,7 +41,10 @@ class Finding:
     failing: List[str] = field(default_factory=list)    # the top-level conjuncts of the invariant that are false
 
     def text(self) -> str:
-        lines = [f"counter-example (found by running the loop): {self.inputs}"]
+        head = ("counter-example (a state where the invariant and the guard hold, though a run may never reach it; one "
+                "iteration from it breaks the invariant, so the invariant is missing a fact your step relies on)"
+                if self.kind == "inductive" else "counter-example (found by running the loop)")
+        lines = [f"{head}: {self.inputs}"]
         lines += ["    " + line for line in self.trace[:12]]
         lines += ["    " + PART + part for part in self.failing[:3]]
         return "\n".join(lines)
@@ -303,6 +309,77 @@ def loop_finding(derivation, goal: Goal, law: Loop, step: Optional[str], conds=(
             return finding
         return None
     return None
+
+
+def inductive_source(goal: Goal, law: Loop, step: str, conds=()) -> Optional[str]:
+    """``plausible`` over the inputs *and* the state: a state where the invariant and the guard hold whose next state
+    breaks the invariant (or does not decrease the variant). A run from real inputs only reaches states a correct
+    program passes through, so it cannot show an invariant that is true on every run but too weak to be proved one
+    iteration at a time (gpt-5.4-mini, Verina advanced_42, 2026-11-23: ``minp`` a lower bound of the prices seen, never
+    said to be one of them; ``prices = [5, 5], i = 1, minp = 0`` gives a profit of 5 no pair has). Such a state is a
+    counter-example to the obligation itself, so the finding is sound. ``None`` if a state variable shadows an input."""
+    names = [n for n, _ in goal.ctx]
+    if set(names) & {n for n, _ in law.state}:
+        return None
+    args = " ".join(names)
+    s_args = " ".join(n for n, _ in law.state)
+    r_args = _args(law, "dyn_r")
+    ctx = " ".join(f"({n} : {t})" for n, t in goal.ctx)
+    state = _state_binders(law)
+    return "\n".join([
+        _definitions(goal, law, step, parts=False, conds=conds).rstrip("\n"),
+        f"def dyn_kept {ctx} {state} : Bool :=",
+        f"  match dyn_step {args} {s_args} with",
+        f"  | none => true",
+        f"  | some dyn_r => dyn_inv {args} {r_args} && decide (dyn_var {args} {r_args} < dyn_var {args} {s_args})",
+        OPTIONS.rstrip("\n"),
+        f"theorem dyn_ind {goal.binders()} {state} : dyn_inv {args} {s_args} = true → dyn_guard {args} {s_args} = true → "
+        f"dyn_kept {args} {s_args} = true := by\n  plausible {INDUCTIVE_CONFIG}",
+    ]) + "\n"
+
+
+def inductive_trace_source(goal: Goal, law: Loop, step: str, inputs: str) -> Optional[str]:
+    """``#eval`` of the state ``plausible`` found and the state the step gives from it, with the parts that break."""
+    names = [n for n, _ in goal.ctx]
+    values = parse_inputs(inputs, names + [n for n, _ in law.state])
+    if values is None:
+        return None
+    ctx = " ".join(f"({n} : {t})" for n, t in goal.ctx)
+    args, s_args, r_args = " ".join(names), " ".join(n for n, _ in law.state), _args(law, "dyn_r")
+    tuple_s = "(" + ", ".join(n for n, _ in law.state) + ")" if len(law.state) > 1 else law.state[0][0]
+    return "\n".join([
+        f"def dyn_itrace {ctx} {_state_binders(law)} : String :=",
+        f"  let dyn_s : {law.state_type} := {tuple_s}",
+        f"  let dyn_head := \"state (\" ++ ({_format_state(law, 'dyn_s')}) ++ \")  invariant \" ++ toString (dyn_inv {args} {s_args}) ++ \"  guard \" ++ toString (dyn_guard {args} {s_args})",
+        f"  match dyn_step {args} {s_args} with",
+        f"  | none => dyn_head",
+        f"  | some dyn_r => dyn_head ++ \"\\n  your step gives (\" ++ ({_format_state(law, 'dyn_r')}) ++ \")  invariant \" ++ toString (dyn_inv {args} {r_args})"
+        f" ++ \"  variant \" ++ toString (dyn_var {args} {s_args}) ++ \" -> \" ++ toString (dyn_var {args} {r_args})"
+        f" ++ (if !(dyn_inv {args} {r_args}) then \"   <- the invariant is false after your step\" ++ {_falses(goal, law, r_args)}"
+        f" else \"   <- the variant does not decrease\")",
+        f"#eval dyn_itrace {' '.join('(' + v + ')' for v in values)}",
+    ]) + "\n"
+
+
+def inductive_finding(derivation, goal: Goal, law: Loop, step: str, conds=()) -> Optional[Finding]:
+    """A state (not necessarily reachable) from which one iteration breaks the invariant; ``None`` if none was found.
+    Only the whole invariant is used (a weaker one would make the state a false alarm)."""
+    code = inductive_source(goal, law, step, conds)
+    if code is None:
+        return None
+    reply = derivation._run(code)
+    if not reply.counterexample:
+        return None
+    finding = Finding(inputs=reply.counterexample, kind="inductive")
+    trace = inductive_trace_source(goal, law, step, reply.counterexample)
+    if trace:
+        shown = derivation._run(_definitions(goal, law, step, conds=conds) + trace)
+        if not shown.infos:
+            shown = derivation._run(_definitions(goal, law, step, parts=False, conds=conds) + trace)
+        if shown.infos:
+            lines = [line for line in shown.infos[0].replace("\\n", "\n").strip('"').splitlines() if line.strip()]
+            finding.trace, finding.failing = _read_parts(lines, law)
+    return finding
 
 
 def init_source(goal: Goal, law: Loop, inputs: str) -> Optional[str]:

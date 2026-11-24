@@ -463,7 +463,7 @@ class LSpecAgent:
         verdict = judge(d, goal, written, "prove", loop_body=state is not None, use_repair=self.use_repair,
                         lemmas=self.lemmas)
         call = LSpecCall(goal.id, prompt, reply, "applied" if verdict.kind == feedback.ACCEPTED else verdict.kind,
-                         verdict.message[:1500], law=written.get("law"), note=verdict.note)
+                         verdict.message[:3000], law=written.get("law"), note=verdict.note)
         if verdict.kind == feedback.ACCEPTED and hasattr(self, "_applied"):
             self._applied[goal.id] = shown_step
         return call, f"Attempt: {shown_step}\n{verdict.message}", verdict.kind
