@@ -316,3 +316,27 @@ them before elaboration (names the step binds itself are left alone). Repairs ad
 curried `let rec f (x: T) (y: U)` and its Lean-style calls, `lambda a b, body`, a missing final `)`, `.0` explained.
 Open for advanced_24: the root `max(...)` with Int lengths (`max?.get!` over `↑l.length`) and a bind/term pair differing
 only in where the cast sits need Int lemmas (not done).
+
+## 12. Offline fixes after the GPT-5.4 mini re-run (2026-11-23/24, no model calls)
+
+State: Verina L_spec joint 109/131 tried (177 tasks). The 22 unsolved, by cause:
+
+| cause | tasks |
+|---|---|
+| the hand-written derivation fails too (whole-task proof needed, §8) | advanced_10, basic_27, basic_102, basic_104 |
+| solvable once the model writes the step (cheap re-run, ~$0.10) | basic_33, advanced_51 |
+| solved on replay of its own saved replies | advanced_52 |
+| model-side or a lemma fitted to the task (Kadane 45/75, `head?` of a `flatMap` 79, ...) | the rest |
+
+Fixes (commits 28c0543, 7cb0835, 72f9e48):
+
+| what | fix |
+|---|---|
+| a loop step that **timed out** got no counter-example search (only "unproved" did); advanced_42's body, false on the first iteration (`minp` starts at 0 and stays 0 on Nat), was reported as "may still be true" | `_run_the_loop` runs for timeouts too |
+| an invariant true on every run but too weak to be kept one iteration at a time has no counter-example from a run | `dynamic.inductive_finding`: `plausible` over inputs **and** state (maxSize 8; default sizes missed it), called when a run finds nothing. A state it finds is a counter-example to the obligation itself (sound) |
+| results kept 1500 characters of feedback, cutting the counter-example off (the model always got all of it) | 3000 |
+| `take(k, l)`, `sortBy` written as library functions (advanced_76: all four root attempts) | hint with the L_spec spelling (`l[:k]`, `sorted(l, lambda a, b: ...)`) |
+
+Replays: the 11 tasks not re-run on 11-23 (`rr1123b`): 0/11; every changed verdict is an intended refusal (a fourth
+nested `bind`, a `cases` on a condition already assumed). Gold regression on 5 loop tasks (`gold_ind1124`): 5/5 verified.
+`test_lean_core.py` fails ~5 tests on the previous commit too ("unknown tactic": the fixture's small imports).
