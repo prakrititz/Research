@@ -100,7 +100,15 @@ SYNTAX_HINTS = [
     (r"'where'", "Put the condition in the body: `forall x in l: cond ==> ...`."),
 ]
 
-#: (pattern in Lean's error, hint): the usual reasons a type-correct-looking step is not
+#: library functions of other languages, as L_spec writes them
+SPELLINGS = {
+    "take": "`l[:k]` (the first `k` elements)", "drop": "`l[k:]`",
+    **{name: "`sorted(l, lambda a, b: bool(key(a) <= key(b)))` (stable; `>=` for descending)"
+       for name in ("sortBy", "sort_by", "sortOn", "sorted_by", "sortWith")},
+}
+
+#: (pattern in Lean's error, hint): the usual reasons a type-correct-looking step is not; a hint may be a function of
+#: the pattern's first matched group that returns ``None`` when it does not apply
 TYPE_HINTS = [
     (r"expected to have type\s+prop|HAdd \S+ \S+ prop|HSub \S+ \S+ prop|HMul \S+ \S+ prop",
      "A value is written where a statement (true or false) is expected. A bind's `prop` is a statement about its "
@@ -114,8 +122,14 @@ TYPE_HINTS = [
     # (Verina advanced_51, gpt-5.4-mini 2026-11-23: nine calls spent on `x :: mergeSorted(a[1:], b)`)
     # (a name Lean does not know reads as an auto-bound ``?m``; a goal variable has its own type: the hint further down)
     (r"Function expected at\s+(\w+)\s+but this term has type\s+\?m",
-     "`{0}` is not defined at this step. If it is the function being specified, a step cannot call it (there is no "
-     "recursion): use a loop, or a library function (for example `sorted`, `sum`, `max`)."),
+     lambda name: None if name in SPELLINGS else (
+         f"`{name}` is not defined at this step. If it is the function being specified, a step cannot call it (there "
+         "is no recursion): use a loop, or a library function (for example `sorted`, `sum`, `max`).")),
+    # a library function from another language (gpt-oss-120b, Verina advanced_76: `take(k, ...)`, `sortBy` x3, all four
+    # attempts at the root spent on them)
+    (r"Function expected at\s+(\w+)\s+but this term has type\s+\?m|Unknown constant `(?:List\.)?(\w+)`"
+     r"|Invalid field `(\w+)`|Unknown identifier `(\w+)`",
+     lambda name: f"`{name}` is not an L_spec function: write {SPELLINGS[name]}." if name in SPELLINGS else None),
     (r"Decidable \([^\n]*(?:∃|exists)",
      "An `exists` over all numbers cannot be computed, and the program must run. Search a bounded range instead, "
      "e.g. `range(n + 1).any(lambda m: ...)`, or use a loop."),
@@ -147,7 +161,12 @@ def hints(message: str, table) -> str:
     for pattern, hint in table:
         m = re.search(pattern, message)
         if m:
-            found.append(hint.format(*m.groups()))
+            if callable(hint):
+                text = hint(next((g for g in m.groups() if g), ""))
+                if text:
+                    found.append(text)
+            else:
+                found.append(hint.format(*m.groups()))
     return "".join(f"\n  Hint: {h}" for h in found)
 
 

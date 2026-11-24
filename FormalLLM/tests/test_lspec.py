@@ -256,6 +256,15 @@ def test_missing_field_names_the_law_fields():
     assert "`string` is a value here" in feedback.hints("Function expected at\n  string\nbut this term", feedback.TYPE_HINTS)
 
 
+def test_a_library_function_of_another_language_gets_its_l_spec_spelling_and_only_that_hint():
+    take = feedback.hints("Function expected at take but this term has type ?m.1", feedback.TYPE_HINTS)
+    assert "`l[:k]`" in take and "not defined at this step" not in take and take.count("Hint:") == 1
+    assert "sorted(l, lambda a, b:" in feedback.hints("Unknown constant `List.sortBy`", feedback.TYPE_HINTS)
+    assert "sorted(l, lambda a, b:" in feedback.hints("Invalid field `sortBy`: The environment", feedback.TYPE_HINTS)
+    other = feedback.hints("Function expected at mergeSorted but this term has type ?m.5", feedback.TYPE_HINTS)
+    assert "not defined at this step" in other and "not an L_spec function" not in other
+
+
 @pytest.mark.parametrize("spec, lean", [
     ("forall j: nat, j < i ==> l[j] >= 0", "∀ (j : Nat), j < i → l[j]! ≥ 0"),       # Lean's typed binder
     ("exists k: int, k * k == n", "∃ (k : Int), k * k = n"),
